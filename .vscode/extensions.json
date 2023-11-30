@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        "hediet.vscode-drawio",
+        "usernamehw.errorlens",
+        "denoland.vscode-deno",
+        "vscjava.vscode-java-pack",
+        "kokakiwi.vscode-just",
+        "yzhang.markdown-all-in-one",
+        "shd101wyy.markdown-preview-enhanced",
+        "vscjava.vscode-maven",
+        "vscjava.vscode-java-dependency",
+        "mechatroner.rainbow-csv",
+        "vscjava.vscode-java-test",
+        "gruntfuggly.todo-tree"
+    ]
+}
