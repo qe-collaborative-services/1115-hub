@@ -1,37 +1,64 @@
 # Universal CSV Assurance Strategy
 
-QE Collaborative Services (`QCS`) uses The National Archives' [CSV Schema](https://github.com/digital-preservation/csv-schema) and [csv-validator](https://github.com/digital-preservation/csv-validator) to validate CSV files.
+## DuckDB-based CSV Validator Tool
+
+There is now an example in this directory to use DuckDB to parse and validate
+CSV with export of issues to Microsoft Excel and SQLite. This allows easy
+querying and reporting.
+
+The source is in [assurance.duckdb.sql](./assurance.duckdb.sql).
+
+To test it:
+
+```bash
+# remove the existing data data, if any
+$ rm -f test-results/assurance-issues.xlsx test-results/assurance-state.sqlite.db
+$ cat assurance.duckdb.sql | duckdb ":memory:"
+```
+
+- Excel workbook with errors/issues will be in [test-results/assurance-issues.xlsx](./test-results/assurance-issues.xlsx).
+- Queryable SQLite database will be in [test-results/assurance-state.sqlite.db](./test-results/assurance-state.sqlite.db).
+
+## The National Archives' CSV Schema Tool
+
+QE Collaborative Services (`QCS`) also uses The National Archives'
+[CSV Schema](https://github.com/digital-preservation/csv-schema) and
+[csv-validator](https://github.com/digital-preservation/csv-validator) to
+validate CSV files.
 
 - [Learn more about CSV Schema versions and tooling](https://digital-preservation.github.io/csv-schema/)
 - [See example CSV Schema files and CSV files](https://github.com/digital-preservation/csv-schema/tree/master/example-schemas)
 
-## Building the source locally
+### Building the QCS CSV Schema Validation Java source locally
 
-Assuming you have a JDK and `mvn` (Apache Maven) installed, you can run the following:
+Assuming you have a JDK and `mvn` (Apache Maven) installed, you can run the
+following:
 
 ```bash
 mvn package
 ```
 
-If you do not have a JDK or Maven installed, see _Install Java and Maven on WSL or Linux_ below.
+If you do not have a JDK or Maven installed, see _Install Java and Maven on WSL
+or Linux_ below.
 
-## Usage
+### Usage
 
 To see a "happy" path (when a CSV file passes schema assurance/validation):
 
 ```bash
-$ java -jar ./target/CsvAssurance-0.1.0-jar-with-dependencies.jar ./text-fixture/example-concat-pass1.csv ./csv-schema/example-concat.csvs
+$ java -jar ./target/CsvAssurance-0.1.0-jar-with-dependencies.jar ./test-fixture/example-concat-pass1.csv ./csv-schema/example-concat.csvs
 Completed validation OK
 ```
 
-To see the "unhappy" (failure) paths (when CSV file does not match schema assurance/validation rules):
+To see the "unhappy" (failure) paths (when CSV file does not match schema
+assurance/validation rules):
 
 ```bash
-java -jar ./target/CsvAssurance-0.1.0-jar-with-dependencies.jar ./text-fixture/example-concat-fail1.csv ./csv-schema/example-concat.csvs
+java -jar ./target/CsvAssurance-0.1.0-jar-with-dependencies.jar ./test-fixture/example-concat-fail1.csv ./csv-schema/example-concat.csvs
 [ERROR] is(concat($c1, $c2)) fails for line: 2, column: c3, value: "the tree is"
 ```
 
-## Install Java and Maven on WSL or Linux
+### Install Java and Maven on WSL or Linux
 
 Use `asdf` if you're not sure how to setup your own Java environment.
 
