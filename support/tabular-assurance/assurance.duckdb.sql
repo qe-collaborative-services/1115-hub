@@ -151,6 +151,40 @@ INSERT INTO ingest_issue (session_id, issue_row, issue_type, issue_column, issue
            'Provide a value for ' || issue_column
       FROM mandatory_value_assurance;
 
+WITH pattern_assurance AS (
+    SELECT 'column8' AS issue_column,
+           column8 AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM example_concat_fail2
+     WHERE column8 NOT SIMILAR TO '^ABC-[0-9]{4}$'
+)
+INSERT INTO ingest_issue (session_id, issue_row, issue_type, issue_column, invalid_value, issue_message, remediation)
+    SELECT (SELECT ingest_session_id FROM ingest_session LIMIT 1),
+           issue_row,
+           'Pattern Mismatch',
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ABC-1234',
+           'Follow the pattern ABC-1234 in ' || issue_column
+      FROM pattern_assurance;
+
+WITH allowed_values_assurance AS (
+    SELECT 'column9' AS issue_column,
+           column9 AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM example_concat_fail2
+     WHERE column9 NOT IN ('Yes', 'No', 'Maybe')
+)
+INSERT INTO ingest_issue (session_id, issue_row, issue_type, issue_column, invalid_value, issue_message, remediation)
+    SELECT (SELECT ingest_session_id FROM ingest_session LIMIT 1),
+           issue_row,
+           'Invalid Value',
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (Yes, No, Maybe)',
+           'Use only allowed values (Yes, No, Maybe) in ' || issue_column
+      FROM allowed_values_assurance;
+
 SELECT * FROM ingest_issue;
 
 ATTACH 'test-results/assurance-diagnostics.sqlite.db' AS sqlite_state_db (TYPE SQLITE);
