@@ -1,101 +1,165 @@
 -- usage:
--- $ duckdb ":memory:" -init assurance.duckdb.sql
+-- $ rm -f test-results/assurance-issues.xlsx test-results/assurance-diagnostics.sqlite.db
+-- $ cat assurance.duckdb.sql | duckdb ":memory:"
+
+CREATE TABLE ingest_session (
+    ingest_session_id VARCHAR NOT NULL,
+    ingest_src VARCHAR NOT NULL,
+    ingest_table_name VARCHAR NOT NULL,
+);
 
 CREATE TABLE ingest_issue (
-    issue_src VARCHAR,
-    issue_type VARCHAR,
-    issue_column VARCHAR,
+    session_id VARCHAR NOT NULL,
     issue_row INT,
-    issue_message VARCHAR,
+    issue_type VARCHAR NOT NULL,
+    issue_column VARCHAR,
+    invalid_value VARCHAR,
+    issue_message VARCHAR NOT NULL,
     remediation VARCHAR
 );
 
 -- `exprX` means that when a SQL generator is used, those should be expressions:
--- expr1: "tempTableName" example_concat_fail1
--- expr2: "srcFileName" 'test-fixture/example-fail1.duckdb.csv'
+-- expr1: `example_concat_fail2` is CSV Source File Temp Table Name
+-- expr2: 'test-fixture/example-fail2.duckdb.csv' is the CSV Source File
+
+INSERT INTO ingest_session (ingest_session_id, ingest_src, ingest_table_name) 
+                    VALUES (uuid(), 'test-fixture/example-fail2.duckdb.csv', 'example_concat_fail2');
+
+-- uncomment below to see session details
+-- SELECT * FROM ingest_session;
 
 -- ingest the entire CSV file into memory
-CREATE TEMPORARY TABLE example_concat_fail1 /* expr1 */ AS 
+CREATE TEMPORARY TABLE example_concat_fail2 /* expr1 */ AS 
   SELECT *, 
          row_number() OVER () as src_file_row_number, 
-         'test-fixture/example-fail1.duckdb.csv' /* expr2 */ as src_file_name 
-    FROM read_csv_auto('test-fixture/example-fail1.duckdb.csv' /* expr2 */, header = true);
+         (SELECT ingest_session_id from ingest_session LIMIT 1) as ingest_session_id
+    FROM read_csv_auto('test-fixture/example-fail2.duckdb.csv' /* expr2 */, header = true);
 
 -- show the table that was read in
--- SELECT * FROM example_concat_fail1 /* expr1 */;
+-- SELECT * FROM example_concat_fail2 /* expr1 */;
 
--- check if specific column names were in the source
--- replace ('column1'), ('column2'), ('column3') with your expected column names
-INSERT INTO ingest_issue (issue_src, issue_type, issue_column, issue_message, remediation)
-  SELECT 'test-fixture/example-fail1.duckdb.csv' /* expr2 */,
-         'Missing Column',
-         required_column,
-         'Required column is missing in the CSV file.',
-         'Ensure the CSV contains the column.'
-    FROM (VALUES ('column1'), ('column2'), ('column3'), ('column4')) AS required_columns(required_column)
-   WHERE required_column NOT IN (
-       SELECT column_name 
-         FROM information_schema.columns 
-        WHERE table_name = 'example_concat_fail1' /* expr1 */);
-
--- check that column1 datatype was detected as VARCHAR (TEXT)
-INSERT INTO ingest_issue (issue_src, issue_type, issue_column, issue_row, issue_message, remediation)
-    SELECT src_file_name,
-           'Data Type Mismatch',
-           'column1',
-           'Data type for column1 is not INTEGER, actual type: ' || 
-               (SELECT data_type FROM information_schema.columns WHERE table_name = 'example_concat_fail1' /* expr1 */ AND column_name = 'column1'),           
-           'Data type for column1 is not TEXT.',
-           'Convert column1 to TEXT.'
-      FROM example_concat_fail1 /* expr1 */
-     WHERE 'column1' NOT IN (
+-- Assuming required columns are 'column1', 'column2', 'column3'
+WITH required_column_names_in_src AS (
+    SELECT column_name
+    FROM (VALUES ('column1'), ('column2'), ('column3'),
+                 ('column4'), ('column5'), ('column6'),
+                 ('column7'), ('column8'), ('column9')) AS required(column_name)
+    WHERE required.column_name NOT IN (
         SELECT column_name 
           FROM information_schema.columns 
-         WHERE table_name = 'example_concat_fail1' /* expr1 */ 
-           AND data_type = 'VARCHAR');
+         WHERE table_name = (SELECT ingest_table_name FROM ingest_session LIMIT 1))
+)
+INSERT INTO ingest_issue (session_id, issue_type, issue_message, remediation)
+    SELECT (SELECT ingest_session_id FROM ingest_session LIMIT 1),
+           'Missing Column',
+           'Required column ' || column_name || ' is missing in the CSV file.',
+           'Ensure the CSV contains the column ' || column_name
+      FROM required_column_names_in_src;
 
--- check that row values in column3 is a concatenation of columns 1 and 1
-INSERT INTO ingest_issue (issue_src, issue_type, issue_column, issue_row, issue_message, remediation)
-    SELECT src_file_name,
-           'Data Type Mismatch',
-           'column3',
-           src_file_row_number,
-           '"' || column3 || '" should be "' || concat(column1, column2) || '"',
-           'Ensure all values in column3 are a concatenation of columns 1 and 2'
-      FROM example_concat_fail1 /* expr1 */
-     WHERE column3 IS NOT NULL 
-       AND column3 != concat(column1, column2);
+-- NOTE: If the above does not pass, meaning not all columns with the proper
+--       names are present, do not run the queries below because they assume
+--       proper names and existence of columns.
 
--- check that rows values in column4 datatype are numeric
-INSERT INTO ingest_issue (issue_src, issue_type, issue_column, issue_row, issue_message, remediation)
-    SELECT src_file_name,
-           'Data Type Mismatch',
-           'column4',
-           src_file_row_number,
-           '"' || column4 || '" is not an INTEGER',
-           'Ensure all values in column4 are integer values'
-      FROM example_concat_fail1 /* expr1 */
+WITH numeric_value_in_all_rows AS (
+    SELECT 'column4' AS issue_column,
+           column4 AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM example_concat_fail2 /* expr1 */
      WHERE column4 IS NOT NULL 
-       AND column4 NOT SIMILAR TO '^[+-]?[0-9]+$';
+       AND column4 NOT SIMILAR TO '^[+-]?[0-9]+$'
+)
+INSERT INTO ingest_issue (session_id, issue_row, issue_type, issue_column, invalid_value, issue_message, remediation)
+    SELECT (SELECT ingest_session_id from ingest_session LIMIT 1),
+           issue_row,
+           'Data Type Mismatch',
+           issue_column,
+           invalid_value,
+           'Non-integer value "' || invalid_value || '" found in ' || issue_column,
+           'Convert non-integer values to INTEGER.'
+      FROM numeric_value_in_all_rows;
 
--- Check column2 matches a regular expression (example: email at any `.com` address)
-INSERT INTO ingest_issue (issue_src, issue_type, issue_column, issue_row, issue_message, remediation)
-    SELECT src_file_name,
-           'Format Mismatch',
-           'column5',
-           src_file_row_number,
-           '"' || column5 || '" in column5 is not a proper email format.',
-           'Ensure column2 contains valid email addresses.'
-      FROM example_concat_fail1 /* expr1 */
-     WHERE column5 IS NOT NULL 
-       AND column5 NOT SIMILAR TO '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.com$';
+WITH proper_dot_com_email_address_in_all_rows AS (
+    SELECT 'column2' AS issue_column,
+           column2 AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM example_concat_fail2
+     WHERE column2 IS NOT NULL
+       AND column2 NOT SIMILAR TO '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.com$'
+)
+INSERT INTO ingest_issue (session_id, issue_row, issue_type, issue_column, invalid_value, issue_message, remediation)
+    SELECT (SELECT ingest_session_id FROM ingest_session LIMIT 1),
+            issue_row,
+            'Format Mismatch',
+            issue_column,
+            invalid_value,
+            'Invalid email format "' || invalid_value || '" in ' || issue_column,
+            'Correct the email format.'
+       FROM proper_dot_com_email_address_in_all_rows;
+
+WITH range_assurance AS (
+    SELECT 'column5' AS issue_column,
+           column5 AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM example_concat_fail2
+     WHERE column5::INT < 10 OR column5::INT > 100
+)
+INSERT INTO ingest_issue (session_id, issue_row, issue_type, issue_column, invalid_value, issue_message, remediation)
+    SELECT (SELECT ingest_session_id FROM ingest_session LIMIT 1),
+           issue_row,
+           'Range Violation',
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' out of range (10-100)',
+           'Ensure values in column5 are between 10 and 100.'
+      FROM range_assurance;
+
+WITH unique_value_assurance AS (
+    SELECT 'column6' AS issue_column,
+           column6 AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM example_concat_fail2
+     WHERE column6 IN (
+          SELECT column6 
+            FROM example_concat_fail2 
+        GROUP BY column6 
+          HAVING COUNT(*) > 1
+      )
+)
+INSERT INTO ingest_issue (session_id, issue_row, issue_type, issue_column, invalid_value, issue_message, remediation)
+    SELECT (SELECT ingest_session_id FROM ingest_session LIMIT 1),
+           issue_row,
+           'Unique Value Violation',
+           issue_column,
+           invalid_value,
+           'Duplicate value "' || invalid_value || '" found in ' || issue_column,
+           'Ensure each value in column6 is unique.'
+    FROM unique_value_assurance;
+
+WITH mandatory_value_assurance AS (
+    SELECT 'column7' AS issue_column,
+           src_file_row_number AS issue_row
+      FROM example_concat_fail2
+     WHERE column7 is NULL 
+        OR TRIM(column7) = ''
+)
+INSERT INTO ingest_issue (session_id, issue_row, issue_type, issue_column, issue_message, remediation)
+    SELECT (SELECT ingest_session_id FROM ingest_session LIMIT 1),
+           issue_row,
+           'Missing Mandatory Value',
+           issue_column,
+           'Mandatory field ' || issue_column || ' is empty.',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value_assurance;
 
 SELECT * FROM ingest_issue;
 
-ATTACH 'test-results/assurance-state.sqlite.db' AS sqlite_state_db (TYPE SQLITE);
+ATTACH 'test-results/assurance-diagnostics.sqlite.db' AS sqlite_state_db (TYPE SQLITE);
 
-CREATE TABLE sqlite_state_db.example_concat_fail1 /* expr1 */ AS 
-    SELECT * FROM example_concat_fail1 /* expr1 */;
+CREATE TABLE sqlite_state_db.example_concat_fail2 /* expr1 */ AS 
+    SELECT * FROM example_concat_fail2 /* expr1 */;
+
+CREATE TABLE sqlite_state_db.ingest_session AS 
+    SELECT * FROM ingest_session;
 
 CREATE TABLE sqlite_state_db.ingest_issue AS 
     SELECT * FROM ingest_issue;

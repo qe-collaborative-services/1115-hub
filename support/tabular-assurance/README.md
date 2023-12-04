@@ -12,12 +12,12 @@ To test it:
 
 ```bash
 # remove the existing data data, if any
-$ rm -f test-results/assurance-issues.xlsx test-results/assurance-state.sqlite.db
+$ rm -f test-results/assurance-issues.xlsx test-results/assurance-diagnostics.sqlite.db
 $ cat assurance.duckdb.sql | duckdb ":memory:"
 ```
 
-- Excel workbook with errors/issues will be in [test-results/assurance-issues.xlsx](./test-results/assurance-issues.xlsx).
-- Queryable SQLite database will be in [test-results/assurance-state.sqlite.db](./test-results/assurance-state.sqlite.db).
+- Excel workbook with errors/issues will be in [test-results/assurance-issues.xlsx](./test-results/assurance-issues.xlsx). This file is useful for non-technical audiences to review issues in the CSV.
+- Queryable SQLite database will be in [test-results/assurance-diagnostics.sqlite.db](./test-results/assurance-state.sqlite.db). This file is useful for technical audiences who need more detailed diagnostics in a single queryable SQLite file.
 
 ## The National Archives' CSV Schema Tool
 
