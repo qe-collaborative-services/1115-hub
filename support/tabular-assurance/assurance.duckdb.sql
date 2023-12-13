@@ -1,6 +1,4 @@
--- usage:
--- $ rm -f test-results/assurance-issues.xlsx test-results/assurance-diagnostics.sqlite.db
--- $ cat assurance.duckdb.sql | duckdb ":memory:"
+-- usage: `just test-e2e` from root of this repo
 
 CREATE TABLE ingest_session (
     ingest_session_id VARCHAR NOT NULL,
@@ -23,7 +21,7 @@ CREATE TABLE ingest_issue (
 -- expr2: 'test-fixture/example-fail2.duckdb.csv' is the CSV Source File
 
 INSERT INTO ingest_session (ingest_session_id, ingest_src, ingest_table_name) 
-                    VALUES (uuid(), 'test-fixture/example-fail2.duckdb.csv', 'example_concat_fail2');
+                    VALUES (uuid(), 'support/tabular-assurance/test-fixture/example-fail2.duckdb.csv', 'example_concat_fail2');
 
 -- uncomment below to see session details
 -- SELECT * FROM ingest_session;
@@ -33,7 +31,7 @@ CREATE TEMPORARY TABLE example_concat_fail2 /* expr1 */ AS
   SELECT *, 
          row_number() OVER () as src_file_row_number, 
          (SELECT ingest_session_id from ingest_session LIMIT 1) as ingest_session_id
-    FROM read_csv_auto('test-fixture/example-fail2.duckdb.csv' /* expr2 */, header = true);
+    FROM read_csv_auto('support/tabular-assurance/test-fixture/example-fail2.duckdb.csv' /* expr2 */, header = true);
 
 -- show the table that was read in
 -- SELECT * FROM example_concat_fail2 /* expr1 */;
@@ -187,7 +185,7 @@ INSERT INTO ingest_issue (session_id, issue_row, issue_type, issue_column, inval
 
 SELECT * FROM ingest_issue;
 
-ATTACH 'test-results/assurance-diagnostics.sqlite.db' AS sqlite_state_db (TYPE SQLITE);
+ATTACH 'support/tabular-assurance/test-results/assurance-diagnostics.sqlite.db' AS sqlite_state_db (TYPE SQLITE);
 
 CREATE TABLE sqlite_state_db.example_concat_fail2 /* expr1 */ AS 
     SELECT * FROM example_concat_fail2 /* expr1 */;
@@ -203,4 +201,4 @@ DETACH DATABASE sqlite_state_db;
 INSTALL spatial; -- Only needed once per DuckDB connection
 LOAD spatial; -- Only needed once per DuckDB connection
 
-COPY ingest_issue TO 'test-results/assurance-issues.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
+COPY ingest_issue TO 'support/tabular-assurance/test-results/assurance-issues.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
