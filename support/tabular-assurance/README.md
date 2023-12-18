@@ -16,8 +16,13 @@ $ rm -f test-results/assurance-issues.xlsx test-results/assurance-diagnostics.sq
 $ cat assurance.duckdb.sql | duckdb ":memory:"
 ```
 
-- Excel workbook with errors/issues will be in [test-results/assurance-issues.xlsx](./test-results/assurance-issues.xlsx). This file is useful for non-technical audiences to review issues in the CSV.
-- Queryable SQLite database will be in [test-results/assurance-diagnostics.sqlite.db](./test-results/assurance-state.sqlite.db). This file is useful for technical audiences who need more detailed diagnostics in a single queryable SQLite file.
+- Excel workbook with errors/issues will be in
+  [test-results/assurance-issues.xlsx](./test-results/assurance-issues.xlsx).
+  This file is useful for non-technical audiences to review issues in the CSV.
+- Queryable SQLite database will be in
+  [test-results/assurance-diagnostics.sqlite.db](./test-results/assurance-state.sqlite.db).
+  This file is useful for technical audiences who need more detailed diagnostics
+  in a single queryable SQLite file.
 
 ## The National Archives' CSV Schema Tool
 

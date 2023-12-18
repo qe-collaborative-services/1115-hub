@@ -1,0 +1,257 @@
+[
+  {
+    "cell": "initDDL",
+    "sql": "CREATE TABLE IF NOT EXISTS \"ingest_session\" (\n    \"ingest_session_id\" TEXT PRIMARY KEY NOT NULL,\n    \"ingest_src\" TEXT NOT NULL,\n    \"ingest_table_name\" TEXT,\n    \"elaboration\" TEXT\n);\nCREATE TABLE IF NOT EXISTS \"ingest_issue_tabular\" (\n    \"ingest_issue_tabular_id\" TEXT PRIMARY KEY NOT NULL,\n    \"session_id\" TEXT NOT NULL,\n    \"issue_type\" TEXT NOT NULL,\n    \"issue_message\" TEXT NOT NULL,\n    \"issue_row\" INTEGER,\n    \"issue_column\" TEXT,\n    \"invalid_value\" TEXT,\n    \"remediation\" TEXT,\n    \"elaboration\" TEXT,\n    FOREIGN KEY(\"session_id\") REFERENCES \"ingest_session\"(\"ingest_session_id\")\n);\n",
+    "status": 0
+  },
+  {
+    "cell": "structuralSQL",
+    "sql": "INSERT INTO ingest_session (ingest_session_id, ingest_src, ingest_table_name) \n                    VALUES ('1fa45300-5b92-4e83-bfec-6a706d0404c1', '/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/synthetic-fail2.csv', 'synthetic_fail2');\n\nCREATE TABLE synthetic_fail2 AS\n  SELECT *, row_number() OVER () as src_file_row_number, '1fa45300-5b92-4e83-bfec-6a706d0404c1'\n    FROM read_csv_auto('/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/synthetic-fail2.csv', header=true);\n\nWITH required_column_names_in_src AS (\n    SELECT column_name\n      FROM (VALUES ('PAT_MRN_ID'), ('FACILITY'), ('FIRST_NAME'), ('LAST_NAME'), ('PAT_BIRTH_DATE'), ('MEDICAID_CIN'), ('ENCOUNTER_ID'), ('SURVEY'), ('SURVEY_ID'), ('RECORDED_TIME'), ('QUESTION'), ('MEAS_VALUE'), ('QUESTION_CODE'), ('QUESTION_CODE_SYSTEM_NAME'), ('ANSWER_CODE'), ('ANSWER_CODE_SYSTEM_NAME'), ('SDOH_DOMAIN'), ('NEED_INDICATED'), ('VISIT_PART_2_FLAG'), ('VISIT_OMH_FLAG'), ('VISIT_OPWDD_FLAG')) AS required(column_name)\n     WHERE required.column_name NOT IN (\n         SELECT upper(trim(column_name))\n           FROM information_schema.columns\n          WHERE table_name = 'synthetic_fail2')\n)\nINSERT INTO ingest_issue_tabular (ingest_issue_tabular_id, session_id, issue_type, issue_message, remediation)\n          SELECT uuid(),\n                 '1fa45300-5b92-4e83-bfec-6a706d0404c1', \n                 'Missing Column',\n                 'Required column ' || column_name || ' is missing in synthetic_fail2.',\n                 'Ensure synthetic_fail2 contains the column \"' || column_name || '\"'\n            FROM required_column_names_in_src;\n\n-- emit the errors for the given session (file) so it can be picked up\nSELECT * FROM ingest_issue_tabular WHERE session_id = '1fa45300-5b92-4e83-bfec-6a706d0404c1';",
+    "status": 0,
+    "result": [
+      {
+        "ingest_issue_tabular_id": "2978026b-0fda-4262-b561-bc044506f484",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column PAT_MRN_ID is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"PAT_MRN_ID\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "1c924840-0d00-471b-9e44-89cf92728327",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column FACILITY is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"FACILITY\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "b1c4f6b5-8521-439f-9520-e3810c06c26c",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column FIRST_NAME is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"FIRST_NAME\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "40a8fa5a-8461-4bb2-b68d-66bdee3698ae",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column LAST_NAME is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"LAST_NAME\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "409b9f80-777e-4ab5-b76b-db2714ed60af",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column PAT_BIRTH_DATE is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"PAT_BIRTH_DATE\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "960f9eff-8446-43c0-bb51-0673b3801014",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column MEDICAID_CIN is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"MEDICAID_CIN\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "c1e4caf8-1783-47b4-9123-ef56c661062a",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column ENCOUNTER_ID is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"ENCOUNTER_ID\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "df6ce432-be47-42e7-a2f6-3f971a5bef14",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column SURVEY is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"SURVEY\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "34da6535-0f68-41f5-a08b-df356a46c1b1",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column SURVEY_ID is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"SURVEY_ID\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "57479769-963c-4df2-9da5-d85574f32c38",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column RECORDED_TIME is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"RECORDED_TIME\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "7ae54f82-e406-4102-a6d9-2de6889bf39e",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column QUESTION is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"QUESTION\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "dab5521d-15ea-46d7-a77b-7d5c528d6230",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column MEAS_VALUE is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"MEAS_VALUE\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "9c5cddea-2715-425a-8e20-8267f27e12ad",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column QUESTION_CODE is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"QUESTION_CODE\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "9b03368d-b35d-408b-b32a-3205ece9eb22",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column QUESTION_CODE_SYSTEM_NAME is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"QUESTION_CODE_SYSTEM_NAME\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "b6f19390-580f-46ee-9e93-27d542ecb256",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column ANSWER_CODE is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"ANSWER_CODE\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "c654178b-16f3-405d-85cd-bd7796fd1e65",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column ANSWER_CODE_SYSTEM_NAME is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"ANSWER_CODE_SYSTEM_NAME\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "8eab0b12-c0cf-45ec-b3c9-f1451d9de61a",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column SDOH_DOMAIN is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"SDOH_DOMAIN\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "65df93a7-1697-446b-954f-fcf467c11baf",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column NEED_INDICATED is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"NEED_INDICATED\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "08c6a65a-b7db-4c16-8174-47932c538eb1",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column VISIT_PART_2_FLAG is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"VISIT_PART_2_FLAG\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "04dbc52a-e5e3-4ad6-a818-baf8ea3606bc",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column VISIT_OMH_FLAG is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"VISIT_OMH_FLAG\"",
+        "elaboration": null
+      },
+      {
+        "ingest_issue_tabular_id": "5ee48c31-5e1d-4c69-8d01-78081cedc548",
+        "session_id": "1fa45300-5b92-4e83-bfec-6a706d0404c1",
+        "issue_type": "Missing Column",
+        "issue_message": "Required column VISIT_OPWDD_FLAG is missing in synthetic_fail2.",
+        "issue_row": null,
+        "issue_column": null,
+        "invalid_value": null,
+        "remediation": "Ensure synthetic_fail2 contains the column \"VISIT_OPWDD_FLAG\"",
+        "elaboration": null
+      }
+    ]
+  },
+  {
+    "cell": "structuralSQL",
+    "sql": "INSERT INTO ingest_session (ingest_session_id, ingest_src, ingest_table_name) \n                    VALUES ('6c221a37-e6ea-4729-aa9f-0ce1569886c6', '/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/ahc-hrsn-12-12-2023-valid.csv', 'ahc_hrsn_12_12_2023_valid');\n\nCREATE TABLE ahc_hrsn_12_12_2023_valid AS\n  SELECT *, row_number() OVER () as src_file_row_number, '6c221a37-e6ea-4729-aa9f-0ce1569886c6'\n    FROM read_csv_auto('/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/ahc-hrsn-12-12-2023-valid.csv', header=true);\n\nWITH required_column_names_in_src AS (\n    SELECT column_name\n      FROM (VALUES ('PAT_MRN_ID'), ('FACILITY'), ('FIRST_NAME'), ('LAST_NAME'), ('PAT_BIRTH_DATE'), ('MEDICAID_CIN'), ('ENCOUNTER_ID'), ('SURVEY'), ('SURVEY_ID'), ('RECORDED_TIME'), ('QUESTION'), ('MEAS_VALUE'), ('QUESTION_CODE'), ('QUESTION_CODE_SYSTEM_NAME'), ('ANSWER_CODE'), ('ANSWER_CODE_SYSTEM_NAME'), ('SDOH_DOMAIN'), ('NEED_INDICATED'), ('VISIT_PART_2_FLAG'), ('VISIT_OMH_FLAG'), ('VISIT_OPWDD_FLAG')) AS required(column_name)\n     WHERE required.column_name NOT IN (\n         SELECT upper(trim(column_name))\n           FROM information_schema.columns\n          WHERE table_name = 'ahc_hrsn_12_12_2023_valid')\n)\nINSERT INTO ingest_issue_tabular (ingest_issue_tabular_id, session_id, issue_type, issue_message, remediation)\n          SELECT uuid(),\n                 '6c221a37-e6ea-4729-aa9f-0ce1569886c6', \n                 'Missing Column',\n                 'Required column ' || column_name || ' is missing in ahc_hrsn_12_12_2023_valid.',\n                 'Ensure ahc_hrsn_12_12_2023_valid contains the column \"' || column_name || '\"'\n            FROM required_column_names_in_src;\n\n-- emit the errors for the given session (file) so it can be picked up\nSELECT * FROM ingest_issue_tabular WHERE session_id = '6c221a37-e6ea-4729-aa9f-0ce1569886c6';",
+    "status": 0,
+    "result": ""
+  },
+  {
+    "cell": "contentSQL",
+    "sql": "WITH numeric_value_in_all_rows AS (\n    SELECT 'SURVEY_ID' AS issue_column,\n           SURVEY_ID AS invalid_value,\n           src_file_row_number AS issue_row\n      FROM ahc_hrsn_12_12_2023_valid\n     WHERE SURVEY_ID IS NOT NULL\n       AND SURVEY_ID NOT SIMILAR TO '^[+-]?[0-9]+$'\n)\nINSERT INTO ingest_issue_tabular (ingest_issue_tabular_id, session_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)\n          SELECT uuid(),\n                 '6c221a37-e6ea-4729-aa9f-0ce1569886c6', \n                 'Data Type Mismatch',\n                 issue_row,\n                 issue_column,\n                 invalid_value,\n                 'Non-integer value \"' || invalid_value || '\" found in ' || issue_column,\n                 'Convert non-integer values to INTEGER'\n            FROM numeric_value_in_all_rows;",
+    "status": 0,
+    "result": ""
+  }
+]

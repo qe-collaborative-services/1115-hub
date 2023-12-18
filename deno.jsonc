@@ -1,0 +1,5 @@
+{
+    "tasks": {
+        "ingest": "./qcsctl.ts --ic-db ingested/ingestion-center.duckdb --src \"src/*.csv\" --diags-xlsx ingested/diagnostics.xlsx --diags-json ingested/diagnostics.json"
+    }
+}

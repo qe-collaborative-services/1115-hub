@@ -1,3 +1,5 @@
 {
-    "hediet.vscode-drawio.theme": "Kennedy"
+  "hediet.vscode-drawio.theme": "Kennedy",
+  "deno.enable": true,
+  "editor.formatOnSave": true
 }
