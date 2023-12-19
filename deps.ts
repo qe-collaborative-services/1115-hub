@@ -3,7 +3,7 @@ export * as path from "https://deno.land/std@0.209.0/path/mod.ts";
 export * as yaml from "https://deno.land/std@0.209.0/yaml/stringify.ts";
 
 export * as cliffy from "https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts";
-export * as dax from "https://deno.land/x/dax@0.30.1/mod.ts";
+export * as dax from "https://deno.land/x/dax@0.36.0/mod.ts";
 
 // local: ../../netspective-labs/sql-aide
 // remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.6

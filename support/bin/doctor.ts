@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import * as colors from "https://deno.land/std@0.190.0/fmt/colors.ts";
-import { build$, CommandBuilder } from "https://deno.land/x/dax@0.31.1/mod.ts";
+import * as colors from "https://deno.land/std@0.209.0/fmt/colors.ts";
+import { build$, CommandBuilder } from "https://deno.land/x/dax@0.36.0/mod.ts";
 
 const $ = build$({ commandBuilder: new CommandBuilder().noThrow() });
 
