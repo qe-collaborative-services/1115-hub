@@ -23,12 +23,18 @@
   Javascript runtime and put it in your `PATH`.
 - Download [DuckDB](https://duckdb.org/docs/installation) 0.9+ for ingestion
   operations and put it in your `PATH`.
-- Download [SQLite](https://www.sqlite.org/download.html) embedded database and
-  put it in your `PATH`
 
-All utilities mentioned above are cross-platform single-file binaries and will
+The utilities mentioned above are cross-platform single-file binaries and will
 run on Windows, MacOS, or Linux. Please be sure to get the proper binaries for
 your platform.
+
+## Development Tools
+
+- Download [Visual Studio Code](https://code.visualstudio.com/download) IDE and
+  use it for editing or viewing of CSV and other assets. VS Code is available
+  for all major OS platforms.
+- Download [SQLite](https://www.sqlite.org/download.html) embedded database and
+  put it in your `PATH`.
 
 ## Try out the code
 
@@ -40,6 +46,7 @@ code locally.
 $ git clone https://github.com/qe-collaborative-services/1115-hub
 $ cd 1115-hub
 $ deno task                 # list available tasks in `deno.jsonc`
+$ deno task doctor          # see if dependencies are installed properly
 $ deno task ingest          # run the ingestion task
 ```
 
