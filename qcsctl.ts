@@ -35,6 +35,10 @@ async function CLI() {
       "Excel file to store human-friendly diagnostics in",
     )
     .option("--diags-json <file:string>", "JSON file to store diagnostics in")
+    .option(
+      "--resource-db <file:string>",
+      "The resource SQLite database file name",
+    )
     .action(async (args) => {
       await i.IngestNotebook.run(args, govn);
     })

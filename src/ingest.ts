@@ -233,6 +233,7 @@ type IngestCellContext = chainNB.NotebookCellContext<
   IngestNotebook,
   IngestCell
 >;
+const inbDescr = new chainNB.NotebookDescriptor<IngestNotebook, IngestCell>();
 
 export class IngestNotebook {
   readonly diagnostics: {
@@ -249,28 +250,53 @@ export class IngestNotebook {
       readonly src: string[];
       readonly diagsJson?: string;
       readonly diagsXlsx?: string;
+      readonly resourceDb?: string;
     },
     readonly govn = new Governance(),
   ) {
+  }
+
+  @inbDescr.disregard()
+  async duckdb(sql: string, icc: IngestCellContext) {
+    const { args: { duckdbCmd, icDb } } = this;
+    const status = await dax.$`${duckdbCmd} ${icDb}`
+      .stdout("piped")
+      .stdinText(sql);
+    this.diagnostics.push({
+      cell: icc ? icc.current.nbCellID : "unknown",
+      sql,
+      status: status.code,
+    });
+    return status;
+  }
+
+  @inbDescr.disregard()
+  async duckdbResult(sql: string, icc: IngestCellContext) {
+    const { args: { duckdbCmd, icDb } } = this;
+    const status = await dax.$`${duckdbCmd} ${icDb} --json`
+      .stdout("piped")
+      .stdinText(sql);
+    const stdout = status.stdout;
+    this.diagnostics.push({
+      cell: icc ? icc.current.nbCellID : "unknown",
+      sql,
+      status: status.code,
+      result: stdout ? JSON.parse(stdout) : stdout,
+    });
+    return status;
   }
 
   async initDDL(icc: IngestCellContext) {
     const {
       govn,
       govn: { emitCtx: ctx, informationSchema: is },
-      args: { duckdbCmd, icDb },
     } = this;
-    const sql = govn.SQL`
-      ${is.tables}
-      ${is.tableIndexes}`.SQL(ctx);
-    const status = await dax.$`${duckdbCmd} ${icDb}`
-      .stdout("piped")
-      .stdinText(sql);
-    this.diagnostics.push({
-      cell: icc.current.nbCellID,
-      sql,
-      status: status.code,
-    });
+    const status = await this.duckdb(
+      govn.SQL`
+        ${is.tables}
+        ${is.tableIndexes}`.SQL(ctx),
+      icc,
+    );
     return status.code;
   }
 
@@ -285,9 +311,9 @@ export class IngestNotebook {
       return undefined;
     }
 
-    const { govn, govn: { emitCtx: ctx }, args: { duckdbCmd, icDb } } = this;
+    const { govn, govn: { emitCtx: ctx } } = this;
 
-    const csvStructure = (fsPath: string, tableName: string) => {
+    const ensureStruct = (fsPath: string, tableName: string) => {
       const sessionID = crypto.randomUUID();
       const ar = new AssuranceRules(sessionID, govn);
 
@@ -334,18 +360,9 @@ export class IngestNotebook {
         if (patterns.some((pattern) => pattern.test(relativePath))) {
           try {
             const tableName = govn.walkEntryToTableName(entry);
-            const checkStruct = csvStructure(entry.path, tableName);
-            const status = await dax.$`${duckdbCmd} ${icDb} --json`
-              .stdout("piped")
-              .stdinText(checkStruct.sql);
-            const stdout = status.stdout;
-            this.diagnostics.push({
-              cell: icc.current.nbCellID,
-              sql: checkStruct.sql,
-              status: status.code,
-              result: stdout ? JSON.parse(stdout) : stdout,
-            });
-            if (!stdout) {
+            const checkStruct = ensureStruct(entry.path, tableName);
+            const status = await this.duckdbResult(checkStruct.sql, icc);
+            if (!status.stdout) {
               result.push({ sessionID: checkStruct.sessionID, tableName });
             }
           } catch (err) {
@@ -371,9 +388,9 @@ export class IngestNotebook {
       return;
     }
 
-    const { govn, govn: { emitCtx: ctx }, args: { duckdbCmd, icDb } } = this;
+    const { govn, govn: { emitCtx: ctx } } = this;
 
-    const csvContent = (sessionID: string, tableName: string) => {
+    const ensureContent = (sessionID: string, tableName: string) => {
       const ar = new AssuranceRules(sessionID, govn);
       // deno-fmt-ignore
       const code = govn.SQL`
@@ -382,38 +399,59 @@ export class IngestNotebook {
       return { sessionID, code, sql: code.SQL(ctx) };
     };
 
-    for (const entry of structResult) {
-      try {
-        const checkContent = csvContent(entry.sessionID, entry.tableName);
-        const status = await dax.$`${duckdbCmd} ${icDb}`
-          .stdout("piped")
-          .stdinText(checkContent.sql);
-        const stdout = status.stdout;
-        this.diagnostics.push({
-          cell: icc.current.nbCellID,
-          sql: checkContent.sql,
-          status: status.code,
-          result: stdout ? JSON.parse(stdout) : stdout,
-        });
-      } catch (err) {
-        console.dir(err);
-      }
-    }
-
+    await this.duckdb(
+      structResult.map((sr) => ensureContent(sr.sessionID, sr.tableName).sql)
+        .join("\n"),
+      icc,
+    );
     return structResult;
   }
 
-  async emitDiagnostics() {
-    const { args: { duckdbCmd, icDb, diagsXlsx, diagsJson } } = this;
+  async emitResources(
+    icc: IngestCellContext,
+    contentResult:
+      | Error
+      | Awaited<ReturnType<typeof IngestNotebook.prototype.contentSQL>>,
+  ) {
+    const { args: { diagsXlsx, diagsJson, resourceDb } } = this;
     if (diagsXlsx) {
-      await dax.$`${duckdbCmd} ${icDb}`
-        .stdout("piped")
-        .stdinText(`
-          INSTALL spatial; -- Only needed once per DuckDB connection
-          LOAD spatial; -- Only needed once per DuckDB connection
-          -- TODO: join with ingest_session table to give all the results in one sheet
-          COPY (SELECT * FROM ingest_issue_tabular) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');
-        `);
+      // if Excel workbook already exists, GDAL xlsx driver will error
+      try {
+        Deno.removeSync(diagsXlsx);
+      } catch (_err) {
+        // ignore errors if file does not exist
+      }
+
+      // deno-fmt-ignore
+      await this.duckdb(`
+        INSTALL spatial; -- Only needed once per DuckDB connection
+        LOAD spatial; -- Only needed once per DuckDB connection
+        -- TODO: join with ingest_session table to give all the results in one sheet
+        COPY (SELECT * FROM ingest_issue_tabular) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`,
+        icc,
+      );
+    }
+
+    if (resourceDb && Array.isArray(contentResult)) {
+      try {
+        Deno.removeSync(resourceDb);
+      } catch (_err) {
+        // ignore errors if file does not exist
+      }
+
+      // deno-fmt-ignore
+      await this.duckdb(`
+        ATTACH '${resourceDb}' AS resource_db (TYPE SQLITE);
+
+        CREATE TABLE resource_db.ingest_session AS 
+            SELECT * FROM ingest_session;
+
+        CREATE TABLE resource_db.ingest_issue_tabular AS 
+            SELECT * FROM ingest_issue_tabular;
+
+        ${contentResult.map(cr => `CREATE TABLE resource_db.${cr.tableName} AS SELECT * FROM ${cr.tableName};`)}
+
+        DETACH DATABASE resource_db;`, icc);
     }
 
     if (diagsJson) {
@@ -428,7 +466,10 @@ export class IngestNotebook {
     args: ConstructorParameters<typeof IngestNotebook>[0],
     govn = new Governance(),
   ) {
-    const kernel = chainNB.ObservableKernel.create(IngestNotebook.prototype);
+    const kernel = chainNB.ObservableKernel.create(
+      IngestNotebook.prototype,
+      inbDescr,
+    );
     if (!kernel.isValid() || kernel.lintResults.length > 0) {
       const pe = await import("npm:plantuml-encoder");
       const diagram = kernel.introspectedNB.dagOps.diagram(
@@ -440,7 +481,6 @@ export class IngestNotebook {
 
     try {
       Deno.removeSync(args.icDb);
-      if (args.diagsXlsx) Deno.removeSync(args.diagsXlsx);
     } catch (_err) {
       // ignore errors if file does not exist
     }
