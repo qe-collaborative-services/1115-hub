@@ -245,13 +245,13 @@ export class IngestSqlNotebook {
   }
 
   /**
-   * Prepare the SQL which will prepare the DuckDB table and ingest a CSV file.
-   * Also supplies the SQL that will ensure that the structure of the table,
-   * such as required columns, matches our expections. This SQL should be kept
+   * Prepare SQL which will prepare the DuckDB table and ingest a CSV file.
+   * Also supplies SQL that will ensure that the structure of the table, such
+   * as required columns, matches our expections. This SQL should be kept
    * minimal and only focus on assurance of structure not content.
    * @param fsPath the file system path of the CSV source
    * @param tableName the name of the table which will hold the CSV content
-   * @returns SQLa.SqlTextSupplier<EmitContext> instance
+   * @returns SQLa.SqlTextSupplier<EmitContext> instance with sessionID
    */
   ensureStructCode(fsPath: string, tableName: string) {
     const { govn } = this;
@@ -284,7 +284,7 @@ export class IngestSqlNotebook {
         'ANSWER_CODE_SYSTEM_NAME', 'SDOH_DOMAIN', 'NEED_INDICATED',
         'VISIT_PART_2_FLAG', 'VISIT_OMH_FLAG', 'VISIT_OPWDD_FLAG'])}`;
 
-    return { sessionID, code };
+    return { ...code, sessionID };
   }
 
   /**
@@ -294,7 +294,7 @@ export class IngestSqlNotebook {
    * the structure doesn't match our expectations.
    * @param sessionID a unique identifier for the assurance session
    * @param tableName the name of the table which holds the CSV content
-   * @returns SQLa.SqlTextSupplier<EmitContext> instance
+   * @returns SQLa.SqlTextSupplier<EmitContext> instance with sessionID
    */
   ensureContentCode(sessionID: string, tableName: string) {
     const { govn } = this;
@@ -304,7 +304,7 @@ export class IngestSqlNotebook {
     const code = govn.SQL`
       ${ar.intValueInAllTableRows(tableName, 'SURVEY_ID')}`;
 
-    return { sessionID, code };
+    return { sessionID, ...code };
   }
 }
 
@@ -418,7 +418,7 @@ export class IngestEngine {
 
             // run the SQL and then emit the errors to STDOUT in JSON
             const status = await this.duckdbResult(
-              checkStruct.code.SQL(ctx) + `
+              checkStruct.SQL(ctx) + `
               -- emit the errors for the given session (file) so it can be picked up
               SELECT * FROM ${ist.tableName} WHERE ${ist.columns.session_id.columnName} = '${checkStruct.sessionID}';`,
               icc,
@@ -456,7 +456,7 @@ export class IngestEngine {
     const { isn, govn: { emitCtx: ctx } } = this;
     await this.duckdb(
       structResult.map((sr) =>
-        isn.ensureContentCode(sr.sessionID, sr.tableName).code.SQL(ctx)
+        isn.ensureContentCode(sr.sessionID, sr.tableName).SQL(ctx)
       ).join("\n"),
       icc,
     );
