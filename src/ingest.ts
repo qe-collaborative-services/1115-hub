@@ -351,13 +351,13 @@ export class IngestEngine {
   }
 
   @ieDescr.disregard()
-  async duckdb(sql: string, icc: IngestStepContext) {
+  async duckdb(sql: string, isc: IngestStepContext) {
     const { args: { duckdbCmd, icDb } } = this;
     const status = await dax.$`${duckdbCmd} ${icDb}`
       .stdout("piped")
       .stdinText(sql);
     this.diagnostics.push({
-      cell: icc ? icc.current.nbCellID : "unknown",
+      cell: isc ? isc.current.nbCellID : "unknown",
       sql,
       status: status.code,
     });
@@ -365,14 +365,14 @@ export class IngestEngine {
   }
 
   @ieDescr.disregard()
-  async duckdbResult(sql: string, icc: IngestStepContext) {
+  async duckdbResult(sql: string, isc: IngestStepContext) {
     const { args: { duckdbCmd, icDb } } = this;
     const status = await dax.$`${duckdbCmd} ${icDb} --json`
       .stdout("piped")
       .stdinText(sql);
     const stdout = status.stdout;
     this.diagnostics.push({
-      cell: icc ? icc.current.nbCellID : "unknown",
+      cell: isc ? isc.current.nbCellID : "unknown",
       sql,
       status: status.code,
       result: stdout ? JSON.parse(stdout) : stdout,
@@ -380,22 +380,22 @@ export class IngestEngine {
     return status;
   }
 
-  async initDDL(icc: IngestStepContext) {
+  async initDDL(isc: IngestStepContext) {
     const status = await this.duckdb(
       this.isn.initDDL().SQL(this.govn.emitCtx),
-      icc,
+      isc,
     );
     return status.code;
   }
 
   async structuralSQL(
-    icc: IngestStepContext,
+    isc: IngestStepContext,
     initResult:
       | Error
       | Awaited<ReturnType<typeof IngestEngine.prototype.initDDL>>,
   ) {
     if (initResult != 0) {
-      console.error(`${icc.previous?.current.nbCellID} did not return zero`);
+      console.error(`${isc.previous?.current.nbCellID} did not return zero`);
       return undefined;
     }
 
@@ -421,7 +421,7 @@ export class IngestEngine {
               checkStruct.SQL(ctx) + `
               -- emit the errors for the given session (file) so it can be picked up
               SELECT * FROM ${ist.tableName} WHERE ${ist.columns.session_id.columnName} = '${checkStruct.sessionID}';`,
-              icc,
+              isc,
             );
 
             // if there were no errors, then add it to our list of CSV tables
@@ -441,14 +441,14 @@ export class IngestEngine {
   }
 
   async contentSQL(
-    icc: IngestStepContext,
+    isc: IngestStepContext,
     structResult:
       | Error
       | Awaited<ReturnType<typeof IngestEngine.prototype.structuralSQL>>,
   ) {
     if (!Array.isArray(structResult)) {
       console.error(
-        `${icc.previous?.current.nbCellID} did not return any structurally valid tables`,
+        `${isc.previous?.current.nbCellID} did not return any structurally valid tables`,
       );
       return;
     }
@@ -458,13 +458,13 @@ export class IngestEngine {
       structResult.map((sr) =>
         isn.ensureContentCode(sr.sessionID, sr.tableName).SQL(ctx)
       ).join("\n"),
-      icc,
+      isc,
     );
     return structResult;
   }
 
   async emitResources(
-    icc: IngestStepContext,
+    isc: IngestStepContext,
     contentResult:
       | Error
       | Awaited<ReturnType<typeof IngestEngine.prototype.contentSQL>>,
@@ -484,7 +484,7 @@ export class IngestEngine {
         LOAD spatial; -- Only needed once per DuckDB connection
         -- TODO: join with ingest_session table to give all the results in one sheet
         COPY (SELECT * FROM ingest_issue_tabular) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`,
-        icc,
+        isc,
       );
     }
 
@@ -507,7 +507,7 @@ export class IngestEngine {
 
         ${contentResult.map(cr => `CREATE TABLE resource_db.${cr.tableName} AS SELECT * FROM ${cr.tableName};`)}
 
-        DETACH DATABASE resource_db;`, icc);
+        DETACH DATABASE resource_db;`, isc);
     }
 
     if (diagsJson) {
