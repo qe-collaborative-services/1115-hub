@@ -223,19 +223,113 @@ export class AssuranceRules extends SQLa_ddb.AssuranceRules<EmitContext> {
   }
 }
 
-// the following types are for convenience and type-safety allowing introspection
-// of the notebook cells
-type IngestCell = chainNB.NotebookCell<
-  IngestNotebook,
-  chainNB.NotebookCellID<IngestNotebook>
->;
-type IngestCellContext = chainNB.NotebookCellContext<
-  IngestNotebook,
-  IngestCell
->;
-const inbDescr = new chainNB.NotebookDescriptor<IngestNotebook, IngestCell>();
+/**
+ * Responsible for preparing SQL that will be executed by other classes. The
+ * methods in this class are stateless and generate deterministic SQL.
+ */
+export class IngestSqlNotebook {
+  constructor(
+    readonly govn = new Governance(),
+  ) {
+  }
 
-export class IngestNotebook {
+  /**
+   * Prepare the SQL which will construct tables, indexes, and other SQL DDL.
+   * @returns SQLa.SqlTextSupplier instance
+   */
+  initDDL() {
+    const { govn, govn: { informationSchema: is } } = this;
+    return govn.SQL`
+      ${is.tables}
+      ${is.tableIndexes}`;
+  }
+
+  /**
+   * Prepare the SQL which will prepare the DuckDB table and ingest a CSV file.
+   * Also supplies the SQL that will ensure that the structure of the table,
+   * such as required columns, matches our expections. This SQL should be kept
+   * minimal and only focus on assurance of structure not content.
+   * @param fsPath the file system path of the CSV source
+   * @param tableName the name of the table which will hold the CSV content
+   * @returns SQLa.SqlTextSupplier<EmitContext> instance
+   */
+  ensureStructCode(fsPath: string, tableName: string) {
+    const { govn } = this;
+
+    // TODO: to support unit testing, crypto.randomUUID should be replaced
+    // by a deterministic UUID so that fixture comparisons are possible.
+    const sessionID = crypto.randomUUID();
+    const ar = new AssuranceRules(sessionID, govn);
+
+    // deno-fmt-ignore
+    const code = govn.SQL`
+      INSERT INTO ingest_session (ingest_session_id, ingest_src, ingest_table_name) 
+                          VALUES ('${sessionID}', '${fsPath}', '${tableName}');
+      
+      ${SQLa_ddb.csvTableIntegration({
+        csvSrcFsPath: () => fsPath, 
+        tableName,
+        extraColumnsSql: [
+          "row_number() OVER () as src_file_row_number",
+          `'${sessionID}'`,
+        ]
+      })}
+
+      ${ar.requiredColumnNamesInTable(tableName,
+        ['PAT_MRN_ID', 'FACILITY', 'FIRST_NAME',
+        'LAST_NAME', 'PAT_BIRTH_DATE', 'MEDICAID_CIN',
+        'ENCOUNTER_ID', 'SURVEY', 'SURVEY_ID',
+        'RECORDED_TIME', 'QUESTION', 'MEAS_VALUE',
+        'QUESTION_CODE', 'QUESTION_CODE_SYSTEM_NAME', 'ANSWER_CODE',
+        'ANSWER_CODE_SYSTEM_NAME', 'SDOH_DOMAIN', 'NEED_INDICATED',
+        'VISIT_PART_2_FLAG', 'VISIT_OMH_FLAG', 'VISIT_OPWDD_FLAG'])}`;
+
+    return { sessionID, code };
+  }
+
+  /**
+   * Prepare the SQL that will ensure the content of a table matches our
+   * expectations. We separate the content SQL from the structural SQL since
+   * content SQL assumes specific column names which will be syntax errors if
+   * the structure doesn't match our expectations.
+   * @param sessionID a unique identifier for the assurance session
+   * @param tableName the name of the table which holds the CSV content
+   * @returns SQLa.SqlTextSupplier<EmitContext> instance
+   */
+  ensureContentCode(sessionID: string, tableName: string) {
+    const { govn } = this;
+
+    const ar = new AssuranceRules(sessionID, govn);
+    // deno-fmt-ignore
+    const code = govn.SQL`
+      ${ar.intValueInAllTableRows(tableName, 'SURVEY_ID')}`;
+
+    return { sessionID, code };
+  }
+}
+
+type IngestStep = chainNB.NotebookCell<
+  IngestEngine,
+  chainNB.NotebookCellID<IngestEngine>
+>;
+type IngestStepContext = chainNB.NotebookCellContext<
+  IngestEngine,
+  IngestStep
+>;
+const ieDescr = new chainNB.NotebookDescriptor<IngestEngine, IngestStep>();
+
+/**
+ * Use IngestSqlNotebook to prepare SQL for ingestion steps and execute them
+ * using DuckDB CLI engine. Each method that does not have a @ieDescr.disregard()
+ * attribute is considered a "step" and each step is executed in the order it is
+ * declared. As each step is executed, its error or results are passed to the
+ * next method.
+ *
+ * This class is introspected and run using SQLa's Notebook infrastructure.
+ * See: https://github.com/netspective-labs/sql-aide/tree/main/lib/notebook
+ */
+export class IngestEngine {
+  readonly isn = new IngestSqlNotebook();
   readonly diagnostics: {
     cell: string;
     sql: string;
@@ -256,8 +350,8 @@ export class IngestNotebook {
   ) {
   }
 
-  @inbDescr.disregard()
-  async duckdb(sql: string, icc: IngestCellContext) {
+  @ieDescr.disregard()
+  async duckdb(sql: string, icc: IngestStepContext) {
     const { args: { duckdbCmd, icDb } } = this;
     const status = await dax.$`${duckdbCmd} ${icDb}`
       .stdout("piped")
@@ -270,8 +364,8 @@ export class IngestNotebook {
     return status;
   }
 
-  @inbDescr.disregard()
-  async duckdbResult(sql: string, icc: IngestCellContext) {
+  @ieDescr.disregard()
+  async duckdbResult(sql: string, icc: IngestStepContext) {
     const { args: { duckdbCmd, icDb } } = this;
     const status = await dax.$`${duckdbCmd} ${icDb} --json`
       .stdout("piped")
@@ -286,66 +380,26 @@ export class IngestNotebook {
     return status;
   }
 
-  async initDDL(icc: IngestCellContext) {
-    const {
-      govn,
-      govn: { emitCtx: ctx, informationSchema: is },
-    } = this;
+  async initDDL(icc: IngestStepContext) {
     const status = await this.duckdb(
-      govn.SQL`
-        ${is.tables}
-        ${is.tableIndexes}`.SQL(ctx),
+      this.isn.initDDL().SQL(this.govn.emitCtx),
       icc,
     );
     return status.code;
   }
 
   async structuralSQL(
-    icc: IngestCellContext,
+    icc: IngestStepContext,
     initResult:
       | Error
-      | Awaited<ReturnType<typeof IngestNotebook.prototype.initDDL>>,
+      | Awaited<ReturnType<typeof IngestEngine.prototype.initDDL>>,
   ) {
     if (initResult != 0) {
       console.error(`${icc.previous?.current.nbCellID} did not return zero`);
       return undefined;
     }
 
-    const { govn, govn: { emitCtx: ctx } } = this;
-
-    const ensureStruct = (fsPath: string, tableName: string) => {
-      const sessionID = crypto.randomUUID();
-      const ar = new AssuranceRules(sessionID, govn);
-
-      // deno-fmt-ignore
-      const code = govn.SQL`
-        INSERT INTO ingest_session (ingest_session_id, ingest_src, ingest_table_name) 
-                            VALUES ('${sessionID}', '${fsPath}', '${tableName}');
-        
-        ${SQLa_ddb.csvTableIntegration({
-          csvSrcFsPath: () => fsPath, 
-          tableName,
-          extraColumnsSql: [
-            "row_number() OVER () as src_file_row_number",
-            `'${sessionID}'`,
-          ]
-        })}
-
-        ${ar.requiredColumnNamesInTable(tableName,
-          ['PAT_MRN_ID', 'FACILITY', 'FIRST_NAME',
-          'LAST_NAME', 'PAT_BIRTH_DATE', 'MEDICAID_CIN',
-          'ENCOUNTER_ID', 'SURVEY', 'SURVEY_ID',
-          'RECORDED_TIME', 'QUESTION', 'MEAS_VALUE',
-          'QUESTION_CODE', 'QUESTION_CODE_SYSTEM_NAME', 'ANSWER_CODE',
-          'ANSWER_CODE_SYSTEM_NAME', 'SDOH_DOMAIN', 'NEED_INDICATED',
-          'VISIT_PART_2_FLAG', 'VISIT_OMH_FLAG', 'VISIT_OPWDD_FLAG'])}
-        
-        -- emit the errors for the given session (file) so it can be picked up
-        SELECT * FROM ${govn.ingestIssueTabular.tableName} WHERE ${govn.ingestIssueTabular.columns.session_id.columnName} = '${sessionID}';`;
-
-      return { sessionID, code, sql: code.SQL(ctx) };
-    };
-
+    const { isn, govn, govn: { emitCtx: ctx, ingestIssueTabular: ist } } = this;
     const result: { sessionID: string; tableName: string }[] = [];
 
     // Convert each glob pattern to a RegExp
@@ -360,8 +414,19 @@ export class IngestNotebook {
         if (patterns.some((pattern) => pattern.test(relativePath))) {
           try {
             const tableName = govn.walkEntryToTableName(entry);
-            const checkStruct = ensureStruct(entry.path, tableName);
-            const status = await this.duckdbResult(checkStruct.sql, icc);
+            const checkStruct = isn.ensureStructCode(entry.path, tableName);
+
+            // run the SQL and then emit the errors to STDOUT in JSON
+            const status = await this.duckdbResult(
+              checkStruct.code.SQL(ctx) + `
+              -- emit the errors for the given session (file) so it can be picked up
+              SELECT * FROM ${ist.tableName} WHERE ${ist.columns.session_id.columnName} = '${checkStruct.sessionID}';`,
+              icc,
+            );
+
+            // if there were no errors, then add it to our list of CSV tables
+            // whose content will be tested; if the structural validation fails
+            // then no content checks will be performed.
             if (!status.stdout) {
               result.push({ sessionID: checkStruct.sessionID, tableName });
             }
@@ -376,10 +441,10 @@ export class IngestNotebook {
   }
 
   async contentSQL(
-    icc: IngestCellContext,
+    icc: IngestStepContext,
     structResult:
       | Error
-      | Awaited<ReturnType<typeof IngestNotebook.prototype.structuralSQL>>,
+      | Awaited<ReturnType<typeof IngestEngine.prototype.structuralSQL>>,
   ) {
     if (!Array.isArray(structResult)) {
       console.error(
@@ -388,30 +453,21 @@ export class IngestNotebook {
       return;
     }
 
-    const { govn, govn: { emitCtx: ctx } } = this;
-
-    const ensureContent = (sessionID: string, tableName: string) => {
-      const ar = new AssuranceRules(sessionID, govn);
-      // deno-fmt-ignore
-      const code = govn.SQL`
-        ${ar.intValueInAllTableRows(tableName, 'SURVEY_ID')}`;
-
-      return { sessionID, code, sql: code.SQL(ctx) };
-    };
-
+    const { isn, govn: { emitCtx: ctx } } = this;
     await this.duckdb(
-      structResult.map((sr) => ensureContent(sr.sessionID, sr.tableName).sql)
-        .join("\n"),
+      structResult.map((sr) =>
+        isn.ensureContentCode(sr.sessionID, sr.tableName).code.SQL(ctx)
+      ).join("\n"),
       icc,
     );
     return structResult;
   }
 
   async emitResources(
-    icc: IngestCellContext,
+    icc: IngestStepContext,
     contentResult:
       | Error
-      | Awaited<ReturnType<typeof IngestNotebook.prototype.contentSQL>>,
+      | Awaited<ReturnType<typeof IngestEngine.prototype.contentSQL>>,
   ) {
     const { args: { diagsXlsx, diagsJson, resourceDb } } = this;
     if (diagsXlsx) {
@@ -463,14 +519,16 @@ export class IngestNotebook {
   }
 
   static async run(
-    args: ConstructorParameters<typeof IngestNotebook>[0],
+    args: ConstructorParameters<typeof IngestEngine>[0],
     govn = new Governance(),
   ) {
     const kernel = chainNB.ObservableKernel.create(
-      IngestNotebook.prototype,
-      inbDescr,
+      IngestEngine.prototype,
+      ieDescr,
     );
     if (!kernel.isValid() || kernel.lintResults.length > 0) {
+      // In case the ingestion engine created circular or other invalid states
+      // show the state diagram as a PlantUML URL to visualize the error(s).
       const pe = await import("npm:plantuml-encoder");
       const diagram = kernel.introspectedNB.dagOps.diagram(
         kernel.introspectedNB.graph,
@@ -480,11 +538,12 @@ export class IngestNotebook {
     }
 
     try {
+      // TODO: make this removal optional?
       Deno.removeSync(args.icDb);
     } catch (_err) {
       // ignore errors if file does not exist
     }
-    const workflow = new IngestNotebook(args, govn);
+    const workflow = new IngestEngine(args, govn);
     await kernel.run(workflow, await kernel.initRunState());
   }
 }

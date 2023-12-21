@@ -40,7 +40,7 @@ async function CLI() {
       "The resource SQLite database file name",
     )
     .action(async (args) => {
-      await i.IngestNotebook.run(args, govn);
+      await i.IngestEngine.run(args, govn);
     })
     .command("help", new cliffy.HelpCommand().global())
     .command("completions", new cliffy.CompletionsCommand())
