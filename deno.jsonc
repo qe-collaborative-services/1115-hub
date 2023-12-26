@@ -1,6 +1,6 @@
 {
   "tasks": {
     "doctor": "deno run -A ./support/bin/doctor.ts",
-    "ingest": "deno run -A ./qcsctl.ts --ic-db ingested/ingestion-center.duckdb --resource-db ingested/resource.sqlite.db --src \"src/**/*.csv\" --diags-xlsx ingested/diagnostics.xlsx --diags-json ingested/diagnostics.json"
+    "test-e2e": "deno run -A ./qcsctl.ts --ic-deterministic-pk --ic-db support/assurance/results-e2e/ingestion-center.duckdb --resource-db support/assurance/results-e2e/resource.sqlite.db --src \"src/**/*.csv\" --diags-xlsx support/assurance/results-e2e/diagnostics.xlsx --diags-md support/assurance/results-e2e/diagnostics.md --diags-dag-puml support/assurance/results-e2e/dag.puml"
   }
 }

@@ -47,7 +47,7 @@ $ git clone https://github.com/qe-collaborative-services/1115-hub
 $ cd 1115-hub
 $ deno task                 # list available tasks in `deno.jsonc`
 $ deno task doctor          # see if dependencies are installed properly
-$ deno task ingest          # run the ingestion task
+$ deno task test-e2e        # run the ingestion tasks as end-to-end test
 ```
 
 ## Architecture and Approach

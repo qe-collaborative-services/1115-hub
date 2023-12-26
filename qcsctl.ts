@@ -17,6 +17,11 @@ async function CLI() {
       { required: true, default: "ingestion-center.duckdb" },
     )
     .option(
+      "--ic-deterministic-pk",
+      "Whether ingestion center (IC) deterministic primary keys should be used (for testing)",
+      { required: true, default: false },
+    )
+    .option(
       "--duckdb-cmd <file:string>",
       "The DuckDB CLI command to use for orchestration",
       { required: true, default: "duckdb" },
@@ -35,6 +40,8 @@ async function CLI() {
       "Excel file to store human-friendly diagnostics in",
     )
     .option("--diags-json <file:string>", "JSON file to store diagnostics in")
+    .option("--diags-md <file:string>", "Markdown file to store diagnostics in")
+    .option("--diags-dag-puml <file:string>", "Emit DAG PlantUML diagram")
     .option(
       "--resource-db <file:string>",
       "The resource SQLite database file name",
