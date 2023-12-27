@@ -50,6 +50,19 @@ export class EmitContext implements SQLa.SqlEmitContext {
     return crypto.randomUUID();
   }
 
+  /**
+   * Compute the current timestamp and prepare DuckDB SQL
+   * @returns SQL supplier of the Javascript runtime's current time
+   */
+  get newCurrentTimestamp(): SQLa.SqlTextSupplier<EmitContext> {
+    return {
+      SQL: () => {
+        const now = new Date();
+        return `make_timestamp(${now.getFullYear()}, ${now.getMonth()}, ${now.getDay()}, ${now.getHours()}, ${now.getMinutes()}, ${`${now.getSeconds()}.${now.getMilliseconds()}`})`;
+      },
+    };
+  }
+
   // UUID generator when the value is needed by the SQLite engine runtime
   get sqlEngineNewUUID(): SQLa.SqlTextSupplier<EmitContext> {
     return { SQL: () => `uuid()` };
@@ -168,16 +181,6 @@ export class Governance {
         `any elaboration needed for the state transition`;
     },
   });
-  readonly ingestSessionStateCRF = SQLa.tableColumnsRowFactory(
-    this.ingestSessionState.tableName,
-    this.ingestSessionState.zoSchema.shape,
-  );
-
-  ingestSessionStatesInsertDML() {
-    const buffer: ReturnType<typeof this.ingestSessionStateCRF.insertDML>[] =
-      [];
-    return buffer;
-  }
 
   readonly ingestSessionIssue = SQLa.tableDefinition(
     "ingest_session_issue",
@@ -239,6 +242,37 @@ export class Governance {
     ],
   };
 
+  readonly ingestSessionCRF = SQLa.tableColumnsRowFactory<
+    typeof this.ingestSession.tableName,
+    typeof this.ingestSession.zoSchema.shape,
+    EmitContext,
+    DomainQS,
+    DomainsQS
+  >(
+    this.ingestSession.tableName,
+    this.ingestSession.zoSchema.shape,
+  );
+  readonly ingestSessionEntryCRF = SQLa.tableColumnsRowFactory<
+    typeof this.ingestSessionEntry.tableName,
+    typeof this.ingestSessionEntry.zoSchema.shape,
+    EmitContext,
+    DomainQS,
+    DomainsQS
+  >(
+    this.ingestSessionEntry.tableName,
+    this.ingestSessionEntry.zoSchema.shape,
+  );
+  readonly ingestSessionStateCRF = SQLa.tableColumnsRowFactory<
+    typeof this.ingestSessionState.tableName,
+    typeof this.ingestSessionState.zoSchema.shape,
+    EmitContext,
+    DomainQS,
+    DomainsQS
+  >(
+    this.ingestSessionState.tableName,
+    this.ingestSessionState.zoSchema.shape,
+  );
+
   constructor(readonly deterministicPKs: boolean) {
   }
 
@@ -292,9 +326,7 @@ export class Governance {
     const sessionID = await this.emitCtx.newUUID(this.deterministicPKs);
     return {
       sessionID,
-      SQL: () => {
-        return `INSERT INTO ingest_session (ingest_session_id) VALUES ('${sessionID}')`;
-      },
+      ...this.ingestSessionCRF.insertDML({ ingest_session_id: sessionID }),
     };
   }
 
@@ -413,8 +445,12 @@ export class IngestSqlNotebook {
 
     // deno-fmt-ignore
     const code = govn.SQL`
-      INSERT INTO ingest_session_entry (ingest_session_entry_id, session_id, ingest_src, ingest_table_name) 
-                                VALUES ('${sessionEntryID}', '${sessionID}', '${fsPath}', '${tableName}');
+      ${govn.ingestSessionEntryCRF.insertDML({
+        ingest_session_entry_id: sessionEntryID,
+        session_id: sessionID,
+        ingest_src: fsPath,
+        ingest_table_name: tableName,
+      })}
       
       ${SQLa_ddb.csvTableIntegration({
         csvSrcFsPath: () => fsPath, 
@@ -510,21 +546,6 @@ export class IngestEngine {
     },
     readonly govn: Governance,
   ) {
-  }
-
-  @ieDescr.disregard()
-  async registerStateChange(fromState: string, toState: string) {
-    this.emitWithResourcesSQL.push(
-      this.govn.ingestSessionStateCRF.insertDML({
-        ingest_session_state_id: await this.govn.emitCtx.newUUID(
-          this.govn.deterministicPKs,
-        ),
-        session_id: this.isn.sessionDML.sessionID,
-        from_state: fromState,
-        to_state: toState,
-        // TODO: add transition date/time, results, elaboration, etc.
-      }),
-    );
   }
 
   @ieDescr.disregard()
@@ -830,27 +851,49 @@ export class IngestEngine {
     );
     const initRunState = await kernel.initRunState();
     const { runState: { eventEmitter: rsEE } } = initRunState;
+
+    const registerStateChange = async (
+      fromState: string,
+      toState: string,
+      elaboration?: string,
+    ) => {
+      workflow.emitWithResourcesSQL.push(
+        govn.ingestSessionStateCRF.insertDML({
+          ingest_session_state_id: await govn.emitCtx.newUUID(
+            govn.deterministicPKs,
+          ),
+          session_id: workflow.isn.sessionDML.sessionID,
+          from_state: fromState,
+          to_state: toState,
+          transitioned_at: govn.emitCtx.newCurrentTimestamp,
+          elaboration,
+        }),
+      );
+    };
+
     rsEE.initNotebook = (_ctx) => {
-      workflow.registerStateChange("NONE", "INIT");
+      registerStateChange("NONE", "INIT");
     };
     rsEE.beforeCell = (cell, ctx) => {
-      workflow.registerStateChange(
+      registerStateChange(
         ctx.previous ? `EXIT(${ctx.previous.current.nbCellID})` : "INIT",
         `ENTER(${cell})`,
       );
     };
     rsEE.afterInterrupt = (cell, _ctx) => {
-      workflow.registerStateChange(`ENTER(${cell})`, `INTERRUPTED(${cell})`);
+      registerStateChange(`ENTER(${cell})`, `INTERRUPTED(${cell})`);
     };
     rsEE.afterError = (cell, _error, _ctx) => {
-      workflow.registerStateChange(`ENTER(${cell})`, `ERROR(${cell})`);
+      registerStateChange(`ENTER(${cell})`, `ERROR(${cell})`);
     };
     rsEE.afterCell = (cell, _result, _ctx) => {
-      workflow.registerStateChange(`ENTER(${cell})`, `EXIT(${cell})`);
+      registerStateChange(`ENTER(${cell})`, `EXIT(${cell})`);
     };
     rsEE.finalizeNotebook = (_ctx) => {
       // TODO: add final state change?
     };
+
+    // now that everything is setup, execute
     await kernel.run(workflow, initRunState);
   }
 }
