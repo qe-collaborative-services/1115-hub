@@ -501,6 +501,81 @@ export class IngestSqlNotebook {
   }
 }
 
+export class DuckDbCLI {
+  readonly diagnostics: {
+    cell: string;
+    cellIndex?: number;
+    sql: string;
+    status: number;
+    result?: Any;
+    markdown: string;
+  }[] = [];
+  constructor(
+    readonly args: {
+      readonly duckdbCmd: string;
+      readonly icDb: string;
+    },
+  ) {
+  }
+
+  sqlMarkdownPartial(
+    sql: string,
+    status: dax.CommandResult,
+    stdoutFmt?: (stdout: string) => { fmt: string; content: string },
+  ) {
+    const markdown: string[] = [`\`\`\`sql\n${sql}\n\`\`\`\n`];
+    if (status.stdout) {
+      markdown.push("### stdout");
+      const stdout = stdoutFmt?.(status.stdout) ??
+        ({ fmt: "sh", content: status.stdout });
+      markdown.push(
+        `\`\`\`${stdout.fmt}\n${stdout.content}\n\`\`\``,
+      );
+    }
+    if (status.stderr) {
+      markdown.push("### stderr");
+      markdown.push(`\`\`\`sh\n${status.stderr}\n\`\`\``);
+    }
+    return markdown;
+  }
+
+  async execute(sql: string, isc?: IngestStepContext, cellIndex?: number) {
+    const { args: { duckdbCmd, icDb } } = this;
+    const status = await dax.$`${duckdbCmd} ${icDb}`
+      .stdout("piped")
+      .stderr("piped")
+      .stdinText(sql)
+      .noThrow();
+    this.diagnostics.push({
+      cell: isc ? isc.current?.nbCellID : "unknown",
+      cellIndex,
+      sql,
+      status: status.code,
+      markdown: this.sqlMarkdownPartial(sql, status).join("\n"),
+    });
+    return status;
+  }
+
+  async jsonResult(sql: string, isc: IngestStepContext, cellIndex?: number) {
+    const { args: { duckdbCmd, icDb } } = this;
+    const status = await dax.$`${duckdbCmd} ${icDb} --json`
+      .stdout("piped")
+      .stderr("piped")
+      .stdinText(sql)
+      .noThrow();
+    const stdout = status.stdout;
+    this.diagnostics.push({
+      cell: isc ? isc.current.nbCellID : "unknown",
+      cellIndex,
+      sql,
+      status: status.code,
+      result: stdout ? JSON.parse(stdout) : stdout,
+      markdown: this.sqlMarkdownPartial(sql, status).join("\n"),
+    });
+    return status;
+  }
+}
+
 type IngestStep = chainNB.NotebookCell<
   IngestEngine,
   chainNB.NotebookCellID<IngestEngine>
@@ -522,14 +597,7 @@ const ieDescr = new chainNB.NotebookDescriptor<IngestEngine, IngestStep>();
  * See: https://github.com/netspective-labs/sql-aide/tree/main/lib/notebook
  */
 export class IngestEngine {
-  readonly diagnostics: {
-    cell: string;
-    cellIndex?: number;
-    sql: string;
-    status: number;
-    result?: Any;
-    markdown: string;
-  }[] = [];
+  readonly duckdb: DuckDbCLI;
   readonly emitWithResourcesSQL: SQLa.SqlTextSupplier<EmitContext>[] = [];
   constructor(
     readonly isn: IngestSqlNotebook,
@@ -546,71 +614,12 @@ export class IngestEngine {
     },
     readonly govn: Governance,
   ) {
-  }
-
-  @ieDescr.disregard()
-  duckdbMarkdown(
-    sql: string,
-    status: dax.CommandResult,
-    stdoutFmt?: (stdout: string) => { fmt: string; content: string },
-  ) {
-    const markdown: string[] = [`\`\`\`sql\n${sql}\n\`\`\`\n`];
-    if (status.stdout) {
-      markdown.push("### stdout");
-      const stdout = stdoutFmt?.(status.stdout) ??
-        ({ fmt: "sh", content: status.stdout });
-      markdown.push(
-        `\`\`\`${stdout.fmt}\n${stdout.content}\n\`\`\``,
-      );
-    }
-    if (status.stderr) {
-      markdown.push("### stderr");
-      markdown.push(`\`\`\`sh\n${status.stderr}\n\`\`\``);
-    }
-    return markdown;
-  }
-
-  @ieDescr.disregard()
-  async duckdb(sql: string, isc?: IngestStepContext, cellIndex?: number) {
-    const { args: { duckdbCmd, icDb } } = this;
-    const status = await dax.$`${duckdbCmd} ${icDb}`
-      .stdout("piped")
-      .stderr("piped")
-      .stdinText(sql)
-      .noThrow();
-    this.diagnostics.push({
-      cell: isc ? isc.current?.nbCellID : "unknown",
-      cellIndex,
-      sql,
-      status: status.code,
-      markdown: this.duckdbMarkdown(sql, status).join("\n"),
-    });
-    return status;
-  }
-
-  @ieDescr.disregard()
-  async duckdbResult(sql: string, isc: IngestStepContext, cellIndex?: number) {
-    const { args: { duckdbCmd, icDb } } = this;
-    const status = await dax.$`${duckdbCmd} ${icDb} --json`
-      .stdout("piped")
-      .stderr("piped")
-      .stdinText(sql)
-      .noThrow();
-    const stdout = status.stdout;
-    this.diagnostics.push({
-      cell: isc ? isc.current.nbCellID : "unknown",
-      cellIndex,
-      sql,
-      status: status.code,
-      result: stdout ? JSON.parse(stdout) : stdout,
-      markdown: this.duckdbMarkdown(sql, status).join("\n"),
-    });
-    return status;
+    this.duckdb = new DuckDbCLI({ duckdbCmd: args.duckdbCmd, icDb: args.icDb });
   }
 
   async initDDL(isc: IngestStepContext) {
     const sql = this.isn.initDDL().SQL(this.govn.emitCtx);
-    const status = await this.duckdb(sql, isc);
+    const status = await this.duckdb.execute(sql, isc);
     if (status.code != 0) {
       const diagsTmpFile = await this.govn.writeDiagnosticsSqlMD({
         duckdb: {
@@ -670,7 +679,7 @@ export class IngestEngine {
             );
 
             // run the SQL and then emit the errors to STDOUT in JSON
-            const status = await this.duckdbResult(
+            const status = await this.duckdb.jsonResult(
               checkStruct.SQL(ctx) + ws.unindentWhitespace(`
               
               -- emit the errors for the given session (file) so it can be picked up
@@ -720,7 +729,7 @@ export class IngestEngine {
     }
 
     const { isn, govn: { emitCtx: ctx } } = this;
-    await this.duckdb(
+    await this.duckdb.execute(
       structResult.map((sr) => isn.ensureContentCode(sr, sr.tableName).SQL(ctx))
         .join("\n"),
       isc,
@@ -750,7 +759,7 @@ export class IngestEngine {
       ];
 
       // deno-fmt-ignore
-      await this.duckdb(ws.unindentWhitespace(`
+      await this.duckdb.execute(ws.unindentWhitespace(`
         ${this.emitWithResourcesSQL.map(dml => dml.SQL(this.govn.emitCtx)).join(";\n        ")};
 
         ATTACH '${resourceDb}' AS resource_db (TYPE SQLITE);
@@ -775,7 +784,7 @@ export class IngestEngine {
       }
 
       // deno-fmt-ignore
-      await this.duckdb(ws.unindentWhitespace(`
+      await this.duckdb.execute(ws.unindentWhitespace(`
         INSTALL spatial; -- Only needed once per DuckDB connection
         LOAD spatial; -- Only needed once per DuckDB connection
         -- TODO: join with ingest_session table to give all the results in one sheet
@@ -786,7 +795,7 @@ export class IngestEngine {
     if (diagsJson) {
       await Deno.writeTextFile(
         diagsJson,
-        JSON.stringify(this.diagnostics, null, "  "),
+        JSON.stringify(this.duckdb.diagnostics, null, "  "),
       );
     }
 
@@ -797,7 +806,7 @@ export class IngestEngine {
         "---",
         "# Ingest Diagnostics",
       ];
-      for (const d of this.diagnostics) {
+      for (const d of this.duckdb.diagnostics) {
         md.push(`\n## ${d.cell}${d.cellIndex ? ` (${d.cellIndex})` : ""}`);
         md.push(`${d.markdown}`);
       }
