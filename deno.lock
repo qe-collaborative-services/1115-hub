@@ -17,6 +17,7 @@
     }
   },
   "remote": {
+    "https://cdn.sheetjs.com/xlsx-0.20.1/package/xlsx.mjs": "8d81e8a2f765d31de059058afb2a7b71de867a349cae28dcd1533a48876f2962",
     "https://deno.land/std@0.170.0/fmt/colors.ts": "03ad95e543d2808bc43c17a3dd29d25b43d0f16287fe562a0be89bf632454a12",
     "https://deno.land/std@0.179.0/_util/asserts.ts": "178dfc49a464aee693a7e285567b3d0b555dc805ff490505a8aae34f9cfb1462",
     "https://deno.land/std@0.179.0/_util/os.ts": "d932f56d41e4f6a6093d56044e29ce637f8dcc43c5a90af43504a889cf1775e3",

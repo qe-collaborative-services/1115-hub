@@ -12,6 +12,9 @@ import {
   yaml,
 } from "../deps.ts";
 
+// @deno-types="https://cdn.sheetjs.com/xlsx-0.20.1/package/types/index.d.ts"
+import * as xlsx from "https://cdn.sheetjs.com/xlsx-0.20.1/package/xlsx.mjs";
+
 // deno-lint-ignore no-explicit-any
 type Any = any;
 
@@ -407,6 +410,37 @@ export class AssuranceRules extends SQLa_ddb.AssuranceRules<EmitContext> {
   }
 }
 
+export interface ContentAssuranceSqlSupplier {
+  /**
+   * Prepare the SQL that will ensure content of table(s) matches our
+   * expectations. We separate the content SQL from the structural SQL since
+   * content SQL assumes specific column names which will be syntax errors if
+   * the structure doesn't match our expectations.
+   * @returns SQLa.SqlTextSupplier<EmitContext> instance with sessionID
+   */
+  ensureContent(): Promise<SQLa.SqlTextSupplier<EmitContext>>;
+}
+
+export class EnsureCsvContentNotebook implements ContentAssuranceSqlSupplier {
+  constructor(
+    readonly govn: Governance,
+    readonly ar: AssuranceRules,
+    readonly tableName: string,
+  ) {
+  }
+
+  // deno-lint-ignore require-await
+  async ensureContent() {
+    const { ar, govn } = this;
+
+    // deno-fmt-ignore
+    const code = govn.SQL`
+      ${ar.intValueInAllTableRows(this.tableName, 'SURVEY_ID')}`;
+
+    return { assuranceRules: this.ar, ...code };
+  }
+}
+
 /**
  * Responsible for preparing SQL that will be executed by other classes. The
  * methods in this class are stateless and generate deterministic SQL.
@@ -429,6 +463,81 @@ export class IngestSqlNotebook {
       ${is.tableIndexes}
       
       ${this.sessionDML}`;
+  }
+
+  /**
+   * Prepare SQL which when executed will prepare DuckDB tables to ingest a
+   * an Excel workbook with multiple sheets.
+   *
+   * Also supplies SQL that will ensure that the structure of the tables, such
+   * as required columns, matches our expections. This SQL should be kept
+   * minimal and only focus on assurance of structure not content.
+   * @param fsPath the file system path of the Excel workbook (XLSX)
+   * @param tableName the prefix of multiple tables (one for each sheet we care about)
+   * @returns SQLa.SqlTextSupplier<EmitContext> instance with sessionID
+   */
+  async ensureExcelStructure(
+    fsPath: string,
+    tableName: string,
+    ar: AssuranceRules,
+  ) {
+    const { govn } = this;
+
+    const issueDML = async (message: string) =>
+      govn.ingestSessionIssueCRF.insertDML({
+        ingest_session_issue_id: await govn.emitCtx.newUUID(
+          govn.deterministicPKs,
+        ),
+        session_id: this.sessionDML.sessionID,
+        session_entry_id: ar.sessionEntryID,
+        issue_type: "Structural",
+        issue_message: message,
+        invalid_value: fsPath,
+      });
+
+    let code: SQLa.SqlTextSupplier<EmitContext>;
+    const isEntry = govn.ingestSessionEntryCRF.insertDML({
+      ingest_session_entry_id: ar.sessionEntryID,
+      session_id: ar.sessionID,
+      ingest_src: fsPath,
+      ingest_table_name: tableName,
+    });
+    try {
+      const sql: SQLa.SqlTextSupplier<EmitContext>[] = [];
+      const wb = xlsx.readFile(fsPath);
+      const sheets = [{ name: "Admin_Demographic" }, { name: "Screening" }, {
+        name: "QE_Admin_Data",
+      }];
+      for (const sh of sheets) {
+        if (wb.SheetNames.find((sn) => sn == sh.name)) {
+          //const sheet = wb.Sheets[sh.name];
+          sql.push({ SQL: () => `-- ingest '${sh.name}'` });
+        } else {
+          sql.push(await issueDML(`Expected sheet '${sh.name}' not found`));
+        }
+      }
+
+      // deno-fmt-ignore
+      code = govn.SQL`
+        ${isEntry}  
+        ${sql}
+      `;
+    } catch (err) {
+      // deno-fmt-ignore
+      code = govn.SQL`
+        ${isEntry}        
+        ${await issueDML(err.toString())}`;
+    }
+
+    return {
+      ...code,
+      fsPath,
+      tableName,
+      format: "Excel",
+      sessionEntryID: ar.sessionEntryID,
+      sessionID: ar.sessionID,
+      contentAssurance: undefined,
+    };
   }
 
   /**
@@ -483,6 +592,7 @@ export class IngestSqlNotebook {
       format: "CSV",
       sessionEntryID: ar.sessionEntryID,
       sessionID: ar.sessionID,
+      contentAssurance: new EnsureCsvContentNotebook(govn, ar, tableName),
     };
   }
 
@@ -503,6 +613,10 @@ export class IngestSqlNotebook {
 
     if (fsPath.toLocaleLowerCase().endsWith("csv")) {
       return this.ensureCsvStructure(fsPath, tableName, ar);
+    }
+
+    if (fsPath.toLocaleLowerCase().endsWith("xlsx")) {
+      return await this.ensureExcelStructure(fsPath, tableName, ar);
     }
 
     // deno-fmt-ignore
@@ -530,34 +644,8 @@ export class IngestSqlNotebook {
       format: undefined,
       sessionEntryID: ar.sessionEntryID,
       sessionID: ar.sessionID,
+      contentAssurance: undefined,
     };
-  }
-
-  /**
-   * Prepare the SQL that will ensure content of a table matches our
-   * expectations. We separate the content SQL from the structural SQL since
-   * content SQL assumes specific column names which will be syntax errors if
-   * the structure doesn't match our expectations.
-   * @param sessionID a unique identifier for the assurance session
-   * @param tableName the name of the table which holds the CSV content
-   * @returns SQLa.SqlTextSupplier<EmitContext> instance with sessionID
-   */
-  ensureContent(
-    session: { sessionEntryID: string; sessionID: string },
-    tableName: string,
-  ) {
-    const { govn } = this;
-
-    const ar = new AssuranceRules(
-      session.sessionID,
-      session.sessionEntryID,
-      govn,
-    );
-    // deno-fmt-ignore
-    const code = govn.SQL`
-      ${ar.intValueInAllTableRows(tableName, 'SURVEY_ID')}`;
-
-    return { ...session, ...code };
   }
 }
 
@@ -724,6 +812,8 @@ export class IngestEngine {
       sessionID: string;
       sessionEntryID: string;
       tableName: string;
+      fsPath: string;
+      cas?: ContentAssuranceSqlSupplier;
     }[] = [];
 
     // Convert each glob pattern to a RegExp
@@ -758,9 +848,11 @@ export class IngestEngine {
             // then no content checks will be performed.
             if (!status.stdout) {
               result.push({
+                fsPath: entry.path,
                 sessionID: checkStruct.sessionID,
                 sessionEntryID: checkStruct.sessionEntryID,
                 tableName,
+                cas: checkStruct.contentAssurance,
               });
             }
           } catch (err) {
@@ -793,10 +885,16 @@ export class IngestEngine {
       return structResult;
     }
 
-    const { isn, govn: { emitCtx: ctx } } = this;
+    const { govn: { emitCtx: ctx } } = this;
     await this.duckdb.execute(
-      structResult.map((sr) => isn.ensureContent(sr, sr.tableName).SQL(ctx))
-        .join("\n"),
+      (await Promise.all(
+        structResult.map(async (sr) =>
+          // deno-fmt-ignore
+          sr.cas
+            ? `-- Content Assurance for ${sr.tableName} (${sr.fsPath})\n${(await sr.cas.ensureContent()).SQL(ctx)}\n`
+            : `-- no Content Assurance Supplier (CAS) available for ${sr.tableName} (${sr.fsPath})`
+        ),
+      )).join("\n"),
       isc.current.nbCellID,
     );
     return structResult;
