@@ -612,7 +612,7 @@ export class IngestEngine {
     );
 
     let index = -1;
-    for (const entry of fs.walkSync(Deno.cwd())) {
+    for (const entry of fs.walkSync(this.args.rootPath)) {
       if (entry.isFile) {
         const relativePath = path.relative(this.args.rootPath, entry.path);
         // Check if the relative path matches any of the patterns
@@ -761,16 +761,18 @@ export class IngestEngine {
       const diagram = kernel.introspectedNB.dagOps.diagram(
         kernel.introspectedNB.graph,
       );
+
+      if (args.diagsDagPuml) {
+        await Deno.writeTextFile(args.diagsDagPuml, diagram);
+      }
+
       if (!kernel.isValid() || kernel.lintResults.length > 0) {
         console.error("Invalid Kernel, inspect the DAG:");
         console.log(
           `http://www.plantuml.com/plantuml/svg/${pe.encode(diagram)}`,
         );
+        return;
       }
-      if (args.diagsDagPuml) {
-        await Deno.writeTextFile(args.diagsDagPuml, diagram);
-      }
-      return;
     }
 
     try {
