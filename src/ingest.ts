@@ -229,7 +229,7 @@ export class Governance {
     ],
   };
 
-  constructor(readonly deterministicPKs = false) {
+  constructor(readonly deterministicPKs: boolean) {
   }
 
   // type-safe wrapper for all SQL text generated in this library;
@@ -320,16 +320,15 @@ export class AssuranceRules extends SQLa_ddb.AssuranceRules<EmitContext> {
     messageSql: string,
     remediationSql?: string,
   ) {
-    return ws.unindentWhitespace(
-      `INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
+    return ws.unindentWhitespace(`
+      INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
           SELECT uuid(),
                  '${this.sessionID}', 
                  '${this.sessionEntryID}', 
                  '${typeText}',
                  ${messageSql},
                  ${remediationSql ?? "NULL"}
-            FROM ${from}`,
-    );
+            FROM ${from}`);
   }
 
   insertRowValueIssue(
@@ -341,8 +340,8 @@ export class AssuranceRules extends SQLa_ddb.AssuranceRules<EmitContext> {
     messageSql: string,
     remediationSql?: string,
   ) {
-    return ws.unindentWhitespace(
-      `INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    return ws.unindentWhitespace(`
+      INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
           SELECT uuid(),
                  '${this.sessionID}', 
                  '${this.sessionEntryID}', 
@@ -352,8 +351,7 @@ export class AssuranceRules extends SQLa_ddb.AssuranceRules<EmitContext> {
                  ${valueSql},
                  ${messageSql},
                  ${remediationSql ?? "NULL"}
-            FROM ${from}`,
-    );
+            FROM ${from}`);
   }
 }
 
@@ -499,7 +497,7 @@ export class IngestEngine {
       readonly diagsMd?: string;
       readonly resourceDb?: string;
     },
-    readonly govn = new Governance(),
+    readonly govn: Governance,
   ) {
   }
 
@@ -526,7 +524,7 @@ export class IngestEngine {
   }
 
   @ieDescr.disregard()
-  async duckdb(sql: string, isc: IngestStepContext, cellIndex?: number) {
+  async duckdb(sql: string, isc?: IngestStepContext, cellIndex?: number) {
     const { args: { duckdbCmd, icDb } } = this;
     const status = await dax.$`${duckdbCmd} ${icDb}`
       .stdout("piped")
@@ -534,7 +532,7 @@ export class IngestEngine {
       .stdinText(sql)
       .noThrow();
     this.diagnostics.push({
-      cell: isc ? isc.current.nbCellID : "unknown",
+      cell: isc ? isc.current?.nbCellID : "unknown",
       cellIndex,
       sql,
       status: status.code,
@@ -626,9 +624,10 @@ export class IngestEngine {
 
             // run the SQL and then emit the errors to STDOUT in JSON
             const status = await this.duckdbResult(
-              checkStruct.SQL(ctx) + `
+              checkStruct.SQL(ctx) + ws.unindentWhitespace(`
+              
               -- emit the errors for the given session (file) so it can be picked up
-              SELECT * FROM ${ist.tableName} WHERE ${ist.columns.session_id.columnName} = '${checkStruct.sessionID}' and ${ist.columns.session_entry_id.columnName} = '${checkStruct.sessionEntryID}';`,
+              SELECT * FROM ${ist.tableName} WHERE ${ist.columns.session_id.columnName} = '${checkStruct.sessionID}' and ${ist.columns.session_entry_id.columnName} = '${checkStruct.sessionEntryID}';`),
               isc,
               ++index,
             );
@@ -688,7 +687,29 @@ export class IngestEngine {
       | Error
       | Awaited<ReturnType<typeof IngestEngine.prototype.contentSQL>>,
   ) {
-    const { args: { diagsXlsx, diagsJson, diagsMd, resourceDb } } = this;
+    const { args: { resourceDb } } = this;
+    if (resourceDb && Array.isArray(contentResult)) {
+      try {
+        Deno.removeSync(resourceDb);
+      } catch (_err) {
+        // ignore errors if file does not exist
+      }
+
+      // deno-fmt-ignore
+      await this.duckdb(ws.unindentWhitespace(`
+        ATTACH '${resourceDb}' AS resource_db (TYPE SQLITE);
+
+        ${[this.govn.ingestSession, this.govn.ingestSessionEntry, this.govn.ingestSessionState, this.govn.ingestSessionIssue].map(t => `CREATE TABLE resource_db.${t.tableName} AS SELECT * FROM ${t.tableName}`).join(";\n        ")};
+
+        ${contentResult.map(cr => `CREATE TABLE resource_db.${cr.tableName} AS SELECT * FROM ${cr.tableName};`)}
+
+        DETACH DATABASE resource_db;`), isc);
+    }
+  }
+
+  @ieDescr.finalize()
+  async emitDiagnostics() {
+    const { args: { diagsXlsx, diagsJson, diagsMd } } = this;
     if (diagsXlsx) {
       // if Excel workbook already exists, GDAL xlsx driver will error
       try {
@@ -698,31 +719,12 @@ export class IngestEngine {
       }
 
       // deno-fmt-ignore
-      await this.duckdb(`
+      await this.duckdb(ws.unindentWhitespace(`
         INSTALL spatial; -- Only needed once per DuckDB connection
         LOAD spatial; -- Only needed once per DuckDB connection
         -- TODO: join with ingest_session table to give all the results in one sheet
-        COPY (SELECT * FROM ingest_session_issue) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`,
-        isc,
+        COPY (SELECT * FROM ingest_session_issue) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`)        
       );
-    }
-
-    if (resourceDb && Array.isArray(contentResult)) {
-      try {
-        Deno.removeSync(resourceDb);
-      } catch (_err) {
-        // ignore errors if file does not exist
-      }
-
-      // deno-fmt-ignore
-      await this.duckdb(`
-        ATTACH '${resourceDb}' AS resource_db (TYPE SQLITE);
-
-        ${[this.govn.ingestSession, this.govn.ingestSessionEntry, this.govn.ingestSessionState, this.govn.ingestSessionIssue].map(t => `CREATE TABLE resource_db.${t.tableName} AS SELECT * FROM ${t.tableName}`).join(";\n")};
-
-        ${contentResult.map(cr => `CREATE TABLE resource_db.${cr.tableName} AS SELECT * FROM ${cr.tableName};`)}
-
-        DETACH DATABASE resource_db;`, isc);
     }
 
     if (diagsJson) {
@@ -733,7 +735,12 @@ export class IngestEngine {
     }
 
     if (diagsMd) {
-      const md: string[] = ["# Ingest Diagnostics"];
+      const md: string[] = [
+        "---",
+        yaml.stringify(this.args),
+        "---",
+        "# Ingest Diagnostics",
+      ];
       for (const d of this.diagnostics) {
         md.push(`\n## ${d.cell}${d.cellIndex ? ` (${d.cellIndex})` : ""}`);
         md.push(`${d.markdown}`);
@@ -746,7 +753,7 @@ export class IngestEngine {
     args: ConstructorParameters<typeof IngestEngine>[1] & {
       diagsDagPuml?: string;
     },
-    govn = new Governance(),
+    govn: Governance,
   ) {
     const kernel = chainNB.ObservableKernel.create(
       IngestEngine.prototype,

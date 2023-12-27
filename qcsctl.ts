@@ -4,8 +4,6 @@ import { cliffy } from "./deps.ts";
 import * as i from "./src/ingest.ts";
 
 async function CLI() {
-  const govn = new i.Governance();
-
   const callerName = import.meta.resolve(import.meta.url);
   await new cliffy.Command()
     .name(callerName.slice(callerName.lastIndexOf("/") + 1))
@@ -47,6 +45,7 @@ async function CLI() {
       "The resource SQLite database file name",
     )
     .action(async (args) => {
+      const govn = new i.Governance(args.icDeterministicPk);
       await i.IngestEngine.run(args, govn);
     })
     .command("help", new cliffy.HelpCommand().global())
