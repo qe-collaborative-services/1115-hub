@@ -11,11 +11,9 @@ diagsDagPuml: support/assurance/results-e2e/dag.puml
 duckdbCmd: duckdb
 
 ---
-
 # Ingest Diagnostics
 
 ## initDDL
-
 ```sql
 CREATE TABLE IF NOT EXISTS "ingest_session" (
     "ingest_session_id" TEXT PRIMARY KEY NOT NULL,
@@ -64,11 +62,11 @@ CREATE TABLE IF NOT EXISTS "ingest_session_issue" (
 INSERT INTO ingest_session (ingest_session_id) VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7');
 ```
 
-## structuralSQL
 
+## structuralSQL
 ```sql
 INSERT INTO ingest_session_entry (ingest_session_entry_id, session_id, ingest_src, ingest_table_name) 
-                          VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/synthetic-content/synthetic-fail.csv', 'synthetic_fail');
+                          VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/synthetic-content/synthetic-fail.csv', 'synthetic_fail');
 
 CREATE TABLE synthetic_fail AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7'
@@ -85,46 +83,45 @@ WITH required_column_names_in_src AS (
 INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 
-           '05e8feaa-0bed-5909-a817-39812494b361', 
+           '1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', 
            'Missing Column',
            'Required column ' || column_name || ' is missing in synthetic_fail.',
            'Ensure synthetic_fail contains the column "' || column_name || '"'
       FROM required_column_names_in_src;
 -- emit the errors for the given session (file) so it can be picked up
-SELECT * FROM ingest_session_issue WHERE session_id = '05269d28-15ae-5bd6-bd88-f949ccfa52d7' and session_entry_id = '05e8feaa-0bed-5909-a817-39812494b361';
+SELECT * FROM ingest_session_issue WHERE session_id = '05269d28-15ae-5bd6-bd88-f949ccfa52d7' and session_entry_id = '1931dfcc-e8fc-597d-b1bc-65b4287e6fdf';
 ```
 
 ### stdout
-
 ```sh
-[{"ingest_session_issue_id":"00b35d99-0357-428a-b000-b72facf22db3","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column PAT_MRN_ID is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"PAT_MRN_ID\"","elaboration":null},
-{"ingest_session_issue_id":"f5354f01-5056-499b-9650-ad0e34c26863","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column FACILITY is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"FACILITY\"","elaboration":null},
-{"ingest_session_issue_id":"e75bfd1c-54cc-4ee4-a89c-66d96d99721e","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column FIRST_NAME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"FIRST_NAME\"","elaboration":null},
-{"ingest_session_issue_id":"731be840-49de-42d4-8565-381b050d6cdf","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column LAST_NAME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"LAST_NAME\"","elaboration":null},
-{"ingest_session_issue_id":"5f71dfd2-e6e9-4584-ad56-cf1ef5a6d362","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column PAT_BIRTH_DATE is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"PAT_BIRTH_DATE\"","elaboration":null},
-{"ingest_session_issue_id":"03780194-cdff-40ca-bd7f-bfe75a98a13a","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column MEDICAID_CIN is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"MEDICAID_CIN\"","elaboration":null},
-{"ingest_session_issue_id":"c088fb5f-c642-47ee-a94a-923160c9b8e0","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column ENCOUNTER_ID is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"ENCOUNTER_ID\"","elaboration":null},
-{"ingest_session_issue_id":"c469e10f-2238-4d5e-8331-eecdd585444d","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column SURVEY is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"SURVEY\"","elaboration":null},
-{"ingest_session_issue_id":"6ac837ca-e253-471b-a5c7-6ae567ca5f35","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column SURVEY_ID is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"SURVEY_ID\"","elaboration":null},
-{"ingest_session_issue_id":"ca168835-8342-42de-949e-1784c845e974","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column RECORDED_TIME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"RECORDED_TIME\"","elaboration":null},
-{"ingest_session_issue_id":"5bdd1fba-43eb-40f0-9092-fad37fbf389d","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column QUESTION is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"QUESTION\"","elaboration":null},
-{"ingest_session_issue_id":"29fa6165-e7b9-48b3-8d8c-8e6a856212f2","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column MEAS_VALUE is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"MEAS_VALUE\"","elaboration":null},
-{"ingest_session_issue_id":"d8c262e0-63f5-4259-9b81-241941064f59","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"QUESTION_CODE\"","elaboration":null},
-{"ingest_session_issue_id":"12fd13c1-5de0-4a55-8147-981ac46c4847","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE_SYSTEM_NAME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"QUESTION_CODE_SYSTEM_NAME\"","elaboration":null},
-{"ingest_session_issue_id":"cb71e860-f8ce-40bf-8d91-e04bec3d031c","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"ANSWER_CODE\"","elaboration":null},
-{"ingest_session_issue_id":"7c832afd-6bef-4368-89f5-e298e3805273","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE_SYSTEM_NAME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"ANSWER_CODE_SYSTEM_NAME\"","elaboration":null},
-{"ingest_session_issue_id":"57d4c2bb-6a85-45e9-9fc8-f7c6e9aa96ec","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column SDOH_DOMAIN is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"SDOH_DOMAIN\"","elaboration":null},
-{"ingest_session_issue_id":"3dc1ccee-0f2b-4cd9-853d-090170a60e9c","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column NEED_INDICATED is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"NEED_INDICATED\"","elaboration":null},
-{"ingest_session_issue_id":"d71957d5-8dc8-4b91-93c7-869cdd440180","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column VISIT_PART_2_FLAG is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"VISIT_PART_2_FLAG\"","elaboration":null},
-{"ingest_session_issue_id":"e8423fd1-6505-4199-85cf-5bab26b212ba","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column VISIT_OMH_FLAG is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"VISIT_OMH_FLAG\"","elaboration":null},
-{"ingest_session_issue_id":"f2f6b6e3-bdcc-4de4-9134-b8565a3c8779","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"05e8feaa-0bed-5909-a817-39812494b361","issue_type":"Missing Column","issue_message":"Required column VISIT_OPWDD_FLAG is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"VISIT_OPWDD_FLAG\"","elaboration":null}]
+[{"ingest_session_issue_id":"6cb3bee1-de9a-4154-99a6-ef593d8ed12d","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column PAT_MRN_ID is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"PAT_MRN_ID\"","elaboration":null},
+{"ingest_session_issue_id":"d44d87de-4b8d-4a70-841e-560e7c9f1e68","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column FACILITY is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"FACILITY\"","elaboration":null},
+{"ingest_session_issue_id":"93fbfaea-1a23-4aa1-b225-e34b1e1d5c9c","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column FIRST_NAME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"FIRST_NAME\"","elaboration":null},
+{"ingest_session_issue_id":"73aee1e3-15de-49c8-b241-152dfb69cd6f","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column LAST_NAME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"LAST_NAME\"","elaboration":null},
+{"ingest_session_issue_id":"19f9afdb-bb49-4c2b-a96a-61696eb0b2bd","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column PAT_BIRTH_DATE is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"PAT_BIRTH_DATE\"","elaboration":null},
+{"ingest_session_issue_id":"7a8328d7-0f44-405d-a2ff-9bfcefc606d7","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column MEDICAID_CIN is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"MEDICAID_CIN\"","elaboration":null},
+{"ingest_session_issue_id":"a5b093e0-4b82-47a7-b638-6a5dd53158c0","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column ENCOUNTER_ID is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"ENCOUNTER_ID\"","elaboration":null},
+{"ingest_session_issue_id":"4ad6f070-d21d-4a76-9c72-01d5cffd4e35","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column SURVEY is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"SURVEY\"","elaboration":null},
+{"ingest_session_issue_id":"6bf2021a-770e-496b-b513-a1b7bd3fd29d","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column SURVEY_ID is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"SURVEY_ID\"","elaboration":null},
+{"ingest_session_issue_id":"51a1dbda-64b3-4697-9a8c-077973981313","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column RECORDED_TIME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"RECORDED_TIME\"","elaboration":null},
+{"ingest_session_issue_id":"12258278-c453-4dac-9e95-d121b0c83cdf","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column QUESTION is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"QUESTION\"","elaboration":null},
+{"ingest_session_issue_id":"8f74cf72-368d-41b1-a069-d8076087fcf0","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column MEAS_VALUE is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"MEAS_VALUE\"","elaboration":null},
+{"ingest_session_issue_id":"ea231125-6854-446e-aefa-4c6d8572ae80","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"QUESTION_CODE\"","elaboration":null},
+{"ingest_session_issue_id":"f7b488fa-38b5-4ebe-a85b-747c38a4c185","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE_SYSTEM_NAME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"QUESTION_CODE_SYSTEM_NAME\"","elaboration":null},
+{"ingest_session_issue_id":"40077d9f-b711-4699-8f42-6312e3b45597","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"ANSWER_CODE\"","elaboration":null},
+{"ingest_session_issue_id":"17969a5c-9cc1-45c8-9445-c1112c87809a","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE_SYSTEM_NAME is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"ANSWER_CODE_SYSTEM_NAME\"","elaboration":null},
+{"ingest_session_issue_id":"88367295-7e06-419b-958c-6f639eea4096","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column SDOH_DOMAIN is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"SDOH_DOMAIN\"","elaboration":null},
+{"ingest_session_issue_id":"32045c01-7ce0-490c-a94f-5123e46793ac","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column NEED_INDICATED is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"NEED_INDICATED\"","elaboration":null},
+{"ingest_session_issue_id":"1678fa3e-5c7a-4854-9edc-9e5bfafed84f","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column VISIT_PART_2_FLAG is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"VISIT_PART_2_FLAG\"","elaboration":null},
+{"ingest_session_issue_id":"5debc646-d08d-4286-bc74-53d398f18891","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column VISIT_OMH_FLAG is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"VISIT_OMH_FLAG\"","elaboration":null},
+{"ingest_session_issue_id":"1a276d48-d7cf-47e4-9bf3-f8bf1340ea99","session_id":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","session_entry_id":"1931dfcc-e8fc-597d-b1bc-65b4287e6fdf","issue_type":"Missing Column","issue_message":"Required column VISIT_OPWDD_FLAG is missing in synthetic_fail.","issue_row":null,"issue_column":null,"invalid_value":null,"remediation":"Ensure synthetic_fail contains the column \"VISIT_OPWDD_FLAG\"","elaboration":null}]
+
 ```
 
 ## structuralSQL (1)
-
 ```sql
 INSERT INTO ingest_session_entry (ingest_session_entry_id, session_id, ingest_src, ingest_table_name) 
-                          VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/synthetic-content/ahc-hrsn-12-12-2023-valid.csv', 'ahc_hrsn_12_12_2023_valid');
+                          VALUES ('8b7c669c-1795-5f6b-8f3a-3e502b74c628', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/synthetic-content/ahc-hrsn-12-12-2023-valid.csv', 'ahc_hrsn_12_12_2023_valid');
 
 CREATE TABLE ahc_hrsn_12_12_2023_valid AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7'
@@ -141,17 +138,17 @@ WITH required_column_names_in_src AS (
 INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 
-           '8f460419-7b80-516d-8919-84520950f612', 
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 
            'Missing Column',
            'Required column ' || column_name || ' is missing in ahc_hrsn_12_12_2023_valid.',
            'Ensure ahc_hrsn_12_12_2023_valid contains the column "' || column_name || '"'
       FROM required_column_names_in_src;
 -- emit the errors for the given session (file) so it can be picked up
-SELECT * FROM ingest_session_issue WHERE session_id = '05269d28-15ae-5bd6-bd88-f949ccfa52d7' and session_entry_id = '8f460419-7b80-516d-8919-84520950f612';
+SELECT * FROM ingest_session_issue WHERE session_id = '05269d28-15ae-5bd6-bd88-f949ccfa52d7' and session_entry_id = '8b7c669c-1795-5f6b-8f3a-3e502b74c628';
 ```
 
-## contentSQL
 
+## contentSQL
 ```sql
 WITH numeric_value_in_all_rows AS (
     SELECT 'SURVEY_ID' AS issue_column,
@@ -164,7 +161,7 @@ WITH numeric_value_in_all_rows AS (
 INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 
-           '8f460419-7b80-516d-8919-84520950f612', 
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 
            'Data Type Mismatch',
            issue_row,
            issue_column,
@@ -174,9 +171,16 @@ INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_e
       FROM numeric_value_in_all_rows;
 ```
 
-## emitResources
 
+## emitResources
 ```sql
+INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'INIT', NULL, NULL, NULL, NULL);
+INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'INIT', 'ENTER(initDDL)', NULL, NULL, NULL, NULL);
+INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'ENTER(initDDL)', 'EXIT(initDDL)', NULL, NULL, NULL, NULL);
+INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('168a34c7-d043-5ec4-a84a-c961f1a301ef', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(initDDL)', 'ENTER(structuralSQL)', NULL, NULL, NULL, NULL);
+INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7b979b68-7227-53fd-b689-e4fe153afb76', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'ENTER(structuralSQL)', 'EXIT(structuralSQL)', NULL, NULL, NULL, NULL);
+INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('abf5c680-a135-5d89-b871-fa5b9b99aed6', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(structuralSQL)', 'ENTER(contentSQL)', NULL, NULL, NULL, NULL);
+
 ATTACH 'support/assurance/results-e2e/resource.sqlite.db' AS resource_db (TYPE SQLITE);
 
 CREATE TABLE resource_db.ingest_session AS SELECT * FROM ingest_session;
@@ -189,8 +193,8 @@ CREATE TABLE resource_db.ahc_hrsn_12_12_2023_valid AS SELECT * FROM ahc_hrsn_12_
 DETACH DATABASE resource_db;
 ```
 
-## unknown
 
+## unknown
 ```sql
 INSTALL spatial; -- Only needed once per DuckDB connection
 LOAD spatial; -- Only needed once per DuckDB connection

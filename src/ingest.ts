@@ -168,6 +168,16 @@ export class Governance {
         `any elaboration needed for the state transition`;
     },
   });
+  readonly ingestSessionStateCRF = SQLa.tableColumnsRowFactory(
+    this.ingestSessionState.tableName,
+    this.ingestSessionState.zoSchema.shape,
+  );
+
+  ingestSessionStatesInsertDML() {
+    const buffer: ReturnType<typeof this.ingestSessionStateCRF.insertDML>[] =
+      [];
+    return buffer;
+  }
 
   readonly ingestSessionIssue = SQLa.tableDefinition(
     "ingest_session_issue",
@@ -484,6 +494,7 @@ export class IngestEngine {
     result?: Any;
     markdown: string;
   }[] = [];
+  readonly emitWithResourcesSQL: SQLa.SqlTextSupplier<EmitContext>[] = [];
   constructor(
     readonly isn: IngestSqlNotebook,
     readonly args: {
@@ -499,6 +510,21 @@ export class IngestEngine {
     },
     readonly govn: Governance,
   ) {
+  }
+
+  @ieDescr.disregard()
+  async registerStateChange(fromState: string, toState: string) {
+    this.emitWithResourcesSQL.push(
+      this.govn.ingestSessionStateCRF.insertDML({
+        ingest_session_state_id: await this.govn.emitCtx.newUUID(
+          this.govn.deterministicPKs,
+        ),
+        session_id: this.isn.sessionDML.sessionID,
+        from_state: fromState,
+        to_state: toState,
+        // TODO: add transition date/time, results, elaboration, etc.
+      }),
+    );
   }
 
   @ieDescr.disregard()
@@ -695,11 +721,20 @@ export class IngestEngine {
         // ignore errors if file does not exist
       }
 
+      const adminTables = [
+        this.govn.ingestSession,
+        this.govn.ingestSessionEntry,
+        this.govn.ingestSessionState,
+        this.govn.ingestSessionIssue,
+      ];
+
       // deno-fmt-ignore
       await this.duckdb(ws.unindentWhitespace(`
+        ${this.emitWithResourcesSQL.map(dml => dml.SQL(this.govn.emitCtx)).join(";\n        ")};
+
         ATTACH '${resourceDb}' AS resource_db (TYPE SQLITE);
 
-        ${[this.govn.ingestSession, this.govn.ingestSessionEntry, this.govn.ingestSessionState, this.govn.ingestSessionIssue].map(t => `CREATE TABLE resource_db.${t.tableName} AS SELECT * FROM ${t.tableName}`).join(";\n        ")};
+        ${adminTables.map(t => `CREATE TABLE resource_db.${t.tableName} AS SELECT * FROM ${t.tableName}`).join(";\n        ")};
 
         ${contentResult.map(cr => `CREATE TABLE resource_db.${cr.tableName} AS SELECT * FROM ${cr.tableName};`)}
 
@@ -793,6 +828,29 @@ export class IngestEngine {
       args,
       govn,
     );
-    await kernel.run(workflow, await kernel.initRunState());
+    const initRunState = await kernel.initRunState();
+    const { runState: { eventEmitter: rsEE } } = initRunState;
+    rsEE.initNotebook = (_ctx) => {
+      workflow.registerStateChange("NONE", "INIT");
+    };
+    rsEE.beforeCell = (cell, ctx) => {
+      workflow.registerStateChange(
+        ctx.previous ? `EXIT(${ctx.previous.current.nbCellID})` : "INIT",
+        `ENTER(${cell})`,
+      );
+    };
+    rsEE.afterInterrupt = (cell, _ctx) => {
+      workflow.registerStateChange(`ENTER(${cell})`, `INTERRUPTED(${cell})`);
+    };
+    rsEE.afterError = (cell, _error, _ctx) => {
+      workflow.registerStateChange(`ENTER(${cell})`, `ERROR(${cell})`);
+    };
+    rsEE.afterCell = (cell, _result, _ctx) => {
+      workflow.registerStateChange(`ENTER(${cell})`, `EXIT(${cell})`);
+    };
+    rsEE.finalizeNotebook = (_ctx) => {
+      // TODO: add final state change?
+    };
+    await kernel.run(workflow, initRunState);
   }
 }
