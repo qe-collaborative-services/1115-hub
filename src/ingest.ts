@@ -272,6 +272,16 @@ export class Governance {
     this.ingestSessionState.tableName,
     this.ingestSessionState.zoSchema.shape,
   );
+  readonly ingestSessionIssueCRF = SQLa.tableColumnsRowFactory<
+    typeof this.ingestSessionIssue.tableName,
+    typeof this.ingestSessionIssue.zoSchema.shape,
+    EmitContext,
+    DomainQS,
+    DomainsQS
+  >(
+    this.ingestSessionIssue.tableName,
+    this.ingestSessionIssue.zoSchema.shape,
+  );
 
   constructor(readonly deterministicPKs: boolean) {
   }
@@ -422,7 +432,9 @@ export class IngestSqlNotebook {
   }
 
   /**
-   * Prepare SQL which will prepare the DuckDB table and ingest a CSV file.
+   * Prepare SQL which when executed will prepare a DuckDB table to ingest a
+   * CSV file.
+   *
    * Also supplies SQL that will ensure that the structure of the table, such
    * as required columns, matches our expections. This SQL should be kept
    * minimal and only focus on assurance of structure not content.
@@ -430,24 +442,18 @@ export class IngestSqlNotebook {
    * @param tableName the name of the table which will hold the CSV content
    * @returns SQLa.SqlTextSupplier<EmitContext> instance with sessionID
    */
-  async ensureStructCode(fsPath: string, tableName: string) {
+  ensureCsvStructure(
+    fsPath: string,
+    tableName: string,
+    ar: AssuranceRules,
+  ) {
     const { govn } = this;
-
-    // TODO: to support unit testing, crypto.randomUUID should be replaced
-    // by a deterministic UUID so that fixture comparisons are possible.
-    const sessionID = this.sessionDML.sessionID;
-    const sessionEntryID = await govn.emitCtx.newUUID(govn.deterministicPKs);
-    const ar = new AssuranceRules(
-      this.sessionDML.sessionID,
-      sessionEntryID,
-      govn,
-    );
 
     // deno-fmt-ignore
     const code = govn.SQL`
       ${govn.ingestSessionEntryCRF.insertDML({
-        ingest_session_entry_id: sessionEntryID,
-        session_id: sessionID,
+        ingest_session_entry_id: ar.sessionEntryID,
+        session_id: ar.sessionID,
         ingest_src: fsPath,
         ingest_table_name: tableName,
       })}
@@ -457,7 +463,7 @@ export class IngestSqlNotebook {
         tableName,
         extraColumnsSql: [
           "row_number() OVER () as src_file_row_number",
-          `'${sessionID}'`,
+          `'${ar.sessionID}'`,
         ]
       })}
 
@@ -470,11 +476,65 @@ export class IngestSqlNotebook {
         'ANSWER_CODE_SYSTEM_NAME', 'SDOH_DOMAIN', 'NEED_INDICATED',
         'VISIT_PART_2_FLAG', 'VISIT_OMH_FLAG', 'VISIT_OPWDD_FLAG'])}`;
 
-    return { ...code, sessionEntryID, sessionID };
+    return {
+      ...code,
+      fsPath,
+      tableName,
+      format: "CSV",
+      sessionEntryID: ar.sessionEntryID,
+      sessionID: ar.sessionID,
+    };
   }
 
   /**
-   * Prepare the SQL that will ensure the content of a table matches our
+   * Prepare SQL which will prepare DuckDB table(s) for known file formats.
+   * @param fsPath the file system path of the source
+   * @param tableName the name of the table (or prefix of multiple tables) which will hold the content
+   * @returns SQLa.SqlTextSupplier<EmitContext> instance with sessionID
+   */
+  async ensureStructure(fsPath: string, tableName: string) {
+    const { govn } = this;
+    const sessionEntryID = await govn.emitCtx.newUUID(govn.deterministicPKs);
+    const ar = new AssuranceRules(
+      this.sessionDML.sessionID,
+      sessionEntryID,
+      govn,
+    );
+
+    if (fsPath.toLocaleLowerCase().endsWith("csv")) {
+      return this.ensureCsvStructure(fsPath, tableName, ar);
+    }
+
+    // deno-fmt-ignore
+    const code = govn.SQL`
+      ${govn.ingestSessionEntryCRF.insertDML({
+        ingest_session_entry_id: ar.sessionEntryID,
+        session_id: ar.sessionID,
+        ingest_src: fsPath,
+        ingest_table_name: tableName,
+      })}
+      
+      ${govn.ingestSessionIssueCRF.insertDML({
+        ingest_session_issue_id: await govn.emitCtx.newUUID(govn.deterministicPKs),
+        session_id: this.sessionDML.sessionID,
+        session_entry_id: ar.sessionEntryID,
+        issue_type: "Structural",
+        issue_message: `Unknown file type`,
+        invalid_value: fsPath,
+      })}`;
+
+    return {
+      ...code,
+      fsPath,
+      tableName,
+      format: undefined,
+      sessionEntryID: ar.sessionEntryID,
+      sessionID: ar.sessionID,
+    };
+  }
+
+  /**
+   * Prepare the SQL that will ensure content of a table matches our
    * expectations. We separate the content SQL from the structural SQL since
    * content SQL assumes specific column names which will be syntax errors if
    * the structure doesn't match our expectations.
@@ -482,7 +542,7 @@ export class IngestSqlNotebook {
    * @param tableName the name of the table which holds the CSV content
    * @returns SQLa.SqlTextSupplier<EmitContext> instance with sessionID
    */
-  ensureContentCode(
+  ensureContent(
     session: { sessionEntryID: string; sessionID: string },
     tableName: string,
   ) {
@@ -503,8 +563,7 @@ export class IngestSqlNotebook {
 
 export class DuckDbCLI {
   readonly diagnostics: {
-    cell: string;
-    cellIndex?: number;
+    identity: string;
     sql: string;
     status: number;
     result?: Any;
@@ -513,7 +572,10 @@ export class DuckDbCLI {
   constructor(
     readonly args: {
       readonly duckdbCmd: string;
-      readonly icDb: string;
+      readonly dbDestFsPath: string;
+    } = {
+      duckdbCmd: "duckdb",
+      dbDestFsPath: ":memory:",
     },
   ) {
   }
@@ -539,16 +601,15 @@ export class DuckDbCLI {
     return markdown;
   }
 
-  async execute(sql: string, isc?: IngestStepContext, cellIndex?: number) {
-    const { args: { duckdbCmd, icDb } } = this;
-    const status = await dax.$`${duckdbCmd} ${icDb}`
+  async execute(sql: string, identity?: string) {
+    const { args: { duckdbCmd, dbDestFsPath } } = this;
+    const status = await dax.$`${duckdbCmd} ${dbDestFsPath}`
       .stdout("piped")
       .stderr("piped")
       .stdinText(sql)
       .noThrow();
     this.diagnostics.push({
-      cell: isc ? isc.current?.nbCellID : "unknown",
-      cellIndex,
+      identity: identity ? identity : "unknown",
       sql,
       status: status.code,
       markdown: this.sqlMarkdownPartial(sql, status).join("\n"),
@@ -556,17 +617,19 @@ export class DuckDbCLI {
     return status;
   }
 
-  async jsonResult(sql: string, isc: IngestStepContext, cellIndex?: number) {
-    const { args: { duckdbCmd, icDb } } = this;
-    const status = await dax.$`${duckdbCmd} ${icDb} --json`
+  async jsonResult(
+    sql: string,
+    identity: string,
+  ) {
+    const { args: { duckdbCmd, dbDestFsPath } } = this;
+    const status = await dax.$`${duckdbCmd} ${dbDestFsPath} --json`
       .stdout("piped")
       .stderr("piped")
       .stdinText(sql)
       .noThrow();
     const stdout = status.stdout;
     this.diagnostics.push({
-      cell: isc ? isc.current.nbCellID : "unknown",
-      cellIndex,
+      identity: identity ? identity : "unknown",
       sql,
       status: status.code,
       result: stdout ? JSON.parse(stdout) : stdout,
@@ -614,12 +677,15 @@ export class IngestEngine {
     },
     readonly govn: Governance,
   ) {
-    this.duckdb = new DuckDbCLI({ duckdbCmd: args.duckdbCmd, icDb: args.icDb });
+    this.duckdb = new DuckDbCLI({
+      duckdbCmd: args.duckdbCmd,
+      dbDestFsPath: args.icDb,
+    });
   }
 
-  async initDDL(isc: IngestStepContext) {
+  async init(isc: IngestStepContext) {
     const sql = this.isn.initDDL().SQL(this.govn.emitCtx);
-    const status = await this.duckdb.execute(sql, isc);
+    const status = await this.duckdb.execute(sql, isc.current.nbCellID);
     if (status.code != 0) {
       const diagsTmpFile = await this.govn.writeDiagnosticsSqlMD({
         duckdb: {
@@ -633,11 +699,11 @@ export class IngestEngine {
     return { status, sql };
   }
 
-  async structuralSQL(
+  async ensureStructure(
     isc: IngestStepContext,
     initResult:
       | Error
-      | Awaited<ReturnType<typeof IngestEngine.prototype.initDDL>>,
+      | Awaited<ReturnType<typeof IngestEngine.prototype.init>>,
   ) {
     if (initResult instanceof Error) {
       console.error(
@@ -673,7 +739,7 @@ export class IngestEngine {
         if (patterns.some((pattern) => pattern.test(relativePath))) {
           try {
             const tableName = govn.walkEntryToTableName(entry);
-            const checkStruct = await isn.ensureStructCode(
+            const checkStruct = await isn.ensureStructure(
               entry.path,
               tableName,
             );
@@ -684,8 +750,7 @@ export class IngestEngine {
               
               -- emit the errors for the given session (file) so it can be picked up
               SELECT * FROM ${ist.tableName} WHERE ${ist.columns.session_id.columnName} = '${checkStruct.sessionID}' and ${ist.columns.session_entry_id.columnName} = '${checkStruct.sessionEntryID}';`),
-              isc,
-              ++index,
+              `${isc.current.nbCellID}-${++index}`,
             );
 
             // if there were no errors, then add it to our list of CSV tables
@@ -708,11 +773,11 @@ export class IngestEngine {
     return result;
   }
 
-  async contentSQL(
+  async ensureContent(
     isc: IngestStepContext,
     structResult:
       | Error
-      | Awaited<ReturnType<typeof IngestEngine.prototype.structuralSQL>>,
+      | Awaited<ReturnType<typeof IngestEngine.prototype.ensureStructure>>,
   ) {
     if (structResult instanceof Error) {
       console.error(
@@ -730,9 +795,9 @@ export class IngestEngine {
 
     const { isn, govn: { emitCtx: ctx } } = this;
     await this.duckdb.execute(
-      structResult.map((sr) => isn.ensureContentCode(sr, sr.tableName).SQL(ctx))
+      structResult.map((sr) => isn.ensureContent(sr, sr.tableName).SQL(ctx))
         .join("\n"),
-      isc,
+      isc.current.nbCellID,
     );
     return structResult;
   }
@@ -741,7 +806,7 @@ export class IngestEngine {
     isc: IngestStepContext,
     contentResult:
       | Error
-      | Awaited<ReturnType<typeof IngestEngine.prototype.contentSQL>>,
+      | Awaited<ReturnType<typeof IngestEngine.prototype.ensureContent>>,
   ) {
     const { args: { resourceDb } } = this;
     if (resourceDb && Array.isArray(contentResult)) {
@@ -768,7 +833,7 @@ export class IngestEngine {
 
         ${contentResult.map(cr => `CREATE TABLE resource_db.${cr.tableName} AS SELECT * FROM ${cr.tableName};`)}
 
-        DETACH DATABASE resource_db;`), isc);
+        DETACH DATABASE resource_db;`), isc.current.nbCellID);
     }
   }
 
@@ -807,7 +872,7 @@ export class IngestEngine {
         "# Ingest Diagnostics",
       ];
       for (const d of this.duckdb.diagnostics) {
-        md.push(`\n## ${d.cell}${d.cellIndex ? ` (${d.cellIndex})` : ""}`);
+        md.push(`\n## ${d.identity}`);
         md.push(`${d.markdown}`);
       }
       await Deno.writeTextFile(diagsMd, md.join("\n"));

@@ -1,19 +1,19 @@
 @startuml
 left to right direction
-label daginitDDL as "initDDL"
-queue dagstructuralSQL as "structuralSQL"
-label dagcontentSQL as "contentSQL"
+label daginit as "init"
+queue dagensureStructure as "ensureStructure"
+label dagensureContent as "ensureContent"
 label dagemitResources as "emitResources"
-rectangle ginitDDL as "initDDL"
-rectangle gstructuralSQL as "structuralSQL"
-rectangle gcontentSQL as "contentSQL"
+rectangle ginit as "init"
+rectangle gensureStructure as "ensureStructure"
+rectangle gensureContent as "ensureContent"
 rectangle gemitResources as "emitResources"
-DAG --> daginitDDL
-daginitDDL --> dagstructuralSQL
-dagstructuralSQL --> dagcontentSQL
-dagcontentSQL --> dagemitResources
-Graph --> ginitDDL
-ginitDDL --> gstructuralSQL
-gstructuralSQL --> gcontentSQL
-gcontentSQL --> gemitResources
+DAG --> daginit
+daginit --> dagensureStructure
+dagensureStructure --> dagensureContent
+dagensureContent --> dagemitResources
+Graph --> ginit
+ginit --> gensureStructure
+gensureStructure --> gensureContent
+gensureContent --> gemitResources
 @enduml
