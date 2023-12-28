@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write --allow-env --allow-run --allow-sys
 
-import { cliffy } from "./deps.ts";
+import { cliffy, SQLa_ddb_ingest as ddbi } from "./deps.ts";
 import * as i from "./src/ingest.ts";
 
 async function CLI() {
@@ -45,8 +45,8 @@ async function CLI() {
       "The resource SQLite database file name",
     )
     .action(async (args) => {
-      const govn = new i.Governance(args.icDeterministicPk);
-      await i.IngestEngine.run(args, govn);
+      const govn = new ddbi.IngestGovernance(args.icDeterministicPk);
+      await ddbi.IngestEngine.run(govn, args, i.ingestSqlSuppliers(govn));
     })
     .command("help", new cliffy.HelpCommand().global())
     .command("completions", new cliffy.CompletionsCommand())
