@@ -7,12 +7,12 @@ export * as cliffy from "https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts";
 export * as dax from "https://deno.land/x/dax@0.36.0/mod.ts";
 
 // local: ../../netspective-labs/sql-aide
-// remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.10
+// remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.12
 
 // export * as SQLa from "../../netspective-labs/sql-aide/render/mod.ts";
 // export * as SQLa_ddb_dialect from "../../netspective-labs/sql-aide/render/dialect/duckdb/mod.ts";
 // export * as SQLa_ddb_ingest from "../../netspective-labs/sql-aide/pattern/ingest/duckdb/mod.ts";
 
-export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.10/render/mod.ts";
-export * as SQLa_ddb_dialect from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.10/render/dialect/duckdb/mod.ts";
-export * as SQLa_ddb_ingest from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.10/pattern/ingest/duckdb/mod.ts";
+export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.12/render/mod.ts";
+export * as SQLa_ddb_dialect from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.12/render/dialect/duckdb/mod.ts";
+export * as SQLa_ddb_ingest from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.12/pattern/ingest/duckdb/mod.ts";
