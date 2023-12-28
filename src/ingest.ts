@@ -1,6 +1,5 @@
 import {
   path,
-  SQLa,
   SQLa_ddb_dialect as ddbd,
   SQLa_ddb_ingest as ddbi,
 } from "../deps.ts";
