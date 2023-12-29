@@ -1,6 +1,6 @@
 {
   "tasks": {
     "doctor": "deno run -A ./support/bin/doctor.ts",
-    "test-e2e": "deno run -A ./qcsctl.ts --root-path ./support/assurance/synthetic-content --src \"**/*.{csv,xlsx}\" --ic-deterministic-pk --ic-db support/assurance/results-e2e/ingestion-center.duckdb --resource-db support/assurance/results-e2e/resource.sqlite.db --diags-xlsx support/assurance/results-e2e/diagnostics.xlsx --diags-md support/assurance/results-e2e/diagnostics.md --diags-dag-puml support/assurance/results-e2e/dag.puml"
+    "test-e2e": "deno run -A ./src/workflow.ts"
   }
 }

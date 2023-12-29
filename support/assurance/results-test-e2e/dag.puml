@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+label dagpotentialSources as "potentialSources"
+queue dagprepareAdminInfra as "prepareAdminInfra"
+label dagwalkSources as "walkSources"
+label dagingestCsvSources as "ingestCsvSources"
+label dagingestExcelSources as "ingestExcelSources"
+label dagensureContent as "ensureContent"
+label dagemitResources as "emitResources"
+rectangle gpotentialSources as "potentialSources"
+rectangle gprepareAdminInfra as "prepareAdminInfra"
+rectangle gwalkSources as "walkSources"
+rectangle gingestCsvSources as "ingestCsvSources"
+rectangle gingestExcelSources as "ingestExcelSources"
+rectangle gensureContent as "ensureContent"
+rectangle gemitResources as "emitResources"
+DAG --> dagpotentialSources
+dagpotentialSources --> dagprepareAdminInfra
+dagprepareAdminInfra --> dagwalkSources
+dagwalkSources --> dagingestCsvSources
+dagingestCsvSources --> dagingestExcelSources
+dagingestExcelSources --> dagensureContent
+dagensureContent --> dagemitResources
+Graph --> gpotentialSources
+gpotentialSources --> gprepareAdminInfra
+gprepareAdminInfra --> gwalkSources
+gwalkSources --> gingestCsvSources
+gingestCsvSources --> gingestExcelSources
+gingestExcelSources --> gensureContent
+gensureContent --> gemitResources
+@enduml
