@@ -8,12 +8,11 @@ export * as dax from "https://deno.land/x/dax@0.36.0/mod.ts";
 export * as safeText from "npm:string-ts";
 
 // local: ../../../netspective-labs/sql-aide
-// remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.14
+// remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.15
 
-export * as chainNB from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.14/lib/notebook/chain-of-responsibility.ts";
-export * as duckdb_shell from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.14/lib/duckdb/mod.ts";
-export * as ws from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.14/lib/universal/whitespace.ts";
+export * as chainNB from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.15/lib/notebook/chain-of-responsibility.ts";
+export * as duckdb_shell from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.15/lib/duckdb/mod.ts";
+export * as ws from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.15/lib/universal/whitespace.ts";
 
-export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.14/render/mod.ts";
-export * as SQLa_dialect_duckdb from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.14/render/dialect/duckdb/mod.ts";
-export * as SQLa_ingest_duckdb from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.14/pattern/ingest/duckdb/mod.ts";
+export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.15/render/mod.ts";
+export * as SQLa_ingest_duckdb from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.11.15/pattern/ingest/duckdb/mod.ts";

@@ -3,7 +3,6 @@ import {
   duckdb_shell as ddbs,
   fs,
   path,
-  SQLa_dialect_duckdb as ddbd,
   SQLa_ingest_duckdb as ddbi,
   ws,
 } from "./deps.ts";
@@ -74,21 +73,18 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
     sar: ScreeningAssuranceRules<TableName>,
   ) {
     const { tableName, uri } = this;
-    const { sessionID } = sar;
+    const { sessionID, sessionEntryID } = sar;
 
     // deno-fmt-ignore
     return this.govn.SQL`
       -- required by IngestEngine, setup the ingestion entry for logging
       ${await issac.sessionEntryDML()}
-      
-      ${issac.integration.csvTable({
-          csvSrcFsPath: () => uri, 
-          tableName: tableName,
-          extraColumnsSql: [
-          "row_number() OVER () as src_file_row_number",
-          `'${sessionID}'`,
-          ]
-      })}
+
+      -- be sure to add src_file_row_number and session_id columns to each row
+      -- because assurance CTEs require them
+      CREATE TABLE ${tableName} AS
+        SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
+          FROM read_csv_auto('${uri}');
 
       ${sar.requiredColumnNames()}
       
@@ -185,17 +181,27 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
 
   async ingestSQL(
     issac: ddbi.IngestSourceStructAssuranceContext,
-    _sar: ScreeningAssuranceRules<string>,
+    sar: ScreeningAssuranceRules<string>,
   ) {
-    const { sheetName, tableName } = this;
+    const { sheetName, tableName, uri } = this;
+    const { sessionID, sessionEntryID } = sar;
 
     // deno-fmt-ignore
     return this.govn.SQL`
       -- required by IngestEngine, setup the ingestion entry for logging
       ${await issac.sessionEntryDML()}
      
-      -- ingest '${sheetName}' into ${tableName}
+      -- ingest Excel workbook sheet '${sheetName}' into ${tableName} using spatial plugin
+      INSTALL spatial; LOAD spatial;
+
+      -- be sure to add src_file_row_number and session_id columns to each row
+      -- because assurance CTEs require them
+      CREATE TABLE ${tableName} AS
+        SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
+          FROM st_read('${uri}', layer='${sheetName}', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
       
+      ${sar.requiredColumnNames()}
+
       -- required by IngestEngine, emit the errors for the given session (file) so it can be picked up
       ${issac.selectEntryIssues()}`
   }
@@ -203,7 +209,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
   // deno-lint-ignore require-await
   async assuranceSQL() {
     // deno-fmt-ignore
-    return this.govn.SQL`-- Sheet '${this.sheetName}' not found in Excel workbook '${path.basename(this.uri)}'`;
+    return this.govn.SQL`-- Sheet '${this.sheetName}' has no assurance SQL in Excel workbook '${path.basename(this.uri)}'`;
   }
 }
 
@@ -430,7 +436,6 @@ export class IngestEngine {
   ) {
     const { govn, govn: { emitCtx: ctx } } = this;
     const { sessionID } = await govn.ingestSessionSqlDML();
-    const integration = ddbd.integration<ddbi.IngestEmitContext>();
     const assurable: {
       readonly psIndex: number; // the index in #potentialSources
       readonly source: PotentialIngestSource;
@@ -466,7 +471,6 @@ export class IngestEngine {
             invalid_value: uri,
           });
         },
-        integration,
         selectEntryIssues: () => ({
           SQL: () =>
             `SELECT * FROM ingest_session_issue WHERE session_id = '${sessionID}' and session_entry_id = '${sessionEntryID}'`,
