@@ -113,15 +113,19 @@ export class IngestEngine {
   }
 
   async init(isc: IngestStepContext) {
-    const { govn, govn: { informationSchema: is }, args } = this;
-    const sessionDML = await govn.ingestSessionSqlDML();
-    const beforeInit = Array.from(args.sqlRegister.catalog["before-init"]);
-    const afterInit = Array.from(args.sqlRegister.catalog["after-init"]);
+    const { govn, govn: { informationSchema: is }, args: { session } } = this;
+    const sessionDML = await session.ingestSessionSqlDML();
+    const beforeInit = Array.from(
+      session.sqlCatalogSqlSuppliers("before-init"),
+    );
+    const afterInit = Array.from(session.sqlCatalogSqlSuppliers("after-init"));
 
     const initDDL = govn.SQL`      
       ${beforeInit.length > 0 ? beforeInit : "-- no before-init SQL found"}
       ${is.adminTables}
       ${is.adminTableIndexes}
+
+      ${session.diagnosticsView()}
 
       -- register the current session and use the identifier for all logging
       ${sessionDML}
@@ -149,8 +153,8 @@ export class IngestEngine {
   }
 
   async ingest(isc: IngestStepContext) {
-    const { govn, govn: { emitCtx: ctx } } = this;
-    const { sessionID } = await govn.ingestSessionSqlDML();
+    const { govn, govn: { emitCtx: ctx }, args: { session } } = this;
+    const { sessionID } = await session.ingestSessionSqlDML();
     const assurables: {
       readonly psIndex: number; // the index in #potentialSources
       readonly source: PotentialIngestSource;
@@ -234,7 +238,7 @@ export class IngestEngine {
   }
 
   async emitResources(isc: IngestStepContext) {
-    const { args: { resourceDb } } = this;
+    const { args: { resourceDb, session } } = this;
     if (resourceDb) {
       try {
         Deno.removeSync(resourceDb);
@@ -249,16 +253,18 @@ export class IngestEngine {
         this.govn.ingestSessionIssue,
       ];
 
-      const beforeFinalize = Array.from(
-        this.args.sqlRegister.catalog["before-finalize"],
-      ).map((dml) => dml.SQL(this.govn.emitCtx)).join(";\n        ");
-      const afterFinalize = Array.from(
-        this.args.sqlRegister.catalog["after-finalize"],
-      ).map((dml) => dml.SQL(this.govn.emitCtx)).join(";\n        ");
+      const beforeFinalize = session.sqlCatalogSqlText("before-finalize");
+      const afterFinalize = session.sqlCatalogSqlText("after-finalize");
+
+      // `beforeFinalize` SQL includes state management SQL that log all the
+      // state changes between this notebooks' cells; however, the "exit" state
+      // for this method will not be stored since this is the last step in the
+      // process and the exit state will not be encountered before writing to
+      // the database.
 
       // deno-fmt-ignore
       await this.duckdb.execute(ws.unindentWhitespace(`
-        ${beforeFinalize.length > 0 ? `${beforeFinalize};` : "-- no before-finalize SQL provided"}
+        ${beforeFinalize.length > 0 ? `${beforeFinalize.join(";\n        ")};` : "-- no before-finalize SQL provided"}
 
         ATTACH '${resourceDb}' AS resource_db (TYPE SQLITE);
 
@@ -267,7 +273,7 @@ export class IngestEngine {
         -- {contentResult.map(cr => \`CREATE TABLE resource_db.\${cr.iaSqlSupplier.tableName} AS SELECT * FROM \${cr.tableName}\`).join(";")};
 
         DETACH DATABASE resource_db;
-        ${afterFinalize.length > 0 ? `${afterFinalize};` : "-- no after-finalize SQL provided"}`), isc.current.nbCellID);
+        ${afterFinalize.length > 0 ? `${afterFinalize.join(";\n        ")};` : "-- no after-finalize SQL provided"}`), isc.current.nbCellID);
     }
   }
 
@@ -287,7 +293,7 @@ export class IngestEngine {
       await this.duckdb.execute(ws.unindentWhitespace(`
         INSTALL spatial; LOAD spatial;
         -- TODO: join with ingest_session table to give all the results in one sheet
-        COPY (SELECT * FROM ingest_session_issue) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+        COPY (SELECT * FROM ingest_session_diagnostic_text) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
         'emitDiagnostics'
       );
     }
@@ -314,7 +320,7 @@ export class IngestEngine {
                   )
                   : undefined,
               },
-              (key, value) => key == "sqlRegister" ? undefined : value,
+              (key, value) => key == "session" ? undefined : value,
             ),
           ), // deep copy only string-frienly properties
         }
@@ -326,7 +332,7 @@ export class IngestEngine {
 if (import.meta.main) {
   const govn = new ddbi.IngestGovernance(true);
   const args: IngestEngineArgs = {
-    sqlRegister: ddbi.ingestSqlRegister(),
+    session: new ddbi.IngestSession(govn),
     rootPaths: ["support/assurance/synthetic-content"],
     icDb: "support/assurance/results-test-e2e/ingestion-center.duckdb",
     // diagsJson: "support/assurance/results-test-e2e/diagnostics.json",
