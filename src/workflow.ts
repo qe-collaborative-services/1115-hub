@@ -10,6 +10,23 @@ import {
 // @deno-types="https://cdn.sheetjs.com/xlsx-0.20.1/package/types/index.d.ts"
 import * as xlsx from "https://cdn.sheetjs.com/xlsx-0.20.1/package/xlsx.mjs";
 
+function uniqueEntries<T extends Record<string, unknown>>(
+  objectsArray: T[],
+): T[] {
+  const seen = new Set<string>();
+  return objectsArray.filter((obj) => {
+    const signature = JSON.stringify(
+      Object.entries(obj).sort((a, b) => a[0].localeCompare(b[0])),
+    );
+    if (seen.has(signature)) {
+      return false;
+    } else {
+      seen.add(signature);
+      return true;
+    }
+  });
+}
+
 export class ScreeningAssuranceRules<TableName extends string>
   extends ddbi.IngestTableAssuranceRules<TableName> {
   requiredColumnNames() {
@@ -365,10 +382,22 @@ export interface IngestEngineArgs
  * declared. As each step is executed, its error or results are passed to the
  * next method.
  *
+ * This Engine assumes that the Kernel observer will abort on Errors. If you want
+ * to continue after an error, throw a IngestResumableError and use the second
+ * cell argument (result) to test for it.
+ *
  * This class is introspected and run using SQLa's Notebook infrastructure.
  * See: https://github.com/netspective-labs/sql-aide/tree/main/lib/notebook
  */
 export class IngestEngine {
+  readonly diagnostics: {
+    sources: {
+      uri: string;
+      nature: string;
+      tableName: string;
+      valid: boolean;
+    }[];
+  } = { sources: [] };
   readonly duckdb: ddbs.DuckDbShell;
 
   constructor(
@@ -381,7 +410,7 @@ export class IngestEngine {
     });
   }
 
-  async prepareAdminInfra(isc: IngestStepContext) {
+  async init(isc: IngestStepContext) {
     const { govn, govn: { informationSchema: is }, args } = this;
     const sessionDML = await govn.ingestSessionSqlDML();
     const beforeInit = Array.from(args.sqlRegister.catalog["before-init"]);
@@ -392,11 +421,11 @@ export class IngestEngine {
       ${is.adminTables}
       ${is.adminTableIndexes}
 
+      -- register the current session and use the identifier for all logging
       ${sessionDML}
       
-      ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`.SQL(
-      this.govn.emitCtx,
-    );
+      ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`
+      .SQL(this.govn.emitCtx);
 
     try {
       Deno.removeSync(this.args.icDb);
@@ -405,35 +434,19 @@ export class IngestEngine {
     }
 
     const status = await this.duckdb.execute(initDDL, isc.current.nbCellID);
-    return { status, initDDL };
-  }
-
-  async walkSources(
-    isc: IngestStepContext,
-    initResult: Awaited<
-      ReturnType<typeof IngestEngine.prototype.prepareAdminInfra>
-    >,
-  ) {
-    if (initResult.status.code != 0) {
+    if (status.code != 0) {
       const diagsTmpFile = await this.duckdb.writeDiagnosticsSqlMD(
-        initResult.initDDL,
-        initResult.status,
+        initDDL,
+        status,
       );
-      console.error(
-        `${isc.previous?.current.nbCellID} did not return zero, see ${diagsTmpFile}`,
+      // the kernel stops processing if it's not a IngestResumableError instance
+      throw new Error(
+        `duckdb.execute status in ${isc.current.nbCellID}() did not return zero, see ${diagsTmpFile}`,
       );
-      return [];
     }
-
-    return potentialSources(this.govn, this.args.rootPaths);
   }
 
-  async ingest(
-    isc: IngestStepContext,
-    walkSourcesResult: Awaited<
-      ReturnType<typeof IngestEngine.prototype.walkSources>
-    >,
-  ) {
+  async ingest(isc: IngestStepContext) {
     const { govn, govn: { emitCtx: ctx } } = this;
     const { sessionID } = await govn.ingestSessionSqlDML();
     const assurable: {
@@ -443,7 +456,7 @@ export class IngestEngine {
     }[] = [];
 
     let psIndex = 0;
-    for (const ps of walkSourcesResult) {
+    for (const ps of potentialSources(this.govn, this.args.rootPaths)) {
       const { uri, tableName } = ps;
 
       const sessionEntryID = await govn.emitCtx.newUUID(
@@ -486,8 +499,16 @@ export class IngestEngine {
       // if there were no errors, then add it to our list of content tables
       // whose content will be tested; if the structural validation fails
       // then no content checks will be performed.
+      const diagnostics = {
+        uri: ps.uri,
+        nature: ps.nature,
+        tableName: ps.tableName,
+      };
       if (!status.stdout) {
         assurable.push({ psIndex, source: ps, assurance });
+        this.diagnostics.sources.push({ ...diagnostics, valid: true });
+      } else {
+        this.diagnostics.sources.push({ ...diagnostics, valid: false });
       }
 
       psIndex++;
@@ -549,6 +570,7 @@ export class IngestEngine {
     }
   }
 
+  // `finalize` means always run this even if errors abort
   @ieDescr.finalize()
   async emitDiagnostics() {
     const { args: { diagsXlsx } } = this;
@@ -576,8 +598,15 @@ export class IngestEngine {
       diagsMd: this.args.diagsMd
         ? {
           emit: async (md) => await Deno.writeTextFile(this.args.diagsMd!, md),
-          frontmatter: JSON.parse(JSON.stringify(this.args, (key, value) =>
-            key == "sqlRegister" ? undefined : value)), // deep copy only string-frienly properties
+          frontmatter: JSON.parse(
+            JSON.stringify(
+              {
+                ...this.args,
+                sources: uniqueEntries(this.diagnostics.sources),
+              },
+              (key, value) => key == "sqlRegister" ? undefined : value,
+            ),
+          ), // deep copy only string-frienly properties
         }
         : undefined,
     });

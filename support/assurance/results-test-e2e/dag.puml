@@ -1,23 +1,19 @@
 @startuml
 left to right direction
-label dagprepareAdminInfra as "prepareAdminInfra"
-queue dagwalkSources as "walkSources"
-label dagingest as "ingest"
+label daginit as "init"
+queue dagingest as "ingest"
 label dagensureContent as "ensureContent"
 label dagemitResources as "emitResources"
-rectangle gprepareAdminInfra as "prepareAdminInfra"
-rectangle gwalkSources as "walkSources"
+rectangle ginit as "init"
 rectangle gingest as "ingest"
 rectangle gensureContent as "ensureContent"
 rectangle gemitResources as "emitResources"
-DAG --> dagprepareAdminInfra
-dagprepareAdminInfra --> dagwalkSources
-dagwalkSources --> dagingest
+DAG --> daginit
+daginit --> dagingest
 dagingest --> dagensureContent
 dagensureContent --> dagemitResources
-Graph --> gprepareAdminInfra
-gprepareAdminInfra --> gwalkSources
-gwalkSources --> gingest
+Graph --> ginit
+ginit --> gingest
 gingest --> gensureContent
 gensureContent --> gemitResources
 @enduml
