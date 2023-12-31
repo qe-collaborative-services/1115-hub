@@ -48,6 +48,7 @@ $ cd 1115-hub
 $ deno task                               # list available tasks in `deno.jsonc`
 $ deno task doctor                        # see if dependencies are installed properly
 $ deno task ahc-hrsn-screening-test-e2e   # run the ingestion tasks as end-to-end test
+$ deno task ahc-hrsn-screening-doc        # generate documentation for the library in support/docs/lib/ahc-hrsn-elt/screening
 ```
 
 ## Architecture and Approach
