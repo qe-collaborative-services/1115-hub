@@ -1,6 +1,6 @@
 {
   "tasks": {
     "doctor": "deno run -A ./support/bin/doctor.ts",
-    "test-e2e": "deno run -A ./src/workflow.ts"
+    "ahc-hrsn-screening-test-e2e": "deno run -A ./src/ahc-hrsn-elt/screening/test-e2e.ts"
   }
 }

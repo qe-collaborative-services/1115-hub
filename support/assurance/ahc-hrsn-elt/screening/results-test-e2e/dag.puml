@@ -1,0 +1,19 @@
+@startuml
+left to right direction
+label daginit as "init"
+queue dagingest as "ingest"
+label dagensureContent as "ensureContent"
+label dagemitResources as "emitResources"
+rectangle ginit as "init"
+rectangle gingest as "ingest"
+rectangle gensureContent as "ensureContent"
+rectangle gemitResources as "emitResources"
+DAG --> daginit
+daginit --> dagingest
+dagingest --> dagensureContent
+dagensureContent --> dagemitResources
+Graph --> ginit
+ginit --> gingest
+gingest --> gensureContent
+gensureContent --> gemitResources
+@enduml
