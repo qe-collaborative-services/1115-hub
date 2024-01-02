@@ -14,9 +14,12 @@ analyst-friendly format, QCS-IC employs the following architecture strategy:
   into SQLite, MySQL, PostgreSQL, AWS Cloud, Azure Cloud, or other databases for
   portability.
   - All ingestion is done using a relational database (DuckDB).
-  - Some structural validation is done using Typescript (e.g. validating sheets
-    in an Excel workbook).
-  - Most structural validation is done using SQL (e.g. checking column names)
+  - Some structural validation is done using TypeScript (e.g. minimally
+    validating the existence of specific sheets in an Excel workbook before
+    ingesting so if a source document such as an Excel workbook is deemed
+    invalid it's data is never read into the database).
+  - Most structural validation of ingested CSVs and Excel workbooks is done
+    using SQL (e.g. checking column names).
   - All content validation is done using SQL (using CTEs).
   - All content enrichment can be done using SQL whenever possible using CTEs
     but can fallback to TypeScript for anything that cannot be accomplished in
