@@ -276,6 +276,26 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
   </div>
   
 </div>
+<div class="doc_item" id="property_ingestables">
+  
+<a
+    href="#property_ingestables"
+    class="anchor"
+    aria-label="Anchor"
+    tabIndex=-1
+>
+    <div style="width: 14px; height: 14px; display: inline-block;">&#128279;</div>
+</a>
+
+  <div class="doc_entry">
+    <span class="doc_entry_children">
+    <code>
+      <span style="font-weight: 700;">ingestables</span><span style="font-weight: 500;">: { <span>readonly </span>psIndex: <span>number</span>; <span>readonly </span>source: <a href="../.././/~/PotentialIngestSource.html" class="link">PotentialIngestSource</a>; <span>readonly </span>workflow: <span>ReturnType</span>&lt;<a href="../.././/~/PotentialIngestSource.html" class="link">PotentialIngestSource</a>[<span>"workflow"</span>]&gt;; <span>readonly </span>sessionEntryID: <span>string</span>; <span>readonly </span>sql: <span>string</span>; <span>readonly </span>issues: { <span>readonly </span>session_entry_id: <span>string</span>; <span>readonly </span>ingest_session_issue_id: <span>string</span>; <span>readonly </span>issue_type: <span>string</span>; <span>readonly </span>issue_message: <span>string</span>; <span>readonly </span>invalid_value: <span>string</span>;  }[];  }[]</span>
+    </code>
+    </span>
+  </div>
+  
+</div>
 <div class="doc_item" id="property_potentialSources">
   
 <a
@@ -291,26 +311,6 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
     <span class="doc_entry_children">
     <code>
       <span style="font-weight: 700;">potentialSources</span><span style="font-weight: 500;">: <a href="../.././/~/PotentialIngestSource.html" class="link">PotentialIngestSource</a>[]</span>
-    </code>
-    </span>
-  </div>
-  
-</div>
-<div class="doc_item" id="property_sourcesStates">
-  
-<a
-    href="#property_sourcesStates"
-    class="anchor"
-    aria-label="Anchor"
-    tabIndex=-1
->
-    <div style="width: 14px; height: 14px; display: inline-block;">&#128279;</div>
-</a>
-
-  <div class="doc_entry">
-    <span class="doc_entry_children">
-    <code>
-      <span style="font-weight: 700;">sourcesStates</span><span style="font-weight: 500;">: { assurable: <span>boolean</span>;  }[]</span>
     </code>
     </span>
   </div>
@@ -379,7 +379,11 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
     </code>
     </span>
   </div>
-  
+  <div class="markdown"><p>For all ingestions from the previous step that did not create any issues
+(meaning they were successfully ingested), prepare all cleansing,
+validation, transformation and other SQL and then execute entire SQL as a
+single DuckDB instance call.</p>
+</div>
 </div>
 <div class="doc_item" id="method_ingest_0">
   
@@ -399,7 +403,12 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
     </code>
     </span>
   </div>
-  
+  <div class="markdown"><p>Walk the root paths, find all types of files we can handle, generate
+ingestion SQL (&quot;loading&quot; part of ELT/ETL) and execute the SQL in a single
+DuckDB call. Then, for each successful execution (any ingestions that do
+not create issues in the issue table) prepare the list of subsequent steps
+for further cleansing, validation, transformations, etc.</p>
+</div>
 </div>
 <div class="doc_item" id="method_init_0">
   
@@ -419,7 +428,35 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
     </code>
     </span>
   </div>
+  <div class="markdown"><p>Initialize the DuckDB database by ensuring the admin tables such as tracking
+ingestion events (states), activities (which files are being loaded), ingest
+issues (errors, etc.), and related  entities are created. If there are any
+errors during this process all other processing should stop and no other steps
+are executed.</p>
+</div>
+</div>
+<div class="doc_item" id="method_prepareInit_0">
   
+<a
+    href="#method_prepareInit_0"
+    class="anchor"
+    aria-label="Anchor"
+    tabIndex=-1
+>
+    <div style="width: 14px; height: 14px; display: inline-block;">&#128279;</div>
+</a>
+
+  <div class="doc_entry">
+    <span class="doc_entry_children">
+    <code>
+      <span style="font-weight: 700;">prepareInit</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/IngestStepContext.html" class="link">IngestStepContext</a></span></span></span>): <span>Promise</span>&lt;<span>void</span>&gt;</span>
+    </code>
+    </span>
+  </div>
+  <div class="markdown"><p>Prepare the DuckDB path/database for initialization. Typically this gives
+a chance for the path to the database to be created or removing the existing
+database in case we want to initialize from scratch.</p>
+</div>
 </div>
 
   </div>
