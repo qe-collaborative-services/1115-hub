@@ -2,10 +2,16 @@
 
 - SQL-native encourages performing work inside a database as early as possible
   - All ingestion is done using a relational database
-  - All validation is done using a relational database and pure SQL
+  - Some structural validation is done using Typescript (e.g. validating sheets
+    in an Excel workbook)
+  - Most structural validation is done using SQL (e.g. checking column names)
+  - All content validation is done using SQL (using CTEs)
+  - All content cleansing can be done using SQL whenever possible using CTEs but
+    can fallback to TypeScript for anything too complex for SQL
+  - All content transformations can be done using SQL (using CTEs)
   - All error reporting is done using a database (for machine consumption) or
     Excel (for human consumption)
-  - All business reporting is done using a database
+  - All business reporting is done directly from within the database.
 - Support for local, edge, or server based models.
   - _Local_ allows development on a laptop or any Windows, MacOS, or Linux
     desktop
