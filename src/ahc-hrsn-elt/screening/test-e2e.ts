@@ -19,8 +19,15 @@ const resultsHome = `${ahcHrsnScreeningHome}/results-test-e2e`;
 const govn = new ddbi.IngestGovernance(true);
 const args: mod.IngestEngineArgs = {
   session: new ddbi.IngestSession(govn),
-  rootPaths: [`${ahcHrsnScreeningHome}/synthetic-content`],
-  icDb: `${resultsHome}/ingestion-center.duckdb`,
+  walkRootPaths: [`${ahcHrsnScreeningHome}/synthetic-content`],
+  duckDbDestFsPathSupplier: () => `${resultsHome}/ingestion-center.duckdb`,
+  prepareDuckDbFsPath: async (duckDbFsPath: string) => {
+    try {
+      await Deno.remove(duckDbFsPath);
+    } catch (_err) {
+      // ignore errors if file does not exist
+    }
+  },
   // diagsJson: `${resultsHome}/diagnostics.json`,
   diagsMd: `${resultsHome}/diagnostics.md`,
   diagsXlsx: `${resultsHome}/diagnostics.xlsx`,

@@ -71,8 +71,9 @@ export const ieDescr = new chainNB.NotebookDescriptor<
 
 export interface IngestEngineArgs
   extends ddbi.IngestArgs<ddbi.IngestGovernance, IngestEngine> {
-  readonly icDb: string;
-  readonly rootPaths?: string[];
+  readonly duckDbDestFsPathSupplier: (identity?: string) => string;
+  readonly prepareDuckDbFsPath?: (duckDbDestFsPath: string) => Promise<void>;
+  readonly walkRootPaths?: string[];
   readonly diagsJson?: string;
   readonly diagsXlsx?: string;
   readonly diagsMd?: string;
@@ -95,7 +96,20 @@ export interface IngestEngineArgs
  */
 export class IngestEngine {
   protected potentialSources?: PotentialIngestSource[];
-  protected sourcesStates: { assurable: boolean }[] = [];
+  protected ingestables?: {
+    readonly psIndex: number; // the index in #potentialSources
+    readonly source: PotentialIngestSource;
+    readonly workflow: ReturnType<PotentialIngestSource["workflow"]>;
+    readonly sessionEntryID: string;
+    readonly sql: string;
+    readonly issues: {
+      readonly session_entry_id: string;
+      readonly ingest_session_issue_id: string;
+      readonly issue_type: string;
+      readonly issue_message: string;
+      readonly invalid_value: string;
+    }[];
+  }[];
   readonly duckdb: ddbs.DuckDbShell;
 
   constructor(
@@ -108,10 +122,31 @@ export class IngestEngine {
   ) {
     this.duckdb = new ddbs.DuckDbShell({
       duckdbCmd: "duckdb",
-      dbDestFsPath: args.icDb,
+      dbDestFsPathSupplier: args.duckDbDestFsPathSupplier,
     });
   }
 
+  /**
+   * Prepare the DuckDB path/database for initialization. Typically this gives
+   * a chance for the path to the database to be created or removing the existing
+   * database in case we want to initialize from scratch.
+   * @param isc the type-safe notebook cell context for diagnostics or business rules
+   */
+  async prepareInit(isc: IngestStepContext) {
+    const duckDbFsPath = this.duckdb.args.dbDestFsPathSupplier(
+      isc.current.nbCellID,
+    );
+    await this.args.prepareDuckDbFsPath?.(duckDbFsPath);
+  }
+
+  /**
+   * Initialize the DuckDB database by ensuring the admin tables such as tracking
+   * ingestion events (states), activities (which files are being loaded), ingest
+   * issues (errors, etc.), and related  entities are created. If there are any
+   * errors during this process all other processing should stop and no other steps
+   * are executed.
+   * @param isc the type-safe notebook cell context for diagnostics or business rules
+   */
   async init(isc: IngestStepContext) {
     const { govn, govn: { informationSchema: is }, args: { session } } = this;
     const sessionDML = await session.ingestSessionSqlDML();
@@ -133,17 +168,11 @@ export class IngestEngine {
       ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`
       .SQL(this.govn.emitCtx);
 
-    try {
-      Deno.removeSync(this.args.icDb);
-    } catch (_err) {
-      // ignore errors if file does not exist
-    }
-
-    const status = await this.duckdb.execute(initDDL, isc.current.nbCellID);
-    if (status.code != 0) {
+    const execResult = await this.duckdb.execute(initDDL, isc.current.nbCellID);
+    if (execResult.status.code != 0) {
       const diagsTmpFile = await this.duckdb.writeDiagnosticsSqlMD(
         initDDL,
-        status,
+        execResult.status,
       );
       // the kernel stops processing if it's not a IngestResumableError instance
       throw new Error(
@@ -152,19 +181,24 @@ export class IngestEngine {
     }
   }
 
+  /**
+   * Walk the root paths, find all types of files we can handle, generate
+   * ingestion SQL ("loading" part of ELT/ETL) and execute the SQL in a single
+   * DuckDB call. Then, for each successful execution (any ingestions that do
+   * not create issues in the issue table) prepare the list of subsequent steps
+   * for further cleansing, validation, transformations, etc.
+   * @param isc the type-safe notebook cell context for diagnostics or business rules
+   * @returns list of "assurables" that did not generate any ingestion issues
+   */
   async ingest(isc: IngestStepContext) {
     const { govn, govn: { emitCtx: ctx }, args: { session } } = this;
     const { sessionID } = await session.ingestSessionSqlDML();
-    const assurables: {
-      readonly psIndex: number; // the index in #potentialSources
-      readonly source: PotentialIngestSource;
-      readonly workflow: ReturnType<PotentialIngestSource["workflow"]>;
-    }[] = [];
 
     let psIndex = 0;
     this.potentialSources = Array.from(
-      await this.iss.sources(this.args.rootPaths),
+      await this.iss.sources(this.args.walkRootPaths),
     );
+    this.ingestables = [];
     for (const ps of this.potentialSources) {
       const { uri, tableName } = ps;
 
@@ -193,34 +227,54 @@ export class IngestEngine {
             invalid_value: uri,
           });
         },
-        selectEntryIssues: () => ({
-          SQL: () =>
-            `SELECT * FROM ingest_session_issue WHERE session_id = '${sessionID}' and session_entry_id = '${sessionEntryID}'`,
-        }),
       });
 
-      // run the SQL and then emit the errors to STDOUT in JSON
-      const status = await this.duckdb.jsonResult(
-        checkStruct.SQL(ctx),
-        `${isc.current.nbCellID}-${psIndex}`,
-      );
-
-      // if there were no errors, then add it to our list of content tables
-      // whose content will be tested; if the structural validation fails
-      // then no content checks will be performed.
-      if (!status.stdout) {
-        assurables.push({ psIndex, source: ps, workflow });
-        this.sourcesStates[psIndex] = { assurable: true };
-      } else {
-        this.sourcesStates[psIndex] = { assurable: false };
-      }
-
+      this.ingestables.push({
+        psIndex,
+        sessionEntryID,
+        sql: `-- ${isc.current.nbCellID} ${uri} (${tableName})\n` +
+          checkStruct.SQL(ctx),
+        source: ps,
+        workflow,
+        issues: [],
+      });
       psIndex++;
     }
 
-    return assurables;
+    // run the SQL and then emit the errors to STDOUT in JSON
+    const ingestSQL = this.ingestables.map((ic) => ic.sql);
+    ingestSQL.push(
+      `SELECT session_entry_id, ingest_session_issue_id, issue_type, issue_message, invalid_value FROM ingest_session_issue WHERE session_id = '${sessionID}'`,
+    );
+    const ingestResult = await this.duckdb.jsonResult<
+      (typeof this.ingestables[number]["issues"])[number]
+    >(
+      ingestSQL.join("\n"),
+      isc.current.nbCellID,
+    );
+    if (ingestResult.json) {
+      // if errors were found, put the problems into the proper ingestable issues
+      for (const row of ingestResult.json) {
+        const ingestable = this.ingestables.find((i) =>
+          i.sessionEntryID == row.session_entry_id
+        );
+        if (ingestable) ingestable.issues.push(row);
+      }
+    }
+
+    // for the next step (ensureContent) we only want to pursue remainder of
+    // ingestion for those ingestables that didn't have errors during construction
+    return this.ingestables.filter((i) => i.issues.length == 0);
   }
 
+  /**
+   * For all ingestions from the previous step that did not create any issues
+   * (meaning they were successfully ingested), prepare all cleansing,
+   * validation, transformation and other SQL and then execute entire SQL as a
+   * single DuckDB instance call.
+   * @param isc the type-safe notebook cell context for diagnostics or business rules
+   * @param ingestResult the list of successful ingestions from the previous step
+   */
   async ensureContent(
     isc: IngestStepContext,
     ingestResult: Awaited<ReturnType<typeof IngestEngine.prototype.ingest>>,
@@ -315,7 +369,9 @@ export class IngestEngine {
                       uri: ps.uri,
                       nature: ps.nature,
                       tableName: ps.tableName,
-                      assurable: this.sourcesStates[psIndex].assurable,
+                      ingestionIssues: this.ingestables?.find((i) =>
+                        i.psIndex == psIndex
+                      )?.issues.length,
                     })),
                   )
                   : undefined,

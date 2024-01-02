@@ -35,10 +35,7 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
           -- required by IngestEngine, setup the ingestion entry for logging
           ${await issac.sessionEntryInsertDML()}
         
-          ${await issac.issueInsertDML(`Excel workbook '${path.basename(this.uri)}' sheet '${this.sheetName}' has not been implemented yet.`, "TODO")};
-          
-          -- required by IngestEngine, emit the errors for the given session (file) so it can be picked up
-          ${issac.selectEntryIssues()}`,
+          ${await issac.issueInsertDML(`Excel workbook '${path.basename(this.uri)}' sheet '${this.sheetName}' has not been implemented yet.`, "TODO")}`,
       assuranceSQL: () =>
         this.govn.SQL`-- Sheet '${this.sheetName}' ingestion not implemented.`,
     };
@@ -99,10 +96,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
           FROM st_read('${uri}', layer='${sheetName}', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
       
-      ${sar.requiredColumnNames()}
-
-      -- required by IngestEngine, emit the errors for the given session (file) so it can be picked up
-      ${issac.selectEntryIssues()}`
+      ${sar.requiredColumnNames()}`
   }
 
   // deno-lint-ignore require-await

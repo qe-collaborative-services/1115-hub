@@ -46,10 +46,7 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
           FROM read_csv_auto('${uri}');
 
-      ${sar.requiredColumnNames()}
-      
-      -- required by IngestEngine, emit the errors for the given session (file) so it can be picked up
-      ${issac.selectEntryIssues()}`
+      ${sar.requiredColumnNames()}`
   }
 
   // deno-lint-ignore require-await

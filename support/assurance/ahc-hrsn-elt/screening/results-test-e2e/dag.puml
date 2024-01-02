@@ -1,18 +1,22 @@
 @startuml
 left to right direction
-label daginit as "init"
-queue dagingest as "ingest"
+label dagprepareInit as "prepareInit"
+queue daginit as "init"
+label dagingest as "ingest"
 label dagensureContent as "ensureContent"
 label dagemitResources as "emitResources"
+rectangle gprepareInit as "prepareInit"
 rectangle ginit as "init"
 rectangle gingest as "ingest"
 rectangle gensureContent as "ensureContent"
 rectangle gemitResources as "emitResources"
-DAG --> daginit
+DAG --> dagprepareInit
+dagprepareInit --> daginit
 daginit --> dagingest
 dagingest --> dagensureContent
 dagensureContent --> dagemitResources
-Graph --> ginit
+Graph --> gprepareInit
+gprepareInit --> ginit
 ginit --> gingest
 gingest --> gensureContent
 gensureContent --> gemitResources
