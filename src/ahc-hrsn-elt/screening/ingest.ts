@@ -187,6 +187,14 @@ export class IngestEngine {
    * DuckDB call. Then, for each successful execution (any ingestions that do
    * not create issues in the issue table) prepare the list of subsequent steps
    * for further cleansing, validation, transformations, etc.
+   *
+   * The reason why we separate initial ingestion and structural validation from
+   * content validation, cleansing, and transformations is because content
+   * SQL relies on table names and table column names in CTEs and other SQL
+   * which must exist otherwise they cause syntax errors. Once we validate the
+   * structure and columns of ingested data, then the remainder of the SQL for
+   * cleansing, validation, or transformations will not cause syntax errors.
+   *
    * @param isc the type-safe notebook cell context for diagnostics or business rules
    * @returns list of "assurables" that did not generate any ingestion issues
    */
@@ -272,6 +280,12 @@ export class IngestEngine {
    * (meaning they were successfully ingested), prepare all cleansing,
    * validation, transformation and other SQL and then execute entire SQL as a
    * single DuckDB instance call.
+   *
+   * The content SQL is separated from structural SQL to avoid syntax errors
+   * when a table or table column does not exist (which can happen if the format
+   * or structure of an ingested CSV, Excel, Parquet, or other source does not
+   * match our expectations).
+   *
    * @param isc the type-safe notebook cell context for diagnostics or business rules
    * @param ingestResult the list of successful ingestions from the previous step
    */
