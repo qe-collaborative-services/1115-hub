@@ -44,7 +44,10 @@ analyst-friendly format, QCS-IC employs the following architecture strategy:
     cloud provider (e.g. AWS, Azure, ORACLE Cloud).
 - Automatic upgrades of code using `semver` and GitHub tags.
 
-## Dependencies
+## Runtime (Deployment) Dependencies
+
+All dependencies must be cross-platform, open source with permissive licenses so
+that developers and data analysts do not need to procure or purchase any tools.
 
 - Download
   [Deno](https://docs.deno.com/runtime/manual/getting_started/installation)
@@ -56,13 +59,22 @@ The utilities mentioned above are cross-platform single-file binaries and will
 run on Windows, MacOS, or Linux. Please be sure to get the proper binaries for
 your platform.
 
-## Development Tools
+You can run `deno task doctor` (see below) to see if dependencies are installed
+properly.
+
+## Build (Development) Dependencies
+
+During build (development) in a sandbox you will need all the runtime
+dependencies mentioned above plus do the following:
 
 - Download [Visual Studio Code](https://code.visualstudio.com/download) IDE and
   use it for editing or viewing of CSV and other assets. VS Code is available
   for all major OS platforms.
 - Download [SQLite](https://www.sqlite.org/download.html) embedded database and
   put it in your `PATH`.
+
+You can run `deno task doctor` (see below) to see if dependencies are installed
+properly.
 
 ## Try out the code
 
