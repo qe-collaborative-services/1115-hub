@@ -149,7 +149,6 @@ export class IngestEngine {
    */
   async init(isc: IngestStepContext) {
     const { govn, govn: { informationSchema: is }, args: { session } } = this;
-    const sessionDML = await session.ingestSessionSqlDML();
     const beforeInit = Array.from(
       session.sqlCatalogSqlSuppliers("before-init"),
     );
@@ -162,8 +161,9 @@ export class IngestEngine {
 
       ${session.diagnosticsView()}
 
-      -- register the current session and use the identifier for all logging
-      ${sessionDML}
+      -- register the current device and session and use the identifiers for all logging
+      ${await session.deviceSqlDML()}
+      ${await session.ingestSessionSqlDML()}
       
       ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`
       .SQL(this.govn.emitCtx);
@@ -315,6 +315,7 @@ export class IngestEngine {
       }
 
       const adminTables = [
+        this.govn.device,
         this.govn.ingestSession,
         this.govn.ingestSessionEntry,
         this.govn.ingestSessionState,
