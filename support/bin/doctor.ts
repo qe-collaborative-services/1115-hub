@@ -122,6 +122,14 @@ export const checkup = doctor(function* () {
                 "DuckDB not found in PATH, install it from https://duckdb.org/docs/installation",
             }),
         });
+        await report({
+          test: async () => (await $.commandExists("sqlpage.bin")
+            ? { ok: `SQLPage available` } // TODO: sqlpage.bin does not have a --version
+            : {
+              suggest:
+                "SQLPage not found in PATH, install it from https://github.com/lovasoa/SQLpage/releases",
+            }),
+        });
       },
     };
   });

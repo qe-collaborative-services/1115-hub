@@ -40,6 +40,16 @@
             </li>
         
             <li>
+              <a href="../.././/~/SQLPageNotebook.html">
+                <div class="symbol_kind kind_Class_text kind_Class_bg" title="Class">
+  c
+</div>
+
+                <span>SQLPageNotebook</span>
+              </a>
+            </li>
+        
+            <li>
               <a href="../.././/~/ScreeningAssuranceRules.html">
                 <div class="symbol_kind kind_Class_text kind_Class_bg" title="Class">
   c
@@ -383,6 +393,10 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
 (meaning they were successfully ingested), prepare all cleansing,
 validation, transformation and other SQL and then execute entire SQL as a
 single DuckDB instance call.</p>
+<p>The content SQL is separated from structural SQL to avoid syntax errors
+when a table or table column does not exist (which can happen if the format
+or structure of an ingested CSV, Excel, Parquet, or other source does not
+match our expectations).</p>
 </div>
 </div>
 <div class="doc_item" id="method_ingest_0">
@@ -408,6 +422,12 @@ ingestion SQL (&quot;loading&quot; part of ELT/ETL) and execute the SQL in a sin
 DuckDB call. Then, for each successful execution (any ingestions that do
 not create issues in the issue table) prepare the list of subsequent steps
 for further cleansing, validation, transformations, etc.</p>
+<p>The reason why we separate initial ingestion and structural validation from
+content validation, cleansing, and transformations is because content
+SQL relies on table names and table column names in CTEs and other SQL
+which must exist otherwise they cause syntax errors. Once we validate the
+structure and columns of ingested data, then the remainder of the SQL for
+cleansing, validation, or transformations will not cause syntax errors.</p>
 </div>
 </div>
 <div class="doc_item" id="method_init_0">

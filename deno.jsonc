@@ -3,6 +3,8 @@
     "doctor": "deno run -A ./support/bin/doctor.ts",
     "ahc-hrsn-screening-test-e2e": "deno run -A ./src/ahc-hrsn-elt/screening/test-e2e.ts",
     "ahc-hrsn-screening-doc": "deno doc --html --name=\"AHC HRSN Screening\" --output=./support/docs/lib/ahc-hrsn-elt/screening/ ./src/ahc-hrsn-elt/screening/mod.ts",
-    "prepare-release": "deno task ahc-hrsn-screening-doc"
+    "prepare-release": "deno task ahc-hrsn-screening-doc",
+    "sqlpage": "cd support/assurance/ahc-hrsn-elt/screening/results-test-e2e && sqlpage.bin",
+    "ahc-hrsn-screening-test-serve": "deno task ahc-hrsn-screening-test-e2e && deno task sqlpage"
   }
 }

@@ -6,6 +6,7 @@ import {
   SQLa_ingest_duckdb as ddbi,
   ws,
 } from "./deps.ts";
+import * as sp from "./sqlpage.ts";
 
 import {
   ingestCsvFilesSourcesSupplier,
@@ -306,7 +307,7 @@ export class IngestEngine {
   }
 
   async emitResources(isc: IngestStepContext) {
-    const { args: { resourceDb, session } } = this;
+    const { args: { resourceDb, session }, govn: { emitCtx: ctx } } = this;
     if (resourceDb) {
       try {
         Deno.removeSync(resourceDb);
@@ -314,12 +315,14 @@ export class IngestEngine {
         // ignore errors if file does not exist
       }
 
+      const spc = sp.SQLPageNotebook.create(this.govn);
       const adminTables = [
         this.govn.device,
         this.govn.ingestSession,
         this.govn.ingestSessionEntry,
         this.govn.ingestSessionState,
         this.govn.ingestSessionIssue,
+        spc.table,
       ];
 
       const beforeFinalize = session.sqlCatalogSqlText("before-finalize");
@@ -335,6 +338,9 @@ export class IngestEngine {
       await this.duckdb.execute(ws.unindentWhitespace(`
         ${beforeFinalize.length > 0 ? `${beforeFinalize.join(";\n        ")};` : "-- no before-finalize SQL provided"}
 
+        -- emit all the SQLPage content
+        ${((await spc.sqlCells()).map(sc => sc.SQL(ctx))).join(";\n\n")};
+        
         ATTACH '${resourceDb}' AS resource_db (TYPE SQLITE);
 
         ${adminTables.map(t => `CREATE TABLE resource_db.${t.tableName} AS SELECT * FROM ${t.tableName}`).join(";\n        ")};

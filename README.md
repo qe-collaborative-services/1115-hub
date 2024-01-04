@@ -54,6 +54,9 @@ that developers and data analysts do not need to procure or purchase any tools.
   Javascript runtime and put it in your `PATH`.
 - Download [DuckDB](https://duckdb.org/docs/installation) 0.9+ for ingestion
   operations and put it in your `PATH`.
+- Download [SQLPage](https://github.com/lovasoa/SQLpage/releases) SQL browser
+  and put it in your `PATH`. This is not strictly required but highly
+  recommended for easier diagnostics.
 
 The utilities mentioned above are cross-platform single-file binaries and will
 run on Windows, MacOS, or Linux. Please be sure to get the proper binaries for
@@ -88,6 +91,7 @@ $ cd 1115-hub
 $ deno task                               # list available tasks in `deno.jsonc`
 $ deno task doctor                        # see if dependencies are installed properly
 $ deno task ahc-hrsn-screening-test-e2e   # run the ingestion tasks as end-to-end test
+$ deno task ahc-hrsn-screening-test-serve # run the ingestion tasks as end-to-end test and serve with SQLPage
 $ deno task ahc-hrsn-screening-doc        # generate documentation for the library in support/docs/lib/ahc-hrsn-elt/screening
 ```
 
