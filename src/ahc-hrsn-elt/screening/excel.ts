@@ -36,8 +36,13 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
           ${await issac.sessionEntryInsertDML()}
         
           ${await issac.issueInsertDML(`Excel workbook '${path.basename(this.uri)}' sheet '${this.sheetName}' has not been implemented yet.`, "TODO")}`,
+
       assuranceSQL: () =>
         this.govn.SQL`-- Sheet '${this.sheetName}' ingestion not implemented.`,
+
+      exportResourceSQL: (targetSchema: string) =>
+        this.govn.SQL`
+          --  Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})`,
     };
   }
 }
@@ -72,6 +77,8 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     return {
       ingestSQL: async (issac) => await this.ingestSQL(issac, sar),
       assuranceSQL: async () => await this.assuranceSQL(),
+      exportResourceSQL: async (targetSchema) =>
+        await this.exportResourceSQL(targetSchema),
     };
   }
 
@@ -103,6 +110,14 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
   async assuranceSQL() {
     // deno-fmt-ignore
     return this.govn.SQL`-- Sheet '${this.sheetName}' has no assurance SQL in Excel workbook '${path.basename(this.uri)}'`;
+  }
+
+  // deno-lint-ignore require-await
+  async exportResourceSQL(targetSchema: string) {
+    const { govn } = this;
+
+    // deno-fmt-ignore
+    return govn.SQL`-- Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})`;
   }
 }
 

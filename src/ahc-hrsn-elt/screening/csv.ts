@@ -25,6 +25,8 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
     return {
       ingestSQL: async (issac) => await this.ingestSQL(issac, sar),
       assuranceSQL: async () => await this.assuranceSQL(sar),
+      exportResourceSQL: async (targetSchema) =>
+        await this.exportResourceSQL(targetSchema),
     };
   }
 
@@ -56,6 +58,12 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
     // deno-fmt-ignore
     return govn.SQL`
       ${sar.tableRules.intValueInAllRows('SURVEY_ID')}`
+  }
+
+  // deno-lint-ignore require-await
+  async exportResourceSQL(targetSchema: string) {
+    const { govn: { SQL }, tableName } = this;
+    return SQL`CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName}`;
   }
 }
 

@@ -304,9 +304,15 @@ export class IngestEngine {
     );
 
     await this.duckdb.execute(assurableSQL.join("\n"), isc.current.nbCellID);
+    return ingestResult;
   }
 
-  async emitResources(isc: IngestStepContext) {
+  async emitResources(
+    isc: IngestStepContext,
+    ingestResult: Awaited<
+      ReturnType<typeof IngestEngine.prototype.ensureContent>
+    >,
+  ) {
     const { args: { resourceDb, session }, govn: { emitCtx: ctx } } = this;
     if (resourceDb) {
       try {
@@ -327,6 +333,13 @@ export class IngestEngine {
 
       const beforeFinalize = session.sqlCatalogSqlText("before-finalize");
       const afterFinalize = session.sqlCatalogSqlText("after-finalize");
+      const rdbSchemaName = "resource_db";
+
+      const exportsSQL = await Promise.all(
+        ingestResult.map(async (sr) =>
+          (await sr.workflow.exportResourceSQL(rdbSchemaName)).SQL(ctx)
+        ),
+      );
 
       // `beforeFinalize` SQL includes state management SQL that log all the
       // state changes between this notebooks' cells; however, the "exit" state
@@ -341,13 +354,13 @@ export class IngestEngine {
         -- emit all the SQLPage content
         ${((await spc.sqlCells()).map(sc => sc.SQL(ctx))).join(";\n\n")};
         
-        ATTACH '${resourceDb}' AS resource_db (TYPE SQLITE);
+        ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);
 
-        ${adminTables.map(t => `CREATE TABLE resource_db.${t.tableName} AS SELECT * FROM ${t.tableName}`).join(";\n        ")};
+        ${adminTables.map(t => `CREATE TABLE ${rdbSchemaName}.${t.tableName} AS SELECT * FROM ${t.tableName}`).join(";\n        ")};
 
-        -- {contentResult.map(cr => \`CREATE TABLE resource_db.\${cr.iaSqlSupplier.tableName} AS SELECT * FROM \${cr.tableName}\`).join(";")};
+        ${exportsSQL.join(";\n        ")};
 
-        DETACH DATABASE resource_db;
+        DETACH DATABASE ${rdbSchemaName};
         ${afterFinalize.length > 0 ? `${afterFinalize.join(";\n        ")};` : "-- no after-finalize SQL provided"}`), isc.current.nbCellID);
     }
   }

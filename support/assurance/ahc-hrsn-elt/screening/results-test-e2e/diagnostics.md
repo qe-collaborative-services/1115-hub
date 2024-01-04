@@ -238,40 +238,40 @@ SELECT session_entry_id, ingest_session_issue_id, issue_type, issue_message, inv
 {"session_entry_id":"7b979b68-7227-53fd-b689-e4fe153afb76","ingest_session_issue_id":"abf5c680-a135-5d89-b871-fa5b9b99aed6","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
 {"session_entry_id":"641dff51-97fd-56b3-8443-c1ed568a6d66","ingest_session_issue_id":"d70a4700-6b40-52fc-a7a2-69ef0d7f69ff","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
 {"session_entry_id":"47277588-99e8-59f5-8384-b24344a86073","ingest_session_issue_id":"58b22e99-5854-53bf-adbe-08e67df99b85","issue_type":"TODO","issue_message":"Excel workbook 'ahc-hrsn-valid-01.xlsx' sheet 'Admin_Demographic' has not been implemented yet.","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-valid-01.xlsx"},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"5c3046fa-bb76-4d07-b4d7-2cdfd85193a2","issue_type":"Missing Column","issue_message":"Required column FACILITY is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"4882c6b1-77f1-4cba-ba86-c26e062dab71","issue_type":"Missing Column","issue_message":"Required column FIRST_NAME is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"e6139de2-edd1-4516-a7c0-8828e6a6d4b3","issue_type":"Missing Column","issue_message":"Required column LAST_NAME is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"948d5ddb-caef-4683-af04-a9936974d326","issue_type":"Missing Column","issue_message":"Required column PAT_BIRTH_DATE is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"7f0fd156-d853-438e-a643-62156d1d8f90","issue_type":"Missing Column","issue_message":"Required column MEDICAID_CIN is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"81ac8b91-89c0-4ec2-89ec-fa5d8ee36bc3","issue_type":"Missing Column","issue_message":"Required column ENCOUNTER_ID is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"13a43ce9-da28-48a9-90aa-7a1ff58d7bab","issue_type":"Missing Column","issue_message":"Required column SURVEY is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"a638ff45-26b4-46d9-81b2-ce35f105277f","issue_type":"Missing Column","issue_message":"Required column SURVEY_ID is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"9c1b5ed8-c102-41c4-a8a7-1e9a9b5168a4","issue_type":"Missing Column","issue_message":"Required column NEED_INDICATED is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"f96e38c5-a3e0-483e-ba36-5d5934b9503f","issue_type":"Missing Column","issue_message":"Required column VISIT_PART_2_FLAG is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"74b39964-6432-456d-8471-338dcd6d42e3","issue_type":"Missing Column","issue_message":"Required column VISIT_OMH_FLAG is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"4000bd76-bd24-49e2-849a-839dabc51be8","issue_type":"Missing Column","issue_message":"Required column VISIT_OPWDD_FLAG is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"c4b960e1-fd30-46a5-bb55-ef8f63a923e0","issue_type":"Missing Column","issue_message":"Required column FACILITY is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"7b730162-4b11-489f-898d-5a58e3219854","issue_type":"Missing Column","issue_message":"Required column FIRST_NAME is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"192f0f5f-25c5-471f-adff-96f8b2076dd3","issue_type":"Missing Column","issue_message":"Required column LAST_NAME is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"5253ce90-35af-474a-81a4-6306b99450d0","issue_type":"Missing Column","issue_message":"Required column PAT_BIRTH_DATE is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"655c87f4-4de7-4ef5-9a94-ec7eae4be078","issue_type":"Missing Column","issue_message":"Required column MEDICAID_CIN is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"cecf1905-e361-4f9f-9a3e-8781a2697bb5","issue_type":"Missing Column","issue_message":"Required column ENCOUNTER_ID is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"d2487b2b-5cd4-425f-b155-842b1a8ede22","issue_type":"Missing Column","issue_message":"Required column SURVEY is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"19ab5051-0ac7-4848-a88a-a15cf2d94639","issue_type":"Missing Column","issue_message":"Required column SURVEY_ID is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"068ec416-5a3b-432e-96d6-674dc6d51bbc","issue_type":"Missing Column","issue_message":"Required column NEED_INDICATED is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"8f2e32fd-f70d-46ed-a13b-db04fd7ca81e","issue_type":"Missing Column","issue_message":"Required column VISIT_PART_2_FLAG is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"d35883ce-22ac-4d53-8f1d-0ef5295a5a0f","issue_type":"Missing Column","issue_message":"Required column VISIT_OMH_FLAG is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","ingest_session_issue_id":"047f752e-a980-4b7b-9e88-5dfddd0b816a","issue_type":"Missing Column","issue_message":"Required column VISIT_OPWDD_FLAG is missing in ahc_hrsn_valid_01_screening.","invalid_value":null},
 {"session_entry_id":"bc0c03b5-d1ba-5301-850f-5e4c42c1bf09","ingest_session_issue_id":"ae477ba1-c7f1-5f34-847a-50bddb7130aa","issue_type":"TODO","issue_message":"Excel workbook 'ahc-hrsn-valid-01.xlsx' sheet 'QE_Admin_Data' has not been implemented yet.","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-valid-01.xlsx"},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"5cd2a955-9d69-42e9-aa54-03d3f2e1e1be","issue_type":"Missing Column","issue_message":"Required column PAT_MRN_ID is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"e10797f7-b3cf-42c5-9ffc-f8fa529c89df","issue_type":"Missing Column","issue_message":"Required column FACILITY is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"35190394-6745-4cf5-ac25-7637e9c1d08d","issue_type":"Missing Column","issue_message":"Required column FIRST_NAME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"9e6b7969-254a-4e5a-a2b4-7844fb3bb0ec","issue_type":"Missing Column","issue_message":"Required column LAST_NAME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"9a969bf1-b846-4f90-b8bc-995c5cbe0ca1","issue_type":"Missing Column","issue_message":"Required column PAT_BIRTH_DATE is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"20074e00-8db4-4ced-950d-28dfc6a384a6","issue_type":"Missing Column","issue_message":"Required column MEDICAID_CIN is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"7c82d85a-a562-4a4c-be1d-eb3644f85357","issue_type":"Missing Column","issue_message":"Required column ENCOUNTER_ID is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"1f2f3f60-99f7-489c-a320-87ec93cd091e","issue_type":"Missing Column","issue_message":"Required column SURVEY is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"426b3fe4-013b-4d2e-a808-412399b989f4","issue_type":"Missing Column","issue_message":"Required column SURVEY_ID is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"263b09ed-942a-4ab5-a387-7b65798bb7e1","issue_type":"Missing Column","issue_message":"Required column RECORDED_TIME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"c52dbac0-2f05-461a-9f17-7460c1846953","issue_type":"Missing Column","issue_message":"Required column QUESTION is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"028f272c-4fb9-44b2-a253-ed1957e69daf","issue_type":"Missing Column","issue_message":"Required column MEAS_VALUE is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"7aecbcab-353a-4168-8661-21d361ca2c12","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"1f05683a-c313-4d6c-ba3c-dab029472ba9","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE_SYSTEM_NAME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"a736fbae-3a61-44f9-9a4c-ed4720b91762","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"76da67c9-4093-44cf-b3c4-5aa5dbe243f1","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE_SYSTEM_NAME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"bc1fc326-08ba-4d2b-a7c5-3115ffca70a0","issue_type":"Missing Column","issue_message":"Required column SDOH_DOMAIN is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"6acfa2f1-2f37-4bd9-bd69-166a0bf82363","issue_type":"Missing Column","issue_message":"Required column NEED_INDICATED is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"57d1b10a-da42-45ab-96c7-590470dc3f3e","issue_type":"Missing Column","issue_message":"Required column VISIT_PART_2_FLAG is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"8b063687-59c5-4d4e-ab4b-6313e6c3f08f","issue_type":"Missing Column","issue_message":"Required column VISIT_OMH_FLAG is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"e2c6ea89-c5e0-4d20-96d1-a2f5cb64efa2","issue_type":"Missing Column","issue_message":"Required column VISIT_OPWDD_FLAG is missing in synthetic_fail.","invalid_value":null}]
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"798bde55-9ddc-4547-bdc1-17c9c7a31fc7","issue_type":"Missing Column","issue_message":"Required column PAT_MRN_ID is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"f86bf60a-5e26-4477-9ba1-54d33fa1ee3c","issue_type":"Missing Column","issue_message":"Required column FACILITY is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"0afbcfba-c4d1-481a-a9dc-964e35a863c3","issue_type":"Missing Column","issue_message":"Required column FIRST_NAME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"bba7f884-5d02-4654-b115-378bf5d18cf8","issue_type":"Missing Column","issue_message":"Required column LAST_NAME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"84a79d5e-ec17-49a6-aa05-32c42eccf353","issue_type":"Missing Column","issue_message":"Required column PAT_BIRTH_DATE is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"8e313eee-4a13-4a97-9e61-8659e2ae856d","issue_type":"Missing Column","issue_message":"Required column MEDICAID_CIN is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"14893e2f-48e4-4d56-86f9-7cebcebd8abe","issue_type":"Missing Column","issue_message":"Required column ENCOUNTER_ID is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"18419899-347f-46b9-abc5-26fd42577096","issue_type":"Missing Column","issue_message":"Required column SURVEY is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"a719c7d2-a392-4de4-adfd-060ef456cf3f","issue_type":"Missing Column","issue_message":"Required column SURVEY_ID is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"2400b7ae-df64-4b79-b31d-c3a422e6239b","issue_type":"Missing Column","issue_message":"Required column RECORDED_TIME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"837ff885-b7e2-45d6-9393-bf554a868fd2","issue_type":"Missing Column","issue_message":"Required column QUESTION is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"89b0767b-c4f7-4c6f-9884-d9d2595d4297","issue_type":"Missing Column","issue_message":"Required column MEAS_VALUE is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"114a3068-c7bc-42bc-aa12-f5323dbdfdd8","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"bc0acb68-2440-4fc2-ae5c-b921d1147cc5","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE_SYSTEM_NAME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"19bf6957-a07e-4295-842f-37837b344276","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"de407d20-bb55-4f18-b323-04bebec7f2ea","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE_SYSTEM_NAME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"cc6efe66-880a-495e-86e1-dc5be91e0f08","issue_type":"Missing Column","issue_message":"Required column SDOH_DOMAIN is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"8245347a-da91-4584-a750-38527c9f7434","issue_type":"Missing Column","issue_message":"Required column NEED_INDICATED is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"886ae2d0-f0bf-4e4b-ae84-01f0d7429f19","issue_type":"Missing Column","issue_message":"Required column VISIT_PART_2_FLAG is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"71828bf0-6318-41f3-84fb-59a6b6934cef","issue_type":"Missing Column","issue_message":"Required column VISIT_OMH_FLAG is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","ingest_session_issue_id":"8e1d44a6-593b-4a13-b0f0-6cddc32e1265","issue_type":"Missing Column","issue_message":"Required column VISIT_OPWDD_FLAG is missing in synthetic_fail.","invalid_value":null}]
 
 ```
 
@@ -301,11 +301,11 @@ INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_e
 
 ## emitResources
 ```sql
-        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', (make_timestamp(2024, 1, 3, 19, 51, 54.220)), NULL);
-        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', (make_timestamp(2024, 1, 3, 19, 51, 54.220)), NULL);
-        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('168a34c7-d043-5ec4-a84a-c961f1a301ef', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', (make_timestamp(2024, 1, 3, 19, 51, 54.220)), NULL);
-        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', (make_timestamp(2024, 1, 3, 19, 51, 54.220)), NULL);
-        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('591191c7-f693-5957-8734-ac87151ca981', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', (make_timestamp(2024, 1, 3, 19, 51, 54.221)), NULL);
+        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', (make_timestamp(2024, 1, 4, 10, 54, 13.837)), NULL);
+        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', (make_timestamp(2024, 1, 4, 10, 54, 13.837)), NULL);
+        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('168a34c7-d043-5ec4-a84a-c961f1a301ef', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', (make_timestamp(2024, 1, 4, 10, 54, 13.837)), NULL);
+        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', (make_timestamp(2024, 1, 4, 10, 54, 13.837)), NULL);
+        INSERT INTO "ingest_session_state" ("ingest_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('591191c7-f693-5957-8734-ac87151ca981', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', (make_timestamp(2024, 1, 4, 10, 54, 13.837)), NULL);
 
         -- emit all the SQLPage content
         CREATE TABLE IF NOT EXISTS "sqlpage_files" (
@@ -314,36 +314,52 @@ INSERT INTO ingest_session_issue (ingest_session_issue_id, session_id, session_e
     "last_modified" DATE
 );
 
-INSERT INTO "sqlpage_files" ("path", "contents", "last_modified") VALUES ('index.sql', 'SELECT
-  ''shell''                   as component,
-  ''book''                    as icon,
-  ''QCS Ingestion Center''    as title,
-  ''/''                       as link,
-  ''issues''                  as menu_item,
-  ''schema''                  as menu_item;
+INSERT INTO "sqlpage_files" ("path", "contents", "last_modified") VALUES ('index.sql', 'SELECT ''shell'' as component, ''QCS Ingestion Center'' as title, ''book'' as icon, ''/'' as link, ''issues'' as menu_item, ''schema'' as menu_item;
+    ;
 SELECT ''list'' as component;
-SELECT ''Ingestion Issues'' as title, ''issues.sql'' as link;
-SELECT ''Ingestion State Schema'' as title, ''schema.sql'' as link;', (CURRENT_TIMESTAMP)) ON CONFLICT(path) DO UPDATE SET contents = EXCLUDED.contents /* TODO: does not work in DuckDB , last_modified = (CURRENT_TIMESTAMP) */;
+SELECT ''Screenings'' as title,''screenings.sql'' as link;
+SELECT ''Jon Doe Screening'' as title,''jondoe.sql'' as link;
+SELECT ''Ingestion Issues'' as title,''issues.sql'' as link;
+SELECT ''Ingestion State Schema'' as title,''schema.sql'' as link;', (CURRENT_TIMESTAMP)) ON CONFLICT(path) DO UPDATE SET contents = EXCLUDED.contents /* TODO: does not work in DuckDB , last_modified = (CURRENT_TIMESTAMP) */;
 
-INSERT INTO "sqlpage_files" ("path", "contents", "last_modified") VALUES ('issues.sql', 'SELECT
-  ''shell''                   as component,
-  ''book''                    as icon,
-  ''QCS Ingestion Center''    as title,
-  ''/''                       as link,
-  ''issues''                  as menu_item,
-  ''schema''                  as menu_item;
+INSERT INTO "sqlpage_files" ("path", "contents", "last_modified") VALUES ('issues.sql', 'SELECT ''shell'' as component, ''QCS Ingestion Center'' as title, ''book'' as icon, ''/'' as link, ''issues'' as menu_item, ''schema'' as menu_item;
+    ;
+
 SELECT ''table'' as component;
-SELECT issue_type, issue_message, invalid_value, remediation 
-  FROM "ingest_session_issue";
+SELECT * FROM "device";
+
+SELECT ''table'' as component;
+SELECT * FROM "ingest_session";
+
+SELECT ''table'' as component, ''true'' as search;
+SELECT ingest_session_entry_id,	ingest_src, ingest_table_name FROM "ingest_session_entry";
+  
+SELECT ''table'' as component, ''true'' as search;
+
+            SELECT issue_type, issue_message, invalid_value, remediation 
+              FROM "ingest_session_issue";
     ', (CURRENT_TIMESTAMP)) ON CONFLICT(path) DO UPDATE SET contents = EXCLUDED.contents /* TODO: does not work in DuckDB , last_modified = (CURRENT_TIMESTAMP) */;
 
-INSERT INTO "sqlpage_files" ("path", "contents", "last_modified") VALUES ('schema.sql', 'SELECT
-  ''shell''                   as component,
-  ''book''                    as icon,
-  ''QCS Ingestion Center''    as title,
-  ''/''                       as link,
-  ''issues''                  as menu_item,
-  ''schema''                  as menu_item;
+INSERT INTO "sqlpage_files" ("path", "contents", "last_modified") VALUES ('screenings.sql', 'SELECT ''shell'' as component, ''QCS Ingestion Center'' as title, ''book'' as icon, ''/'' as link, ''issues'' as menu_item, ''schema'' as menu_item;
+    ;  
+SELECT ''table'' as component, ''true'' as search, ''true'' as sort;
+
+            SELECT * 
+              FROM "ahc_hrsn_12_12_2023_valid";
+    ', (CURRENT_TIMESTAMP)) ON CONFLICT(path) DO UPDATE SET contents = EXCLUDED.contents /* TODO: does not work in DuckDB , last_modified = (CURRENT_TIMESTAMP) */;
+
+INSERT INTO "sqlpage_files" ("path", "contents", "last_modified") VALUES ('jondoe.sql', 'SELECT ''shell'' as component, ''QCS Ingestion Center'' as title, ''book'' as icon, ''/'' as link, ''issues'' as menu_item, ''schema'' as menu_item;
+    ;
+SELECT ''text'' as component, ''Jon Doe (11223344)'' as title, ''Test'' as contentsmd;
+SELECT ''table'' as component, ''true'' as search, ''true'' as sort;
+
+            SELECT pat_mrn_id, question, meas_value 
+              FROM "ahc_hrsn_12_12_2023_valid"
+             WHERE pat_mrn_id = ''11223344'';
+    ', (CURRENT_TIMESTAMP)) ON CONFLICT(path) DO UPDATE SET contents = EXCLUDED.contents /* TODO: does not work in DuckDB , last_modified = (CURRENT_TIMESTAMP) */;
+
+INSERT INTO "sqlpage_files" ("path", "contents", "last_modified") VALUES ('schema.sql', 'SELECT ''shell'' as component, ''QCS Ingestion Center'' as title, ''book'' as icon, ''/'' as link, ''issues'' as menu_item, ''schema'' as menu_item;
+    ;
 -- TODO: https://github.com/lovasoa/SQLpage/discussions/109#discussioncomment-7359513
 --       see the above for how to fix for SQLPage but figure out to use the same SQL
 --       in and out of SQLPage (maybe do what Ophir said in discussion and create
@@ -429,7 +445,7 @@ FROM
         CREATE TABLE resource_db.ingest_session_issue AS SELECT * FROM ingest_session_issue;
         CREATE TABLE resource_db.sqlpage_files AS SELECT * FROM sqlpage_files;
 
-        -- {contentResult.map(cr => `CREATE TABLE resource_db.${cr.iaSqlSupplier.tableName} AS SELECT * FROM ${cr.tableName}`).join(";")};
+        CREATE TABLE resource_db.ahc_hrsn_12_12_2023_valid AS SELECT * FROM ahc_hrsn_12_12_2023_valid;
 
         DETACH DATABASE resource_db;
         -- no after-finalize SQL provided
