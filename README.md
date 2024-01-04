@@ -2,9 +2,9 @@
 
 The objective of QCS-IC is to get from ingestable content in CSV, Excel, and
 similar formats into a SQL-queryable analyst-friendly format as quickly as
-possible. Once content is SQL-queryable and analyst-friendly it can be enriched,
-cleansed, validated, transformed, and pushed to other formats such as FHIR
-(JSON).
+possible. Once content is SQL-queryable and analyst-friendly it can be
+anonymized, enriched, cleansed, validated, transformed, and pushed to other
+formats such as FHIR (JSON).
 
 To facilitate quickly getting ingestable content into a SQL-queryable
 analyst-friendly format, QCS-IC employs the following architecture strategy:
@@ -13,24 +13,30 @@ analyst-friendly format, QCS-IC employs the following architecture strategy:
   possible in the ingestion process but all ingested resources can be exported
   into SQLite, MySQL, PostgreSQL, AWS Cloud, Azure Cloud, or other databases for
   portability.
-  - All ingestion is done using a relational database (DuckDB).
-  - Some structural validation is done using TypeScript (e.g. minimally
-    validating the existence of specific sheets in an Excel workbook before
-    ingesting so if a source document such as an Excel workbook is deemed
+  - All declarative ingestion is done using a relational database (DuckDB).
+  - Some imperative structural validation is done using TypeScript (e.g.
+    minimally validating the existence of specific sheets in an Excel workbook
+    before ingesting so if a source document such as an Excel workbook is deemed
     invalid it's data is never read into the database).
   - Most structural validation of ingested CSVs and Excel workbooks is done
     using SQL (e.g. checking column names).
-  - All content validation is done using SQL (using CTEs).
-  - All content enrichment can be done using SQL whenever possible using CTEs
-    but can fallback to TypeScript for anything that cannot be accomplished in
-    SQL.
-  - All content cleansing can be done using SQL whenever possible using CTEs but
-    can fallback to TypeScript for anything too complex for SQL.
-  - All content transformations can be done using SQL (using CTEs).
-  - All error reporting is done using a database (for machine consumption) or
-    Excel (for human consumption).
+  - All declarative content validation is done using SQL (using CTEs) with an
+    imperative TypeScript or external commands fallback.
+  - All declarative content anonymization can be done using SQL CTEs with an
+    imperative TypeScript or external commands fallback.
+  - All declarative content enrichment can be done using SQL CTEs with an
+    imperative TypeScript or external commands fallback (e.g. running REST API
+    to match patient IDs or facility IDs in an MPI).
+  - All declarative content cleansing can be done using SQL whenever possible
+    using CTEs with an imperative TypeScript or external commands fallback.
+  - All declarative content transformations can be done using SQL (using CTEs)
+    with an imperative TypeScript or external commands fallback.
+  - All error reporting is done using a database (for machine consumption), via
+    web browser or Excel (for human consumption).
   - All business reporting is done directly from within the DuckDB database or
     exported to SQLite for easy integration into other systems.
+  - Local business reporting may also be done using SQLPage, Jupyter notebooks,
+    or other edge computing environments.
 - Flexible support for local, edge, server, cloud or hybrid models. No code
   changes should be required regardless of which deployment model is chosen.
   - _Local_ allows development on a laptop or any Windows, MacOS, or Linux
