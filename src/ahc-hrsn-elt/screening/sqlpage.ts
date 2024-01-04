@@ -112,6 +112,10 @@ export class SQLPageNotebook {
             SELECT pat_mrn_id, question, meas_value 
               FROM "ahc_hrsn_12_12_2023_valid"
              WHERE pat_mrn_id = '11223344'`}]})}
+      ${table({ search: true, rows: [
+        { SQL: () => `
+            SELECT *
+              FROM "ahc_hrsn_12_12_2023_valid_fhir"`}]})}
     `;
   }
 

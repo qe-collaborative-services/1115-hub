@@ -63,7 +63,38 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
   // deno-lint-ignore require-await
   async exportResourceSQL(targetSchema: string) {
     const { govn: { SQL }, tableName } = this;
-    return SQL`CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName}`;
+    return SQL`
+      CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
+
+      CREATE VIEW ${targetSchema}.${tableName}_fhir AS 
+        SELECT json_object(
+              'resourceType', 'Observation',
+              'id', ENCOUNTER_ID,
+              'status', 'final',
+              'code', json_object(
+                  'coding', json_array(
+                      json_object(
+                          'system', QUESTION_CODE_SYSTEM_NAME,
+                          'code', QUESTION_CODE,
+                          'display', QUESTION
+                      )
+                  )
+              ),
+              'subject', json_object(
+                  'reference', 'Patient/' || PAT_MRN_ID
+              ),
+              'effectiveDateTime', RECORDED_TIME,
+              'valueString', MEAS_VALUE,
+              'performer', json_array(
+                  json_object(
+                      'reference', 'Practitioner/' || session_id
+                  )
+              ),
+              'context', json_object(
+                  'reference', 'Encounter/' || ENCOUNTER_ID
+              )
+          ) AS FHIR_Observation
+        FROM ${tableName}`;
   }
 }
 
