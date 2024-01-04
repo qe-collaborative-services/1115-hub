@@ -103,6 +103,26 @@ $ deno task ahc-hrsn-screening-doc        # generate documentation for the libra
 
 ## Architecture and Approach
 
-TODO: narratives and explanations
+This code allows multiple operating models, but these two are the most likely
+use cases:
 
-![Architecture](support/docs/architecture.drawio.svg)
+- Cloud-only model where a QE does not operate their own code instances to
+  validate or manage data and relies on QCS infrastructure only.
+  - Benefits: No local infrastructure required
+  - Detriments: No ability to validate or analyze aggregated data before sending
+    to QCS environment
+- Self-sufficient model where a QE can operate their own code instances for
+  validation and data management locally and then forwards processed data to the
+  QCS infrastructure.
+  - Benefits: Ability to validate and analyze aggregated data before sending to
+    QCS environment
+  - Detriments: Needs small amount of local infrastructure to operate the same
+    code running at QCS
+
+### Cloud Only Model
+
+![Architecture](support/docs/cloud-only-architecture.drawio.svg)
+
+### Self-sufficient QE Model
+
+![Architecture](support/docs/self-sufficient-architecture.drawio.svg)
