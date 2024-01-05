@@ -27,6 +27,9 @@ const nbDescr = new chainNB.NotebookDescriptor<
  * - https://sql.ophir.dev/custom_components.sql
  * - https://github.com/lovasoa/SQLpage/discussions/174
  *
+ * If you want to create JSON APIs:
+ * https://sql.ophir.dev/documentation.sql?component=json#component
+ *
  * If you want to execute commands (assuming appropriate security) in SQLPage:
  * https://sql.ophir.dev/functions.sql?function=exec#function
  *
