@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>IngestEngine - AHC HRSN Screening  documentation</title>
+  <title>OrchEngine - AHC HRSN Screening  documentation</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="doc-current-file" content="">
@@ -30,12 +30,12 @@
             </li>
         
             <li>
-              <a href="../.././/~/IngestEngine.html">
+              <a href="../.././/~/OrchEngine.html">
                 <div class="symbol_kind kind_Class_text kind_Class_bg" title="Class">
   c
 </div>
 
-                <span>IngestEngine</span>
+                <span>OrchEngine</span>
               </a>
             </li>
         
@@ -120,12 +120,12 @@
         <ul>
           
             <li>
-              <a href="../.././/~/IngestEngineArgs.html">
+              <a href="../.././/~/OrchEngineArgs.html">
                 <div class="symbol_kind kind_Interface_text kind_Interface_bg" title="Interface">
   I
 </div>
 
-                <span>IngestEngineArgs</span>
+                <span>OrchEngineArgs</span>
               </a>
             </li>
         
@@ -145,22 +145,22 @@
             </li>
         
             <li>
-              <a href="../.././/~/IngestStep.html">
+              <a href="../.././/~/OrchStep.html">
                 <div class="symbol_kind kind_TypeAlias_text kind_TypeAlias_bg" title="Type Alias">
   T
 </div>
 
-                <span>IngestStep</span>
+                <span>OrchStep</span>
               </a>
             </li>
         
             <li>
-              <a href="../.././/~/IngestStepContext.html">
+              <a href="../.././/~/OrchStepContext.html">
                 <div class="symbol_kind kind_TypeAlias_text kind_TypeAlias_bg" title="Type Alias">
   T
 </div>
 
-                <span>IngestStepContext</span>
+                <span>OrchStepContext</span>
               </a>
             </li>
         
@@ -190,12 +190,12 @@
             </li>
         
             <li>
-              <a href="../.././/~/ieDescr.html">
+              <a href="../.././/~/oeDescr.html">
                 <div class="symbol_kind kind_Variable_text kind_Variable_bg" title="Variable">
   v
 </div>
 
-                <span>ieDescr</span>
+                <span>oeDescr</span>
               </a>
             </li>
         
@@ -208,13 +208,13 @@
   <a href="./index.html">&#8592; Back to index</a>
   <input type="text" id="searchbar" style="display: none;" />
 
-  <main class="symbol_group" id="symbol_IngestEngine">
+  <main class="symbol_group" id="symbol_OrchEngine">
   
     <article class="symbol">
       <div class="symbol_header">
         <div class="doc_block_title">
           <div>
-            <span class="kind_Class_text">class</span>&nbsp;<span style="font-weight: 700;">IngestEngine</span>
+            <span class="kind_Class_text">class</span>&nbsp;<span style="font-weight: 700;">OrchEngine</span>
           </div>
           <div class="doc_block_subtitle">
   
@@ -228,13 +228,13 @@
         </div>
       </div>
       <div>
-        <div class="doc_block_items"><div class="markdown"><p>Use IngestEngine to prepare SQL for ingestion steps and execute them
+        <div class="doc_block_items"><div class="markdown"><p>Use OrchEngine to prepare SQL for orchestration steps and execute them
 using DuckDB CLI engine. Each method that does not have a @ieDescr.disregard()
 attribute is considered a &quot;step&quot; and each step is executed in the order it is
 declared. As each step is executed, its error or results are passed to the
 next method.</p>
 <p>This Engine assumes that the Kernel observer will abort on Errors. If you want
-to continue after an error, throw a IngestResumableError and use the second
+to continue after an error, throw a OrchResumableError and use the second
 cell argument (result) to test for it.</p>
 <p>This class is introspected and run using SQLa's Notebook infrastructure.
 See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/notebook">https://github.com/netspective-labs/sql-aide/tree/main/lib/notebook</a></p>
@@ -255,7 +255,7 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
   <div class="doc_entry">
     <span class="doc_entry_children">
     <code>
-      <span style="font-weight: 700;">IngestEngine</span><span style="font-weight: 500;">()</span>
+      <span style="font-weight: 700;">OrchEngine</span><span style="font-weight: 500;">()</span>
     </code>
     </span>
   </div>
@@ -300,7 +300,7 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
   <div class="doc_entry">
     <span class="doc_entry_children">
     <code>
-      <span style="font-weight: 700;">ingestables</span><span style="font-weight: 500;">: { <span>readonly </span>psIndex: <span>number</span>; <span>readonly </span>source: <a href="../.././/~/PotentialIngestSource.html" class="link">PotentialIngestSource</a>; <span>readonly </span>workflow: <span>ReturnType</span>&lt;<a href="../.././/~/PotentialIngestSource.html" class="link">PotentialIngestSource</a>[<span>"workflow"</span>]&gt;; <span>readonly </span>sessionEntryID: <span>string</span>; <span>readonly </span>sql: <span>string</span>; <span>readonly </span>issues: { <span>readonly </span>session_entry_id: <span>string</span>; <span>readonly </span>ingest_session_issue_id: <span>string</span>; <span>readonly </span>issue_type: <span>string</span>; <span>readonly </span>issue_message: <span>string</span>; <span>readonly </span>invalid_value: <span>string</span>;  }[];  }[]</span>
+      <span style="font-weight: 700;">ingestables</span><span style="font-weight: 500;">: { <span>readonly </span>psIndex: <span>number</span>; <span>readonly </span>source: <a href="../.././/~/PotentialIngestSource.html" class="link">PotentialIngestSource</a>; <span>readonly </span>workflow: <span>ReturnType</span>&lt;<a href="../.././/~/PotentialIngestSource.html" class="link">PotentialIngestSource</a>[<span>"workflow"</span>]&gt;; <span>readonly </span>sessionEntryID: <span>string</span>; <span>readonly </span>sql: <span>string</span>; <span>readonly </span>issues: { <span>readonly </span>session_entry_id: <span>string</span>; <span>readonly </span>orch_session_issue_id: <span>string</span>; <span>readonly </span>issue_type: <span>string</span>; <span>readonly </span>issue_message: <span>string</span>; <span>readonly </span>invalid_value: <span>string</span>;  }[];  }[]</span>
     </code>
     </span>
   </div>
@@ -365,7 +365,7 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
   <div class="doc_entry">
     <span class="doc_entry_children">
     <code>
-      <span style="font-weight: 700;">emitResources</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/IngestStepContext.html" class="link">IngestStepContext</a></span></span></span>): <span>Promise</span>&lt;<span>void</span>&gt;</span>
+      <span style="font-weight: 700;">emitResources</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/OrchStepContext.html" class="link">OrchStepContext</a></span></span><span>, </span><span>ensureResult<span>: <span>Awaited</span>&lt;<span>ReturnType</span>&lt;OrchEngine.prototype.ensureContent&gt;&gt;</span></span></span>): <span>Promise</span>&lt;<span>void</span>&gt;</span>
     </code>
     </span>
   </div>
@@ -385,7 +385,7 @@ See: <a href="https://github.com/netspective-labs/sql-aide/tree/main/lib/noteboo
   <div class="doc_entry">
     <span class="doc_entry_children">
     <code>
-      <span style="font-weight: 700;">ensureContent</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/IngestStepContext.html" class="link">IngestStepContext</a></span></span><span>, </span><span>ingestResult<span>: <span>Awaited</span>&lt;<span>ReturnType</span>&lt;IngestEngine.prototype.ingest&gt;&gt;</span></span></span>): <span>Promise</span>&lt;<span>void</span>&gt;</span>
+      <span style="font-weight: 700;">ensureContent</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/OrchStepContext.html" class="link">OrchStepContext</a></span></span><span>, </span><span>ingestResult<span>: <span>Awaited</span>&lt;<span>ReturnType</span>&lt;OrchEngine.prototype.ingest&gt;&gt;</span></span></span>)</span>
     </code>
     </span>
   </div>
@@ -413,7 +413,7 @@ match our expectations).</p>
   <div class="doc_entry">
     <span class="doc_entry_children">
     <code>
-      <span style="font-weight: 700;">ingest</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/IngestStepContext.html" class="link">IngestStepContext</a></span></span></span>)</span>
+      <span style="font-weight: 700;">ingest</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/OrchStepContext.html" class="link">OrchStepContext</a></span></span></span>)</span>
     </code>
     </span>
   </div>
@@ -444,12 +444,12 @@ cleansing, validation, or transformations will not cause syntax errors.</p>
   <div class="doc_entry">
     <span class="doc_entry_children">
     <code>
-      <span style="font-weight: 700;">init</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/IngestStepContext.html" class="link">IngestStepContext</a></span></span></span>): <span>Promise</span>&lt;<span>void</span>&gt;</span>
+      <span style="font-weight: 700;">init</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/OrchStepContext.html" class="link">OrchStepContext</a></span></span></span>): <span>Promise</span>&lt;<span>void</span>&gt;</span>
     </code>
     </span>
   </div>
   <div class="markdown"><p>Initialize the DuckDB database by ensuring the admin tables such as tracking
-ingestion events (states), activities (which files are being loaded), ingest
+orchestration events (states), activities (which files are being loaded), ingest
 issues (errors, etc.), and related  entities are created. If there are any
 errors during this process all other processing should stop and no other steps
 are executed.</p>
@@ -469,7 +469,7 @@ are executed.</p>
   <div class="doc_entry">
     <span class="doc_entry_children">
     <code>
-      <span style="font-weight: 700;">prepareInit</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/IngestStepContext.html" class="link">IngestStepContext</a></span></span></span>): <span>Promise</span>&lt;<span>void</span>&gt;</span>
+      <span style="font-weight: 700;">prepareInit</span><span style="font-weight: 500;">(<span><span>isc<span>: <a href="../.././/~/OrchStepContext.html" class="link">OrchStepContext</a></span></span></span>): <span>Promise</span>&lt;<span>void</span>&gt;</span>
     </code>
     </span>
   </div>

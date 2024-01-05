@@ -46,11 +46,11 @@
   c
 </div>
 
-            <a href=".//~/IngestEngine.html">IngestEngine</a>
+            <a href=".//~/OrchEngine.html">OrchEngine</a>
           </div>
         </td>
         <td class="symbol_section_doc">
-        <div class="markdown_summary"><p>Use IngestEngine to prepare SQL for ingestion steps and execute them
+        <div class="markdown_summary"><p>Use OrchEngine to prepare SQL for orchestration steps and execute them
 using DuckDB CLI engine. Each method that does not have a @ieDescr.disregard()
 attribute is considered a &quot;step&quot; and each step is executed in the order it is
 declared. As each step is executed, its error or results are passed to the
@@ -71,7 +71,15 @@ next method.</p>
           </div>
         </td>
         <td class="symbol_section_doc">
-        
+        <div class="markdown_summary"><p>Encapsulates <a href="https://sql.ophir.dev/">SQLPage</a> content. SqlPageNotebook has
+methods with the name of each <a href="https://sql.ophir.dev/">SQLPage</a> content that
+we want in the database. The MutationSqlNotebook sqlPageSeedDML method
+&quot;reads&quot; the cells in the SqlPageNotebook (each method's result) and
+generates SQL to insert the content of the page in the database in the format
+and table expected by <a href="https://sql.ophir.dev/">SQLPage</a>.
+NOTE: we break our PascalCase convention for the name of the class since SQLPage
+is a proper noun (product name).</p>
+</div>
         </td>
       </tr>
     
@@ -195,7 +203,7 @@ next method.</p>
   I
 </div>
 
-            <a href=".//~/IngestEngineArgs.html">IngestEngineArgs</a>
+            <a href=".//~/OrchEngineArgs.html">OrchEngineArgs</a>
           </div>
         </td>
         <td class="symbol_section_doc">
@@ -235,7 +243,7 @@ next method.</p>
   T
 </div>
 
-            <a href=".//~/IngestStep.html">IngestStep</a>
+            <a href=".//~/OrchStep.html">OrchStep</a>
           </div>
         </td>
         <td class="symbol_section_doc">
@@ -251,7 +259,7 @@ next method.</p>
   T
 </div>
 
-            <a href=".//~/IngestStepContext.html">IngestStepContext</a>
+            <a href=".//~/OrchStepContext.html">OrchStepContext</a>
           </div>
         </td>
         <td class="symbol_section_doc">
@@ -307,7 +315,7 @@ next method.</p>
   v
 </div>
 
-            <a href=".//~/ieDescr.html">ieDescr</a>
+            <a href=".//~/oeDescr.html">oeDescr</a>
           </div>
         </td>
         <td class="symbol_section_doc">
