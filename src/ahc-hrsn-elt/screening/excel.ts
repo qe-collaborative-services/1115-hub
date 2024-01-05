@@ -1,4 +1,4 @@
-import { fs, path, SQLa_ingest_duckdb as ddbi } from "./deps.ts";
+import { fs, path, SQLa_orch_duckdb as ddbo } from "./deps.ts";
 import * as sg from "./governance.ts";
 
 // @deno-types="https://cdn.sheetjs.com/xlsx-0.20.1/package/types/index.d.ts"
@@ -12,13 +12,13 @@ export const excelWorkbookSheetNames = [
 export type ExcelWorkbookSheetName = typeof excelWorkbookSheetNames[number];
 
 export class ExcelSheetTodoIngestSource<SheetName extends string>
-  implements ddbi.ExcelSheetIngestSource<SheetName, string> {
+  implements ddbo.ExcelSheetIngestSource<SheetName, string> {
   readonly nature = "Excel Workbook Sheet";
   readonly tableName: string;
   constructor(
     readonly uri: string,
     readonly sheetName: SheetName,
-    readonly govn: ddbi.IngestGovernance,
+    readonly govn: ddbo.OrchGovernance,
   ) {
     this.tableName = govn.toSnakeCase(
       path.basename(uri, ".xlsx") + "_" + sheetName,
@@ -26,7 +26,7 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
   }
 
   workflow(): ReturnType<
-    ddbi.ExcelSheetIngestSource<string, string>["workflow"]
+    ddbo.ExcelSheetIngestSource<string, string>["workflow"]
   > {
     return {
       ingestSQL: async (issac) =>
@@ -48,13 +48,13 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
 }
 
 export class ScreeningExcelSheetIngestSource<TableName extends string>
-  implements ddbi.ExcelSheetIngestSource<"Screening", TableName> {
+  implements ddbo.ExcelSheetIngestSource<"Screening", TableName> {
   readonly nature = "Excel Workbook Sheet";
   readonly sheetName = "Screening";
   readonly tableName: TableName;
   constructor(
     readonly uri: string,
-    readonly govn: ddbi.IngestGovernance,
+    readonly govn: ddbo.OrchGovernance,
   ) {
     this.tableName = govn.toSnakeCase(
       path.basename(uri, ".xlsx") + "_" + this.sheetName,
@@ -65,7 +65,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     sessionID: string,
     sessionEntryID: string,
   ): ReturnType<
-    ddbi.ExcelSheetIngestSource<"Screening", TableName>["workflow"]
+    ddbo.ExcelSheetIngestSource<"Screening", TableName>["workflow"]
   > {
     const sar = new sg.ScreeningAssuranceRules(
       this.tableName,
@@ -83,7 +83,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
   }
 
   async ingestSQL(
-    issac: ddbi.IngestSourceStructAssuranceContext,
+    issac: ddbo.IngestSourceStructAssuranceContext,
     sar: sg.ScreeningAssuranceRules<string>,
   ) {
     const { sheetName, tableName, uri } = this;
@@ -122,11 +122,11 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
 }
 
 export function ingestExcelSourcesSupplier(
-  govn: ddbi.IngestGovernance,
-): ddbi.IngestFsPatternSourcesSupplier<
+  govn: ddbo.OrchGovernance,
+): ddbo.IngestFsPatternSourcesSupplier<
   | ScreeningExcelSheetIngestSource<string>
   | ExcelSheetTodoIngestSource<string>
-  | ddbi.ErrorIngestSource
+  | ddbo.ErrorIngestSource
 > {
   return {
     pattern: path.globToRegExp("**/*.xlsx", {
@@ -138,7 +138,7 @@ export function ingestExcelSourcesSupplier(
       const sources: (
         | ScreeningExcelSheetIngestSource<string>
         | ExcelSheetTodoIngestSource<string>
-        | ddbi.ErrorIngestSource
+        | ddbo.ErrorIngestSource
       )[] = [];
 
       const sheetsExpected: Record<
@@ -172,7 +172,7 @@ export function ingestExcelSourcesSupplier(
             sheetsFound++;
           } else {
             sources.push(
-              new ddbi.ErrorIngestSource(
+              new ddbo.ErrorIngestSource(
                 uri,
                 sheetNotFound(expectedSN),
                 "Sheet Missing",
@@ -189,7 +189,7 @@ export function ingestExcelSourcesSupplier(
         }
       } catch (err) {
         sources.push(
-          new ddbi.ErrorIngestSource(entry.path, err, "ERROR", govn),
+          new ddbo.ErrorIngestSource(entry.path, err, "ERROR", govn),
         );
       }
       return sources;

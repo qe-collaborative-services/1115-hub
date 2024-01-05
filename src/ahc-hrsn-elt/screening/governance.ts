@@ -1,7 +1,7 @@
-import { SQLa_ingest_duckdb as ddbi } from "./deps.ts";
+import { SQLa_orch_duckdb as ddbo } from "./deps.ts";
 
 export class ScreeningAssuranceRules<TableName extends string>
-  extends ddbi.IngestTableAssuranceRules<TableName> {
+  extends ddbo.OrchTableAssuranceRules<TableName> {
   requiredColumnNames() {
     return this.tableRules.requiredColumnNames(
       [

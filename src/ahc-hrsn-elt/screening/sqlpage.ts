@@ -1,6 +1,6 @@
 import {
   chainNB,
-  SQLa_ingest_duckdb as ddbi,
+  SQLa_orch_duckdb as ddbo,
   SQLa_sqlpage as sp,
 } from "./deps.ts";
 
@@ -25,10 +25,10 @@ const nbDescr = new chainNB.NotebookDescriptor<
  *       is a proper noun (product name).
  */
 export class SQLPageNotebook {
-  readonly tc: ReturnType<typeof sp.typicalContent<ddbi.IngestEmitContext>>;
-  readonly comps = sp.typicalComponents<string, ddbi.IngestEmitContext>();
+  readonly tc: ReturnType<typeof sp.typicalContent<ddbo.OrchEmitContext>>;
+  readonly comps = sp.typicalComponents<string, ddbo.OrchEmitContext>();
 
-  constructor(readonly govn: ddbi.IngestGovernance) {
+  constructor(readonly govn: ddbo.OrchGovernance) {
     this.tc = sp.typicalContent(govn.SQL);
   }
 
@@ -37,7 +37,7 @@ export class SQLPageNotebook {
     // deno-fmt-ignore
     return this.govn.SQL`
       ${this.comps.shell({ 
-          title: "QCS Ingestion Center",
+          title: "QCS Orchestration Engine",
           icon: "book",
           link: "/",
           menuItems: [{ caption: "issues" }, { caption: "schema" }]
@@ -51,7 +51,7 @@ export class SQLPageNotebook {
     // safety
     const { list, listItem: li } = sp.typicalComponents<
       chainNB.NotebookCellID<SQLPageNotebook>,
-      ddbi.IngestEmitContext
+      ddbo.OrchEmitContext
     >();
 
     // deno-fmt-ignore
@@ -60,8 +60,8 @@ export class SQLPageNotebook {
       ${list({ items: [
                 li({ title: "Screenings", link: "screenings.sql" }),
                 li({ title: "Jon Doe Screening", link: "jondoe.sql" }),
-                li({ title: "Ingestion Issues", link: "issues.sql" }),
-                li({ title: "Ingestion State Schema", link: "schema.sql" }),
+                li({ title: "Orchestration Issues", link: "issues.sql" }),
+                li({ title: "Orchestration State Schema", link: "schema.sql" }),
                ]})}`;
   }
 
@@ -75,15 +75,15 @@ export class SQLPageNotebook {
       ${table({ rows: [{SQL: () => `SELECT * FROM "device"`}] })}
 
       ${table({ rows: [
-        { SQL: () => `SELECT * FROM "ingest_session"`}]})}
+        { SQL: () => `SELECT * FROM "orch_session"`}]})}
 
       ${table({ search: true, rows: [
-        { SQL: () => `SELECT ingest_session_entry_id,	ingest_src, ingest_table_name FROM "ingest_session_entry"`}]})}
+        { SQL: () => `SELECT orch_session_entry_id,	ingest_src, ingest_table_name FROM "orch_session_entry"`}]})}
   
       ${table({ search: true, rows: [
         { SQL: () => `
             SELECT issue_type, issue_message, invalid_value, remediation 
-              FROM "ingest_session_issue"`}]})}
+              FROM "orch_session_issue"`}]})}
     `;
   }
 
@@ -126,7 +126,7 @@ export class SQLPageNotebook {
     `;
   }
 
-  static create(govn: ddbi.IngestGovernance) {
+  static create(govn: ddbo.OrchGovernance) {
     return sp.sqlPageNotebook(
       SQLPageNotebook.prototype,
       () => new SQLPageNotebook(govn),

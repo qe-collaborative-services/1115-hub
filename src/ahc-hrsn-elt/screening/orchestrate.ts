@@ -3,7 +3,7 @@ import {
   chainNB,
   duckdb_shell as ddbs,
   fs,
-  SQLa_ingest_duckdb as ddbi,
+  SQLa_orch_duckdb as ddbo,
   ws,
 } from "./deps.ts";
 import * as sp from "./sqlpage.ts";
@@ -23,11 +23,11 @@ export type PotentialIngestSource =
   | ScreeningCsvFileIngestSource<string>
   | ScreeningExcelSheetIngestSource<string>
   | ExcelSheetTodoIngestSource<string>
-  | ddbi.ErrorIngestSource;
+  | ddbo.ErrorIngestSource;
 
 export function fsPatternIngestSourcesSupplier(
-  govn: ddbi.IngestGovernance,
-): ddbi.IngestSourcesSupplier<PotentialIngestSource, [string[] | undefined]> {
+  govn: ddbo.OrchGovernance,
+): ddbo.IngestSourcesSupplier<PotentialIngestSource, [string[] | undefined]> {
   return {
     sources: async (suggestedRootPaths?: string[]) => {
       const sources: PotentialIngestSource[] = [];
@@ -57,21 +57,15 @@ export function fsPatternIngestSourcesSupplier(
   };
 }
 
-export type IngestStep = chainNB.NotebookCell<
-  IngestEngine,
-  chainNB.NotebookCellID<IngestEngine>
+export type OrchStep = chainNB.NotebookCell<
+  OrchEngine,
+  chainNB.NotebookCellID<OrchEngine>
 >;
-export type IngestStepContext = chainNB.NotebookCellContext<
-  IngestEngine,
-  IngestStep
->;
-export const ieDescr = new chainNB.NotebookDescriptor<
-  IngestEngine,
-  IngestStep
->();
+export type OrchStepContext = chainNB.NotebookCellContext<OrchEngine, OrchStep>;
+export const oeDescr = new chainNB.NotebookDescriptor<OrchEngine, OrchStep>();
 
-export interface IngestEngineArgs
-  extends ddbi.IngestArgs<ddbi.IngestGovernance, IngestEngine> {
+export interface OrchEngineArgs
+  extends ddbo.OrchArgs<ddbo.OrchGovernance, OrchEngine> {
   readonly duckDbDestFsPathSupplier: (identity?: string) => string;
   readonly prepareDuckDbFsPath?: (duckDbDestFsPath: string) => Promise<void>;
   readonly walkRootPaths?: string[];
@@ -82,20 +76,20 @@ export interface IngestEngineArgs
 }
 
 /**
- * Use IngestEngine to prepare SQL for ingestion steps and execute them
+ * Use OrchEngine to prepare SQL for orchestration steps and execute them
  * using DuckDB CLI engine. Each method that does not have a @ieDescr.disregard()
  * attribute is considered a "step" and each step is executed in the order it is
  * declared. As each step is executed, its error or results are passed to the
  * next method.
  *
  * This Engine assumes that the Kernel observer will abort on Errors. If you want
- * to continue after an error, throw a IngestResumableError and use the second
+ * to continue after an error, throw a OrchResumableError and use the second
  * cell argument (result) to test for it.
  *
  * This class is introspected and run using SQLa's Notebook infrastructure.
  * See: https://github.com/netspective-labs/sql-aide/tree/main/lib/notebook
  */
-export class IngestEngine {
+export class OrchEngine {
   protected potentialSources?: PotentialIngestSource[];
   protected ingestables?: {
     readonly psIndex: number; // the index in #potentialSources
@@ -105,7 +99,7 @@ export class IngestEngine {
     readonly sql: string;
     readonly issues: {
       readonly session_entry_id: string;
-      readonly ingest_session_issue_id: string;
+      readonly orch_session_issue_id: string;
       readonly issue_type: string;
       readonly issue_message: string;
       readonly invalid_value: string;
@@ -114,12 +108,12 @@ export class IngestEngine {
   readonly duckdb: ddbs.DuckDbShell;
 
   constructor(
-    readonly iss: ddbi.IngestSourcesSupplier<
+    readonly iss: ddbo.IngestSourcesSupplier<
       PotentialIngestSource,
       [string[] | undefined] // optional root paths
     >,
-    readonly govn: ddbi.IngestGovernance,
-    readonly args: IngestEngineArgs,
+    readonly govn: ddbo.OrchGovernance,
+    readonly args: OrchEngineArgs,
   ) {
     this.duckdb = new ddbs.DuckDbShell({
       duckdbCmd: "duckdb",
@@ -133,7 +127,7 @@ export class IngestEngine {
    * database in case we want to initialize from scratch.
    * @param isc the type-safe notebook cell context for diagnostics or business rules
    */
-  async prepareInit(isc: IngestStepContext) {
+  async prepareInit(isc: OrchStepContext) {
     const duckDbFsPath = this.duckdb.args.dbDestFsPathSupplier(
       isc.current.nbCellID,
     );
@@ -142,13 +136,13 @@ export class IngestEngine {
 
   /**
    * Initialize the DuckDB database by ensuring the admin tables such as tracking
-   * ingestion events (states), activities (which files are being loaded), ingest
+   * orchestration events (states), activities (which files are being loaded), ingest
    * issues (errors, etc.), and related  entities are created. If there are any
    * errors during this process all other processing should stop and no other steps
    * are executed.
    * @param isc the type-safe notebook cell context for diagnostics or business rules
    */
-  async init(isc: IngestStepContext) {
+  async init(isc: OrchStepContext) {
     const { govn, govn: { informationSchema: is }, args: { session } } = this;
     const beforeInit = Array.from(
       session.sqlCatalogSqlSuppliers("before-init"),
@@ -164,7 +158,7 @@ export class IngestEngine {
 
       -- register the current device and session and use the identifiers for all logging
       ${await session.deviceSqlDML()}
-      ${await session.ingestSessionSqlDML()}
+      ${await session.orchSessionSqlDML()}
       
       ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`
       .SQL(this.govn.emitCtx);
@@ -175,7 +169,7 @@ export class IngestEngine {
         initDDL,
         execResult.status,
       );
-      // the kernel stops processing if it's not a IngestResumableError instance
+      // the kernel stops processing if it's not a OrchResumableError instance
       throw new Error(
         `duckdb.execute status in ${isc.current.nbCellID}() did not return zero, see ${diagsTmpFile}`,
       );
@@ -199,9 +193,9 @@ export class IngestEngine {
    * @param isc the type-safe notebook cell context for diagnostics or business rules
    * @returns list of "assurables" that did not generate any ingestion issues
    */
-  async ingest(isc: IngestStepContext) {
+  async ingest(isc: OrchStepContext) {
     const { govn, govn: { emitCtx: ctx }, args: { session } } = this;
-    const { sessionID } = await session.ingestSessionSqlDML();
+    const { sessionID } = await session.orchSessionSqlDML();
 
     let psIndex = 0;
     this.potentialSources = Array.from(
@@ -217,16 +211,16 @@ export class IngestEngine {
       const workflow = ps.workflow(sessionID, sessionEntryID);
       const checkStruct = await workflow.ingestSQL({
         sessionEntryInsertDML: () => {
-          return govn.ingestSessionEntryCRF.insertDML({
-            ingest_session_entry_id: sessionEntryID,
+          return govn.orchSessionEntryCRF.insertDML({
+            orch_session_entry_id: sessionEntryID,
             session_id: sessionID,
             ingest_src: uri,
             ingest_table_name: tableName,
           });
         },
         issueInsertDML: async (message, type = "Structural") => {
-          return govn.ingestSessionIssueCRF.insertDML({
-            ingest_session_issue_id: await govn.emitCtx.newUUID(
+          return govn.orchSessionIssueCRF.insertDML({
+            orch_session_issue_id: await govn.emitCtx.newUUID(
               govn.deterministicPKs,
             ),
             session_id: sessionID,
@@ -253,7 +247,7 @@ export class IngestEngine {
     // run the SQL and then emit the errors to STDOUT in JSON
     const ingestSQL = this.ingestables.map((ic) => ic.sql);
     ingestSQL.push(
-      `SELECT session_entry_id, ingest_session_issue_id, issue_type, issue_message, invalid_value FROM ingest_session_issue WHERE session_id = '${sessionID}'`,
+      `SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '${sessionID}'`,
     );
     const ingestResult = await this.duckdb.jsonResult<
       (typeof this.ingestables[number]["issues"])[number]
@@ -291,8 +285,8 @@ export class IngestEngine {
    * @param ingestResult the list of successful ingestions from the previous step
    */
   async ensureContent(
-    isc: IngestStepContext,
-    ingestResult: Awaited<ReturnType<typeof IngestEngine.prototype.ingest>>,
+    isc: OrchStepContext,
+    ingestResult: Awaited<ReturnType<typeof OrchEngine.prototype.ingest>>,
   ) {
     const { govn: { emitCtx: ctx } } = this;
 
@@ -308,9 +302,9 @@ export class IngestEngine {
   }
 
   async emitResources(
-    isc: IngestStepContext,
-    ingestResult: Awaited<
-      ReturnType<typeof IngestEngine.prototype.ensureContent>
+    isc: OrchStepContext,
+    ensureResult: Awaited<
+      ReturnType<typeof OrchEngine.prototype.ensureContent>
     >,
   ) {
     const { args: { resourceDb, session }, govn: { emitCtx: ctx } } = this;
@@ -324,10 +318,10 @@ export class IngestEngine {
       const spc = sp.SQLPageNotebook.create(this.govn);
       const adminTables = [
         this.govn.device,
-        this.govn.ingestSession,
-        this.govn.ingestSessionEntry,
-        this.govn.ingestSessionState,
-        this.govn.ingestSessionIssue,
+        this.govn.orchSession,
+        this.govn.orchSessionEntry,
+        this.govn.orchSessionState,
+        this.govn.orchSessionIssue,
         spc.table,
       ];
 
@@ -336,7 +330,7 @@ export class IngestEngine {
       const rdbSchemaName = "resource_db";
 
       const exportsSQL = await Promise.all(
-        ingestResult.map(async (sr) =>
+        ensureResult.map(async (sr) =>
           (await sr.workflow.exportResourceSQL(rdbSchemaName)).SQL(ctx)
         ),
       );
@@ -366,7 +360,7 @@ export class IngestEngine {
   }
 
   // `finalize` means always run this even if errors abort
-  @ieDescr.finalize()
+  @oeDescr.finalize()
   async emitDiagnostics() {
     const { args: { diagsXlsx } } = this;
     if (diagsXlsx) {
@@ -380,8 +374,8 @@ export class IngestEngine {
       // deno-fmt-ignore
       await this.duckdb.execute(ws.unindentWhitespace(`
         INSTALL spatial; LOAD spatial;
-        -- TODO: join with ingest_session table to give all the results in one sheet
-        COPY (SELECT * FROM ingest_session_diagnostic_text) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+        -- TODO: join with orch_session table to give all the results in one sheet
+        COPY (SELECT * FROM orch_session_diagnostic_text) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
         'emitDiagnostics'
       );
     }
