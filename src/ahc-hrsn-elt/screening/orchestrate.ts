@@ -125,11 +125,11 @@ export class OrchEngine {
    * Prepare the DuckDB path/database for initialization. Typically this gives
    * a chance for the path to the database to be created or removing the existing
    * database in case we want to initialize from scratch.
-   * @param isc the type-safe notebook cell context for diagnostics or business rules
+   * @param osc the type-safe notebook cell context for diagnostics or business rules
    */
-  async prepareInit(isc: OrchStepContext) {
+  async prepareInit(osc: OrchStepContext) {
     const duckDbFsPath = this.duckdb.args.dbDestFsPathSupplier(
-      isc.current.nbCellID,
+      osc.current.nbCellID,
     );
     await this.args.prepareDuckDbFsPath?.(duckDbFsPath);
   }
@@ -140,9 +140,9 @@ export class OrchEngine {
    * issues (errors, etc.), and related  entities are created. If there are any
    * errors during this process all other processing should stop and no other steps
    * are executed.
-   * @param isc the type-safe notebook cell context for diagnostics or business rules
+   * @param osc the type-safe notebook cell context for diagnostics or business rules
    */
-  async init(isc: OrchStepContext) {
+  async init(osc: OrchStepContext) {
     const { govn, govn: { informationSchema: is }, args: { session } } = this;
     const beforeInit = Array.from(
       session.sqlCatalogSqlSuppliers("before-init"),
@@ -163,7 +163,7 @@ export class OrchEngine {
       ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`
       .SQL(this.govn.emitCtx);
 
-    const execResult = await this.duckdb.execute(initDDL, isc.current.nbCellID);
+    const execResult = await this.duckdb.execute(initDDL, osc.current.nbCellID);
     if (execResult.status.code != 0) {
       const diagsTmpFile = await this.duckdb.writeDiagnosticsSqlMD(
         initDDL,
@@ -171,7 +171,7 @@ export class OrchEngine {
       );
       // the kernel stops processing if it's not a OrchResumableError instance
       throw new Error(
-        `duckdb.execute status in ${isc.current.nbCellID}() did not return zero, see ${diagsTmpFile}`,
+        `duckdb.execute status in ${osc.current.nbCellID}() did not return zero, see ${diagsTmpFile}`,
       );
     }
   }
@@ -190,10 +190,10 @@ export class OrchEngine {
    * structure and columns of ingested data, then the remainder of the SQL for
    * cleansing, validation, or transformations will not cause syntax errors.
    *
-   * @param isc the type-safe notebook cell context for diagnostics or business rules
+   * @param osc the type-safe notebook cell context for diagnostics or business rules
    * @returns list of "assurables" that did not generate any ingestion issues
    */
-  async ingest(isc: OrchStepContext) {
+  async ingest(osc: OrchStepContext) {
     const { govn, govn: { emitCtx: ctx }, args: { session } } = this;
     const { sessionID } = await session.orchSessionSqlDML();
 
@@ -235,7 +235,7 @@ export class OrchEngine {
       this.ingestables.push({
         psIndex,
         sessionEntryID,
-        sql: `-- ${isc.current.nbCellID} ${uri} (${tableName})\n` +
+        sql: `-- ${osc.current.nbCellID} ${uri} (${tableName})\n` +
           checkStruct.SQL(ctx),
         source: ps,
         workflow,
@@ -253,7 +253,7 @@ export class OrchEngine {
       (typeof this.ingestables[number]["issues"])[number]
     >(
       ingestSQL.join("\n"),
-      isc.current.nbCellID,
+      osc.current.nbCellID,
     );
     if (ingestResult.json) {
       // if errors were found, put the problems into the proper ingestable issues
@@ -281,11 +281,11 @@ export class OrchEngine {
    * or structure of an ingested CSV, Excel, Parquet, or other source does not
    * match our expectations).
    *
-   * @param isc the type-safe notebook cell context for diagnostics or business rules
+   * @param osc the type-safe notebook cell context for diagnostics or business rules
    * @param ingestResult the list of successful ingestions from the previous step
    */
   async ensureContent(
-    isc: OrchStepContext,
+    osc: OrchStepContext,
     ingestResult: Awaited<ReturnType<typeof OrchEngine.prototype.ingest>>,
   ) {
     const { govn: { emitCtx: ctx } } = this;
@@ -297,7 +297,7 @@ export class OrchEngine {
       ),
     );
 
-    await this.duckdb.execute(assurableSQL.join("\n"), isc.current.nbCellID);
+    await this.duckdb.execute(assurableSQL.join("\n"), osc.current.nbCellID);
     return ingestResult;
   }
 
@@ -359,7 +359,7 @@ export class OrchEngine {
     }
   }
 
-  // `finalize` means always run this even if errors abort
+  // `finalize` means always run this even if errors abort the above methods
   @oeDescr.finalize()
   async emitDiagnostics() {
     const { args: { diagsXlsx } } = this;
