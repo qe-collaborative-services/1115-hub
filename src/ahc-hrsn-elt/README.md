@@ -16,7 +16,8 @@ transforming it, enriching it and loading it in a relational or other database.
 │           ├── deps.ts                # all external dependencies used by this module
 │           ├── excel.ts               # module which helps build DuckDB SQL for Excel workbook ingestion
 │           ├── governance.ts          # business rules and other "governance" code  
-│           ├── ingest.ts              # workflow (notebook cells) code
+│           ├── orchestrate.ts         # orchestration workflow (notebook cells) code
+│           ├── sqlpage.ts             # SQLPage server diagnostics code notebook 
 │           ├── mod.ts                 # Deno module entrypoint when building your own code
 │           └── test-e2e.ts            # code executed when `deno task ahc-hrsn-screening-test-e2e` is run
 |
