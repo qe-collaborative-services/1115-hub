@@ -4,6 +4,9 @@ import {
   SQLa_sqlpage as sp,
 } from "./deps.ts";
 
+// deno-lint-ignore no-explicit-any
+type Any = any;
+
 type SQLPageFile = chainNB.NotebookCell<
   SQLPageNotebook,
   chainNB.NotebookCellID<SQLPageNotebook>
@@ -13,6 +16,57 @@ const nbDescr = new chainNB.NotebookDescriptor<
   SQLPageNotebook,
   SQLPageFile
 >();
+
+const customComponent = {
+  session_entries: "session_entries",
+} as const;
+type CustomComponentName = keyof typeof customComponent;
+
+function sessionEntries(
+  govn: ddbo.OrchGovernance,
+  customCB: sp.ComponentBuilder<CustomComponentName, ddbo.OrchEmitContext>,
+): sp.CustomTemplateSupplier<
+  ddbo.OrchEmitContext,
+  typeof customComponent.session_entries,
+  { readonly title: string },
+  {
+    readonly orch_session_entry_id: string;
+    readonly ingest_src: string;
+    readonly ingest_table_name: string;
+  },
+  { readonly session_entry_id: string }
+> {
+  return {
+    templatePath: customCB.customTemplatePath(customComponent.session_entries),
+    handlebarsCode: ({ tla: a, pn, row: c }) => ({
+      SQL: () =>
+        sp.text`
+          <h1>${a.title}</h1>
+  
+          <ul>
+          {{#each_row}}
+              <li><a href="?${pn.session_entry_id}=${c.orch_session_entry_id}">${c.ingest_src}</a> (${c.ingest_table_name})</li>
+          {{/each_row}}
+          </ul>`,
+    }),
+    component: (tlaArg) => {
+      const { tableNames: tn, columnNames: { orch_session_entry: c } } = govn;
+      const tla = tlaArg ?? { title: "Choose Session Entry" };
+      return {
+        ...tla,
+        ...customCB.custom(
+          customComponent.session_entries,
+          tla,
+          (topLevel) =>
+            govn.SQL`
+              ${topLevel}
+              SELECT ${c.orch_session_entry_id}, ${c.ingest_src}, ${c.ingest_table_name} 
+                FROM ${tn.orch_session_entry}`,
+        ),
+      };
+    },
+  };
+}
 
 /**
  * Encapsulates [SQLPage](https://sql.ophir.dev/) content. SqlPageNotebook has
@@ -39,9 +93,27 @@ const nbDescr = new chainNB.NotebookDescriptor<
 export class SQLPageNotebook {
   readonly tc: ReturnType<typeof sp.typicalContent<ddbo.OrchEmitContext>>;
   readonly comps = sp.typicalComponents<string, ddbo.OrchEmitContext>();
+  readonly customCB = new sp.ComponentBuilder<
+    CustomComponentName,
+    ddbo.OrchEmitContext
+  >();
+  readonly sessionEntries: ReturnType<typeof sessionEntries>;
 
-  constructor(readonly govn: ddbo.OrchGovernance) {
+  constructor(
+    readonly govn: ddbo.OrchGovernance,
+    registerCTS: (
+      cc: sp.CustomTemplateSupplier<
+        ddbo.OrchEmitContext,
+        CustomComponentName,
+        Any,
+        Any,
+        Any
+      >,
+    ) => void,
+  ) {
     this.tc = sp.typicalContent(govn.SQL);
+    this.sessionEntries = sessionEntries(govn, this.customCB);
+    registerCTS(this.sessionEntries);
   }
 
   @nbDescr.disregard()
@@ -52,7 +124,7 @@ export class SQLPageNotebook {
           title: "QCS Orchestration Engine",
           icon: "book",
           link: "/",
-          menuItems: [{ caption: "issues" }, { caption: "schema" }]
+          menuItems: [{ caption: "sessions" }, { caption: "schema" }]
       })}
     `;
   }
@@ -72,31 +144,50 @@ export class SQLPageNotebook {
       ${list({ items: [
                 li({ title: "Screenings", link: "screenings.sql" }),
                 li({ title: "Jon Doe Screening", link: "jondoe.sql" }),
+                li({ title: "Orchestration Sessions", link: "sessions.sql" }),
                 li({ title: "Orchestration Issues", link: "issues.sql" }),
                 li({ title: "Orchestration State Schema", link: "schema.sql" }),
                ]})}`;
   }
 
-  "issues.sql"() {
-    const { comps: { table }, govn: { SQL } } = this;
+  "sessions.sql"() {
+    const { comps: { table }, govn, govn: { SQL } } = this;
+    const { tableNames: tn, columnNames: { orch_session_entry: c } } = govn;
 
     // deno-fmt-ignore
     return SQL`
       ${this.shell()}
 
-      ${table({ rows: [{SQL: () => `SELECT * FROM "device"`}] })}
+      ${table({ rows: [{SQL: () => `SELECT * FROM ${tn.device}`}] })}
 
       ${table({ rows: [
-        { SQL: () => `SELECT * FROM "orch_session"`}]})}
+        { SQL: () => `SELECT * FROM ${tn.orch_session}`}]})}
+
+      ${table({ search: true, columns: { ingest_src: { markdown: true }}, rows: [
+        { SQL: () => `SELECT '[' || ${c.ingest_src} || '](issues.sql?session_entry_id='|| ${c.orch_session_entry_id} ||')' as ${c.ingest_src}, ${c.ingest_table_name} FROM "${tn.orch_session_entry}"`}]})}
+    `;
+  }
+
+  "issues.sql"() {
+    const { comps: { table }, govn, govn: { SQL } } = this;
+    const { tableNames: tn, columnNames: { orch_session_issue: c } } = govn;
+
+    // ${breadcrumbs({ items: [
+    //   { caption: "Home", href: "/" },
+    //   { caption: { SQL: () => `(SELECT ingest_src FROM orch_session_entry WHERE orch_session_entry_id = $session_entry_id)` }, active: true } ]})}
+
+    // deno-fmt-ignore
+    return SQL`
+      ${this.shell()}
+
+      ${this.sessionEntries.component()}
 
       ${table({ search: true, rows: [
-        { SQL: () => `SELECT orch_session_entry_id,	ingest_src, ingest_table_name FROM "orch_session_entry"`}]})}
-  
-      ${table({ search: true, rows: [
         { SQL: () => `
-            SELECT issue_type, issue_message, invalid_value, remediation 
-              FROM "orch_session_issue"`}]})}
-    `;
+            SELECT ${c.issue_type}, ${c.issue_message}, ${c.invalid_value}, ${c.remediation}
+              FROM ${tn.orch_session_issue}
+             WHERE ${c.session_entry_id} = $${c.session_entry_id}`}]})}
+      `;
   }
 
   "screenings.sql"() {
@@ -141,7 +232,7 @@ export class SQLPageNotebook {
   static create(govn: ddbo.OrchGovernance) {
     return sp.sqlPageNotebook(
       SQLPageNotebook.prototype,
-      () => new SQLPageNotebook(govn),
+      (registerCTS) => new SQLPageNotebook(govn, registerCTS),
       () => govn.emitCtx,
       nbDescr,
     );
