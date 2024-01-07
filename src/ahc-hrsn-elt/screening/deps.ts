@@ -7,13 +7,14 @@ export * as cliffy from "https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts";
 export * as dax from "https://deno.land/x/dax@0.36.0/mod.ts";
 export * as safeText from "npm:string-ts";
 
-// local: ../../../../../netspective-labs/sql-aide
-// remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.1
+// local: $./../../../../netspective-labs/sql-aide
+// remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.2
 
-export * as array from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.1/lib/universal/array.ts";
-export * as chainNB from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.1/lib/notebook/chain-of-responsibility.ts";
-export * as ws from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.1/lib/universal/whitespace.ts";
+export * as array from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.2/lib/universal/array.ts";
+export * as chainNB from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.2/lib/notebook/chain-of-responsibility.ts";
+export * as ws from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.2/lib/universal/whitespace.ts";
 
-export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.1/render/mod.ts";
-export * as SQLa_orch_duckdb from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.1/pattern/orchestration/duckdb/mod.ts";
-export * as SQLa_sqlpage from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.1/pattern/sqlpage/mod.ts";
+export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.2/render/mod.ts";
+export * as SQLa_orch from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.2/pattern/orchestration/mod.ts";
+export * as SQLa_orch_duckdb from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.2/pattern/orchestration/duckdb/mod.ts";
+export * as SQLa_sqlpage from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.12.2/pattern/sqlpage/mod.ts";

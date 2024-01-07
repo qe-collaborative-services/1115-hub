@@ -1,20 +1,22 @@
-import { fs, path, SQLa_orch_duckdb as ddbo } from "./deps.ts";
+import { fs, path, SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
 import * as sg from "./governance.ts";
 
 export class ScreeningCsvFileIngestSource<TableName extends string>
-  implements ddbo.CsvFileIngestSource<TableName> {
+  implements o.CsvFileIngestSource<TableName, ddbo.DuckDbOrchEmitContext> {
   readonly nature = "CSV";
   constructor(
     readonly uri: string,
     readonly tableName: TableName,
-    readonly govn: ddbo.OrchGovernance,
+    readonly govn: ddbo.DuckDbOrchGovernance,
   ) {
   }
 
   workflow(
     sessionID: string,
     sessionEntryID: string,
-  ): ReturnType<ddbo.CsvFileIngestSource<TableName>["workflow"]> {
+  ): ReturnType<
+    o.CsvFileIngestSource<TableName, ddbo.DuckDbOrchEmitContext>["workflow"]
+  > {
     const sar = new sg.ScreeningAssuranceRules(
       this.tableName,
       sessionID,
@@ -31,7 +33,7 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
   }
 
   async ingestSQL(
-    issac: ddbo.IngestSourceStructAssuranceContext,
+    issac: o.IngestSourceStructAssuranceContext<ddbo.DuckDbOrchEmitContext>,
     sar: sg.ScreeningAssuranceRules<TableName>,
   ) {
     const { tableName, uri } = this;
@@ -99,8 +101,8 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
 }
 
 export function ingestCsvFilesSourcesSupplier(
-  govn: ddbo.OrchGovernance,
-): ddbo.IngestFsPatternSourcesSupplier<ScreeningCsvFileIngestSource<string>> {
+  govn: ddbo.DuckDbOrchGovernance,
+): o.IngestFsPatternSourcesSupplier<ScreeningCsvFileIngestSource<string>> {
   return {
     pattern: path.globToRegExp("**/*.csv", {
       extended: true,

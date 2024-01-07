@@ -1,4 +1,4 @@
-import { SQLa_orch_duckdb as ddbo } from "./deps.ts";
+import { SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
 import * as mod from "./mod.ts";
 
 /**
@@ -16,9 +16,12 @@ import * as mod from "./mod.ts";
 
 const ahcHrsnScreeningHome = `support/assurance/ahc-hrsn-elt/screening`;
 const resultsHome = `${ahcHrsnScreeningHome}/results-test-e2e`;
-const govn = new ddbo.OrchGovernance(true);
+const govn = new ddbo.DuckDbOrchGovernance(
+  true,
+  new ddbo.DuckDbOrchEmitContext(),
+);
 const args: mod.OrchEngineArgs = {
-  session: new ddbo.OrchSession(govn),
+  session: new o.OrchSession(govn),
   walkRootPaths: [`${ahcHrsnScreeningHome}/synthetic-content`],
   duckDbDestFsPathSupplier: () => `${resultsHome}/ingestion-center.duckdb`,
   prepareDuckDbFsPath: async (duckDbFsPath: string) => {
@@ -36,7 +39,12 @@ const args: mod.OrchEngineArgs = {
     await Deno.writeTextFile(`${resultsHome}/dag.puml`, puml);
   },
 };
-await ddbo.orchestrate(mod.OrchEngine.prototype, mod.oeDescr, {
+await o.orchestrate<
+  ddbo.DuckDbOrchGovernance,
+  mod.OrchEngine,
+  mod.OrchEngineArgs,
+  ddbo.DuckDbOrchEmitContext
+>(mod.OrchEngine.prototype, mod.oeDescr, {
   govn,
   newInstance: () =>
     new mod.OrchEngine(mod.fsPatternIngestSourcesSupplier(govn), govn, args),

@@ -1,4 +1,4 @@
-import { fs, path, SQLa_orch_duckdb as ddbo } from "./deps.ts";
+import { fs, path, SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
 import * as sg from "./governance.ts";
 
 // @deno-types="https://cdn.sheetjs.com/xlsx-0.20.1/package/types/index.d.ts"
@@ -12,13 +12,14 @@ export const excelWorkbookSheetNames = [
 export type ExcelWorkbookSheetName = typeof excelWorkbookSheetNames[number];
 
 export class ExcelSheetTodoIngestSource<SheetName extends string>
-  implements ddbo.ExcelSheetIngestSource<SheetName, string> {
+  implements
+    o.ExcelSheetIngestSource<SheetName, string, ddbo.DuckDbOrchEmitContext> {
   readonly nature = "Excel Workbook Sheet";
   readonly tableName: string;
   constructor(
     readonly uri: string,
     readonly sheetName: SheetName,
-    readonly govn: ddbo.OrchGovernance,
+    readonly govn: ddbo.DuckDbOrchGovernance,
   ) {
     this.tableName = govn.toSnakeCase(
       path.basename(uri, ".xlsx") + "_" + sheetName,
@@ -26,7 +27,11 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
   }
 
   workflow(): ReturnType<
-    ddbo.ExcelSheetIngestSource<string, string>["workflow"]
+    o.ExcelSheetIngestSource<
+      string,
+      string,
+      ddbo.DuckDbOrchEmitContext
+    >["workflow"]
   > {
     return {
       ingestSQL: async (issac) =>
@@ -48,13 +53,18 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
 }
 
 export class ScreeningExcelSheetIngestSource<TableName extends string>
-  implements ddbo.ExcelSheetIngestSource<"Screening", TableName> {
+  implements
+    o.ExcelSheetIngestSource<
+      "Screening",
+      TableName,
+      ddbo.DuckDbOrchEmitContext
+    > {
   readonly nature = "Excel Workbook Sheet";
   readonly sheetName = "Screening";
   readonly tableName: TableName;
   constructor(
     readonly uri: string,
-    readonly govn: ddbo.OrchGovernance,
+    readonly govn: ddbo.DuckDbOrchGovernance,
   ) {
     this.tableName = govn.toSnakeCase(
       path.basename(uri, ".xlsx") + "_" + this.sheetName,
@@ -65,7 +75,11 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     sessionID: string,
     sessionEntryID: string,
   ): ReturnType<
-    ddbo.ExcelSheetIngestSource<"Screening", TableName>["workflow"]
+    o.ExcelSheetIngestSource<
+      "Screening",
+      TableName,
+      ddbo.DuckDbOrchEmitContext
+    >["workflow"]
   > {
     const sar = new sg.ScreeningAssuranceRules(
       this.tableName,
@@ -83,7 +97,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
   }
 
   async ingestSQL(
-    issac: ddbo.IngestSourceStructAssuranceContext,
+    issac: o.IngestSourceStructAssuranceContext<ddbo.DuckDbOrchEmitContext>,
     sar: sg.ScreeningAssuranceRules<string>,
   ) {
     const { sheetName, tableName, uri } = this;
@@ -122,11 +136,11 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
 }
 
 export function ingestExcelSourcesSupplier(
-  govn: ddbo.OrchGovernance,
-): ddbo.IngestFsPatternSourcesSupplier<
+  govn: ddbo.DuckDbOrchGovernance,
+): o.IngestFsPatternSourcesSupplier<
   | ScreeningExcelSheetIngestSource<string>
   | ExcelSheetTodoIngestSource<string>
-  | ddbo.ErrorIngestSource
+  | o.ErrorIngestSource<ddbo.DuckDbOrchGovernance, ddbo.DuckDbOrchEmitContext>
 > {
   return {
     pattern: path.globToRegExp("**/*.xlsx", {
@@ -138,7 +152,10 @@ export function ingestExcelSourcesSupplier(
       const sources: (
         | ScreeningExcelSheetIngestSource<string>
         | ExcelSheetTodoIngestSource<string>
-        | ddbo.ErrorIngestSource
+        | o.ErrorIngestSource<
+          ddbo.DuckDbOrchGovernance,
+          ddbo.DuckDbOrchEmitContext
+        >
       )[] = [];
 
       const sheetsExpected: Record<
@@ -172,7 +189,10 @@ export function ingestExcelSourcesSupplier(
             sheetsFound++;
           } else {
             sources.push(
-              new ddbo.ErrorIngestSource(
+              new o.ErrorIngestSource<
+                ddbo.DuckDbOrchGovernance,
+                ddbo.DuckDbOrchEmitContext
+              >(
                 uri,
                 sheetNotFound(expectedSN),
                 "Sheet Missing",
@@ -189,7 +209,10 @@ export function ingestExcelSourcesSupplier(
         }
       } catch (err) {
         sources.push(
-          new ddbo.ErrorIngestSource(entry.path, err, "ERROR", govn),
+          new o.ErrorIngestSource<
+            ddbo.DuckDbOrchGovernance,
+            ddbo.DuckDbOrchEmitContext
+          >(entry.path, err, "ERROR", govn),
         );
       }
       return sources;

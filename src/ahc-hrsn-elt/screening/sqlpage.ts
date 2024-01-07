@@ -23,10 +23,13 @@ const customComponent = {
 type CustomComponentName = keyof typeof customComponent;
 
 function sessionEntries(
-  govn: ddbo.OrchGovernance,
-  customCB: sp.ComponentBuilder<CustomComponentName, ddbo.OrchEmitContext>,
+  govn: ddbo.DuckDbOrchGovernance,
+  customCB: sp.ComponentBuilder<
+    CustomComponentName,
+    ddbo.DuckDbOrchEmitContext
+  >,
 ): sp.CustomTemplateSupplier<
-  ddbo.OrchEmitContext,
+  ddbo.DuckDbOrchEmitContext,
   typeof customComponent.session_entries,
   { readonly title: string },
   {
@@ -91,19 +94,19 @@ function sessionEntries(
  *       is a proper noun (product name).
  */
 export class SQLPageNotebook {
-  readonly tc: ReturnType<typeof sp.typicalContent<ddbo.OrchEmitContext>>;
-  readonly comps = sp.typicalComponents<string, ddbo.OrchEmitContext>();
+  readonly tc: ReturnType<typeof sp.typicalContent<ddbo.DuckDbOrchEmitContext>>;
+  readonly comps = sp.typicalComponents<string, ddbo.DuckDbOrchEmitContext>();
   readonly customCB = new sp.ComponentBuilder<
     CustomComponentName,
-    ddbo.OrchEmitContext
+    ddbo.DuckDbOrchEmitContext
   >();
   readonly sessionEntries: ReturnType<typeof sessionEntries>;
 
   constructor(
-    readonly govn: ddbo.OrchGovernance,
+    readonly govn: ddbo.DuckDbOrchGovernance,
     registerCTS: (
       cc: sp.CustomTemplateSupplier<
-        ddbo.OrchEmitContext,
+        ddbo.DuckDbOrchEmitContext,
         CustomComponentName,
         Any,
         Any,
@@ -135,7 +138,7 @@ export class SQLPageNotebook {
     // safety
     const { list, listItem: li } = sp.typicalComponents<
       chainNB.NotebookCellID<SQLPageNotebook>,
-      ddbo.OrchEmitContext
+      ddbo.DuckDbOrchEmitContext
     >();
 
     // deno-fmt-ignore
@@ -229,7 +232,7 @@ export class SQLPageNotebook {
     `;
   }
 
-  static create(govn: ddbo.OrchGovernance) {
+  static create(govn: ddbo.DuckDbOrchGovernance) {
     return sp.sqlPageNotebook(
       SQLPageNotebook.prototype,
       (registerCTS) => new SQLPageNotebook(govn, registerCTS),

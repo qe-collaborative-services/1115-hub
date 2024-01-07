@@ -1,4 +1,11 @@
-import { array, chainNB, fs, SQLa_orch_duckdb as ddbo, ws } from "./deps.ts";
+import {
+  array,
+  chainNB,
+  fs,
+  SQLa_orch as o,
+  SQLa_orch_duckdb as ddbo,
+  ws,
+} from "./deps.ts";
 import * as sp from "./sqlpage.ts";
 
 import {
@@ -16,11 +23,14 @@ export type PotentialIngestSource =
   | ScreeningCsvFileIngestSource<string>
   | ScreeningExcelSheetIngestSource<string>
   | ExcelSheetTodoIngestSource<string>
-  | ddbo.ErrorIngestSource;
+  | o.ErrorIngestSource<
+    ddbo.DuckDbOrchGovernance,
+    ddbo.DuckDbOrchEmitContext
+  >;
 
 export function fsPatternIngestSourcesSupplier(
-  govn: ddbo.OrchGovernance,
-): ddbo.IngestSourcesSupplier<PotentialIngestSource, [string[] | undefined]> {
+  govn: ddbo.DuckDbOrchGovernance,
+): o.IngestSourcesSupplier<PotentialIngestSource, [string[] | undefined]> {
   return {
     sources: async (suggestedRootPaths?: string[]) => {
       const sources: PotentialIngestSource[] = [];
@@ -57,8 +67,12 @@ export type OrchStep = chainNB.NotebookCell<
 export type OrchStepContext = chainNB.NotebookCellContext<OrchEngine, OrchStep>;
 export const oeDescr = new chainNB.NotebookDescriptor<OrchEngine, OrchStep>();
 
-export interface OrchEngineArgs
-  extends ddbo.OrchArgs<ddbo.OrchGovernance, OrchEngine> {
+export interface OrchEngineArgs extends
+  o.OrchArgs<
+    ddbo.DuckDbOrchGovernance,
+    OrchEngine,
+    ddbo.DuckDbOrchEmitContext
+  > {
   readonly duckDbDestFsPathSupplier: (identity?: string) => string;
   readonly prepareDuckDbFsPath?: (duckDbDestFsPath: string) => Promise<void>;
   readonly walkRootPaths?: string[];
@@ -101,11 +115,11 @@ export class OrchEngine {
   readonly duckdb: ddbo.DuckDbShell;
 
   constructor(
-    readonly iss: ddbo.IngestSourcesSupplier<
+    readonly iss: o.IngestSourcesSupplier<
       PotentialIngestSource,
       [string[] | undefined] // optional root paths
     >,
-    readonly govn: ddbo.OrchGovernance,
+    readonly govn: ddbo.DuckDbOrchGovernance,
     readonly args: OrchEngineArgs,
   ) {
     this.duckdb = new ddbo.DuckDbShell(args.session, {
