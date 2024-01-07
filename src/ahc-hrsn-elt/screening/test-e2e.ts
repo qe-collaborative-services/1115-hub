@@ -28,7 +28,7 @@ const args: mod.OrchEngineArgs = {
       // ignore errors if file does not exist
     }
   },
-  // diagsJson: `${resultsHome}/diagnostics.json`,
+  diagsJson: `${resultsHome}/diagnostics.json`,
   diagsMd: `${resultsHome}/diagnostics.md`,
   diagsXlsx: `${resultsHome}/diagnostics.xlsx`,
   resourceDb: `${resultsHome}/resource.sqlite.db`,

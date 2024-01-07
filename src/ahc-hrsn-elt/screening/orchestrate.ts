@@ -1,11 +1,4 @@
-import {
-  array,
-  chainNB,
-  duckdb_shell as ddbs,
-  fs,
-  SQLa_orch_duckdb as ddbo,
-  ws,
-} from "./deps.ts";
+import { array, chainNB, fs, SQLa_orch_duckdb as ddbo, ws } from "./deps.ts";
 import * as sp from "./sqlpage.ts";
 
 import {
@@ -105,7 +98,7 @@ export class OrchEngine {
       readonly invalid_value: string;
     }[];
   }[];
-  readonly duckdb: ddbs.DuckDbShell;
+  readonly duckdb: ddbo.DuckDbShell;
 
   constructor(
     readonly iss: ddbo.IngestSourcesSupplier<
@@ -115,7 +108,7 @@ export class OrchEngine {
     readonly govn: ddbo.OrchGovernance,
     readonly args: OrchEngineArgs,
   ) {
-    this.duckdb = new ddbs.DuckDbShell({
+    this.duckdb = new ddbo.DuckDbShell(args.session, {
       duckdbCmd: "duckdb",
       dbDestFsPathSupplier: args.duckDbDestFsPathSupplier,
     });
@@ -321,6 +314,7 @@ export class OrchEngine {
         this.govn.orchSession,
         this.govn.orchSessionEntry,
         this.govn.orchSessionState,
+        this.govn.orchSessionExec,
         this.govn.orchSessionIssue,
         spc.table,
       ];
@@ -348,6 +342,9 @@ export class OrchEngine {
         -- emit all the SQLPage content
         ${((await spc.sqlCells()).map(sc => sc.SQL(ctx))).join(";\n\n")};
         
+        -- emit all the execution diagnostics
+        ${this.duckdb.diagnostics.map(d => d.SQL(this.govn.emitCtx)).join(";\n        ")};
+
         ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);
 
         ${adminTables.map(t => `CREATE TABLE ${rdbSchemaName}.${t.tableName} AS SELECT * FROM ${t.tableName}`).join(";\n        ")};
