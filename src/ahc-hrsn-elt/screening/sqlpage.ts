@@ -17,10 +17,10 @@ const nbDescr = new chainNB.NotebookDescriptor<
   SQLPageFile
 >();
 
-const customComponent = {
+const customComponents = {
   session_entries: "session_entries",
 } as const;
-type CustomComponentName = keyof typeof customComponent;
+type CustomComponentName = keyof typeof customComponents;
 
 function sessionEntries(
   govn: ddbo.DuckDbOrchGovernance,
@@ -28,27 +28,36 @@ function sessionEntries(
     CustomComponentName,
     ddbo.DuckDbOrchEmitContext
   >,
-): sp.CustomTemplateSupplier<
-  ddbo.DuckDbOrchEmitContext,
-  typeof customComponent.session_entries,
-  { readonly title: string },
-  {
-    readonly orch_session_entry_id: string;
-    readonly ingest_src: string;
-    readonly ingest_table_name: string;
-  },
-  { readonly session_entry_id: string }
-> {
-  return {
-    templatePath: customCB.customTemplatePath(customComponent.session_entries),
-    handlebarsCode: ({ tla: a, pn, row: c }) => ({
+) {
+  type TopLevelArgs = { readonly title: string };
+  type Row = Record<
+    keyof Pick<
+      typeof govn.columnNames.orch_session_entry,
+      "orch_session_entry_id" | "ingest_src" | "ingest_table_name"
+    >,
+    string
+  >;
+  type PageParams = { readonly session_entry_id: string };
+  const [tla, pp, rc] = [
+    sp.safeHandlebars<TopLevelArgs>(),
+    sp.safePropNames<PageParams>(),
+    sp.safeHandlebars<Row>(),
+  ];
+  const customComp: sp.CustomTemplateSupplier<
+    ddbo.DuckDbOrchEmitContext,
+    typeof customComponents.session_entries,
+    TopLevelArgs,
+    Row
+  > = {
+    templatePath: customCB.customTemplatePath(customComponents.session_entries),
+    handlebarsCode: () => ({
       SQL: () =>
         sp.text`
-          <h1>${a.title}</h1>
+          <h1>${tla.title}</h1>
   
           <ul>
           {{#each_row}}
-              <li><a href="?${pn.session_entry_id}=${c.orch_session_entry_id}">${c.ingest_src}</a> (${c.ingest_table_name})</li>
+              <li><a href="?${pp.session_entry_id}=${rc.orch_session_entry_id}">${rc.ingest_src}</a> (${rc.ingest_table_name})</li>
           {{/each_row}}
           </ul>`,
     }),
@@ -58,7 +67,7 @@ function sessionEntries(
       return {
         ...tla,
         ...customCB.custom(
-          customComponent.session_entries,
+          customComponents.session_entries,
           tla,
           (topLevel) =>
             govn.SQL`
@@ -69,6 +78,7 @@ function sessionEntries(
       };
     },
   };
+  return customComp;
 }
 
 /**
@@ -94,29 +104,32 @@ function sessionEntries(
  *       is a proper noun (product name).
  */
 export class SQLPageNotebook {
-  readonly tc: ReturnType<typeof sp.typicalContent<ddbo.DuckDbOrchEmitContext>>;
+  readonly sc: ReturnType<typeof sp.sqliteContent<ddbo.DuckDbOrchEmitContext>>;
   readonly comps = sp.typicalComponents<string, ddbo.DuckDbOrchEmitContext>();
   readonly customCB = new sp.ComponentBuilder<
     CustomComponentName,
     ddbo.DuckDbOrchEmitContext
   >();
   readonly sessionEntries: ReturnType<typeof sessionEntries>;
+  readonly imsTables: ReturnType<
+    typeof this.sc.components.infoModelSchemaTables
+  >;
 
   constructor(
     readonly govn: ddbo.DuckDbOrchGovernance,
     registerCTS: (
-      cc: sp.CustomTemplateSupplier<
+      ...cc: sp.CustomTemplateSupplier<
         ddbo.DuckDbOrchEmitContext,
-        CustomComponentName,
         Any,
         Any,
         Any
-      >,
+      >[]
     ) => void,
   ) {
-    this.tc = sp.typicalContent(govn.SQL);
+    this.sc = sp.sqliteContent(govn.SQL);
     this.sessionEntries = sessionEntries(govn, this.customCB);
-    registerCTS(this.sessionEntries);
+    this.imsTables = this.sc.components.infoModelSchemaTables();
+    registerCTS(this.sessionEntries, this.imsTables);
   }
 
   @nbDescr.disregard()
@@ -226,9 +239,10 @@ export class SQLPageNotebook {
   }
 
   "schema.sql"() {
-    return this.govn.SQL`
+    const { govn: { SQL } } = this;
+    return SQL`
       ${this.shell()}
-      ${this.tc.infoSchemaSQL()}
+      ${this.sc.sqliteMaster()}
     `;
   }
 
