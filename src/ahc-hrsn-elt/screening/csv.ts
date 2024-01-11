@@ -69,7 +69,7 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
 
       CREATE VIEW ${targetSchema}.${tableName}_fhir AS 
-        SELECT json_object(
+        SELECT pat_mrn_id, json_object(
               'resourceType', 'Observation',
               'id', ENCOUNTER_ID,
               'status', 'final',

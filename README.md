@@ -98,6 +98,14 @@ use cases:
   - Detriments: Needs small amount of local infrastructure to operate the same
     code running at QCS
 
+### Serverless Execution
+
+All of the components of this repo should be able to run in a Serverless
+environment like AWS Lamba. See:
+
+- [serverless-duckdb](https://github.com/tobilg/serverless-duckdb) and
+- [SQLpage serverless](https://github.com/lovasoa/SQLpage?tab=readme-ov-file#serverless).
+
 ### QCS Only Model
 
 ![Architecture](support/docs/cloud-only-architecture.drawio.svg)

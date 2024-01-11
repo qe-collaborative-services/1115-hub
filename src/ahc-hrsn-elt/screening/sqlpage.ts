@@ -140,7 +140,7 @@ export class SQLPageNotebook {
           title: "QCS Orchestration Engine",
           icon: "book",
           link: "/",
-          menuItems: [{ caption: "sessions" }, { caption: "schema" }]
+          menuItems: [{ caption: "screenings" }, { caption: "sessions" }, { caption: "schema" }]
       })}
     `;
   }
@@ -158,8 +158,7 @@ export class SQLPageNotebook {
     return this.govn.SQL`
       ${this.shell()}
       ${list({ items: [
-                li({ title: "Screenings", link: "screenings.sql" }),
-                li({ title: "Jon Doe Screening", link: "jondoe.sql" }),
+                li({ title: "1115 Waiver Screenings", link: "1115-waiver-screenings.sql" }),
                 li({ title: "Orchestration Sessions", link: "sessions.sql" }),
                 li({ title: "Orchestration Issues", link: "issues.sql" }),
                 li({ title: "Orchestration State Schema", link: "schema.sql" }),
@@ -206,35 +205,37 @@ export class SQLPageNotebook {
       `;
   }
 
-  "screenings.sql"() {
-    const { comps: { table }, govn: { SQL } } = this;
-
-    // deno-fmt-ignore
-    return SQL`
-      ${this.shell()}  
-      ${table({ search: true, sort: true, rows: [
-        { SQL: () => `
-            SELECT * 
-              FROM "ahc_hrsn_12_12_2023_valid"`}]})}
-    `;
-  }
-
-  "jondoe.sql"() {
+  "1115-waiver-screenings.sql"() {
     const { comps: { text, table }, govn: { SQL } } = this;
 
     // deno-fmt-ignore
     return SQL`
       ${this.shell()}
-      ${text({title: "Jon Doe (11223344)", content: {markdown: 'Test'}})}
+
       ${table({ search: true, sort: true, rows: [
         { SQL: () => `
-            SELECT pat_mrn_id, question, meas_value 
-              FROM "ahc_hrsn_12_12_2023_valid"
-             WHERE pat_mrn_id = '11223344'`}]})}
-      ${table({ search: true, rows: [
+              SELECT format('[%s](?pat_mrn_id=%s)', pat_mrn_id, pat_mrn_id) as pat_mrn_id, facility, first_name, last_name
+                FROM ahc_hrsn_12_12_2023_valid
+            GROUP BY pat_mrn_id, facility, first_name, last_name
+            ORDER BY facility, last_name, first_name`}], 
+        columns: {pat_mrn_id: { markdown: true }}})}
+
+      ${text({title: {SQL: () => `(select format('%s %s Answers', first_name, last_name) from ahc_hrsn_12_12_2023_valid where pat_mrn_id = $pat_mrn_id)`}})}
+      ${table({ search: true, sort: true, rows: [
         { SQL: () => `
-            SELECT *
-              FROM "ahc_hrsn_12_12_2023_valid_fhir"`}]})}
+            SELECT question, meas_value 
+              FROM "ahc_hrsn_12_12_2023_valid"
+             WHERE pat_mrn_id = $pat_mrn_id`}],
+        condition: { anyExists: '$pat_mrn_id' }})}
+
+      ${text({title: {SQL: () => `(select format('%s %s FHIR Observations', first_name, last_name) from ahc_hrsn_12_12_2023_valid where pat_mrn_id = $pat_mrn_id)`}})}
+      ${table({ search: true, sort: true, rows: [
+        { SQL: () => `
+            SELECT * 
+              FROM "ahc_hrsn_12_12_2023_valid_fhir"
+             WHERE pat_mrn_id = $pat_mrn_id`}],
+        condition: { allExist: '$pat_mrn_id is not null' }})}
+
     `;
   }
 
@@ -242,7 +243,7 @@ export class SQLPageNotebook {
     const { govn: { SQL } } = this;
     return SQL`
       ${this.shell()}
-      ${this.sc.sqliteMaster()}
+      ${this.sc.infoSchemaSQL()}
     `;
   }
 
