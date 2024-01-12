@@ -39,6 +39,8 @@ that developers and data analysts do not need to procure or purchase any tools.
   Javascript runtime and put it in your `PATH`.
 - Download [DuckDB](https://duckdb.org/docs/installation) 0.9+ for data
   orchestration operations and put it in your `PATH`.
+- Download [SQLite](https://www.sqlite.org/download.html) embedded database and
+  put it in your `PATH`.
 - Download [SQLPage](https://github.com/lovasoa/SQLpage/releases) SQL browser
   and put it in your `PATH`. This is not strictly required but highly
   recommended for easier diagnostics.
@@ -50,6 +52,18 @@ your platform.
 You can run `deno task doctor` (see below) to see if dependencies are installed
 properly.
 
+### Windows notes
+
+If you have a relatively modern system with `winget` you can use the following
+to install Git, Deno, DuckDB and SQLite:
+
+```psh
+$ winget install Git.Git
+$ winget install deno
+$ winget install SQLite.SQLite
+$ winget install DuckDB.cli
+```
+
 ## Build (Development) Dependencies
 
 During build (development) in a sandbox you will need all the runtime
@@ -58,8 +72,6 @@ dependencies mentioned above plus do the following:
 - Download [Visual Studio Code](https://code.visualstudio.com/download) IDE and
   use it for editing or viewing of CSV and other assets. VS Code is available
   for all major OS platforms.
-- Download [SQLite](https://www.sqlite.org/download.html) embedded database and
-  put it in your `PATH`.
 
 You can run `deno task doctor` (see below) to see if dependencies are installed
 properly.
