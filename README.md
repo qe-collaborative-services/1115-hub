@@ -31,7 +31,20 @@ analyst-friendly format, QCS-OE employs the following architecture strategy:
 
 ## Runtime (Deployment) Dependencies
 
-All dependencies must be cross-platform, open source with permissive licenses so
+Quick start:
+
+If you have a relatively modern Windows 11 system with `winget` you can use the
+following to install Git, Deno, DuckDB and SQLite:
+
+```psh
+$ winget install Git.Git deno SQLite.SQLite DuckDB.cli
+# exit your terminal, close VS Code, etc. and restart your terminal session and VS Code
+```
+
+For Linux or MacOS use `pkgx` or `mise` (or `asdf`) to install your
+dependencies.
+
+All dependencies are cross-platform, open source with permissive licenses so
 that developers and data analysts do not need to procure or purchase any tools.
 
 - Download
@@ -43,7 +56,8 @@ that developers and data analysts do not need to procure or purchase any tools.
   put it in your `PATH`.
 - Download [SQLPage](https://github.com/lovasoa/SQLpage/releases) SQL browser
   and put it in your `PATH`. This is not strictly required but highly
-  recommended for easier diagnostics.
+  recommended for easier diagnostics. See _Manage GitHub binaries with `eget`_
+  for an easy way to manage GitHub binaries.
 
 The utilities mentioned above are cross-platform single-file binaries and will
 run on Windows, MacOS, or Linux. Please be sure to get the proper binaries for
@@ -52,17 +66,24 @@ your platform.
 You can run `deno task doctor` (see below) to see if dependencies are installed
 properly.
 
-### Windows notes
+### Manage GitHub binaries with `eget`
 
-If you have a relatively modern system with `winget` you can use the following
-to install Git, Deno, DuckDB and SQLite:
+A good way to get binaries from GitHub (e.g. SQLPage, et. al.) you should
+download and use [eget](https://github.com/zyedidia/eget/releases).
 
-```psh
-$ winget install Git.Git
-$ winget install deno
-$ winget install SQLite.SQLite
-$ winget install DuckDB.cli
+1. Create a directory called `D:\bin` (or anywhere you want), grab the
+   `eget.exe` binary and store it in `D:\bin`.
+2. Add `D:\bin` to your `PATH`.
+3. Create an `D:\bin\eget.toml` file and add the following to it:
+
+```toml
+[global]
+target = "D:\\bin"
+
+["lovasoa/SQLpage"]
 ```
+
+4. CD into `D:\bin` and run `eget /D` to download all required binaries.
 
 ## Build (Development) Dependencies
 

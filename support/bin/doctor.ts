@@ -123,8 +123,8 @@ export const checkup = doctor(function* () {
             }),
         });
         await report({
-          test: async () => (await $.commandExists("sqlpage.bin")
-            ? { ok: `SQLPage available` } // TODO: sqlpage.bin does not have a --version
+          test: async () => (await $.commandExists("sqlpage")
+            ? { ok: `SQLPage available` } // TODO: sqlpage does not have a --version
             : {
               suggest:
                 "SQLPage not found in PATH, install it from https://github.com/lovasoa/SQLpage/releases",
