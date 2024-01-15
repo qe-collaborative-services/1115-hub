@@ -31,18 +31,22 @@ analyst-friendly format, QCS-OE employs the following architecture strategy:
 
 ## Runtime (Deployment) Dependencies
 
-Quick start:
+#### Quick start (Windows):
 
-If you have a relatively modern Windows 11 system with `winget` you can use the
-following to install Git, Deno, DuckDB and SQLite:
+If you have a relatively modern Windows 10/11 system with `winget` you can use
+the following to install Git, Deno, DuckDB and SQLite:
 
 ```psh
-$ winget install Git.Git deno SQLite.SQLite DuckDB.cli
+$ winget install Git.Git deno SQLite.SQLite DuckDB.cli JanDeDobbeleer.OhMyPosh
 # exit your terminal, close VS Code, etc. and restart your terminal session and VS Code
 ```
 
+#### Quick start (Linux or MacOS):
+
 For Linux or MacOS use `pkgx` or `mise` (or `asdf`) to install your
 dependencies.
+
+#### Dependencies References
 
 All dependencies are cross-platform, open source with permissive licenses so
 that developers and data analysts do not need to procure or purchase any tools.
@@ -99,13 +103,20 @@ properly.
 
 ## Try out the code
 
-You can run the code directly from GitHub (the latest version or any specific
-pinned version) without cloning the GitHub repo or clone the repo and run the
-code locally.
+Once you've installed Git and Deno you can run the code directly from GitHub
+(the latest version or any specific pinned version) without cloning the GitHub
+repo or clone the repo and run the code locally.
+
+The instructions below assume `D:\workspaces` as your workspaces root but you
+should change that to `D:\` or `/home/user/workspaces` or whatever your
+workspaces root happens to be (based on your operating system).
 
 ```bash
-$ git clone https://github.com/qe-collaborative-services/1115-hub
-$ cd 1115-hub
+$ cd D:\workspaces                        # or wherever your sources are stored
+$ deno run -A https://raw.githubusercontent.com/qe-collaborative-services/workspaces/main/ws-bootstrap-typical.ts
+
+# after repo cloning command (above) is complete:
+$ cd github.com/qe-collaborative-services/1115-hub
 $ deno task                               # list available tasks in `deno.jsonc`
 $ deno task doctor                        # see if dependencies are installed properly
 $ deno task ahc-hrsn-screening-test-e2e   # run the orchestration tasks as end-to-end test
