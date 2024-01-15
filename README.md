@@ -29,24 +29,33 @@ analyst-friendly format, QCS-OE employs the following architecture strategy:
     cloud provider (e.g. AWS, Azure, ORACLE Cloud).
 - Automatic upgrades of code using `semver` and GitHub tags.
 
-## Runtime (Deployment) Dependencies
+## Getting Started
 
-#### Quick start (Windows):
+### Quick start (Windows):
 
 If you have a relatively modern Windows 10/11 system with `winget` you can use
 the following to install Git, Deno, DuckDB and SQLite:
 
 ```psh
 $ winget install Git.Git deno SQLite.SQLite DuckDB.cli JanDeDobbeleer.OhMyPosh
-# exit your terminal, close VS Code, etc. and restart your terminal session and VS Code
+```
+**IMPORTANT**: `winget` installations will update your PATH so exit your terminal,
+close VS Code, etc. and restart your terminal session and VS Code _before you try
+out the code_.
+
+### Quick start (Linux or MacOS):
+
+For Linux or MacOS use [pkgx](https://pkgx.sh/) and [eget](https://github.com/zyedidia/eget/releases)
+to install dependencies (use `pkgx` by default, `eget` to get from GitHub directrly
+when pkgx is missing a package):
+
+```bash
+# use your OS-specific package manager to install Git and then:
+$ pkgx install deno.land sqlite.org duckdb.org
+$ eget lovasoa/SQLpage --to=$HOME/bin/sqlpage
 ```
 
-#### Quick start (Linux or MacOS):
-
-For Linux or MacOS use `pkgx` or `mise` (or `asdf`) to install your
-dependencies.
-
-## Try out the code
+### Try out the code
 
 Once you've installed Git and Deno you can run the code directly from GitHub
 (the latest version or any specific pinned version) without cloning the GitHub
@@ -64,59 +73,16 @@ $ deno run -A https://raw.githubusercontent.com/qe-collaborative-services/worksp
 $ cd github.com/qe-collaborative-services/1115-hub
 $ deno task                               # list available tasks in `deno.jsonc`
 $ deno task doctor                        # see if dependencies are installed properly
+```
+
+If `deno task doctor` reports dependencies are installed properly:
+
+```bash
 $ deno task ahc-hrsn-screening-test-e2e   # run the orchestration tasks as end-to-end test
 $ deno task ahc-hrsn-screening-test-serve # run the orchestration tasks as end-to-end test and serve with SQLPage
-$ deno task ahc-hrsn-screening-doc        # generate documentation for the library in support/docs/lib/ahc-hrsn-elt/screening
 ```
 
-#### Dependencies References
-
-All dependencies are cross-platform, open source with permissive licenses so
-that developers and data analysts do not need to procure or purchase any tools.
-
-- Download
-  [Deno](https://docs.deno.com/runtime/manual/getting_started/installation)
-  Javascript runtime and put it in your `PATH`.
-- Download [DuckDB](https://duckdb.org/docs/installation) 0.9+ for data
-  orchestration operations and put it in your `PATH`.
-- Download [SQLite](https://www.sqlite.org/download.html) embedded database and
-  put it in your `PATH`.
-- Download [SQLPage](https://github.com/lovasoa/SQLpage/releases) SQL browser
-  and put it in your `PATH`. This is not strictly required but highly
-  recommended for easier diagnostics. See _Manage GitHub binaries with `eget`_
-  for an easy way to manage GitHub binaries.
-
-The utilities mentioned above are cross-platform single-file binaries and will
-run on Windows, MacOS, or Linux. Please be sure to get the proper binaries for
-your platform.
-
-You can run `deno task doctor` (see below) to see if dependencies are installed
-properly.
-
-### Manage GitHub binaries with `eget`
-
-A good way to get binaries from GitHub (e.g. SQLPage, et. al.) you should
-download and use [eget](https://github.com/zyedidia/eget/releases).
-
-1. Create a directory called `D:\bin` or `C:\Program Files\qe-cs` (or anywhere
-   you want), grab the `eget.exe` binary and store it in `D:\bin`.
-2. Add `D:\bin` or `C:\Program Files\qe-cs` (or whatever you created in step #1)
-   to your `PATH`.
-3. Create an `D:\bin\eget.toml` file (or `C:\Program Files\qe-cs\eget.toml`) and
-   add the following content. Be sure to set `target = "X"` where X is either
-   `D:\\bin` or `C:\\Program Files\\qe-cs` (or whatever you created in step #1).
-
-```toml
-[global]
-target = "D:\\bin"    
-
-["lovasoa/SQLpage"]
-```
-
-4. CD into `D:\bin` (or `C:\\Program Files\\qe-cs` or whatever you created in
-   step #1) and run `eget /D` to download all required binaries.
-
-## Build (Development) Dependencies
+### Build (Development) Dependencies
 
 During build (development) in a sandbox you will need all the runtime
 dependencies mentioned above plus do the following:
@@ -124,9 +90,8 @@ dependencies mentioned above plus do the following:
 - Download [Visual Studio Code](https://code.visualstudio.com/download) IDE and
   use it for editing or viewing of CSV and other assets. VS Code is available
   for all major OS platforms.
-
-You can run `deno task doctor` (see below) to see if dependencies are installed
-properly.
+  - Install the recommended extensions (see `.vscode/extensions.json`). VS Code
+    will usually suggest those automatically.
 
 ## Architecture and Approach
 
