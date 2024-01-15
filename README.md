@@ -46,6 +46,29 @@ $ winget install Git.Git deno SQLite.SQLite DuckDB.cli JanDeDobbeleer.OhMyPosh
 For Linux or MacOS use `pkgx` or `mise` (or `asdf`) to install your
 dependencies.
 
+## Try out the code
+
+Once you've installed Git and Deno you can run the code directly from GitHub
+(the latest version or any specific pinned version) without cloning the GitHub
+repo or clone the repo and run the code locally.
+
+The instructions below assume `D:\workspaces` as your workspaces root but you
+should change that to `D:\` or `/home/user/workspaces` or whatever your
+workspaces root happens to be (based on your operating system).
+
+```bash
+$ cd D:\workspaces                        # or wherever your sources are stored
+$ deno run -A https://raw.githubusercontent.com/qe-collaborative-services/workspaces/main/ws-bootstrap-typical.ts
+
+# after repo cloning command (above) is complete:
+$ cd github.com/qe-collaborative-services/1115-hub
+$ deno task                               # list available tasks in `deno.jsonc`
+$ deno task doctor                        # see if dependencies are installed properly
+$ deno task ahc-hrsn-screening-test-e2e   # run the orchestration tasks as end-to-end test
+$ deno task ahc-hrsn-screening-test-serve # run the orchestration tasks as end-to-end test and serve with SQLPage
+$ deno task ahc-hrsn-screening-doc        # generate documentation for the library in support/docs/lib/ahc-hrsn-elt/screening
+```
+
 #### Dependencies References
 
 All dependencies are cross-platform, open source with permissive licenses so
@@ -75,19 +98,23 @@ properly.
 A good way to get binaries from GitHub (e.g. SQLPage, et. al.) you should
 download and use [eget](https://github.com/zyedidia/eget/releases).
 
-1. Create a directory called `D:\bin` (or anywhere you want), grab the
-   `eget.exe` binary and store it in `D:\bin`.
-2. Add `D:\bin` to your `PATH`.
-3. Create an `D:\bin\eget.toml` file and add the following to it:
+1. Create a directory called `D:\bin` or `C:\Program Files\qe-cs` (or anywhere
+   you want), grab the `eget.exe` binary and store it in `D:\bin`.
+2. Add `D:\bin` or `C:\Program Files\qe-cs` (or whatever you created in step #1)
+   to your `PATH`.
+3. Create an `D:\bin\eget.toml` file (or `C:\Program Files\qe-cs\eget.toml`) and
+   add the following content. Be sure to set `target = "X"` where X is either
+   `D:\\bin` or `C:\\Program Files\\qe-cs` (or whatever you created in step #1).
 
 ```toml
 [global]
-target = "D:\\bin"
+target = "D:\\bin"    
 
 ["lovasoa/SQLpage"]
 ```
 
-4. CD into `D:\bin` and run `eget /D` to download all required binaries.
+4. CD into `D:\bin` (or `C:\\Program Files\\qe-cs` or whatever you created in
+   step #1) and run `eget /D` to download all required binaries.
 
 ## Build (Development) Dependencies
 
@@ -100,29 +127,6 @@ dependencies mentioned above plus do the following:
 
 You can run `deno task doctor` (see below) to see if dependencies are installed
 properly.
-
-## Try out the code
-
-Once you've installed Git and Deno you can run the code directly from GitHub
-(the latest version or any specific pinned version) without cloning the GitHub
-repo or clone the repo and run the code locally.
-
-The instructions below assume `D:\workspaces` as your workspaces root but you
-should change that to `D:\` or `/home/user/workspaces` or whatever your
-workspaces root happens to be (based on your operating system).
-
-```bash
-$ cd D:\workspaces                        # or wherever your sources are stored
-$ deno run -A https://raw.githubusercontent.com/qe-collaborative-services/workspaces/main/ws-bootstrap-typical.ts
-
-# after repo cloning command (above) is complete:
-$ cd github.com/qe-collaborative-services/1115-hub
-$ deno task                               # list available tasks in `deno.jsonc`
-$ deno task doctor                        # see if dependencies are installed properly
-$ deno task ahc-hrsn-screening-test-e2e   # run the orchestration tasks as end-to-end test
-$ deno task ahc-hrsn-screening-test-serve # run the orchestration tasks as end-to-end test and serve with SQLPage
-$ deno task ahc-hrsn-screening-doc        # generate documentation for the library in support/docs/lib/ahc-hrsn-elt/screening
-```
 
 ## Architecture and Approach
 
