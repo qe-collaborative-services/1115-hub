@@ -39,15 +39,17 @@ the following to install Git, Deno, DuckDB and SQLite:
 ```psh
 $ winget install Git.Git deno SQLite.SQLite DuckDB.cli JanDeDobbeleer.OhMyPosh
 ```
-**IMPORTANT**: `winget` installations will update your PATH so exit your terminal,
-close VS Code, etc. and restart your terminal session and VS Code _before you try
-out the code_.
+
+**IMPORTANT**: `winget` installations will update your PATH so exit your
+terminal, close VS Code, etc. and restart your terminal session and VS Code
+_before you try out the code_.
 
 ### Quick start (Linux or MacOS):
 
-For Linux or MacOS use [pkgx](https://pkgx.sh/) and [eget](https://github.com/zyedidia/eget/releases)
-to install dependencies (use `pkgx` by default, `eget` to get from GitHub directrly
-when pkgx is missing a package):
+For Linux or MacOS use [pkgx](https://pkgx.sh/) and
+[eget](https://github.com/zyedidia/eget/releases) to install dependencies (use
+`pkgx` by default, `eget` to get from GitHub directrly when pkgx is missing a
+package):
 
 ```bash
 # use your OS-specific package manager to install Git and then:
@@ -55,7 +57,12 @@ $ pkgx install deno.land sqlite.org duckdb.org
 $ eget lovasoa/SQLpage --to=$HOME/bin/sqlpage
 ```
 
-### Try out the code
+### Dependendies Elaboration
+
+See [support/docs/dependencies.md](support/docs/dependencies.md) if you need
+further details about what the code depends on at runtime.
+
+## Try out the code
 
 Once you've installed Git and Deno you can run the code directly from GitHub
 (the latest version or any specific pinned version) without cloning the GitHub
@@ -82,7 +89,7 @@ $ deno task ahc-hrsn-screening-test-e2e   # run the orchestration tasks as end-t
 $ deno task ahc-hrsn-screening-test-serve # run the orchestration tasks as end-to-end test and serve with SQLPage
 ```
 
-### Build (Development) Dependencies
+## Build (Development) Dependencies
 
 During build (development) in a sandbox you will need all the runtime
 dependencies mentioned above plus do the following:
