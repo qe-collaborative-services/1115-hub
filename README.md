@@ -34,15 +34,19 @@ analyst-friendly format, QCS-OE employs the following architecture strategy:
 ### Quick start (Windows):
 
 If you have a relatively modern Windows 10/11 system with `winget` you can use
-the following to install Git, Deno, DuckDB and SQLite:
+"Windows Terminal (Administrator)" to install Git, Deno, DuckDB, SQLite and VS
+Code IDE:
 
 ```psh
-$ winget install Git.Git deno SQLite.SQLite DuckDB.cli JanDeDobbeleer.OhMyPosh
+$ winget install Git.Git deno SQLite.SQLite DuckDB.cli Microsoft.VisualStudioCode
 ```
 
 **IMPORTANT**: `winget` installations will update your PATH so exit your
-terminal, close VS Code, etc. and restart your terminal session and VS Code
-_before you try out the code_.
+terminal, close VS Code, etc. and restart your Windows Terminal (Administrator)
+session and VS Code _before you try out the code_.
+
+If you want a nice, easier to read, CLI prompt install and setup
+[Oh My Posh](https://ohmyposh.dev/docs/installation/windows).
 
 ### Quick start (Linux or MacOS):
 
@@ -85,8 +89,19 @@ $ deno task doctor                        # see if dependencies are installed pr
 If `deno task doctor` reports dependencies are installed properly:
 
 ```bash
-$ deno task ahc-hrsn-screening-test-e2e   # run the orchestration tasks as end-to-end test
-$ deno task ahc-hrsn-screening-test-serve # run the orchestration tasks as end-to-end test and serve with SQLPage
+$ deno task ahc-hrsn-screening-test-e2e
+```
+
+Use VS Code to open the `github.com/qe-collaborative-services/1115-hub` folder
+and open
+`support\assurance\ahc-hrsn-elt\screening\results-test-e2e\resource.sqlite.db`
+(the `SQLite3 Editor` extension, if you accepted VS Code's recommendation, will
+open it).
+
+If the above works, and you installed SQLPage, you can start a webserver, too:
+
+```bash
+$ deno task ahc-hrsn-screening-test-serve
 ```
 
 ## Build (Development) Dependencies
