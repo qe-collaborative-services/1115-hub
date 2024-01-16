@@ -92,25 +92,27 @@ export function doctor(categories: () => Generator<DoctorCategory>) {
 }
 
 export const checkup = doctor(function* () {
-  yield doctorCategory("Git dependencies", function* () {
-    yield {
-      diagnose: async (report) => {
-        const hooksPath = (await $`git config core.hooksPath`.lines())[0];
-        if (hooksPath.trim().length > 0) {
-          const hooks =
-            await $`find ${hooksPath} -maxdepth 1 -type f -executable`.noThrow()
-              .text();
-          for (const hook of hooks.split("\n")) {
-            report({ test: () => ({ ok: hook }) });
-          }
-        } else {
-          report({
-            test: () => ({ warn: "Git hooks not setup, run `deno task init`" }),
-          });
-        }
-      },
-    };
-  });
+  // TODO: create Git hooks and then enable
+  // yield doctorCategory("Git dependencies", function* () {
+  //   yield {
+  //     diagnose: async (report) => {
+  //       const hooksPath = (await $`git config core.hooksPath`.lines())[0];
+  //       if (hooksPath.trim().length > 0) {
+  //         const hooks =
+  //           await $`find ${hooksPath} -maxdepth 1 -type f -executable`.noThrow()
+  //             .text();
+  //         for (const hook of hooks.split("\n")) {
+  //           report({ test: () => ({ ok: hook }) });
+  //         }
+  //       } else {
+  //         report({
+  //           test: () => ({ warn: "Git hooks not setup, run `deno task init`" }),
+  //         });
+  //       }
+  //     },
+  //   };
+  // });
+
   yield doctorCategory("SQL Dependencies", function* () {
     yield {
       diagnose: async (report) => {
@@ -123,6 +125,29 @@ export const checkup = doctor(function* () {
             }),
         });
         await report({
+          test: async () => (await $`duckdb`.stdinText(
+              "install spatial; load spatial",
+            )
+            ? { ok: "DuckDB `spatial` extension found and loaded properly" }
+            : {
+              suggest: "DuckDB `spatial` extension not found",
+            }),
+        });
+        await report({
+          test: async () => (await $`duckdb`.stdinText(
+              "install sqlite3; load sqlite3",
+            )
+            ? { ok: "DuckDB `sqlite3` extension found and loaded properly" }
+            : {
+              suggest: "DuckDB `sqlite3` extension not found",
+            }),
+        });
+        await report({
+          test: async () => (await $.commandExists("sqlite3")
+            ? { ok: `SQLite ${(await $`sqlite3 --version`.lines())[0]}` }
+            : { suggest: "SQLite not found in PATH, install it" }),
+        });
+        await report({
           test: async () => (await $.commandExists("sqlpage")
             ? { ok: `SQLPage available` } // TODO: sqlpage does not have a --version
             : {
@@ -133,47 +158,38 @@ export const checkup = doctor(function* () {
       },
     };
   });
-  yield doctorCategory("Optional runtime dependencies", function* () {
-    yield {
-      diagnose: async (report) => {
-        await report({
-          test: async () => (await $.commandExists("sqlite3")
-            ? { ok: `SQLite ${(await $`sqlite3 --version`.lines())[0]}` }
-            : { suggest: "SQLite not found in PATH, install it" }),
-        });
-      },
-    };
-  });
   yield doctorCategory("Build dependencies", function* () {
     yield* denoDoctor().diagnostics();
   });
-  yield doctorCategory("Optional build dependencies", function* () {
-    yield {
-      diagnose: async (report) => {
-        await report({
-          // deno-fmt-ignore
-          test: async () => (await $.commandExists("dot")
-            ? { ok: (await $`dot -V`.noThrow().captureCombined()).combined.split("\n")[0] }
-            : { suggest: "graphviz dot not found in PATH, install it to be able to generate ERDs" }),
-        });
-        await report({
-          // deno-fmt-ignore
-          test: async () => (await $.commandExists("java")
-            ? { ok: (await $`java --version`.lines())[0] }
-            : { suggest: "java not found in PATH, install it to be able to use PlantUML for ERDs" }),
-        });
-        if (await $.commandExists("java")) {
-          await report({
-            test:
-              // deno-fmt-ignore
-              async () => ((await $`java -jar support/bin/plantuml.jar -version`.noThrow().quiet().spawn()).code == 0
-                ? { ok: (await $`java -jar support/bin/plantuml.jar -version`.lines())[0] }
-                : { suggest: "plantuml.jar not found in support/bin" }),
-          });
-        }
-      },
-    };
-  });
+
+  // TODO: when ready, enable these:
+  // yield doctorCategory("Optional build dependencies", function* () {
+  //   yield {
+  //     diagnose: async (report) => {
+  //       await report({
+  //         // deno-fmt-ignore
+  //         test: async () => (await $.commandExists("dot")
+  //           ? { ok: (await $`dot -V`.noThrow().captureCombined()).combined.split("\n")[0] }
+  //           : { suggest: "graphviz dot not found in PATH, install it to be able to generate ERDs" }),
+  //       });
+  //       await report({
+  //         // deno-fmt-ignore
+  //         test: async () => (await $.commandExists("java")
+  //           ? { ok: (await $`java --version`.lines())[0] }
+  //           : { suggest: "java not found in PATH, install it to be able to use PlantUML for ERDs" }),
+  //       });
+  //       if (await $.commandExists("java")) {
+  //         await report({
+  //           test:
+  //             // deno-fmt-ignore
+  //             async () => ((await $`java -jar support/bin/plantuml.jar -version`.noThrow().quiet().spawn()).code == 0
+  //               ? { ok: (await $`java -jar support/bin/plantuml.jar -version`.lines())[0] }
+  //               : { suggest: "plantuml.jar not found in support/bin" }),
+  //         });
+  //       }
+  //     },
+  //   };
+  // });
 });
 
 if (import.meta.main) {
