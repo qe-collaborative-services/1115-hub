@@ -48,36 +48,3 @@ target = "D:\\bin"
 
 4. CD into `D:\bin` (or `C:\\Program Files\\qe-cs` or whatever you created in
    step #1) and run `eget /D` to download all required binaries.
-
-## Use Windows Sandbox for Safe Evaluation
-
-### Install Windows Store and `winget` in Sandbox First
-
-Right-click on Windows icon, start "Windows Powershell (Admin)" session and do
-the following to install Microsoft Store in the Sandbox:
-
-```psh
-Set-ExecutionPolicy Bypass -Scope Process -Force
-$url="https://github.com/bonben365/add-store-win-sandbox/raw/main/install.ps1"
-iex ((New-Object System.Net.WebClient).DownloadString($url))
-```
-
-Now install the Windows Package Manager (`winget`) in Sandbox using
-[these instructions](https://learn.microsoft.com/en-us/windows/package-manager/winget/#install-winget-on-windows-sandbox).
-
-Exit the current "Windows Powershell (Admin)" session restart another "Windows
-Powershell (Admin)" session then proceed.
-
-### Install PowerShell 7+ and Windows Terminal
-
-```psh
-winget install Microsoft.Powershell
-```
-
-Exit the current "Windows Powershell (Admin)" session (close the window).
-
-Click on Windows icon, start "Microsoft Store", search for "Windows Terminal"
-and install it.
-
-Launch Windows Terminal and proceed with "Quick start (Windows)" section in
-[README.md](../../README.md).

@@ -48,6 +48,9 @@ session and VS Code _before you try out the code_.
 If you want a nice, easier to read, CLI prompt install and setup
 [Oh My Posh](https://ohmyposh.dev/docs/installation/windows).
 
+You can also evaluate the code in a
+[Windows Sandbox](./support/docs/windows-sandbox-setup.md) environment
+
 ### Quick start (Linux or MacOS):
 
 For Linux or MacOS use [pkgx](https://pkgx.sh/) and
@@ -72,12 +75,13 @@ Once you've installed Git and Deno you can run the code directly from GitHub
 (the latest version or any specific pinned version) without cloning the GitHub
 repo or clone the repo and run the code locally.
 
-The instructions below assume `D:\workspaces` as your workspaces root but you
+The instructions below assume `c:\workspaces` as your workspaces root but you
 should change that to `D:\` or `/home/user/workspaces` or whatever your
 workspaces root happens to be (based on your operating system).
 
 ```bash
-$ cd D:\workspaces                        # or wherever your sources are stored
+$ md c:\workspaces                        # create the destination if required
+$ cd c:\workspaces                        # or wherever your sources are stored
 $ deno run -A https://raw.githubusercontent.com/qe-collaborative-services/workspaces/main/ws-bootstrap-typical.ts
 
 # after repo cloning command (above) is complete:
