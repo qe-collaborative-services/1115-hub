@@ -125,6 +125,8 @@ export class OrchEngine {
     this.duckdb = new ddbo.DuckDbShell(args.session, {
       duckdbCmd: "duckdb",
       dbDestFsPathSupplier: args.duckDbDestFsPathSupplier,
+      preambleSQL: () =>
+        `-- preambleSQL\nSET autoinstall_known_extensions=true;\nSET autoload_known_extensions=true;\n-- end preambleSQL\n`,
     });
   }
 
