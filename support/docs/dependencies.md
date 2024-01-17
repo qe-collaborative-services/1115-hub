@@ -26,7 +26,7 @@ your platform.
 You can run `deno task doctor` (see below) to see if dependencies are installed
 properly.
 
-### Manage GitHub binaries with `eget`
+### Manage GitHub binaries with `eget` or `scoop` (Windows)
 
 A good way to get binaries from GitHub (e.g. SQLPage, et. al.) you should
 download and use [eget](https://github.com/zyedidia/eget/releases).
@@ -44,6 +44,12 @@ download and use [eget](https://github.com/zyedidia/eget/releases).
 target = "D:\\bin"    
 
 ["lovasoa/SQLpage"]
+```
+
+On Windows you can also use [scoop](https://scoop.sh) to install binaries such as SQLPage:
+
+```psh
+$ scoop install sqlpage
 ```
 
 4. CD into `D:\bin` (or `C:\\Program Files\\qe-cs` or whatever you created in

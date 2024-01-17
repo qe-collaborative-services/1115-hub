@@ -1,6 +1,6 @@
 # Windows Sandbox Tips
 
-You can use *Windows Sandbox* for safe evaluation of this codebase.
+You can use _Windows Sandbox_ for safe evaluation of this codebase.
 
 ## Install Windows Store and `winget` in Sandbox First
 
@@ -25,12 +25,16 @@ Powershell (Admin)" session then proceed.
 
 ```psh
 winget install Microsoft.Powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
 ```
 
 Exit the current "Windows Powershell (Admin)" session (close the window).
 
 Click on Windows icon, start "Microsoft Store", search for "Windows Terminal"
-and install it.
+and install it. This should work using
+`winget install Microsoft.WindowsTerminal` but as of 01-16-2024 the `winget`
+approach is not working so just use "Microsoft Store" installer.
 
 Launch Windows Terminal and proceed with "Quick start (Windows)" section in
 [README.md](../../README.md).

@@ -33,12 +33,13 @@ analyst-friendly format, QCS-OE employs the following architecture strategy:
 
 ### Quick start (Windows):
 
-If you have a relatively modern Windows 10/11 system with `winget` you can use
-"Windows Terminal (Administrator)" to install Git, Deno, DuckDB, SQLite and VS
-Code IDE:
+If you have a relatively modern Windows 10/11 system with `winget` and `scoop`
+you can use "Windows Terminal (Administrator)" to install Git, Deno, DuckDB,
+SQLite and VS Code IDE:
 
 ```psh
 $ winget install Git.Git deno SQLite.SQLite DuckDB.cli Microsoft.VisualStudioCode
+$ scoop install sqlpage
 ```
 
 **IMPORTANT**: `winget` installations will update your PATH so exit your

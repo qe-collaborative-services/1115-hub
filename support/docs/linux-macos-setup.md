@@ -3,7 +3,8 @@
 For Linux or MacOS use [pkgx](https://pkgx.sh/) and
 [eget](https://github.com/zyedidia/eget/releases) to install dependencies.
 
-Use `pkgx` by default, `eget` to get from GitHub directrly when `pkgx` is missing a package.
+Use `pkgx` by default, `eget` to get from GitHub directrly when `pkgx` is
+missing a package.
 
 ## Distro-specific packages to install (admin)
 
