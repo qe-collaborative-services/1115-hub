@@ -54,14 +54,13 @@ You can also evaluate the code in a
 ### Quick start (Linux or MacOS):
 
 For Linux or MacOS use [pkgx](https://pkgx.sh/) and
-[eget](https://github.com/zyedidia/eget/releases) to install dependencies (use
-`pkgx` by default, `eget` to get from GitHub directrly when pkgx is missing a
-package):
+[eget](https://github.com/zyedidia/eget/releases) to install dependencies. For
+guidance see [Linux/MacOS Setup](./support/docs/linux-macos-setup.md) and then:
 
 ```bash
-# use your OS-specific package manager to install Git and then:
+# use your OS-specific package manager to install Git, curl, and wget and then:
 $ pkgx install deno.land sqlite.org duckdb.org
-$ eget lovasoa/SQLpage --to=$HOME/bin/sqlpage
+$ eget lovasoa/SQLpage --to=$HOME/.local/bin/sqlpage
 ```
 
 ### Dependendies Elaboration
