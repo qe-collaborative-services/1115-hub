@@ -12,10 +12,7 @@ type SQLPageFile = chainNB.NotebookCell<
   chainNB.NotebookCellID<SQLPageNotebook>
 >;
 
-const nbDescr = new chainNB.NotebookDescriptor<
-  SQLPageNotebook,
-  SQLPageFile
->();
+const nbDescr = new chainNB.NotebookDescriptor<SQLPageNotebook, SQLPageFile>();
 
 const customComponents = {
   session_entries: "session_entries",
@@ -24,10 +21,7 @@ type CustomComponentName = keyof typeof customComponents;
 
 function sessionEntries(
   govn: ddbo.DuckDbOrchGovernance,
-  customCB: sp.ComponentBuilder<
-    CustomComponentName,
-    ddbo.DuckDbOrchEmitContext
-  >,
+  customCB: sp.ComponentBuilder<CustomComponentName, ddbo.DuckDbOrchEmitContext>
 ) {
   type TopLevelArgs = { readonly title: string };
   type Row = Record<
@@ -62,7 +56,10 @@ function sessionEntries(
           </ul>`,
     }),
     component: (tlaArg) => {
-      const { tableNames: tn, columnNames: { orch_session_entry: c } } = govn;
+      const {
+        tableNames: tn,
+        columnNames: { orch_session_entry: c },
+      } = govn;
       const tla = tlaArg ?? { title: "Choose Session Entry" };
       return {
         ...tla,
@@ -73,7 +70,7 @@ function sessionEntries(
             govn.SQL`
               ${topLevel}
               SELECT ${c.orch_session_entry_id}, ${c.ingest_src}, ${c.ingest_table_name} 
-                FROM ${tn.orch_session_entry}`,
+                FROM ${tn.orch_session_entry}`
         ),
       };
     },
@@ -124,7 +121,7 @@ export class SQLPageNotebook {
         Any,
         Any
       >[]
-    ) => void,
+    ) => void
   ) {
     this.sc = sp.sqliteContent(govn.SQL);
     this.sessionEntries = sessionEntries(govn, this.customCB);
@@ -133,16 +130,52 @@ export class SQLPageNotebook {
   }
 
   @nbDescr.disregard()
-  shell() {
+  assetPagePath(path: string, sessionID?: string) {
+    return sessionID ? `asset/session/${sessionID}/${path}` : `asset/${path}`;
+  }
+
+  @nbDescr.disregard()
+  shellStatic() {
     // deno-fmt-ignore
     return this.govn.SQL`
-      ${this.comps.shell({ 
-          title: "QCS Orchestration Engine",
-          icon: "book",
-          link: "/",
-          menuItems: [{ caption: "screenings" }, { caption: "sessions" }, { caption: "schema" }]
+      ${this.comps.shell({
+        title: "QCS Orchestration Engine",
+        icon: "book",
+        link: "/",
+        menuItems: [
+          { caption: "screenings" },
+          { caption: "sessions" },
+          { caption: "schema" },
+        ],
       })}
     `;
+  }
+
+  @nbDescr.disregard()
+  shell() {
+    // SQLite does not have a native JSON type so use 'dynamic' component
+    // for menu_item; see https://sql.ophir.dev/documentation.sql?component=dynamic#component
+    const shell = {
+      component: "shell",
+      title: "QCS Orchestration Engine",
+      link: "/",
+      icon: "book",
+      menu_item: [
+        { title: "Screenings", link: "/1115-waiver-screenings.sql" },
+        { title: "Sessions", link: "/sessions.sql" },
+        { title: "Schema", link: "/schema.sql" },
+      ],
+      javascript: [
+        "https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js",
+        "https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js",
+      ],
+      css: "https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.css",
+    };
+
+    // deno-fmt-ignore
+    return this.govn.SQL`SELECT 'dynamic' AS component, '${JSON.stringify(
+      shell
+    ).replace("'", "''")}' AS properties`;
   }
 
   "index.sql"() {
@@ -157,35 +190,111 @@ export class SQLPageNotebook {
     // deno-fmt-ignore
     return this.govn.SQL`
       ${this.shell()}
-      ${list({ items: [
-                li({ title: "1115 Waiver Screenings", link: "1115-waiver-screenings.sql" }),
-                li({ title: "Orchestration Sessions", link: "sessions.sql" }),
-                li({ title: "Orchestration Issues", link: "issues.sql" }),
-                li({ title: "Orchestration State Schema", link: "schema.sql" }),
-               ]})}`;
+      ${list({
+        items: [
+          li({
+            title: "1115 Waiver Screenings",
+            link: "1115-waiver-screenings.sql",
+          }),
+          li({ title: "Orchestration Sessions", link: "sessions.sql" }),
+          li({ title: "Orchestration Issues", link: "issues.sql" }),
+          li({ title: "Orchestration State Schema", link: "schema.sql" }),
+        ],
+      })}`;
   }
 
   "sessions.sql"() {
-    const { comps: { table }, govn, govn: { SQL } } = this;
-    const { tableNames: tn, columnNames: { orch_session_entry: c } } = govn;
+    const {
+      comps: { table },
+      govn,
+      govn: { SQL },
+    } = this;
+    const {
+      tableNames: tn,
+      columnNames: { orch_session: os_c, orch_session_entry: ose_c },
+    } = govn;
+
+    // NOTE: this page assumes that /asset/session/<orch_session_id>/diagnostics.sql
+    // is inserted by the orchestration engine (it's not in the SQLPageNotebook).
 
     // deno-fmt-ignore
     return SQL`
       ${this.shell()}
 
-      ${table({ rows: [{SQL: () => `SELECT * FROM ${tn.device}`}] })}
+      ${table({ rows: [{ SQL: () => `SELECT * FROM ${tn.device}` }] })}
 
-      ${table({ rows: [
-        { SQL: () => `SELECT * FROM ${tn.orch_session}`}]})}
+      ${table({
+        columns: { [os_c.orch_session_id]: { markdown: true } },
+        rows: [
+          {
+            SQL: () =>
+              `SELECT '[' || ${os_c.orch_session_id} || '](session-diagnostics.sql?session_id='|| ${os_c.orch_session_id} ||')' as ${os_c.orch_session_id}, ${os_c.device_id}, ${os_c.orch_started_at}, ${os_c.orch_finished_at} FROM ${tn.orch_session}`,
+          },
+        ],
+      })}        
 
-      ${table({ search: true, columns: { ingest_src: { markdown: true }}, rows: [
-        { SQL: () => `SELECT '[' || ${c.ingest_src} || '](issues.sql?session_entry_id='|| ${c.orch_session_entry_id} ||')' as ${c.ingest_src}, ${c.ingest_table_name} FROM "${tn.orch_session_entry}"`}]})}
+      ${table({
+        search: true,
+        columns: { [ose_c.ingest_src]: { markdown: true } },
+        rows: [
+          {
+            SQL: () =>
+              `SELECT '[' || ${ose_c.ingest_src} || '](issues.sql?session_entry_id='|| ${ose_c.orch_session_entry_id} ||')' as ${ose_c.ingest_src}, ${ose_c.ingest_table_name} FROM "${tn.orch_session_entry}"`,
+          },
+        ],
+      })}
     `;
   }
 
+  "session-diagnostics.sql"() {
+    const {
+      comps: { text },
+      govn,
+      govn: { SQL },
+    } = this;
+    const {
+      tableNames: tn,
+      columnNames: { orch_session: c },
+    } = govn;
+
+    // NOTE: this page assumes that /asset/session/<orch_session_id>/diagnostics.sql
+    // is inserted by the orchestration engine (it's not in the SQLPageNotebook).
+
+    // deno-fmt-ignore
+    return SQL`
+      ${this.shell()}
+
+      ${text({
+        title: { SQL: () => `('Session ' || $session_id || ' Arguments ')` },
+        content: {
+          markdown: {
+            SQL: () =>
+              `(SELECT '\`\`\`json\n' || ${c.args_json} || '\n\`\`\`' FROM ${tn.orch_session} WHERE ${c.orch_session_id} = $session_id)`,
+          },
+        },
+      })}
+
+      ${text({
+        title: { SQL: () => `('Session ' || $session_id || ' Diagnostics ')` },
+        content: {
+          markdown: {
+            SQL: () =>
+              `(SELECT ${c.diagnostics_md} FROM ${tn.orch_session} WHERE ${c.orch_session_id} = $session_id)`,
+          },
+        },
+      })}`;
+  }
+
   "issues.sql"() {
-    const { comps: { table }, govn, govn: { SQL } } = this;
-    const { tableNames: tn, columnNames: { orch_session_issue: c } } = govn;
+    const {
+      comps: { table },
+      govn,
+      govn: { SQL },
+    } = this;
+    const {
+      tableNames: tn,
+      columnNames: { orch_session_issue: c },
+    } = govn;
 
     // ${breadcrumbs({ items: [
     //   { caption: "Home", href: "/" },
@@ -197,50 +306,92 @@ export class SQLPageNotebook {
 
       ${this.sessionEntries.component()}
 
-      ${table({ search: true, rows: [
-        { SQL: () => `
+      ${table({
+        search: true,
+        rows: [
+          {
+            SQL: () => `
             SELECT ${c.issue_type}, ${c.issue_message}, ${c.invalid_value}, ${c.remediation}
               FROM ${tn.orch_session_issue}
-             WHERE ${c.session_entry_id} = $${c.session_entry_id}`}]})}
+             WHERE ${c.session_entry_id} = $${c.session_entry_id}`,
+          },
+        ],
+      })}
       `;
   }
 
   "1115-waiver-screenings.sql"() {
-    const { comps: { text, table }, govn: { SQL } } = this;
+    const {
+      comps: { text, table },
+      govn: { SQL },
+    } = this;
 
     // deno-fmt-ignore
     return SQL`
       ${this.shell()}
 
-      ${table({ search: true, sort: true, rows: [
-        { SQL: () => `
+      ${table({
+        search: true,
+        sort: true,
+        rows: [
+          {
+            SQL: () => `
               SELECT format('[%s](?pat_mrn_id=%s)', pat_mrn_id, pat_mrn_id) as pat_mrn_id, facility, first_name, last_name
                 FROM ahc_hrsn_12_12_2023_valid
             GROUP BY pat_mrn_id, facility, first_name, last_name
-            ORDER BY facility, last_name, first_name`}], 
-        columns: {pat_mrn_id: { markdown: true }}})}
+            ORDER BY facility, last_name, first_name`,
+          },
+        ],
+        columns: { pat_mrn_id: { markdown: true } },
+      })}
 
-      ${text({title: {SQL: () => `(select format('%s %s Answers', first_name, last_name) from ahc_hrsn_12_12_2023_valid where pat_mrn_id = $pat_mrn_id)`}})}
-      ${table({ search: true, sort: true, rows: [
-        { SQL: () => `
+      ${text({
+        title: {
+          SQL: () =>
+            `(select format('%s %s Answers', first_name, last_name) from ahc_hrsn_12_12_2023_valid where pat_mrn_id = $pat_mrn_id)`,
+        },
+      })}
+      ${table({
+        search: true,
+        sort: true,
+        rows: [
+          {
+            SQL: () => `
             SELECT question, meas_value 
               FROM "ahc_hrsn_12_12_2023_valid"
-             WHERE pat_mrn_id = $pat_mrn_id`}],
-        condition: { anyExists: '$pat_mrn_id' }})}
+             WHERE pat_mrn_id = $pat_mrn_id`,
+          },
+        ],
+        condition: { anyExists: "$pat_mrn_id" },
+      })}
 
-      ${text({title: {SQL: () => `(select format('%s %s FHIR Observations', first_name, last_name) from ahc_hrsn_12_12_2023_valid where pat_mrn_id = $pat_mrn_id)`}})}
-      ${table({ search: true, sort: true, rows: [
-        { SQL: () => `
+      ${text({
+        title: {
+          SQL: () =>
+            `(select format('%s %s FHIR Observations', first_name, last_name) from ahc_hrsn_12_12_2023_valid where pat_mrn_id = $pat_mrn_id)`,
+        },
+      })}
+      ${table({
+        search: true,
+        sort: true,
+        rows: [
+          {
+            SQL: () => `
             SELECT * 
               FROM "ahc_hrsn_12_12_2023_valid_fhir"
-             WHERE pat_mrn_id = $pat_mrn_id`}],
-        condition: { allExist: '$pat_mrn_id is not null' }})}
+             WHERE pat_mrn_id = $pat_mrn_id`,
+          },
+        ],
+        condition: { allExist: "$pat_mrn_id is not null" },
+      })}
 
     `;
   }
 
   "schema.sql"() {
-    const { govn: { SQL } } = this;
+    const {
+      govn: { SQL },
+    } = this;
     return SQL`
       ${this.shell()}
       ${this.sc.infoSchemaSQL()}
@@ -252,7 +403,7 @@ export class SQLPageNotebook {
       SQLPageNotebook.prototype,
       (registerCTS) => new SQLPageNotebook(govn, registerCTS),
       () => govn.emitCtx,
-      nbDescr,
+      nbDescr
     );
   }
 }
