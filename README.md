@@ -56,11 +56,12 @@ You can also evaluate the code in a
 
 For Linux or MacOS use [pkgx](https://pkgx.sh/) and
 [eget](https://github.com/zyedidia/eget/releases) to install dependencies. For
-guidance see [Linux/MacOS Setup](./support/docs/linux-macos-setup.md) and then:
+guidance see
+[Strategy Coach Workspaces Host](https://github.com/strategy-coach/workspaces-host)
+and then:
 
 ```bash
-# use your OS-specific package manager to install Git, curl, and wget and then:
-$ pkgx install deno.land sqlite.org duckdb.org
+$ pkgx install sqlite.org duckdb.org
 $ eget lovasoa/SQLpage --to=$HOME/.local/bin/sqlpage
 ```
 
