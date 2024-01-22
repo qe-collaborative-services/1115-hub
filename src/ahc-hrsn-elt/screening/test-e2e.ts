@@ -1,4 +1,8 @@
-import { SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
+import {
+  colors as c,
+  SQLa_orch as o,
+  SQLa_orch_duckdb as ddbo,
+} from "./deps.ts";
 import * as mod from "./mod.ts";
 
 /**
@@ -20,6 +24,7 @@ const govn = new ddbo.DuckDbOrchGovernance(
   true,
   new ddbo.DuckDbOrchEmitContext(),
 );
+
 const args: mod.OrchEngineArgs = {
   session: new o.OrchSession(govn),
   walkRootPaths: [`${ahcHrsnScreeningHome}/synthetic-content`],
@@ -39,7 +44,8 @@ const args: mod.OrchEngineArgs = {
     await Deno.writeTextFile(`${resultsHome}/dag.puml`, puml);
   },
 };
-await o.orchestrate<
+
+const workflow = await o.orchestrate<
   ddbo.DuckDbOrchGovernance,
   mod.OrchEngine,
   mod.OrchEngineArgs,
@@ -49,3 +55,21 @@ await o.orchestrate<
   newInstance: () =>
     new mod.OrchEngine(mod.fsPatternIngestSourcesSupplier(govn), govn, args),
 }, args);
+
+if (workflow?.duckdb.stdErrsEncountered) {
+  // deno-fmt-ignore
+  console.error(`❌ ${c.brightRed("DuckDB orchestration errors encountered (ingestion state is indeterminate).")}`);
+} else {
+  console.info("✅ No DuckDB orchestration errors encountered.");
+}
+
+if (args.diagsMd) {
+  console.info("📄 Diagnostics are in", c.cyan(args.diagsMd));
+}
+
+if (args.resourceDb) {
+  // deno-fmt-ignore
+  console.info(`📦 ${c.green(args.resourceDb)} has the aggregated content and \`orch_session_*\` validation tables.`);
+}
+// deno-fmt-ignore
+console.info(`🦆 ${c.yellow(args.duckDbDestFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);

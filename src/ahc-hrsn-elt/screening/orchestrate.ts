@@ -28,7 +28,7 @@ export type PotentialIngestSource =
   | o.ErrorIngestSource<ddbo.DuckDbOrchGovernance, ddbo.DuckDbOrchEmitContext>;
 
 export function fsPatternIngestSourcesSupplier(
-  govn: ddbo.DuckDbOrchGovernance
+  govn: ddbo.DuckDbOrchGovernance,
 ): o.IngestSourcesSupplier<PotentialIngestSource, [string[] | undefined]> {
   return {
     sources: async (suggestedRootPaths?: string[]) => {
@@ -66,8 +66,8 @@ export type OrchStep = chainNB.NotebookCell<
 export type OrchStepContext = chainNB.NotebookCellContext<OrchEngine, OrchStep>;
 export const oeDescr = new chainNB.NotebookDescriptor<OrchEngine, OrchStep>();
 
-export interface OrchEngineArgs
-  extends o.OrchArgs<
+export interface OrchEngineArgs extends
+  o.OrchArgs<
     ddbo.DuckDbOrchGovernance,
     OrchEngine,
     ddbo.DuckDbOrchEmitContext
@@ -120,7 +120,7 @@ export class OrchEngine {
       [string[] | undefined] // optional root paths
     >,
     readonly govn: ddbo.DuckDbOrchGovernance,
-    readonly args: OrchEngineArgs
+    readonly args: OrchEngineArgs,
   ) {
     this.duckdb = new ddbo.DuckDbShell(args.session, {
       duckdbCmd: "duckdb",
@@ -139,7 +139,7 @@ export class OrchEngine {
    */
   async prepareInit(osc: OrchStepContext) {
     const duckDbFsPath = this.duckdb.args.dbDestFsPathSupplier(
-      osc.current.nbCellID
+      osc.current.nbCellID,
     );
     await this.args.prepareDuckDbFsPath?.(duckDbFsPath);
   }
@@ -159,7 +159,7 @@ export class OrchEngine {
       args: { session },
     } = this;
     const beforeInit = Array.from(
-      session.sqlCatalogSqlSuppliers("before-init")
+      session.sqlCatalogSqlSuppliers("before-init"),
     );
     const afterInit = Array.from(session.sqlCatalogSqlSuppliers("after-init"));
 
@@ -175,18 +175,22 @@ export class OrchEngine {
       ${await session.orchSessionSqlDML()}
       
       ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`.SQL(
-      this.govn.emitCtx
+      this.govn.emitCtx,
     );
 
     const execResult = await this.duckdb.execute(initDDL, osc.current.nbCellID);
     if (execResult.status.code != 0) {
       const diagsTmpFile = await this.duckdb.writeDiagnosticsSqlMD(
-        initDDL,
-        execResult.status
+        {
+          exec_code: String(execResult.status.code),
+          sql: initDDL,
+          exec_identity: `initDDL`,
+        },
+        execResult.status,
       );
       // the kernel stops processing if it's not a OrchResumableError instance
       throw new Error(
-        `duckdb.execute status in ${osc.current.nbCellID}() did not return zero, see ${diagsTmpFile}`
+        `duckdb.execute status in ${osc.current.nbCellID}() did not return zero, see ${diagsTmpFile}`,
       );
     }
   }
@@ -218,7 +222,7 @@ export class OrchEngine {
 
     let psIndex = 0;
     this.potentialSources = Array.from(
-      await this.iss.sources(this.args.walkRootPaths)
+      await this.iss.sources(this.args.walkRootPaths),
     );
     this.ingestables = [];
     for (const ps of this.potentialSources) {
@@ -238,7 +242,7 @@ export class OrchEngine {
         issueInsertDML: async (message, type = "Structural") => {
           return govn.orchSessionIssueCRF.insertDML({
             orch_session_issue_id: await govn.emitCtx.newUUID(
-              govn.deterministicPKs
+              govn.deterministicPKs,
             ),
             session_id: sessionID,
             session_entry_id: sessionEntryID,
@@ -252,8 +256,7 @@ export class OrchEngine {
       this.ingestables.push({
         psIndex,
         sessionEntryID,
-        sql:
-          `-- ${osc.current.nbCellID} ${uri} (${tableName})\n` +
+        sql: `-- ${osc.current.nbCellID} ${uri} (${tableName})\n` +
           checkStruct.SQL(ctx),
         source: ps,
         workflow,
@@ -265,7 +268,7 @@ export class OrchEngine {
     // run the SQL and then emit the errors to STDOUT in JSON
     const ingestSQL = this.ingestables.map((ic) => ic.sql);
     ingestSQL.push(
-      `SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '${sessionID}'`
+      `SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '${sessionID}'`,
     );
     const ingestResult = await this.duckdb.jsonResult<
       (typeof this.ingestables)[number]["issues"][number]
@@ -274,7 +277,7 @@ export class OrchEngine {
       // if errors were found, put the problems into the proper ingestable issues
       for (const row of ingestResult.json) {
         const ingestable = this.ingestables.find(
-          (i) => i.sessionEntryID == row.session_entry_id
+          (i) => i.sessionEntryID == row.session_entry_id,
         );
         if (ingestable) ingestable.issues.push(row);
       }
@@ -301,7 +304,7 @@ export class OrchEngine {
    */
   async ensureContent(
     osc: OrchStepContext,
-    ingestResult: Awaited<ReturnType<typeof OrchEngine.prototype.ingest>>
+    ingestResult: Awaited<ReturnType<typeof OrchEngine.prototype.ingest>>,
   ) {
     const {
       govn: { emitCtx: ctx },
@@ -311,7 +314,7 @@ export class OrchEngine {
     const assurableSQL = await Promise.all(
       ingestResult.map(async (sr) =>
         (await sr.workflow.assuranceSQL()).SQL(ctx)
-      )
+      ),
     );
 
     await this.duckdb.execute(assurableSQL.join("\n"), osc.current.nbCellID);
@@ -320,7 +323,9 @@ export class OrchEngine {
 
   async emitResources(
     isc: OrchStepContext,
-    ensureResult: Awaited<ReturnType<typeof OrchEngine.prototype.ensureContent>>
+    ensureResult: Awaited<
+      ReturnType<typeof OrchEngine.prototype.ensureContent>
+    >,
   ) {
     const {
       args: { resourceDb, session },
@@ -350,7 +355,7 @@ export class OrchEngine {
       const exportsSQL = await Promise.all(
         ensureResult.map(async (sr) =>
           (await sr.workflow.exportResourceSQL(rdbSchemaName)).SQL(ctx)
-        )
+        ),
       );
 
       // `beforeFinalize` SQL includes state management SQL that log all the
@@ -432,21 +437,21 @@ export class OrchEngine {
           ...this.args,
           sources: this.potentialSources
             ? array.distinctEntries(
-                this.potentialSources.map((ps, psIndex) => ({
-                  uri: ps.uri,
-                  nature: ps.nature,
-                  tableName: ps.tableName,
-                  ingestionIssues: this.ingestables?.find(
-                    (i) => i.psIndex == psIndex
-                  )?.issues.length,
-                }))
-              )
+              this.potentialSources.map((ps, psIndex) => ({
+                uri: ps.uri,
+                nature: ps.nature,
+                tableName: ps.tableName,
+                ingestionIssues: this.ingestables?.find(
+                  (i) => i.psIndex == psIndex,
+                )?.issues.length,
+              })),
+            )
             : undefined,
         },
         // deep copy only string-frienly properties
         (key, value) => (key == "session" ? undefined : value),
-        "  "
-      )
+        "  ",
+      ),
     );
 
     if (this.args.diagsJson) {
@@ -455,8 +460,8 @@ export class OrchEngine {
         JSON.stringify(
           { args: stringifiableArgs, diags: this.duckdb.diagnostics },
           null,
-          "  "
-        )
+          "  ",
+        ),
       );
     }
 
@@ -468,7 +473,7 @@ export class OrchEngine {
           yaml.stringify(stringifiableArgs) +
           "---\n" +
           "# Orchestration Diagnostics\n" +
-          markdown
+          markdown,
       );
     }
 
@@ -486,11 +491,11 @@ export class OrchEngine {
       },
         ${c.diagnostics_json} = ${
         steo.quotedLiteral(
-          JSON.stringify(this.duckdb.diagnostics, null, "  ")
+          JSON.stringify(this.duckdb.diagnostics, null, "  "),
         )[1]
       },
         ${c.diagnostics_md} = ${steo.quotedLiteral(markdown)[1]}
-      WHERE ${c.orch_session_id} = '${sessionID}'`
+      WHERE ${c.orch_session_id} = '${sessionID}'`,
     );
   }
 }
