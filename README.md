@@ -31,6 +31,23 @@ analyst-friendly format, QCS-OE employs the following architecture strategy:
 
 ## Getting Started
 
+The following instructions are for setting up the code on a
+[developer sandbox](https://en.wikipedia.org/wiki/Sandbox_(software_development))
+("[dev sandbox](https://en.wikipedia.org/wiki/Sandbox_(software_development))"
+or just
+"[sandbox](https://en.wikipedia.org/wiki/Sandbox_(software_development))").
+
+For dev sandboxes you should be able to use workstations or laptops that have:
+
+- Modern i5 or i7 class CPUs (circa 2021 or later)
+- 32GB RAM
+- 25GB of disk space
+- Windows 11 if possible (Windows 10 is a possibility, too)
+- Windows Subsystem for Linux (WSL)
+
+_Instructions for deploying to test servers or production servers will be
+provided later._
+
 ### Quick start (Windows):
 
 If you have a relatively modern Windows 10/11 system with `winget` and `scoop`
