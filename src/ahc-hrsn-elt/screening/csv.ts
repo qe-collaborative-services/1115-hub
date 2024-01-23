@@ -2,7 +2,12 @@ import { fs, path, SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
 import * as sg from "./governance.ts";
 
 export class ScreeningCsvFileIngestSource<TableName extends string>
-  implements o.CsvFileIngestSource<TableName, ddbo.DuckDbOrchEmitContext> {
+  implements
+    o.CsvFileIngestSource<
+      TableName,
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    > {
   readonly nature = "CSV";
   constructor(
     readonly uri: string,
@@ -11,28 +16,40 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
   ) {
   }
 
-  workflow(
-    sessionID: string,
+  async workflow(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
     sessionEntryID: string,
   ): ReturnType<
-    o.CsvFileIngestSource<TableName, ddbo.DuckDbOrchEmitContext>["workflow"]
+    o.CsvFileIngestSource<
+      TableName,
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >["workflow"]
   > {
+    const sessionDML = await session.orchSessionSqlDML();
     const sar = new sg.ScreeningAssuranceRules(
       this.tableName,
-      sessionID,
+      sessionDML.sessionID,
       sessionEntryID,
       this.govn,
     );
 
     return {
-      ingestSQL: async (issac) => await this.ingestSQL(issac, sar),
-      assuranceSQL: async () => await this.assuranceSQL(sar),
+      ingestSQL: async (issac) => await this.ingestSQL(session, issac, sar),
+      assuranceSQL: async () => await this.assuranceSQL(session, sar),
       exportResourceSQL: async (targetSchema) =>
-        await this.exportResourceSQL(targetSchema),
+        await this.exportResourceSQL(session, sar.sessionEntryID, targetSchema),
     };
   }
 
   async ingestSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
     issac: o.IngestSourceStructAssuranceContext<ddbo.DuckDbOrchEmitContext>,
     sar: sg.ScreeningAssuranceRules<TableName>,
   ) {
@@ -44,28 +61,54 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
       -- required by IngestEngine, setup the ingestion entry for logging
       ${await issac.sessionEntryInsertDML()}
 
+      -- state management diagnostics 
+      ${await session.entryStateDML(sessionEntryID, "NONE", "ATTEMPT_CSV_INGEST", "ScreeningCsvFileIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+
       -- be sure to add src_file_row_number and session_id columns to each row
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
           FROM read_csv_auto('${uri}');
 
-      ${sar.requiredColumnNames()}`
+      ${sar.requiredColumnNames()}
+      
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_CSV_INGEST", "INGESTED_CSV", "ScreeningCsvFileIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+      `
   }
 
-  // deno-lint-ignore require-await
-  async assuranceSQL(sar: sg.ScreeningAssuranceRules<TableName>) {
+  async assuranceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sar: sg.ScreeningAssuranceRules<TableName>,
+  ) {
     const { govn } = this;
+    const { sessionEntryID } = sar;
 
     // deno-fmt-ignore
     return govn.SQL`
-      ${sar.tableRules.intValueInAllRows('SURVEY_ID')}`
+      ${await session.entryStateDML(sessionEntryID, "INGESTED_CSV", "ATTEMPT_CSV_ASSURANCE", "ScreeningCsvFileIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
+
+      ${sar.tableRules.intValueInAllRows('SURVEY_ID')}
+
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_CSV_ASSURANCE", "ASSURED_CSV", "ScreeningCsvFileIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
+    `
   }
 
-  // deno-lint-ignore require-await
-  async exportResourceSQL(targetSchema: string) {
+  async exportResourceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sessionEntryID: string,
+    targetSchema: string,
+  ) {
     const { govn: { SQL }, tableName } = this;
+
+    // deno-fmt-ignore
     return SQL`
+      ${await session.entryStateDML(sessionEntryID, "ASSURED_CSV", "ATTEMPT_CSV_EXPORT", "ScreeningCsvFileIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
 
       CREATE VIEW ${targetSchema}.${tableName}_fhir AS 
@@ -96,7 +139,10 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
                   'reference', 'Encounter/' || ENCOUNTER_ID
               )
           ) AS FHIR_Observation
-        FROM ${tableName}`;
+        FROM ${tableName};
+        
+        ${await session.entryStateDML(sessionEntryID, "ATTEMPT_CSV_EXPORT", "CSV_EXPORTED", "ScreeningCsvFileIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+        `;
   }
 }
 

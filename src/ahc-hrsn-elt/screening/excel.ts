@@ -13,7 +13,12 @@ export type ExcelWorkbookSheetName = typeof excelWorkbookSheetNames[number];
 
 export class ExcelSheetTodoIngestSource<SheetName extends string>
   implements
-    o.ExcelSheetIngestSource<SheetName, string, ddbo.DuckDbOrchEmitContext> {
+    o.ExcelSheetIngestSource<
+      SheetName,
+      string,
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    > {
   readonly nature = "Excel Workbook Sheet";
   readonly tableName: string;
   constructor(
@@ -26,10 +31,12 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
     );
   }
 
-  workflow(): ReturnType<
+  // deno-lint-ignore require-await
+  async workflow(): ReturnType<
     o.ExcelSheetIngestSource<
       string,
       string,
+      ddbo.DuckDbOrchGovernance,
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
@@ -57,6 +64,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     o.ExcelSheetIngestSource<
       "Screening",
       TableName,
+      ddbo.DuckDbOrchGovernance,
       ddbo.DuckDbOrchEmitContext
     > {
   readonly nature = "Excel Workbook Sheet";
@@ -71,32 +79,41 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     ) as TableName;
   }
 
-  workflow(
-    sessionID: string,
+  async workflow(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
     sessionEntryID: string,
   ): ReturnType<
     o.ExcelSheetIngestSource<
       "Screening",
       TableName,
+      ddbo.DuckDbOrchGovernance,
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
+    const sessionDML = await session.orchSessionSqlDML();
     const sar = new sg.ScreeningAssuranceRules(
       this.tableName,
-      sessionID,
+      sessionDML.sessionID,
       sessionEntryID,
       this.govn,
     );
 
     return {
-      ingestSQL: async (issac) => await this.ingestSQL(issac, sar),
-      assuranceSQL: async () => await this.assuranceSQL(),
+      ingestSQL: async (issac) => await this.ingestSQL(session, issac, sar),
+      assuranceSQL: async () => await this.assuranceSQL(session, sar),
       exportResourceSQL: async (targetSchema) =>
-        await this.exportResourceSQL(targetSchema),
+        await this.exportResourceSQL(session, sar.sessionEntryID, targetSchema),
     };
   }
 
   async ingestSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
     issac: o.IngestSourceStructAssuranceContext<ddbo.DuckDbOrchEmitContext>,
     sar: sg.ScreeningAssuranceRules<string>,
   ) {
@@ -108,6 +125,9 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
       -- required by IngestEngine, setup the ingestion entry for logging
       ${await issac.sessionEntryInsertDML()}
      
+      -- state management diagnostics 
+      ${await session.entryStateDML(sessionEntryID, "NONE", "ATTEMPT_EXCEL_INGEST", "ScreeningExcelSheetIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+
       -- ingest Excel workbook sheet '${sheetName}' into ${tableName} using spatial plugin
       INSTALL spatial; LOAD spatial;
 
@@ -117,21 +137,46 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
           FROM st_read('${uri}', layer='${sheetName}', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
       
-      ${sar.requiredColumnNames()}`
+      ${sar.requiredColumnNames()}
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_INGEST", "INGESTED_EXCEL_WORKBOOK_SHEET", "ScreeningExcelSheetIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+      `
   }
 
-  // deno-lint-ignore require-await
-  async assuranceSQL() {
+  async assuranceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sar: sg.ScreeningAssuranceRules<TableName>,
+  ) {
+    const { sessionEntryID } = sar;
+
     // deno-fmt-ignore
-    return this.govn.SQL`-- Sheet '${this.sheetName}' has no assurance SQL in Excel workbook '${path.basename(this.uri)}'`;
+    return this.govn.SQL`
+      ${await session.entryStateDML(sessionEntryID, "INGESTED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ScreeningExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
+
+      -- Sheet '${this.sheetName}' has no assurance SQL in Excel workbook '${path.basename(this.uri)}'
+
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ASSURED_EXCEL_WORKBOOK_SHEET", "ScreeningExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
+    `;
   }
 
-  // deno-lint-ignore require-await
-  async exportResourceSQL(targetSchema: string) {
+  async exportResourceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sessionEntryID: string,
+    targetSchema: string,
+  ) {
     const { govn } = this;
 
     // deno-fmt-ignore
-    return govn.SQL`-- Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})`;
+    return govn.SQL`
+      ${await session.entryStateDML(sessionEntryID, "ASSURED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", "ScreeningExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+      -- Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", "EXPORTED_EXCEL_WORKBOOK_SHEET", "ScreeningExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+    `;
   }
 }
 

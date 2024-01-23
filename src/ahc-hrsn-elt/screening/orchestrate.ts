@@ -100,7 +100,7 @@ export class OrchEngine {
   protected ingestables?: {
     readonly psIndex: number; // the index in #potentialSources
     readonly source: PotentialIngestSource;
-    readonly workflow: ReturnType<PotentialIngestSource["workflow"]>;
+    readonly workflow: Awaited<ReturnType<PotentialIngestSource["workflow"]>>;
     readonly sessionEntryID: string;
     readonly sql: string;
     readonly issues: {
@@ -229,7 +229,7 @@ export class OrchEngine {
       const { uri, tableName } = ps;
 
       const sessionEntryID = await govn.emitCtx.newUUID(govn.deterministicPKs);
-      const workflow = ps.workflow(sessionID, sessionEntryID);
+      const workflow = await ps.workflow(session, sessionEntryID);
       const checkStruct = await workflow.ingestSQL({
         sessionEntryInsertDML: () => {
           return govn.orchSessionEntryCRF.insertDML({

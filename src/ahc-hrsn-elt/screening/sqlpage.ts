@@ -21,7 +21,10 @@ type CustomComponentName = keyof typeof customComponents;
 
 function sessionEntries(
   govn: ddbo.DuckDbOrchGovernance,
-  customCB: sp.ComponentBuilder<CustomComponentName, ddbo.DuckDbOrchEmitContext>
+  customCB: sp.ComponentBuilder<
+    CustomComponentName,
+    ddbo.DuckDbOrchEmitContext
+  >,
 ) {
   type TopLevelArgs = { readonly title: string };
   type Row = Record<
@@ -70,7 +73,7 @@ function sessionEntries(
             govn.SQL`
               ${topLevel}
               SELECT ${c.orch_session_entry_id}, ${c.ingest_src}, ${c.ingest_table_name} 
-                FROM ${tn.orch_session_entry}`
+                FROM ${tn.orch_session_entry}`,
         ),
       };
     },
@@ -121,7 +124,7 @@ export class SQLPageNotebook {
         Any,
         Any
       >[]
-    ) => void
+    ) => void,
   ) {
     this.sc = sp.sqliteContent(govn.SQL);
     this.sessionEntries = sessionEntries(govn, this.customCB);
@@ -168,14 +171,67 @@ export class SQLPageNotebook {
       javascript: [
         "https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js",
         "https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js",
+        "https://cdn.jsdelivr.net/npm/prismjs@1/plugins/line-numbers/prism-line-numbers.min.js",
+        "/scripts/shell.js",
       ],
-      css: "https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.css",
+      css: [
+        "https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.css",
+        "https://cdn.jsdelivr.net/npm/prismjs@1/plugins/line-numbers/prism-line-numbers.css",
+      ],
     };
 
     // deno-fmt-ignore
     return this.govn.SQL`SELECT 'dynamic' AS component, '${JSON.stringify(
       shell
     ).replace("'", "''")}' AS properties`;
+  }
+
+  "scripts/shell.js"() {
+    return this.govn.SQL`
+      function wrapSTDOUTInDetails() {
+          // Find all heading elements that could contain the STDOUT text
+          const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+          headings.forEach(function(heading) {
+              if (heading.textContent.includes('STDOUT')) {
+                  // Find the next <pre><code> block
+                  var nextEl = heading.nextElementSibling;
+                  while (nextEl) {
+                      if (nextEl.matches('pre') && nextEl.querySelector('code')) {
+                          // Create the <details> and <summary> elements
+                          const details = document.createElement('details');
+                          const summary = document.createElement('summary');
+                          summary.textContent = heading.textContent;
+
+                          // Wrap the <pre><code> block in <details>
+                          nextEl.parentNode.insertBefore(details, nextEl);
+                          details.appendChild(summary);
+                          details.appendChild(nextEl);
+                          break;
+                      }
+                      nextEl = nextEl.nextElementSibling;
+                  }
+              }
+          });
+
+          headings.forEach(function(heading) {
+              if (heading.textContent.includes('STDOUT')) {
+                heading.remove();
+              }
+          });
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        // find all code elements on the current page with the class 'language-sql' and add the class 'line-numbers' to each of them
+        document.querySelectorAll('code.language-sql').forEach(function(codeEl) {
+            var parentPre = codeEl.parentElement;
+            if (parentPre && parentPre.tagName === 'PRE') {
+                parentPre.classList.add('line-numbers');
+            }
+        });
+        wrapSTDOUTInDetails();
+      });
+    `;
   }
 
   "index.sql"() {
@@ -403,7 +459,7 @@ export class SQLPageNotebook {
       SQLPageNotebook.prototype,
       (registerCTS) => new SQLPageNotebook(govn, registerCTS),
       () => govn.emitCtx,
-      nbDescr
+      nbDescr,
     );
   }
 }
