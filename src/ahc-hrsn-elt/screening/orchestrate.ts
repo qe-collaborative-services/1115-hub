@@ -364,45 +364,37 @@ export class OrchEngine {
       // process and the exit state will not be encountered before writing to
       // the database.
 
-      // deno-fmt-ignore
+      // Everything with the `diagnostics-md-ignore-start` and `*-finish` will be
+      // executed by the orchestration engine but the SQL won't be store in the
+      // diagnostics log because it's noisy and mostly infrastructure.
+
+      const sqlPageCells = await this.sqlPageNB.sqlCells();
       await this.duckdb.execute(
-        ws.unindentWhitespace(`
-        ${
-          beforeFinalize.length > 0
-            ? `${beforeFinalize.join(";\n        ")};`
-            : "-- no before-finalize SQL provided"
-        }
+        // deno-fmt-ignore
+        this.govn.SQL`
+          ${beforeFinalize.length > 0 ? (beforeFinalize.join(";\n") + ";") : "-- no before-finalize SQL provided"}
 
-        -- diagnostics-md-ignore-start "SQLPage and execution diagnostics SQL DML"
-        -- emit all the SQLPage content
-        ${(await this.sqlPageNB.sqlCells())
-          .map((sc) => sc.SQL(ctx))
-          .join(";\n\n")};
-        
-        -- emit all the execution diagnostics
-        ${this.duckdb.diagnostics
-          .map((d) => d.SQL(this.govn.emitCtx))
-          .join(";\n        ")};
-        -- diagnostics-md-ignore-finish "SQLPage and execution diagnostics SQL DML"
+          -- diagnostics-md-ignore-start "SQLPage and execution diagnostics SQL DML"
+          -- emit all the SQLPage content
+          ${sqlPageCells};
+          
+          -- emit all the execution diagnostics
+          ${this.duckdb.diagnostics};
+          -- diagnostics-md-ignore-finish "SQLPage and execution diagnostics SQL DML"
 
-        ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);
+          ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);
 
-        ${adminTables
-          .map(
-            (t) =>
-              `CREATE TABLE ${rdbSchemaName}.${t.tableName} AS SELECT * FROM ${t.tableName}`
-          )
-          .join(";\n        ")};
+          -- copy relevant orchestration engine admin tables into the the attached database
+          ${adminTables.map((t) => ({SQL: () => `CREATE TABLE ${rdbSchemaName}.${t.tableName} AS SELECT * FROM ${t.tableName}`}))}
 
-        ${exportsSQL.join(";\n        ")};
+          -- export content tables from DuckDb into the attached database (nature-dependent)
+          ${exportsSQL};
 
-        DETACH DATABASE ${rdbSchemaName};
-        ${
-          afterFinalize.length > 0
-            ? `${afterFinalize.join(";\n        ")};`
-            : "-- no after-finalize SQL provided"
-        }`),
-        isc.current.nbCellID
+          DETACH DATABASE ${rdbSchemaName};
+          
+          ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
+        .SQL(this.govn.emitCtx),
+        isc.current.nbCellID,
       );
     }
   }
@@ -424,9 +416,9 @@ export class OrchEngine {
       // deno-fmt-ignore
       await this.duckdb.execute(
         ws.unindentWhitespace(`
-        INSTALL spatial; LOAD spatial;
-        -- TODO: join with orch_session table to give all the results in one sheet
-        COPY (SELECT * FROM orch_session_diagnostic_text) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+          INSTALL spatial; LOAD spatial;
+          -- TODO: join with orch_session table to give all the results in one sheet
+          COPY (SELECT * FROM orch_session_diagnostic_text) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
         "emitDiagnostics"
       );
     }
