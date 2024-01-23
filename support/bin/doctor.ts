@@ -152,7 +152,7 @@ export const checkup = doctor(function* () {
             ? { ok: `SQLPage available` } // TODO: sqlpage does not have a --version
             : {
               suggest:
-                "SQLPage not found in PATH, install it from https://github.com/lovasoa/SQLpage/releases (or use `eget lovasoa/SQLpage`)",
+                "SQLPage not found in PATH, install it from https://github.com/lovasoa/SQLpage/releases (or use `eget lovasoa/sqlpage --to=$HOME/.local/bin/sqlpage`)",
             }),
         });
       },
