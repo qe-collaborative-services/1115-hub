@@ -41,17 +41,16 @@ export class ScreeningAssuranceRules<TableName extends string>
            WHERE ${columnName} IS NOT NULL
             AND TRY_CAST(${columnName} AS DATE) IS NULL
       )
-      ${
-      this.insertRowValueIssueCtePartial(
-        cteName,
-        "Invalid Date",
-        "issue_row",
-        "issue_column",
-        "invalid_value",
-        `'Invalid Date "' || invalid_value || '" found in ' || issue_column`,
-        `'Convert non-date values to valid dates'`,
-      )
-    }`;
+      ${this.insertRowValueIssueCtePartial(
+      cteName,
+      "Invalid Date",
+      "issue_row",
+      "issue_column",
+      "invalid_value",
+      `'Invalid Date "' || invalid_value || '" found in ' || issue_column`,
+      `'Convert non-date values to valid dates'`,
+    )
+      }`;
   }
 
   onlyAllowValidBirthDateInAllRows(columnName: string, maxAgeYear = 1915) {
@@ -82,25 +81,24 @@ export class ScreeningAssuranceRules<TableName extends string>
             )
          )
       )
-      ${
-      this.insertRowValueIssueCtePartial(
-        cteName,
-        "Invalid Date",
-        "issue_row",
-        "issue_column",
-        "invalid_value",
-        `'Invalid Birth Date "' || invalid_value || '" found in ' || issue_column`,
-        `'Is complete across all rows. · Date of Birth is numeric and follows YYYY-MM-DD. · YYYY is not before ${maxAgeYear}  or after current date. · MM is between 1 and 12. · DD is between 1 and 31 for MM- 01, 03, 05, 07, 08, 10, 12. · DD is between 1 and 30 for MM- 04, 06, 09, 11 · DD is between 1 and 27 for MM- 02 unless YYYY is 1916x every 4 years, DD is between 1 and 29.'`,
-      )
-    }`;
+      ${this.insertRowValueIssueCtePartial(
+      cteName,
+      "Invalid Date",
+      "issue_row",
+      "issue_column",
+      "invalid_value",
+      `'Invalid Birth Date "' || invalid_value || '" found in ' || issue_column`,
+      `'Is complete across all rows. · Date of Birth is numeric and follows YYYY-MM-DD. · YYYY is not before ${maxAgeYear}  or after current date. · MM is between 1 and 12. · DD is between 1 and 31 for MM- 01, 03, 05, 07, 08, 10, 12. · DD is between 1 and 30 for MM- 04, 06, 09, 11 · DD is between 1 and 27 for MM- 02 unless YYYY is 1916x every 4 years, DD is between 1 and 29.'`,
+    )
+      }`;
   }
 
   onlyAllowAlphabetsInAllRows(columnName: string) {
-    return this.tableRules.patternValueInAllRows(columnName, "%[A-Za-z]%");
+    return this.tableRules.patternValueInAllRows(columnName, "^[A-Za-z]+$");
   }
 
   onlyAllowAlphabetsAndNumbersInAllRows(columnName: string) {
-    return this.tableRules.patternValueInAllRows(columnName, "%[0-9A-Za-z]%");
+    return this.tableRules.patternValueInAllRows(columnName, "^[0-9A-Za-z]+$");
   }
 
   onlyAllowValidTimeInAllRows(columnName: string, minYear = 2023) {
@@ -127,21 +125,20 @@ export class ScreeningAssuranceRules<TableName extends string>
                     (EXTRACT(year FROM RECORDED_TIME) % 4 != 0 AND EXTRACT(day FROM ${columnName}) BETWEEN 1 AND 27)
                 ))
             )
-            AND EXTRACT(hour FROM ${columnName}) BETWEEN 1 AND 24
-            AND EXTRACT(minute FROM ${columnName}) BETWEEN 1 AND 59
-            AND EXTRACT(second FROM ${columnName}) BETWEEN 1 AND 59
+            AND EXTRACT(hour FROM ${columnName}) BETWEEN 0 AND 23
+            AND EXTRACT(minute FROM ${columnName}) BETWEEN 0 AND 59
+            AND EXTRACT(second FROM ${columnName}) BETWEEN 0 AND 59
         )
       )
-      ${
-      this.insertRowValueIssueCtePartial(
-        cteName,
-        "Invalid Date",
-        "issue_row",
-        "issue_column",
-        "invalid_value",
-        `'Invalid time "' || invalid_value || '" found in ' || issue_column`,
-        `'Year must be greater than ${minYear} and · MM is between 1 and 12. · DD is between 1 and 31 for MM- 01, 03, 05, 07, 08, 10, 12. · DD is between 1 and 30 for MM- 04, 06, 09, 11 · DD is between 1 and 27 for MM- 02 unless YYYY is 2024x every 4 years, DD is between 1 and 29. · HH is between 1 and 24. · MM is between 1 and 59. · SS is between 1 and 59.'`,
-      )
-    }`;
+      ${this.insertRowValueIssueCtePartial(
+      cteName,
+      "Invalid Date",
+      "issue_row",
+      "issue_column",
+      "invalid_value",
+      `'Invalid time "' || invalid_value || '" found in ' || issue_column`,
+      `'Year must be greater than ${minYear} and · MM is between 1 and 12. · DD is between 1 and 31 for MM- 01, 03, 05, 07, 08, 10, 12. · DD is between 1 and 30 for MM- 04, 06, 09, 11 · DD is between 1 and 27 for MM- 02 unless YYYY is 2024x every 4 years, DD is between 1 and 29. · HH is between 1 and 24. · MM is between 1 and 59. · SS is between 1 and 59.'`,
+    )
+      }`;
   }
 }
