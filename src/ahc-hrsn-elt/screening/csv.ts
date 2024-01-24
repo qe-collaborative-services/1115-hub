@@ -3,18 +3,17 @@ import * as sg from "./governance.ts";
 
 export class ScreeningCsvFileIngestSource<TableName extends string>
   implements
-    o.CsvFileIngestSource<
-      TableName,
-      ddbo.DuckDbOrchGovernance,
-      ddbo.DuckDbOrchEmitContext
-    > {
+  o.CsvFileIngestSource<
+    TableName,
+    ddbo.DuckDbOrchGovernance,
+    ddbo.DuckDbOrchEmitContext
+  > {
   readonly nature = "CSV";
   constructor(
     readonly uri: string,
     readonly tableName: TableName,
     readonly govn: ddbo.DuckDbOrchGovernance,
-  ) {
-  }
+  ) { }
 
   async workflow(
     session: o.OrchSession<
@@ -62,7 +61,13 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
       ${await issac.sessionEntryInsertDML()}
 
       -- state management diagnostics 
-      ${await session.entryStateDML(sessionEntryID, "NONE", "ATTEMPT_CSV_INGEST", "ScreeningCsvFileIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+      ${await session.entryStateDML(
+      sessionEntryID,
+      "NONE",
+      "ATTEMPT_CSV_INGEST",
+      "ScreeningCsvFileIngestSource.ingestSQL",
+      this.govn.emitCtx.sqlEngineNow
+    )}
 
       -- be sure to add src_file_row_number and session_id columns to each row
       -- because assurance CTEs require them
@@ -72,8 +77,14 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
 
       ${sar.requiredColumnNames()}
       
-      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_CSV_INGEST", "INGESTED_CSV", "ScreeningCsvFileIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
-      `
+      ${await session.entryStateDML(
+      sessionEntryID,
+      "ATTEMPT_CSV_INGEST",
+      "INGESTED_CSV",
+      "ScreeningCsvFileIngestSource.ingestSQL",
+      this.govn.emitCtx.sqlEngineNow
+    )}
+      `;
   }
 
   async assuranceSQL(
@@ -88,12 +99,49 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
 
     // deno-fmt-ignore
     return govn.SQL`
-      ${await session.entryStateDML(sessionEntryID, "INGESTED_CSV", "ATTEMPT_CSV_ASSURANCE", "ScreeningCsvFileIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
-
-      ${sar.tableRules.intValueInAllRows('SURVEY_ID')}
-
-      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_CSV_ASSURANCE", "ASSURED_CSV", "ScreeningCsvFileIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
-    `
+      ${await session.entryStateDML(
+      sessionEntryID,
+      "INGESTED_CSV",
+      "ATTEMPT_CSV_ASSURANCE",
+      "ScreeningCsvFileIngestSource.assuranceSQL",
+      this.govn.emitCtx.sqlEngineNow
+    )}
+      ${sar.tableRules.mandatoryValueInAllRows("PAT_MRN_ID")}
+      ${sar.tableRules.intValueInAllRows("PAT_MRN_ID")}      
+      ${sar.tableRules.mandatoryValueInAllRows("FIRST_NAME")}
+      ${sar.onlyAllowAlphabetsInAllRows("FIRST_NAME")}
+      ${sar.tableRules.mandatoryValueInAllRows("LAST_NAME")}
+      ${sar.onlyAllowAlphabetsInAllRows("LAST_NAME")}
+      ${sar.tableRules.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
+      ${sar.onlyAllowValidBirthDateInAllRows("PAT_BIRTH_DATE")}
+      ${sar.tableRules.mandatoryValueInAllRows("MEDICAID_CIN")}
+      ${sar.tableRules.intValueInAllRows("MEDICAID_CIN")} 
+      ${sar.tableRules.mandatoryValueInAllRows("ENCOUNTER_ID")}
+      ${sar.tableRules.mandatoryValueInAllRows("RECORDED_TIME")} 
+      ${sar.onlyAllowValidTimeInAllRows("RECORDED_TIME")}
+      ${sar.tableRules.mandatoryValueInAllRows("QUESTION")}
+      ${sar.tableRules.mandatoryValueInAllRows("MEAS_VALUE")} 
+      ${sar.tableRules.mandatoryValueInAllRows("QUESTION_CODE")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("QUESTION_CODE", "71802-3,96778-6")}
+      ${sar.tableRules.mandatoryValueInAllRows("ANSWER_CODE")}
+      ${sar.tableRules.mandatoryValueInAllRows("ANSWER_CODE_SYSTEM_NAME")}      
+      ${sar.tableRules.mandatoryValueInAllRows("SDOH_DOMAIN")}
+      ${sar.tableRules.mandatoryValueInAllRows("NEED_INDICATED")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("NEED_INDICATED", "TRUE,FALSE")}
+      ${sar.tableRules.mandatoryValueInAllRows("VISIT_PART_2_FLAG")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("VISIT_PART_2_FLAG", "TRUE,FALSE")}
+      ${sar.tableRules.mandatoryValueInAllRows("VISIT_OMH_FLAG")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("VISIT_OMH_FLAG", "TRUE,FALSE")}
+      ${sar.tableRules.mandatoryValueInAllRows("VISIT_OPWDD_FLAG")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("VISIT_OPWDD_FLAG", "TRUE,FALSE")}      
+      ${await session.entryStateDML(
+      sessionEntryID,
+      "ATTEMPT_CSV_ASSURANCE",
+      "ASSURED_CSV",
+      "ScreeningCsvFileIngestSource.assuranceSQL",
+      this.govn.emitCtx.sqlEngineNow
+    )}
+    `;
   }
 
   async exportResourceSQL(
@@ -104,11 +152,20 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
     sessionEntryID: string,
     targetSchema: string,
   ) {
-    const { govn: { SQL }, tableName } = this;
+    const {
+      govn: { SQL },
+      tableName,
+    } = this;
 
     // deno-fmt-ignore
     return SQL`
-      ${await session.entryStateDML(sessionEntryID, "ASSURED_CSV", "ATTEMPT_CSV_EXPORT", "ScreeningCsvFileIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+      ${await session.entryStateDML(
+      sessionEntryID,
+      "ASSURED_CSV",
+      "ATTEMPT_CSV_EXPORT",
+      "ScreeningCsvFileIngestSource.exportResourceSQL",
+      this.govn.emitCtx.sqlEngineNow
+    )}
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
 
       CREATE VIEW ${targetSchema}.${tableName}_fhir AS 
@@ -141,7 +198,13 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
           ) AS FHIR_Observation
         FROM ${tableName};
         
-        ${await session.entryStateDML(sessionEntryID, "ATTEMPT_CSV_EXPORT", "CSV_EXPORTED", "ScreeningCsvFileIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+        ${await session.entryStateDML(
+      sessionEntryID,
+      "ATTEMPT_CSV_EXPORT",
+      "CSV_EXPORTED",
+      "ScreeningCsvFileIngestSource.exportResourceSQL",
+      this.govn.emitCtx.sqlEngineNow
+    )}
         `;
   }
 }

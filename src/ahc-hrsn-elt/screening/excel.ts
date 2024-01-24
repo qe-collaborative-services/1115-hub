@@ -13,12 +13,12 @@ export type ExcelWorkbookSheetName = typeof excelWorkbookSheetNames[number];
 
 export class ExcelSheetTodoIngestSource<SheetName extends string>
   implements
-    o.ExcelSheetIngestSource<
-      SheetName,
-      string,
-      ddbo.DuckDbOrchGovernance,
-      ddbo.DuckDbOrchEmitContext
-    > {
+  o.ExcelSheetIngestSource<
+    SheetName,
+    string,
+    ddbo.DuckDbOrchGovernance,
+    ddbo.DuckDbOrchEmitContext
+  > {
   readonly nature = "Excel Workbook Sheet";
   readonly tableName: string;
   constructor(
@@ -61,12 +61,12 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
 
 export class ScreeningExcelSheetIngestSource<TableName extends string>
   implements
-    o.ExcelSheetIngestSource<
-      "Screening",
-      TableName,
-      ddbo.DuckDbOrchGovernance,
-      ddbo.DuckDbOrchEmitContext
-    > {
+  o.ExcelSheetIngestSource<
+    "Screening",
+    TableName,
+    ddbo.DuckDbOrchGovernance,
+    ddbo.DuckDbOrchEmitContext
+  > {
   readonly nature = "Excel Workbook Sheet";
   readonly sheetName = "Screening";
   readonly tableName: TableName;
@@ -154,9 +154,30 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     // deno-fmt-ignore
     return this.govn.SQL`
       ${await session.entryStateDML(sessionEntryID, "INGESTED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ScreeningExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
-
-      -- Sheet '${this.sheetName}' has no assurance SQL in Excel workbook '${path.basename(this.uri)}'
-
+      -- Sheet '${this.sheetName}' has no assurance SQL in Excel workbook '${path.basename(this.uri)}'      
+      ${sar.tableRules.mandatoryValueInAllRows("PAT_MRN_ID")}
+      ${sar.tableRules.intValueInAllRows("PAT_MRN_ID")}
+      ${sar.tableRules.mandatoryValueInAllRows("SCREENING_NAME")}
+      ${sar.tableRules.mandatoryValueInAllRows("SCREENING_CODE_SYSTEM_NAME")}
+      ${sar.tableRules.mandatoryValueInAllRows("SCREENING_CODE")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("SCREENING_METHOD", "In-Person,Phone,Website")}
+      ${sar.tableRules.mandatoryValueInAllRows("RECORDED_TIME")} 
+      ${sar.onlyAllowValidTimeInAllRows("RECORDED_TIME")}
+      ${sar.tableRules.mandatoryValueInAllRows("QUESTION")}
+      ${sar.tableRules.mandatoryValueInAllRows("MEAS_VALUE")}            
+      ${sar.tableRules.mandatoryValueInAllRows("QUESTION_CODE")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("QUESTION_CODE", "71802-3,96778-6")}
+      ${sar.tableRules.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("QUESTION_CODE_SYSTEM_NAME", "LN,LOIN")}
+      ${sar.tableRules.mandatoryValueInAllRows("ANSWER_CODE")}
+      ${sar.tableRules.mandatoryValueInAllRows("ANSWER_CODE_SYSTEM_NAME")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("ANSWER_CODE_SYSTEM_NAME", "LN,LOIN")}
+      ${sar.tableRules.mandatoryValueInAllRows("PARENT_QUESTION_CODE")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("PARENT_QUESTION_CODE", "88122-7,88123-5")}
+      ${sar.tableRules.mandatoryValueInAllRows("SDOH_DOMAIN")}
+      ${sar.tableRules.mandatoryValueInAllRows("POTENTIAL_NEED_INDICATED")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("POTENTIAL_NEED_INDICATED", "TRUE,FALSE")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("ASSISTANCE_REQUESTED", "YES,NO")}            
       ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ASSURED_EXCEL_WORKBOOK_SHEET", "ScreeningExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
   }
