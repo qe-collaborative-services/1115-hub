@@ -126,40 +126,40 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
     sar: sg.ScreeningAssuranceRules<TableName, ScreeningCsvColumnName>,
   ) {
     const { govn } = this;
-    const { sessionEntryID } = sar;
+    const { sessionEntryID, tableRules: tr } = sar;
 
     // deno-fmt-ignore
     return govn.SQL`
       ${await session.entryStateDML( sessionEntryID, "INGESTED_CSV", "ATTEMPT_CSV_ASSURANCE", "ScreeningCsvFileIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
 
-      ${sar.tableRules.mandatoryValueInAllRows("PAT_MRN_ID")}
-      ${sar.tableRules.intValueInAllRows("PAT_MRN_ID")}      
-      ${sar.tableRules.mandatoryValueInAllRows("FIRST_NAME")}
-      ${sar.onlyAllowAlphabetsInAllRows("FIRST_NAME")}
-      ${sar.tableRules.mandatoryValueInAllRows("LAST_NAME")}
-      ${sar.onlyAllowAlphabetsInAllRows("LAST_NAME")}
-      ${sar.tableRules.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
-      ${sar.onlyAllowValidBirthDateInAllRows("PAT_BIRTH_DATE")}
-      ${sar.tableRules.mandatoryValueInAllRows("MEDICAID_CIN")}
-      ${sar.tableRules.intValueInAllRows("MEDICAID_CIN")} 
-      ${sar.tableRules.mandatoryValueInAllRows("ENCOUNTER_ID")}
-      ${sar.tableRules.mandatoryValueInAllRows("RECORDED_TIME")} 
-      ${sar.onlyAllowValidTimeInAllRows("RECORDED_TIME")}
-      ${sar.tableRules.mandatoryValueInAllRows("QUESTION")}
-      ${sar.tableRules.mandatoryValueInAllRows("MEAS_VALUE")} 
-      ${sar.tableRules.mandatoryValueInAllRows("QUESTION_CODE")}
-      ${sar.tableRules.onlyAllowedValuesInAllRows("QUESTION_CODE", "71802-3,96778-6")}
-      ${sar.tableRules.mandatoryValueInAllRows("ANSWER_CODE")}
-      ${sar.tableRules.mandatoryValueInAllRows("ANSWER_CODE_SYSTEM_NAME")}      
-      ${sar.tableRules.mandatoryValueInAllRows("SDOH_DOMAIN")}
-      ${sar.tableRules.mandatoryValueInAllRows("NEED_INDICATED")}
-      ${sar.tableRules.onlyAllowedValuesInAllRows("NEED_INDICATED", "TRUE,FALSE")}
-      ${sar.tableRules.mandatoryValueInAllRows("VISIT_PART_2_FLAG")}
-      ${sar.tableRules.onlyAllowedValuesInAllRows("VISIT_PART_2_FLAG", "TRUE,FALSE")}
-      ${sar.tableRules.mandatoryValueInAllRows("VISIT_OMH_FLAG")}
-      ${sar.tableRules.onlyAllowedValuesInAllRows("VISIT_OMH_FLAG", "TRUE,FALSE")}
-      ${sar.tableRules.mandatoryValueInAllRows("VISIT_OPWDD_FLAG")}
-      ${sar.tableRules.onlyAllowedValuesInAllRows("VISIT_OPWDD_FLAG", "TRUE,FALSE")}
+      ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
+      ${tr.intValueInAllRows("PAT_MRN_ID")}      
+      ${tr.mandatoryValueInAllRows("FIRST_NAME")}
+      ${tr.onlyAllowAlphabetsInAllRows("FIRST_NAME")}
+      ${tr.mandatoryValueInAllRows("LAST_NAME")}
+      ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")}
+      ${tr.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
+      ${tr.onlyAllowValidBirthDateInAllRows("PAT_BIRTH_DATE")}
+      ${tr.mandatoryValueInAllRows("MEDICAID_CIN")}
+      ${tr.intValueInAllRows("MEDICAID_CIN")} 
+      ${tr.mandatoryValueInAllRows("ENCOUNTER_ID")}
+      ${tr.mandatoryValueInAllRows("RECORDED_TIME")} 
+      ${tr.onlyAllowValidDateTimeInAllRows("RECORDED_TIME")}
+      ${tr.mandatoryValueInAllRows("QUESTION")}
+      ${tr.mandatoryValueInAllRows("MEAS_VALUE")} 
+      ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
+      ${tr.onlyAllowedValuesInAllRows("QUESTION_CODE", "'71802-3','96778-6'")}
+      ${tr.mandatoryValueInAllRows("ANSWER_CODE")}
+      ${tr.mandatoryValueInAllRows("ANSWER_CODE_SYSTEM_NAME")}      
+      ${tr.mandatoryValueInAllRows("SDOH_DOMAIN")}
+      ${tr.mandatoryValueInAllRows("NEED_INDICATED")}
+      ${tr.onlyAllowedValuesInAllRows("NEED_INDICATED", "'TRUE','FALSE'")}
+      ${tr.mandatoryValueInAllRows("VISIT_PART_2_FLAG")}
+      ${tr.onlyAllowedValuesInAllRows("VISIT_PART_2_FLAG", "'TRUE','FALSE'")}
+      ${tr.mandatoryValueInAllRows("VISIT_OMH_FLAG")}
+      ${tr.onlyAllowedValuesInAllRows("VISIT_OMH_FLAG", "'TRUE','FALSE'")}
+      ${tr.mandatoryValueInAllRows("VISIT_OPWDD_FLAG")}
+      ${tr.onlyAllowedValuesInAllRows("VISIT_OPWDD_FLAG", "'TRUE','FALSE'")}
 
       ${await session.entryStateDML( sessionEntryID, "ATTEMPT_CSV_ASSURANCE", "ASSURED_CSV", "ScreeningCsvFileIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;

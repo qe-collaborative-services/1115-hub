@@ -58,9 +58,11 @@ const workflow = await o.orchestrate<
 
 if (workflow?.duckdb.stdErrsEncountered) {
   // deno-fmt-ignore
-  console.error(`❌ ${c.brightRed("DuckDB orchestration errors encountered (ingestion state is indeterminate).")}`);
+  console.error(`❌ ${c.brightRed("DuckDB orchestration SQL syntax/parsing errors encountered (ingestion state is indeterminate).")}`);
 } else {
-  console.info("✅ No DuckDB orchestration errors encountered.");
+  console.info(
+    "✅ No DuckDB orchestration SQL syntax or SQL parsing errors encountered.",
+  );
 }
 
 if (args.diagsMd) {

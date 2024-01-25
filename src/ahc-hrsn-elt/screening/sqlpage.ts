@@ -376,6 +376,7 @@ export class SQLPageNotebook {
       `;
   }
 
+  // TODO: do not hard-code ahc_hrsn_2023_12_12_valid since the table name is driven by the file name
   "1115-waiver-screenings.sql"() {
     const {
       comps: { text, table },
@@ -393,7 +394,7 @@ export class SQLPageNotebook {
           {
             SQL: () => `
               SELECT format('[%s](?pat_mrn_id=%s)', pat_mrn_id, pat_mrn_id) as pat_mrn_id, facility, first_name, last_name
-                FROM ahc_hrsn_12_12_2023_valid
+                FROM ahc_hrsn_2023_12_12_valid
             GROUP BY pat_mrn_id, facility, first_name, last_name
             ORDER BY facility, last_name, first_name`,
           },
@@ -404,7 +405,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s %s Answers', first_name, last_name) from ahc_hrsn_12_12_2023_valid where pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s %s Answers', first_name, last_name) from ahc_hrsn_2023_12_12_valid where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -414,7 +415,7 @@ export class SQLPageNotebook {
           {
             SQL: () => `
             SELECT question, meas_value 
-              FROM "ahc_hrsn_12_12_2023_valid"
+              FROM "ahc_hrsn_2023_12_12_valid"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
         ],
@@ -424,7 +425,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s %s FHIR Observations', first_name, last_name) from ahc_hrsn_12_12_2023_valid where pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s %s FHIR Observations', first_name, last_name) from ahc_hrsn_2023_12_12_valid where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -434,7 +435,7 @@ export class SQLPageNotebook {
           {
             SQL: () => `
             SELECT * 
-              FROM "ahc_hrsn_12_12_2023_valid_fhir"
+              FROM "ahc_hrsn_2023_12_12_valid_fhir"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
         ],
