@@ -4,6 +4,47 @@ import * as sg from "./governance.ts";
 // @deno-types="https://cdn.sheetjs.com/xlsx-0.20.1/package/types/index.d.ts"
 import * as xlsx from "https://cdn.sheetjs.com/xlsx-0.20.1/package/xlsx.mjs";
 
+const screeningColumnNames = [
+  "ANSWER_CODE_SYSTEM_NAME",
+  "ANSWER_CODE",
+  "ASSISTANCE_REQUESTED",
+  "ENCOUNTER_ID",
+  "FACILITY",
+  "FIRST_NAME",
+  "LAST_NAME",
+  "MEAS_VALUE",
+  "MEDICAID_CIN",
+  "NEED_INDICATED",
+  "PARENT_QUESTION_CODE",
+  "PARENT_QUESTION_CODE",
+  "PAT_BIRTH_DATE",
+  "PAT_MRN_ID",
+  "POTENTIAL_NEED_INDICATED",
+  "POTENTIAL_NEED_INDICATED",
+  "QUESTION_CODE_SYSTEM_NAME",
+  "QUESTION_CODE",
+  "QUESTION",
+  "RECORDED_TIME",
+  "SCREENING_CODE_SYSTEM_NAME",
+  "SCREENING_CODE",
+  "SCREENING_METHOD",
+  "SCREENING_NAME",
+  "SDOH_DOMAIN",
+  "SURVEY_ID",
+  "SURVEY",
+  "VISIT_OMH_FLAG",
+  "VISIT_OPWDD_FLAG",
+  "VISIT_PART_2_FLAG",
+] as const;
+type ScreeningColumnName = typeof screeningColumnNames[number];
+
+class ScreeningStructureRules<TableName extends string>
+  extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ScreeningColumnName> {
+  requiredColumnNames() {
+    return this.tableRules.requiredColumnNames([...screeningColumnNames]);
+  }
+}
+
 export const excelWorkbookSheetNames = [
   "Admin_Demographic",
   "Screening",
@@ -50,11 +91,14 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
           ${await issac.issueInsertDML(`Excel workbook '${path.basename(this.uri)}' sheet '${this.sheetName}' has not been implemented yet.`, "TODO")}`,
 
       assuranceSQL: () =>
-        this.govn.SQL`-- Sheet '${this.sheetName}' ingestion not implemented.`,
+        this.govn.SQL`
+          -- Sheet '${this.sheetName}' ingestion not implemented.
+        `,
 
       exportResourceSQL: (targetSchema: string) =>
         this.govn.SQL`
-          --  Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})`,
+          --  Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})
+        `,
     };
   }
 }
@@ -94,6 +138,12 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     >["workflow"]
   > {
     const sessionDML = await session.orchSessionSqlDML();
+    const ssr = new ScreeningStructureRules(
+      this.tableName,
+      sessionDML.sessionID,
+      sessionEntryID,
+      this.govn,
+    );
     const sar = new sg.ScreeningAssuranceRules(
       this.tableName,
       sessionDML.sessionID,
@@ -102,7 +152,8 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     );
 
     return {
-      ingestSQL: async (issac) => await this.ingestSQL(session, issac, sar),
+      ingestSQL: async (issac) =>
+        await this.ingestSQL(session, issac, ssr, sar),
       assuranceSQL: async () => await this.assuranceSQL(session, sar),
       exportResourceSQL: async (targetSchema) =>
         await this.exportResourceSQL(session, sar.sessionEntryID, targetSchema),
@@ -115,7 +166,8 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
       ddbo.DuckDbOrchEmitContext
     >,
     issac: o.IngestSourceStructAssuranceContext<ddbo.DuckDbOrchEmitContext>,
-    sar: sg.ScreeningAssuranceRules<string>,
+    ssr: ScreeningStructureRules<TableName>,
+    sar: sg.ScreeningAssuranceRules<TableName, ScreeningColumnName>,
   ) {
     const { sheetName, tableName, uri } = this;
     const { sessionID, sessionEntryID } = sar;
@@ -137,7 +189,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
           FROM st_read('${uri}', layer='${sheetName}', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
       
-      ${sar.requiredColumnNames()}
+      ${ssr.requiredColumnNames()}
       ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_INGEST", "INGESTED_EXCEL_WORKBOOK_SHEET", "ScreeningExcelSheetIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
       `
   }
@@ -147,7 +199,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
       ddbo.DuckDbOrchGovernance,
       ddbo.DuckDbOrchEmitContext
     >,
-    sar: sg.ScreeningAssuranceRules<TableName>,
+    sar: sg.ScreeningAssuranceRules<TableName, ScreeningColumnName>,
   ) {
     const { sessionEntryID } = sar;
 
@@ -155,8 +207,30 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     return this.govn.SQL`
       ${await session.entryStateDML(sessionEntryID, "INGESTED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ScreeningExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
 
-      -- Sheet '${this.sheetName}' has no assurance SQL in Excel workbook '${path.basename(this.uri)}'
-
+      ${sar.tableRules.mandatoryValueInAllRows("PAT_MRN_ID")}
+      ${sar.tableRules.intValueInAllRows("PAT_MRN_ID")}
+      ${sar.tableRules.mandatoryValueInAllRows("SCREENING_NAME")}
+      ${sar.tableRules.mandatoryValueInAllRows("SCREENING_CODE_SYSTEM_NAME")}
+      ${sar.tableRules.mandatoryValueInAllRows("SCREENING_CODE")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("SCREENING_METHOD", "In-Person,Phone,Website")}
+      ${sar.tableRules.mandatoryValueInAllRows("RECORDED_TIME")} 
+      ${sar.onlyAllowValidTimeInAllRows("RECORDED_TIME")}
+      ${sar.tableRules.mandatoryValueInAllRows("QUESTION")}
+      ${sar.tableRules.mandatoryValueInAllRows("MEAS_VALUE")}            
+      ${sar.tableRules.mandatoryValueInAllRows("QUESTION_CODE")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("QUESTION_CODE", "71802-3,96778-6")}
+      ${sar.tableRules.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("QUESTION_CODE_SYSTEM_NAME", "LN,LOIN")}
+      ${sar.tableRules.mandatoryValueInAllRows("ANSWER_CODE")}
+      ${sar.tableRules.mandatoryValueInAllRows("ANSWER_CODE_SYSTEM_NAME")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("ANSWER_CODE_SYSTEM_NAME", "LN,LOIN")}
+      ${sar.tableRules.mandatoryValueInAllRows("PARENT_QUESTION_CODE")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("PARENT_QUESTION_CODE", "88122-7,88123-5")}
+      ${sar.tableRules.mandatoryValueInAllRows("SDOH_DOMAIN")}
+      ${sar.tableRules.mandatoryValueInAllRows("POTENTIAL_NEED_INDICATED")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("POTENTIAL_NEED_INDICATED", "TRUE,FALSE")}
+      ${sar.tableRules.onlyAllowedValuesInAllRows("ASSISTANCE_REQUESTED", "YES,NO")}
+          
       ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ASSURED_EXCEL_WORKBOOK_SHEET", "ScreeningExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
   }
