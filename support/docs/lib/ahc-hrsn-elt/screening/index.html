@@ -7,238 +7,151 @@
   <meta name="doc-current-file" content="">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="page.css">
+
+  <script src="search_index.js" defer></script>
+  <script src="fuse.js" defer></script>
+  <script src="search.js" defer></script>
 </head>
-<body>
+<body class="ddoc">
+<nav id="sidepanel"><input type="checkbox" id="sidepanelToggle" class="hidden peer" autocomplete="off">
 
-
-<nav id="sidepanel">
-    
-      <h2><a href=""><span>AHC HRSN Screening</span></a></h2>
-    
-
-    <a href="./all_symbols.html">All symbols</a>
-
-    
-
-    
-      <h3>APIs</h3>
-      <ul>
-        
-        <li>
-          <h4>Class</h4>
-          <ul>
-            
-            <li>
-              <a href=".//~/ExcelSheetTodoIngestSource.html">
-                <div class="symbol_kind kind_Class_text kind_Class_bg" title="Class">
-  c
+<div class="max-lg:flex max-lg:justify-between"><h2 class="text-lg font-semibold flex gap-2 items-center">
+      <a href="index.html" class="flex-grow"><span>AHC HRSN Screening</span></a>
+    </h2><label for="sidepanelToggle" class="lg:hidden"><svg
+  width="21"
+  height="14"
+  viewBox="0 0 21 14"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <line
+    x1="0.25"
+    y1="1.4"
+    x2="20.25"
+    y2="1.4"
+    stroke="currentColor"
+    stroke-width="1.2"
+  />
+  <line
+    x1="0.25"
+    y1="7.4"
+    x2="20.25"
+    y2="7.4"
+    stroke="currentColor"
+    stroke-width="1.2"
+  />
+  <line
+    x1="0.25"
+    y1="13.4"
+    x2="10.25"
+    y2="13.4"
+    stroke="currentColor"
+    stroke-width="1.2"
+  />
+</svg>
+</label>
 </div>
-
-                <span>ExcelSheetTodoIngestSource</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/OrchEngine.html">
-                <div class="symbol_kind kind_Class_text kind_Class_bg" title="Class">
-  c
-</div>
-
-                <span>OrchEngine</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/SQLPageNotebook.html">
-                <div class="symbol_kind kind_Class_text kind_Class_bg" title="Class">
-  c
-</div>
-
-                <span>SQLPageNotebook</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/ScreeningAssuranceRules.html">
-                <div class="symbol_kind kind_Class_text kind_Class_bg" title="Class">
-  c
-</div>
-
-                <span>ScreeningAssuranceRules</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/ScreeningCsvFileIngestSource.html">
-                <div class="symbol_kind kind_Class_text kind_Class_bg" title="Class">
-  c
-</div>
-
-                <span>ScreeningCsvFileIngestSource</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/ScreeningExcelSheetIngestSource.html">
-                <div class="symbol_kind kind_Class_text kind_Class_bg" title="Class">
-  c
-</div>
-
-                <span>ScreeningExcelSheetIngestSource</span>
-              </a>
-            </li>
-            
-          </ul>
-        </li>
-        
-        <li>
-          <h4>Function</h4>
-          <ul>
-            
-            <li>
-              <a href=".//~/fsPatternIngestSourcesSupplier.html">
-                <div class="symbol_kind kind_Function_text kind_Function_bg" title="Function">
-  f
-</div>
-
-                <span>fsPatternIngestSourcesSupplier</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/ingestCsvFilesSourcesSupplier.html">
-                <div class="symbol_kind kind_Function_text kind_Function_bg" title="Function">
-  f
-</div>
-
-                <span>ingestCsvFilesSourcesSupplier</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/ingestExcelSourcesSupplier.html">
-                <div class="symbol_kind kind_Function_text kind_Function_bg" title="Function">
-  f
-</div>
-
-                <span>ingestExcelSourcesSupplier</span>
-              </a>
-            </li>
-            
-          </ul>
-        </li>
-        
-        <li>
-          <h4>Interface</h4>
-          <ul>
-            
-            <li>
-              <a href=".//~/OrchEngineArgs.html">
-                <div class="symbol_kind kind_Interface_text kind_Interface_bg" title="Interface">
-  I
-</div>
-
-                <span>OrchEngineArgs</span>
-              </a>
-            </li>
-            
-          </ul>
-        </li>
-        
-        <li>
-          <h4>Type Alias</h4>
-          <ul>
-            
-            <li>
-              <a href=".//~/ExcelWorkbookSheetName.html">
-                <div class="symbol_kind kind_TypeAlias_text kind_TypeAlias_bg" title="Type Alias">
-  T
-</div>
-
-                <span>ExcelWorkbookSheetName</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/OrchStep.html">
-                <div class="symbol_kind kind_TypeAlias_text kind_TypeAlias_bg" title="Type Alias">
-  T
-</div>
-
-                <span>OrchStep</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/OrchStepContext.html">
-                <div class="symbol_kind kind_TypeAlias_text kind_TypeAlias_bg" title="Type Alias">
-  T
-</div>
-
-                <span>OrchStepContext</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/PotentialIngestSource.html">
-                <div class="symbol_kind kind_TypeAlias_text kind_TypeAlias_bg" title="Type Alias">
-  T
-</div>
-
-                <span>PotentialIngestSource</span>
-              </a>
-            </li>
-            
-          </ul>
-        </li>
-        
-        <li>
-          <h4>Variable</h4>
-          <ul>
-            
-            <li>
-              <a href=".//~/excelWorkbookSheetNames.html">
-                <div class="symbol_kind kind_Variable_text kind_Variable_bg" title="Variable">
-  v
-</div>
-
-                <span>excelWorkbookSheetNames</span>
-              </a>
-            </li>
-            
-            <li>
-              <a href=".//~/oeDescr.html">
-                <div class="symbol_kind kind_Variable_text kind_Variable_bg" title="Variable">
-  v
-</div>
-
-                <span>oeDescr</span>
-              </a>
-            </li>
-            
-          </ul>
-        </li>
-        
-      </ul>
-    
+<div class="max-lg:hidden peer-checked:block">
+    <a class="mt-1" href="./all_symbols.html">All symbols</a><h3 class="title">APIs</h3>
+      <ul class="space-y-2"><li>
+            <h4 class="subtitle">Class</h4>
+            <ul><li>
+                  <a href="././~/AdminDemographicAssuranceRules.html" title="AdminDemographicAssuranceRules" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >AdminDemographicAssuranceRules</span>
+                  </a>
+                </li><li>
+                  <a href="././~/AdminDemographicExcelSheetIngestSource.html" title="AdminDemographicExcelSheetIngestSource" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >AdminDemographicExcelSheetIngestSource</span>
+                  </a>
+                </li><li>
+                  <a href="././~/CommonAssuranceRules.html" title="CommonAssuranceRules" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >CommonAssuranceRules</span>
+                  </a>
+                </li><li>
+                  <a href="././~/ExcelSheetTodoIngestSource.html" title="ExcelSheetTodoIngestSource" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >ExcelSheetTodoIngestSource</span>
+                  </a>
+                </li><li>
+                  <a href="././~/OrchEngine.html" title="OrchEngine" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >OrchEngine</span>
+                  </a>
+                </li><li>
+                  <a href="././~/SQLPageNotebook.html" title="SQLPageNotebook" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >SQLPageNotebook</span>
+                  </a>
+                </li><li>
+                  <a href="././~/ScreeningAssuranceRules.html" title="ScreeningAssuranceRules" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >ScreeningAssuranceRules</span>
+                  </a>
+                </li><li>
+                  <a href="././~/ScreeningCsvFileIngestSource.html" title="ScreeningCsvFileIngestSource" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >ScreeningCsvFileIngestSource</span>
+                  </a>
+                </li><li>
+                  <a href="././~/ScreeningCsvStructureRules.html" title="ScreeningCsvStructureRules" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >ScreeningCsvStructureRules</span>
+                  </a>
+                </li><li>
+                  <a href="././~/ScreeningExcelSheetIngestSource.html" title="ScreeningExcelSheetIngestSource" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Class bg-Class/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Class">c</div></div>
+<span >ScreeningExcelSheetIngestSource</span>
+                  </a>
+                </li></ul>
+          </li><li>
+            <h4 class="subtitle">Function</h4>
+            <ul><li>
+                  <a href="././~/fsPatternIngestSourcesSupplier.html" title="fsPatternIngestSourcesSupplier" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Function bg-Function/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Function">f</div></div>
+<span >fsPatternIngestSourcesSupplier</span>
+                  </a>
+                </li><li>
+                  <a href="././~/ingestCsvFilesSourcesSupplier.html" title="ingestCsvFilesSourcesSupplier" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Function bg-Function/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Function">f</div></div>
+<span >ingestCsvFilesSourcesSupplier</span>
+                  </a>
+                </li><li>
+                  <a href="././~/ingestExcelSourcesSupplier.html" title="ingestExcelSourcesSupplier" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Function bg-Function/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Function">f</div></div>
+<span >ingestExcelSourcesSupplier</span>
+                  </a>
+                </li></ul>
+          </li><li>
+            <h4 class="subtitle">Interface</h4>
+            <ul><li>
+                  <a href="././~/OrchEngineArgs.html" title="OrchEngineArgs" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Interface bg-Interface/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Interface">I</div></div>
+<span >OrchEngineArgs</span>
+                  </a>
+                </li></ul>
+          </li><li>
+            <h4 class="subtitle">Type Alias</h4>
+            <ul><li>
+                  <a href="././~/ExcelWorkbookSheetName.html" title="ExcelWorkbookSheetName" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-TypeAlias bg-TypeAlias/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Type Alias">T</div></div>
+<span >ExcelWorkbookSheetName</span>
+                  </a>
+                </li><li>
+                  <a href="././~/OrchStep.html" title="OrchStep" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-TypeAlias bg-TypeAlias/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Type Alias">T</div></div>
+<span >OrchStep</span>
+                  </a>
+                </li><li>
+                  <a href="././~/OrchStepContext.html" title="OrchStepContext" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-TypeAlias bg-TypeAlias/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Type Alias">T</div></div>
+<span >OrchStepContext</span>
+                  </a>
+                </li><li>
+                  <a href="././~/PotentialIngestSource.html" title="PotentialIngestSource" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-TypeAlias bg-TypeAlias/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Type Alias">T</div></div>
+<span >PotentialIngestSource</span>
+                  </a>
+                </li></ul>
+          </li><li>
+            <h4 class="subtitle">Variable</h4>
+            <ul><li>
+                  <a href="././~/excelWorkbookSheetNames.html" title="excelWorkbookSheetNames" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Variable bg-Variable/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Variable">v</div></div>
+<span >excelWorkbookSheetNames</span>
+                  </a>
+                </li><li>
+                  <a href="././~/oeDescr.html" title="oeDescr" ><div class="flex justify-end compound_types w-[2.125rem] shrink-0"><div class="text-Variable bg-Variable/15 rounded-full size-5 font-medium text-xs leading-5 text-center align-middle shrink-0 select-none font-mono" title="Variable">v</div></div>
+<span >oeDescr</span>
+                  </a>
+                </li></ul>
+          </li></ul></div>
 </nav>
-
-
-<div id="content" class="with_sidepanel">
-  <h2>Index</h2>
-
-  <input type="text" id="searchbar" style="display: none;" />
-
-  <main>
-
-    
-  </main>
-
-  <div id="searchResults"></div>
-<div>
-
+<div id="content"><div class="mb-6 whitespace-nowrap leading-none"><span class="italic">index</span></div>
+<input type="text" id="searchbar" style="display: none;" class="w-full p-2 box-border rounded-xl text-base mb-6 bg-stone-100" />
+<main></main><div id="searchResults"></div><div>
 </body>
-<script src="search_index.js" defer></script>
-<script src="fuse.js" defer></script>
-<script src="search.js" defer></script>
 </html>
