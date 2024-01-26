@@ -20,12 +20,18 @@ import {
   ingestExcelSourcesSupplier,
   ScreeningExcelSheetIngestSource,
 } from "./excel.ts";
+import { AdminDemographicExcelSheetIngestSource } from "./excel.ts";
 
 export type PotentialIngestSource =
-  | ScreeningCsvFileIngestSource<string>
-  | ScreeningExcelSheetIngestSource<string>
-  | ExcelSheetTodoIngestSource<string>
-  | o.ErrorIngestSource<ddbo.DuckDbOrchGovernance, ddbo.DuckDbOrchEmitContext>;
+  | ScreeningCsvFileIngestSource<string, o.State>
+  | ScreeningExcelSheetIngestSource<string, o.State>
+  | AdminDemographicExcelSheetIngestSource<string, o.State>
+  | ExcelSheetTodoIngestSource<string, o.State>
+  | o.ErrorIngestSource<
+    ddbo.DuckDbOrchGovernance,
+    o.State,
+    ddbo.DuckDbOrchEmitContext
+  >;
 
 export function fsPatternIngestSourcesSupplier(
   govn: ddbo.DuckDbOrchGovernance,
@@ -231,6 +237,7 @@ export class OrchEngine {
       const sessionEntryID = await govn.emitCtx.newUUID(govn.deterministicPKs);
       const workflow = await ps.workflow(session, sessionEntryID);
       const checkStruct = await workflow.ingestSQL({
+        initState: () => "ENTER(ingest)",
         sessionEntryInsertDML: () => {
           return govn.orchSessionEntryCRF.insertDML({
             orch_session_entry_id: sessionEntryID,

@@ -90,14 +90,20 @@ export const excelWorkbookSheetNames = [
 ] as const;
 export type ExcelWorkbookSheetName = typeof excelWorkbookSheetNames[number];
 
-export class ExcelSheetTodoIngestSource<SheetName extends string>
-  implements
-    o.ExcelSheetIngestSource<
-      SheetName,
-      string,
-      ddbo.DuckDbOrchGovernance,
-      ddbo.DuckDbOrchEmitContext
-    > {
+const TODO_SHEET_TERMINAL_STATE = "EXIT(ExcelSheetTodoIngestSource)" as const;
+
+export class ExcelSheetTodoIngestSource<
+  SheetName extends string,
+  InitState extends o.State,
+> implements
+  o.ExcelSheetIngestSource<
+    SheetName,
+    string,
+    ddbo.DuckDbOrchGovernance,
+    InitState,
+    typeof TODO_SHEET_TERMINAL_STATE,
+    ddbo.DuckDbOrchEmitContext
+  > {
   readonly nature = "Excel Workbook Sheet";
   readonly tableName: string;
   constructor(
@@ -116,6 +122,8 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
       string,
       string,
       ddbo.DuckDbOrchGovernance,
+      InitState,
+      typeof TODO_SHEET_TERMINAL_STATE,
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
@@ -137,18 +145,27 @@ export class ExcelSheetTodoIngestSource<SheetName extends string>
         this.govn.SQL`
           --  Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})
         `,
+
+      terminalState: () => TODO_SHEET_TERMINAL_STATE,
     };
   }
 }
 
-export class ScreeningExcelSheetIngestSource<TableName extends string>
-  implements
-    o.ExcelSheetIngestSource<
-      "Screening",
-      TableName,
-      ddbo.DuckDbOrchGovernance,
-      ddbo.DuckDbOrchEmitContext
-    > {
+const SCREENING_SHEET_TERMINAL_STATE =
+  "EXIT(ScreeningExcelSheetIngestSource)" as const;
+
+export class ScreeningExcelSheetIngestSource<
+  TableName extends string,
+  InitState extends o.State,
+> implements
+  o.ExcelSheetIngestSource<
+    "Screening",
+    TableName,
+    ddbo.DuckDbOrchGovernance,
+    InitState,
+    typeof SCREENING_SHEET_TERMINAL_STATE,
+    ddbo.DuckDbOrchEmitContext
+  > {
   readonly nature = "Excel Workbook Sheet";
   readonly sheetName = "Screening";
   readonly tableName: TableName;
@@ -172,6 +189,8 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
       "Screening",
       TableName,
       ddbo.DuckDbOrchGovernance,
+      InitState,
+      typeof SCREENING_SHEET_TERMINAL_STATE,
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
@@ -195,6 +214,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
       assuranceSQL: async () => await this.assuranceSQL(session, sar),
       exportResourceSQL: async (targetSchema) =>
         await this.exportResourceSQL(session, sar.sessionEntryID, targetSchema),
+      terminalState: () => SCREENING_SHEET_TERMINAL_STATE,
     };
   }
 
@@ -203,7 +223,10 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
       ddbo.DuckDbOrchGovernance,
       ddbo.DuckDbOrchEmitContext
     >,
-    issac: o.IngestSourceStructAssuranceContext<ddbo.DuckDbOrchEmitContext>,
+    issac: o.IngestSourceStructAssuranceContext<
+      InitState,
+      ddbo.DuckDbOrchEmitContext
+    >,
     ssr: ScreeningStructureRules<TableName>,
     sar: sg.ScreeningAssuranceRules<TableName, ScreeningColumnName>,
   ) {
@@ -216,7 +239,7 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
       ${await issac.sessionEntryInsertDML()}
      
       -- state management diagnostics 
-      ${await session.entryStateDML(sessionEntryID, "NONE", "ATTEMPT_EXCEL_INGEST", "ScreeningExcelSheetIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+      ${await session.entryStateDML(sessionEntryID, issac.initState(), "ATTEMPT_EXCEL_INGEST", "ScreeningExcelSheetIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
 
       -- ingest Excel workbook sheet '${sheetName}' into ${tableName} using spatial plugin
       INSTALL spatial; LOAD spatial;
@@ -287,19 +310,26 @@ export class ScreeningExcelSheetIngestSource<TableName extends string>
     return govn.SQL`
       ${await session.entryStateDML(sessionEntryID, "ASSURED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", "ScreeningExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
       -- Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})
-      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", "EXPORTED_EXCEL_WORKBOOK_SHEET", "ScreeningExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", SCREENING_SHEET_TERMINAL_STATE, "ScreeningExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
   }
 }
 
-export class AdminDemographicExcelSheetIngestSource<TableName extends string>
-  implements
-    o.ExcelSheetIngestSource<
-      "Admin_Demographic",
-      TableName,
-      ddbo.DuckDbOrchGovernance,
-      ddbo.DuckDbOrchEmitContext
-    > {
+const ADMIN_DEMO_SHEET_TERMINAL_STATE =
+  "EXIT(AdminDemographicExcelSheetIngestSource)" as const;
+
+export class AdminDemographicExcelSheetIngestSource<
+  TableName extends string,
+  InitState extends o.State,
+> implements
+  o.ExcelSheetIngestSource<
+    "Admin_Demographic",
+    TableName,
+    ddbo.DuckDbOrchGovernance,
+    InitState,
+    typeof ADMIN_DEMO_SHEET_TERMINAL_STATE,
+    ddbo.DuckDbOrchEmitContext
+  > {
   readonly nature = "Excel Workbook Sheet";
   readonly sheetName = "Admin_Demographic";
   readonly tableName: TableName;
@@ -323,6 +353,8 @@ export class AdminDemographicExcelSheetIngestSource<TableName extends string>
       "Admin_Demographic",
       TableName,
       ddbo.DuckDbOrchGovernance,
+      InitState,
+      typeof ADMIN_DEMO_SHEET_TERMINAL_STATE,
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
@@ -346,6 +378,7 @@ export class AdminDemographicExcelSheetIngestSource<TableName extends string>
       assuranceSQL: async () => await this.assuranceSQL(session, sar),
       exportResourceSQL: async (targetSchema) =>
         await this.exportResourceSQL(session, sar.sessionEntryID, targetSchema),
+      terminalState: () => ADMIN_DEMO_SHEET_TERMINAL_STATE,
     };
   }
 
@@ -354,7 +387,10 @@ export class AdminDemographicExcelSheetIngestSource<TableName extends string>
       ddbo.DuckDbOrchGovernance,
       ddbo.DuckDbOrchEmitContext
     >,
-    issac: o.IngestSourceStructAssuranceContext<ddbo.DuckDbOrchEmitContext>,
+    issac: o.IngestSourceStructAssuranceContext<
+      InitState,
+      ddbo.DuckDbOrchEmitContext
+    >,
     ssr: AdminDemographicStructureRules<TableName>,
     sar: sg.AdminDemographicAssuranceRules<
       TableName,
@@ -370,7 +406,7 @@ export class AdminDemographicExcelSheetIngestSource<TableName extends string>
       ${await issac.sessionEntryInsertDML()}
      
       -- state management diagnostics 
-      ${await session.entryStateDML(sessionEntryID, "NONE", "ATTEMPT_EXCEL_INGEST", "AdminDemographicExcelSheetIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+      ${await session.entryStateDML(sessionEntryID, issac.initState(), "ATTEMPT_EXCEL_INGEST", "AdminDemographicExcelSheetIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
 
       -- ingest Excel workbook sheet '${sheetName}' into ${tableName} using spatial plugin
       INSTALL spatial; LOAD spatial;
@@ -424,7 +460,7 @@ export class AdminDemographicExcelSheetIngestSource<TableName extends string>
     return govn.SQL`
       ${await session.entryStateDML(sessionEntryID, "ASSURED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", "AdminDemographicExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
       -- Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})
-      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", "EXPORTED_EXCEL_WORKBOOK_SHEET", "AdminDemographicExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", ADMIN_DEMO_SHEET_TERMINAL_STATE, "AdminDemographicExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
   }
 }
@@ -432,10 +468,14 @@ export class AdminDemographicExcelSheetIngestSource<TableName extends string>
 export function ingestExcelSourcesSupplier(
   govn: ddbo.DuckDbOrchGovernance,
 ): o.IngestFsPatternSourcesSupplier<
-  | ScreeningExcelSheetIngestSource<string>
-  | AdminDemographicExcelSheetIngestSource<string>
-  | ExcelSheetTodoIngestSource<string>
-  | o.ErrorIngestSource<ddbo.DuckDbOrchGovernance, ddbo.DuckDbOrchEmitContext>
+  | ScreeningExcelSheetIngestSource<string, o.State>
+  | AdminDemographicExcelSheetIngestSource<string, o.State>
+  | ExcelSheetTodoIngestSource<string, o.State>
+  | o.ErrorIngestSource<
+    ddbo.DuckDbOrchGovernance,
+    o.State,
+    ddbo.DuckDbOrchEmitContext
+  >
 > {
   return {
     pattern: path.globToRegExp("**/*.xlsx", {
@@ -445,11 +485,12 @@ export function ingestExcelSourcesSupplier(
     sources: (entry: fs.WalkEntry) => {
       const uri = entry.path;
       const sources: (
-        | ScreeningExcelSheetIngestSource<string>
-        | AdminDemographicExcelSheetIngestSource<string>
-        | ExcelSheetTodoIngestSource<string>
+        | ScreeningExcelSheetIngestSource<string, o.State>
+        | AdminDemographicExcelSheetIngestSource<string, o.State>
+        | ExcelSheetTodoIngestSource<string, o.State>
         | o.ErrorIngestSource<
           ddbo.DuckDbOrchGovernance,
+          o.State,
           ddbo.DuckDbOrchEmitContext
         >
       )[] = [];
@@ -457,9 +498,9 @@ export function ingestExcelSourcesSupplier(
       const sheetsExpected: Record<
         ExcelWorkbookSheetName,
         () =>
-          | ExcelSheetTodoIngestSource<string>
-          | ScreeningExcelSheetIngestSource<string>
-          | AdminDemographicExcelSheetIngestSource<string>
+          | ExcelSheetTodoIngestSource<string, o.State>
+          | ScreeningExcelSheetIngestSource<string, o.State>
+          | AdminDemographicExcelSheetIngestSource<string, o.State>
       > = {
         "Admin_Demographic": () =>
           new AdminDemographicExcelSheetIngestSource(uri, govn),
@@ -482,10 +523,7 @@ export function ingestExcelSourcesSupplier(
             sheetsFound++;
           } else {
             sources.push(
-              new o.ErrorIngestSource<
-                ddbo.DuckDbOrchGovernance,
-                ddbo.DuckDbOrchEmitContext
-              >(
+              new o.ErrorIngestSource(
                 uri,
                 sheetNotFound(expectedSN),
                 "Sheet Missing",
@@ -501,12 +539,7 @@ export function ingestExcelSourcesSupplier(
           }
         }
       } catch (err) {
-        sources.push(
-          new o.ErrorIngestSource<
-            ddbo.DuckDbOrchGovernance,
-            ddbo.DuckDbOrchEmitContext
-          >(entry.path, err, "ERROR", govn),
-        );
+        sources.push(new o.ErrorIngestSource(entry.path, err, "ERROR", govn));
       }
       return sources;
     },

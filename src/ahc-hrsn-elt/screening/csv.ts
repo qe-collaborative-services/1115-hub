@@ -36,13 +36,19 @@ export class ScreeningCsvStructureRules<TableName extends string>
   }
 }
 
-export class ScreeningCsvFileIngestSource<TableName extends string>
-  implements
-    o.CsvFileIngestSource<
-      TableName,
-      ddbo.DuckDbOrchGovernance,
-      ddbo.DuckDbOrchEmitContext
-    > {
+const TERMINAL_STATE = "EXIT(ScreeningCsvFileIngestSource)" as const;
+
+export class ScreeningCsvFileIngestSource<
+  TableName extends string,
+  InitState extends o.State,
+> implements
+  o.CsvFileIngestSource<
+    TableName,
+    ddbo.DuckDbOrchGovernance,
+    InitState,
+    typeof TERMINAL_STATE,
+    ddbo.DuckDbOrchEmitContext
+  > {
   readonly nature = "CSV";
   constructor(
     readonly uri: string,
@@ -60,6 +66,8 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
     o.CsvFileIngestSource<
       TableName,
       ddbo.DuckDbOrchGovernance,
+      InitState,
+      typeof TERMINAL_STATE,
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
@@ -83,6 +91,7 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
       assuranceSQL: async () => await this.assuranceSQL(session, sar),
       exportResourceSQL: async (targetSchema) =>
         await this.exportResourceSQL(session, sar.sessionEntryID, targetSchema),
+      terminalState: () => TERMINAL_STATE,
     };
   }
 
@@ -91,7 +100,10 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
       ddbo.DuckDbOrchGovernance,
       ddbo.DuckDbOrchEmitContext
     >,
-    issac: o.IngestSourceStructAssuranceContext<ddbo.DuckDbOrchEmitContext>,
+    issac: o.IngestSourceStructAssuranceContext<
+      InitState,
+      ddbo.DuckDbOrchEmitContext
+    >,
     ssr: ScreeningCsvStructureRules<TableName>,
     sar: sg.ScreeningAssuranceRules<TableName, ScreeningCsvColumnName>,
   ) {
@@ -104,7 +116,7 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
       ${await issac.sessionEntryInsertDML()}
 
       -- state management diagnostics 
-      ${await session.entryStateDML(sessionEntryID, "NONE", "ATTEMPT_CSV_INGEST", "ScreeningCsvFileIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+      ${await session.entryStateDML(sessionEntryID, issac.initState(), "ATTEMPT_CSV_INGEST", "ScreeningCsvFileIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
 
       -- be sure to add src_file_row_number and session_id columns to each row
       -- because assurance CTEs require them
@@ -180,10 +192,12 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
 
     // deno-fmt-ignore
     return SQL`
-      ${await session.entryStateDML( sessionEntryID, "ASSURED_CSV", "ATTEMPT_CSV_EXPORT", "ScreeningCsvFileIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+      ${await session.entryStateDML( sessionEntryID, "ASSURED_CSV", "EXIT(ScreeningCsvFileIngestSource)", "ScreeningCsvFileIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
 
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
 
+      -- try sqltofhir Visual Studio Code extension for writing FHIR resources with SQL.
+      -- see https://marketplace.visualstudio.com/items?itemName=arkhn.sqltofhir-vscode
       CREATE VIEW ${targetSchema}.${tableName}_fhir AS 
         SELECT pat_mrn_id, json_object(
               'resourceType', 'Observation',
@@ -214,14 +228,16 @@ export class ScreeningCsvFileIngestSource<TableName extends string>
           ) AS FHIR_Observation
         FROM ${tableName};
         
-        ${await session.entryStateDML( sessionEntryID, "ATTEMPT_CSV_EXPORT", "CSV_EXPORTED", "ScreeningCsvFileIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+        ${await session.entryStateDML( sessionEntryID, "ATTEMPT_CSV_EXPORT", TERMINAL_STATE, "ScreeningCsvFileIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
         `;
   }
 }
 
 export function ingestCsvFilesSourcesSupplier(
   govn: ddbo.DuckDbOrchGovernance,
-): o.IngestFsPatternSourcesSupplier<ScreeningCsvFileIngestSource<string>> {
+): o.IngestFsPatternSourcesSupplier<
+  ScreeningCsvFileIngestSource<string, o.State>
+> {
   return {
     pattern: path.globToRegExp("**/*.csv", {
       extended: true,
