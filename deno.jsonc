@@ -1,6 +1,7 @@
 {
   "tasks": {
     "doctor": "deno run -A ./support/bin/doctor.ts",
+    "audit": "deno run ./src/compliance-audit.tap.ts",
     "ahc-hrsn-screening-test-e2e": "deno run -A ./src/ahc-hrsn-elt/screening/test-e2e.ts",
     "ahc-hrsn-screening-doc": "deno doc --html --name=\"AHC HRSN Screening\" --output=./support/docs/lib/ahc-hrsn-elt/screening/ ./src/ahc-hrsn-elt/screening/mod.ts",
     "prepare-release": "deno task ahc-hrsn-screening-doc",
