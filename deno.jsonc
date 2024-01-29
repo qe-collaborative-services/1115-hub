@@ -1,4 +1,8 @@
 {
+  "compilerOptions": {
+     // required for Deno 1.40+ until SQLa/lib/notebook is upgraded to support TC39 decorators
+    "experimentalDecorators": true
+  },
   "tasks": {
     "doctor": "deno run -A ./support/bin/doctor.ts",
     "audit": "deno run ./src/compliance-audit.tap.ts",
