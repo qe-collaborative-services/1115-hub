@@ -3082,6 +3082,9 @@
     "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.7/render/emit/sql.ts": "894c5437020139584e5b2b2b397fc93e414d3a66096ba5224b06ae5749f12ca3",
     "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.7/render/graph.ts": "d8de5eae4c60322156d43a0c587b5cb8fc8f8b608093cfd4f380902f4049dec1",
     "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.7/render/mod.ts": "a3389f40211e752d77c9877a7b55477dafdb831020c227bcb71a89a1ffb73e01",
-    "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.7/render/quality-system.ts": "7ec5b0c30eb799d18fa75627de93de490de96166652a298da0ccf648cf09a79f"
+    "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.7/render/quality-system.ts": "7ec5b0c30eb799d18fa75627de93de490de96166652a298da0ccf648cf09a79f",
+    "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.8/lib/tap/compliance.ts": "74639dd9642b45664173e12862cfc041cd74b20c1de1b7c2b28ea2412d2f7c55",
+    "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.8/lib/tap/mod.ts": "48ec60b10919a8b673b94b6d5c5a2e2f1932926cc5ecc93fbd9b071456098445",
+    "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.8/lib/tap/protocol.ts": "dba1c64aee36089fdf9c8113db57195f3f5d486d9f7adfaafa737b70c65e5eba"
   }
 }

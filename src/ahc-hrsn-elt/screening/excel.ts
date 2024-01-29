@@ -35,7 +35,7 @@ const adminDemographicColumnNames = [
   "ETHNICITY_CODE",
   "ETHNICITY_CODE_DESCRIPTION",
   "ETHNICITY_CODE_SYSTEM_NAME",
-  "FACILITY ID (Assigning authority)",
+  "FACILITY_ID",
   "FIRST_NAME",
   "GENDER_IDENTITY_CODE",
   "GENDER_IDENTITY_CODE_SYSTEM_NAME",
@@ -60,9 +60,26 @@ const adminDemographicColumnNames = [
   "ZIP",
 ] as const;
 
+const qeAdminDataColumnNames = [
+  "PAT_MRN_ID",
+  "FACILITY_ID",
+  "FACILITY_LONG_NAME",
+  "ORGANIZATION_TYPE",
+  "FACILITY_ADDRESS1",
+  "FACILITY_ADDRESS2",
+  "FACILITY_CITY",
+  "FACILITY STATE",
+  "FACILITY_ZIP",
+  "VISIT_PART_2_FLAG",
+  "VISIT_OMH_FLAG",
+  "VISIT_OPWDD_FLAG",
+] as const;
+
 type ScreeningColumnName = typeof screeningColumnNames[number];
 
 type AdminDemographicColumnName = typeof adminDemographicColumnNames[number];
+
+type QeAdminDataColumnName = typeof qeAdminDataColumnNames[number];
 
 class ScreeningStructureRules<TableName extends string>
   extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ScreeningColumnName> {
@@ -79,6 +96,18 @@ class AdminDemographicStructureRules<TableName extends string>
   requiredColumnNames() {
     return this.tableRules.requiredColumnNames([
       ...adminDemographicColumnNames,
+    ]);
+  }
+}
+
+class QeAdminDataStructureRules<TableName extends string>
+  extends ddbo.DuckDbOrchTableAssuranceRules<
+    TableName,
+    QeAdminDataColumnName
+  > {
+  requiredColumnNames() {
+    return this.tableRules.requiredColumnNames([
+      ...qeAdminDataColumnNames,
     ]);
   }
 }
@@ -304,12 +333,14 @@ export class ScreeningExcelSheetIngestSource<
     sessionEntryID: string,
     targetSchema: string,
   ) {
-    const { govn } = this;
+    const { govn, tableName } = this;
 
     // deno-fmt-ignore
     return govn.SQL`
       ${await session.entryStateDML(sessionEntryID, "ASSURED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", "ScreeningExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
-      -- Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})
+
+      CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
+
       ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", SCREENING_SHEET_TERMINAL_STATE, "ScreeningExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
   }
@@ -438,9 +469,23 @@ export class AdminDemographicExcelSheetIngestSource<
     return this.govn.SQL`
       ${await session.entryStateDML(sessionEntryID, "INGESTED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "AdminDemographicExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
 
+      ${tr.mandatoryValueInAllRows("FIRST_NAME")}
       ${tr.onlyAllowAlphabetsInAllRows("FIRST_NAME")}
       ${tr.onlyAllowAlphabetsInAllRows("MIDDLE_NAME")}
-      ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")}       
+      ${tr.mandatoryValueInAllRows("LAST_NAME")}
+      ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")} 
+      ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX")} 
+      ${tr.onlyAllowedValuesInAllRows("ADMINISTRATIVE_SEX", "'M','F','X'")}   
+      ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH", "'M','F','X'")} 
+      ${tr.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
+      ${tr.onlyAllowValidBirthDateInAllRows("PAT_BIRTH_DATE")}
+      ${tr.mandatoryValueInAllRows("CITY")}
+      ${tr.mandatoryValueInAllRows("STATE")}
+      ${tr.mandatoryValueInAllRows("ZIP")}
+      ${tr.intValueInAllRows("ZIP")}
+      ${tr.mandatoryValueInAllRows("MPI_ID")} 
+      ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
+      ${tr.mandatoryValueInAllRows("FACILITY_ID")}
           
       ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ASSURED_EXCEL_WORKBOOK_SHEET", "AdminDemographicExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
@@ -454,13 +499,173 @@ export class AdminDemographicExcelSheetIngestSource<
     sessionEntryID: string,
     targetSchema: string,
   ) {
-    const { govn } = this;
+    const { govn, tableName } = this;
 
     // deno-fmt-ignore
     return govn.SQL`
       ${await session.entryStateDML(sessionEntryID, "ASSURED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", "AdminDemographicExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
-      -- Sheet '${this.sheetName}' exportResourceSQL(${targetSchema})
+
+      CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
+
       ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", ADMIN_DEMO_SHEET_TERMINAL_STATE, "AdminDemographicExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+    `;
+  }
+}
+
+const QE_ADMIN_DATA_SHEET_TERMINAL_STATE =
+  "EXIT(QeAdminDataExcelSheetIngestSource)" as const;
+
+export class QeAdminDataExcelSheetIngestSource<
+  TableName extends string,
+  InitState extends o.State,
+> implements
+  o.ExcelSheetIngestSource<
+    "QE_Admin_Data",
+    TableName,
+    ddbo.DuckDbOrchGovernance,
+    InitState,
+    typeof QE_ADMIN_DATA_SHEET_TERMINAL_STATE,
+    ddbo.DuckDbOrchEmitContext
+  > {
+  readonly nature = "Excel Workbook Sheet";
+  readonly sheetName = "QE_Admin_Data";
+  readonly tableName: TableName;
+  constructor(
+    readonly uri: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    this.tableName = govn.toSnakeCase(
+      path.basename(uri, ".xlsx") + "_" + this.sheetName,
+    ) as TableName;
+  }
+
+  async workflow(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sessionEntryID: string,
+  ): ReturnType<
+    o.ExcelSheetIngestSource<
+      "QE_Admin_Data",
+      TableName,
+      ddbo.DuckDbOrchGovernance,
+      InitState,
+      typeof QE_ADMIN_DATA_SHEET_TERMINAL_STATE,
+      ddbo.DuckDbOrchEmitContext
+    >["workflow"]
+  > {
+    const sessionDML = await session.orchSessionSqlDML();
+    const ssr = new QeAdminDataStructureRules(
+      this.tableName,
+      sessionDML.sessionID,
+      sessionEntryID,
+      this.govn,
+    );
+    const sar = new sg.QeAdminDataAssuranceRules(
+      this.tableName,
+      sessionDML.sessionID,
+      sessionEntryID,
+      this.govn,
+    );
+
+    return {
+      ingestSQL: async (issac) =>
+        await this.ingestSQL(session, issac, ssr, sar),
+      assuranceSQL: async () => await this.assuranceSQL(session, sar),
+      exportResourceSQL: async (targetSchema) =>
+        await this.exportResourceSQL(session, sar.sessionEntryID, targetSchema),
+      terminalState: () => QE_ADMIN_DATA_SHEET_TERMINAL_STATE,
+    };
+  }
+
+  async ingestSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    issac: o.IngestSourceStructAssuranceContext<
+      InitState,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    ssr: QeAdminDataStructureRules<TableName>,
+    sar: sg.QeAdminDataAssuranceRules<
+      TableName,
+      AdminDemographicColumnName
+    >,
+  ) {
+    const { sheetName, tableName, uri } = this;
+    const { sessionID, sessionEntryID } = sar;
+
+    // deno-fmt-ignore
+    return this.govn.SQL`
+      -- required by IngestEngine, setup the ingestion entry for logging
+      ${await issac.sessionEntryInsertDML()}
+     
+      -- state management diagnostics 
+      ${await session.entryStateDML(sessionEntryID, issac.initState(), "ATTEMPT_EXCEL_INGEST", "QeAdminDataExcelSheetIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+
+      -- ingest Excel workbook sheet '${sheetName}' into ${tableName} using spatial plugin
+      INSTALL spatial; LOAD spatial;
+
+      -- be sure to add src_file_row_number and session_id columns to each row
+      -- because assurance CTEs require them
+      CREATE TABLE ${tableName} AS
+        SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
+          FROM st_read('${uri}', layer='${sheetName}', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
+      
+      ${ssr.requiredColumnNames()}
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_INGEST", "INGESTED_EXCEL_WORKBOOK_SHEET", "QeAdminDataExcelSheetIngestSource.ingestSQL", this.govn.emitCtx.sqlEngineNow)}
+      `
+  }
+
+  async assuranceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sar: sg.QeAdminDataAssuranceRules<
+      TableName,
+      QeAdminDataColumnName
+    >,
+  ) {
+    const { sessionEntryID, tableRules: tr } = sar;
+
+    // deno-fmt-ignore
+    return this.govn.SQL`
+      ${await session.entryStateDML(sessionEntryID, "INGESTED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "QeAdminDataExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
+
+      ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
+      ${tr.mandatoryValueInAllRows("FACILITY_ID")}
+      ${tr.mandatoryValueInAllRows("FACILITY_LONG_NAME")}
+      ${tr.mandatoryValueInAllRows("FACILITY_ADDRESS1")}
+      ${tr.mandatoryValueInAllRows("FACILITY_ZIP")}
+      ${tr.intValueInAllRows("FACILITY_ZIP")}
+      ${tr.mandatoryValueInAllRows("VISIT_PART_2_FLAG")}
+      ${tr.mandatoryValueInAllRows("VISIT_OMH_FLAG")}
+      ${tr.mandatoryValueInAllRows("VISIT_OPWDD_FLAG")}
+          
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ASSURED_EXCEL_WORKBOOK_SHEET", "QeAdminDataExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
+    `;
+  }
+
+  async exportResourceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sessionEntryID: string,
+    targetSchema: string,
+  ) {
+    const { govn, tableName } = this;
+
+    // deno-fmt-ignore
+    return govn.SQL`
+      ${await session.entryStateDML(sessionEntryID, "ASSURED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", "QeAdminDataExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
+
+      CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
+
+      ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT", ADMIN_DEMO_SHEET_TERMINAL_STATE, "QeAdminDataExcelSheetIngestSource.exportResourceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
   }
 }
@@ -470,6 +675,7 @@ export function ingestExcelSourcesSupplier(
 ): o.IngestFsPatternSourcesSupplier<
   | ScreeningExcelSheetIngestSource<string, o.State>
   | AdminDemographicExcelSheetIngestSource<string, o.State>
+  | QeAdminDataExcelSheetIngestSource<string, o.State>
   | ExcelSheetTodoIngestSource<string, o.State>
   | o.ErrorIngestSource<
     ddbo.DuckDbOrchGovernance,
@@ -487,6 +693,7 @@ export function ingestExcelSourcesSupplier(
       const sources: (
         | ScreeningExcelSheetIngestSource<string, o.State>
         | AdminDemographicExcelSheetIngestSource<string, o.State>
+        | QeAdminDataExcelSheetIngestSource<string, o.State>
         | ExcelSheetTodoIngestSource<string, o.State>
         | o.ErrorIngestSource<
           ddbo.DuckDbOrchGovernance,
@@ -501,12 +708,12 @@ export function ingestExcelSourcesSupplier(
           | ExcelSheetTodoIngestSource<string, o.State>
           | ScreeningExcelSheetIngestSource<string, o.State>
           | AdminDemographicExcelSheetIngestSource<string, o.State>
+          | QeAdminDataExcelSheetIngestSource<string, o.State>
       > = {
         "Admin_Demographic": () =>
           new AdminDemographicExcelSheetIngestSource(uri, govn),
         "Screening": () => new ScreeningExcelSheetIngestSource(uri, govn),
-        "QE_Admin_Data": () =>
-          new ExcelSheetTodoIngestSource(uri, "QE_Admin_Data", govn),
+        "QE_Admin_Data": () => new QeAdminDataExcelSheetIngestSource(uri, govn),
       };
 
       try {
