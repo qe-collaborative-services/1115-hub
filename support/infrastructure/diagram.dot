@@ -1,0 +1,202 @@
+digraph "Diagram" {
+  splines = "ortho";
+  pad = "1.0";
+  nodesep = "0.60";
+  ranksep = "0.75";
+  fontname = "Sans-Serif";
+  fontsize = "15";
+  dpi = "200";
+  rankdir = "BT";
+  compound = "true";
+  fontcolor = "#222222";
+  edge [
+    color = "#D5871488",
+    penwidth = 2,
+    arrowhead = "dot",
+    arrowtail = "dot",
+  ];
+  node [
+    shape = "box",
+    style = "rounded",
+    fixedsize = true,
+    width = 1.7,
+    height = 1.7,
+    labelloc = "c",
+    imagescale = true,
+    fontname = "Sans-Serif",
+    fontsize = 8,
+    margin = 8,
+  ];
+  subgraph "App" {
+    subgraph "cluster-SubGraph.App" {
+      graph [
+        label = "App",
+        labelloc = "b",
+        labeljust = "l",
+        margin = "10",
+        fontsize = "16",
+        penwidth = "2",
+        pencolor = "#888888",
+        style = "filled,rounded",
+        fillcolor = "#f3f3f3",
+      ];
+      subgraph "cluster-SubGraph.VpcStack" {
+        graph [
+          label = "VpcStack",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#e4e4e4",
+        ];
+        "VpcStack/VPC" [
+          label = " VPC",
+          fontsize = 12,
+          image = "/Users/matthewdvertola/dev_projects/1115-hub/support/infrastructure/node_modules/cdk-dia/icons/aws/Service/Arch_Networking-Content/64/Arch_Amazon-Virtual-Private-Cloud_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 2,
+          height = 2.266,
+        ];
+      }
+      subgraph "cluster-SubGraph.DatabaseStack" {
+        graph [
+          label = "DatabaseStack",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#e4e4e4",
+        ];
+        "DatabaseStack/DatabaseSecurityGroup" [
+          label = "\nDatabaseSecurityGroup",
+          fontsize = 12,
+          image = "/Users/matthewdvertola/dev_projects/1115-hub/support/infrastructure/node_modules/cdk-dia/icons/aws/security_group.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 2,
+          height = 2.4819999999999998,
+        ];
+        "DatabaseStack/Database" [
+          label = " Database",
+          fontsize = 12,
+          image = "/Users/matthewdvertola/dev_projects/1115-hub/support/infrastructure/node_modules/cdk-dia/icons/aws/Service/Arch_Database/64/Arch_Amazon-RDS_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 2,
+          height = 2.266,
+        ];
+      }
+      subgraph "cluster-SubGraph.ComputeStack" {
+        graph [
+          label = "ComputeStack",
+          labelloc = "b",
+          labeljust = "l",
+          margin = "10",
+          fontsize = "16",
+          penwidth = "2",
+          pencolor = "#888888",
+          style = "filled,rounded",
+          fillcolor = "#e4e4e4",
+        ];
+        "ComputeStack/Ec2SecurityGroup" [
+          label = " Ec2SecurityGroup",
+          fontsize = 12,
+          image = "/Users/matthewdvertola/dev_projects/1115-hub/support/infrastructure/node_modules/cdk-dia/icons/aws/security_group.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 2,
+          height = 2.266,
+        ];
+        "ComputeStack/RdsSecurityGroup" [
+          label = " RdsSecurityGroup",
+          fontsize = 12,
+          image = "/Users/matthewdvertola/dev_projects/1115-hub/support/infrastructure/node_modules/cdk-dia/icons/aws/security_group.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 2,
+          height = 2.266,
+        ];
+        "ComputeStack/Ec2Role" [
+          label = " Ec2Role",
+          fontsize = 12,
+          image = "/Users/matthewdvertola/dev_projects/1115-hub/support/infrastructure/node_modules/cdk-dia/icons/aws/Service/Arch_Security-Identity-Compliance/64/Arch_AWS-Identity-and-Access-Management_64@5x.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 1.2,
+          height = 1.466,
+        ];
+        "ComputeStack/1115ComputeInstance" [
+          label = " 1115ComputeInstance",
+          fontsize = 12,
+          image = "/Users/matthewdvertola/dev_projects/1115-hub/support/infrastructure/node_modules/cdk-dia/icons/aws/Resource/Res_Compute/Res_48_Dark/Res_Amazon-EC2_T3-Instance_48_Dark.png",
+          imagescale = "true",
+          imagepos = "tc",
+          penwidth = "0",
+          shape = "node",
+          fixedsize = "true",
+          labelloc = "b",
+          width = 2,
+          height = 2.266,
+        ];
+      }
+    }
+  }
+  "DatabaseStack/DatabaseSecurityGroup" -> "VpcStack/VPC" [
+    dir = "both",
+  ];
+  "DatabaseStack/Database" -> "VpcStack/VPC" [
+    dir = "both",
+  ];
+  "DatabaseStack/Database" -> "DatabaseStack/DatabaseSecurityGroup" [
+    dir = "both",
+  ];
+  "ComputeStack/Ec2SecurityGroup" -> "VpcStack/VPC" [
+    dir = "both",
+  ];
+  "ComputeStack/RdsSecurityGroup" -> "VpcStack/VPC" [
+    dir = "both",
+  ];
+  "ComputeStack/RdsSecurityGroup" -> "ComputeStack/Ec2SecurityGroup" [
+    dir = "both",
+  ];
+  "ComputeStack/1115ComputeInstance" -> "ComputeStack/Ec2Role" [
+    dir = "both",
+  ];
+  "ComputeStack/1115ComputeInstance" -> "VpcStack/VPC" [
+    dir = "both",
+  ];
+  "ComputeStack/1115ComputeInstance" -> "ComputeStack/Ec2SecurityGroup" [
+    dir = "both",
+  ];
+}
