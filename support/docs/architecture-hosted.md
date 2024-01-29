@@ -20,6 +20,16 @@
 - AWS CDK TypeScript Infrastructure as Code (IaC) with Ansible for any
   server-specific setups.
 
+### Testing
+
+- Validation:
+  - ensure business rules are passing with synthetic "happy" path data
+  - ensure business rules are properly show error in "non-happy path" data
+- Load Performance:
+  - 1,000 happy path screenings per hour
+  - 1,000 invalid (non happy) path screenings per hour
+- Stress Test: 15,000 screenings parsed and validated per hour
+
 ### Compliance
 
 Since we’re dealing with synthetic data during development, no specific
@@ -34,6 +44,16 @@ that could easily pass HITRUST or SOC2 Type 1.
   and at least cold standby (if hot standby is too expensive).
 - Network connectivity to allow QEs to connect via `psql` (PostgreSQL client) in
   their environment and connect to PostgreSQL environments
+
+### Testing
+
+- Validation:
+  - ensure business rules are passing with synthetic "happy" path data
+  - ensure business rules are properly show error in "non-happy path" data
+- Load Performance:
+  - 15,000 happy path screenings per hour
+  - 15,000 invalid (non happy) path screenings per hour
+- Stress Test: 150,000 screenings parsed and validated per hour
 
 ### Compliance
 
