@@ -1,9 +1,3 @@
-## TAP Version 14
-
-### Test Plan
-- Start: 1
-- End: 6
-
 - ✅ Signed SOW
 - ❌ Setting up secure transfer capabilities from the screening  contributor to the QE
 - ❌ QE management of user credentials and permissions, ensuring that only authorized users can access the SFTP server for file transfers.

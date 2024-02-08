@@ -36,5 +36,7 @@ console.log(
     ? qsGCB.tapContentHTML()
     : (Deno.args.find((a) => a == "--md")
       ? qsGCB.tapContentMarkdown()
-      : qsGCB.tapContentText()),
+      : (Deno.args.find((a) => a == "--json")
+        ? qsGCB.tapContentJSON()
+        : qsGCB.tapContentText())),
 );

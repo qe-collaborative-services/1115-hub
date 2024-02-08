@@ -30,5 +30,7 @@ console.log(
     ? sowGCB.tapContentHTML()
     : (Deno.args.find((a) => a == "--md")
       ? sowGCB.tapContentMarkdown()
-      : sowGCB.tapContentText()),
+      : (Deno.args.find((a) => a == "--json")
+        ? sowGCB.tapContentJSON()
+        : sowGCB.tapContentText())),
 );

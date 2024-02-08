@@ -1,9 +1,3 @@
-## TAP Version 14
-
-### Test Plan
-- Start: 1
-- End: 2
-
 <!-- Quality System (QS) Compliance Assertions and Attestations version 1 -->
 - ✅ Outcomes Management
   - Subtests:

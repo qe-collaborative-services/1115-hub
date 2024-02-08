@@ -1,0 +1,89 @@
+{
+  "version": {
+    "nature": "version",
+    "version": 14
+  },
+  "plan": {
+    "nature": "plan",
+    "start": 1,
+    "end": 2
+  },
+  "body": [
+    {
+      "nature": "comment",
+      "content": "Quality System (QS) Compliance Assertions and Attestations version 1"
+    },
+    {
+      "nature": "test-case",
+      "ok": true,
+      "description": "Outcomes Management",
+      "subtests": {
+        "nature": "sub-test",
+        "body": [
+          {
+            "nature": "test-case",
+            "ok": true,
+            "description": "SCF Control ID: SYS.01 - Requirement #1234 completed"
+          },
+          {
+            "nature": "test-case",
+            "ok": true,
+            "description": "SCF Control ID: SYS.02 - Requirement #1235 completed"
+          },
+          {
+            "nature": "test-case",
+            "ok": false,
+            "description": "SCF Control ID: SYS.03 - Requirement #1236 incomplete",
+            "diagnostics": {
+              "Audit Note": "Pending minor revisions. See comments in Jira ticket ABC-123",
+              "Jira Ticket": "ABC-123"
+            }
+          }
+        ],
+        "title": "Outcomes Management",
+        "plan": {
+          "nature": "plan",
+          "start": 1,
+          "end": 3
+        }
+      }
+    },
+    {
+      "nature": "test-case",
+      "ok": true,
+      "description": "Design and Development",
+      "subtests": {
+        "nature": "sub-test",
+        "body": [
+          {
+            "nature": "test-case",
+            "ok": true,
+            "description": "SCF Control ID: SYS.01 - Requirement #1234 completed"
+          },
+          {
+            "nature": "test-case",
+            "ok": true,
+            "description": "SCF Control ID: SYS.02 - Requirement #1235 completed"
+          },
+          {
+            "nature": "test-case",
+            "ok": false,
+            "description": "SCF Control ID: SYS.03 - Requirement #1236 incomplete",
+            "diagnostics": {
+              "Audit Note": "Pending minor revisions. See comments in Jira ticket ABC-123",
+              "Jira Ticket": "ABC-123",
+              "Pull Request": "https://github.com/repo/pull/789"
+            }
+          }
+        ],
+        "title": "Design and Development",
+        "plan": {
+          "nature": "plan",
+          "start": 1,
+          "end": 3
+        }
+      }
+    }
+  ],
+  "footers": []
+}

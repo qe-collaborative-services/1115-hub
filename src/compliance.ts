@@ -1,8 +1,8 @@
 // import * as tap from "../../../netspective-labs/sql-aide/lib/tap/mod.ts";
 // export * as tap from "../../../netspective-labs/sql-aide/lib/tap/mod.ts";
 
-import * as tap from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.8/lib/tap/mod.ts";
-export * as tap from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.8/lib/tap/mod.ts";
+import * as tap from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/lib/tap/mod.ts";
+export * as tap from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/lib/tap/mod.ts";
 
 // deno-lint-ignore no-explicit-any
 type Any = any;
@@ -134,11 +134,15 @@ export class QualitySysComplianceBuilder {
   }
 
   tapContentHTML() {
-    return tapContentHTML(this.tapContent());
+    return tap.tapContentHTML(this.tapContent());
   }
 
   tapContentMarkdown() {
-    return tapContentMarkdown(this.tapContent());
+    return tap.tapContentMarkdown(this.tapContent());
+  }
+
+  tapContentJSON() {
+    return JSON.stringify(this.tapContent(), null, "  ");
   }
 }
 
@@ -208,199 +212,14 @@ export class SowComplianceBuilder<Diagnosable extends tap.Diagnostics> {
   }
 
   tapContentHTML() {
-    return tapContentHTML(this.tapContent());
+    return tap.tapContentHTML(this.tapContent());
   }
 
   tapContentMarkdown() {
-    return tapContentMarkdown(this.tapContent());
-  }
-}
-
-interface TapContentHTMLOptions {
-  css?: () => string;
-  diagnosticsTable?: (diagnostics: tap.Diagnostics) => string;
-}
-
-function tapContentHTML<Diagnosable extends tap.Diagnostics>(
-  tapContent: tap.TapContent<Diagnosable>,
-  options?: TapContentHTMLOptions,
-): string {
-  // Enhanced CSS styling for improved visual appearance and indentation
-  const defaultCSS = (): string => `
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f0f0f0; color: #333; }
-    details { margin-bottom: 5px; border-left: 3px solid #ccc; padding-left: 15px; }
-    details > summary { cursor: pointer; font-weight: bold; margin-bottom: 5px; }
-    details > summary > strong { color: #0056b3; }
-    .test-case { padding: 10px 0; }
-    .ok { color: #28a745; }
-    .not-ok { color: #dc3545; }
-    table { width: 100%; border-collapse: collapse; background-color: white; margin-top: 10px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    footer { margin-top: 20px; color: #777; }
-    .comment { font-style: italic; color: #6c757d; }
-  `;
-
-  // Default diagnostics table function
-  const defaultDiagnosticsTable = (diagnostics: tap.Diagnostics): string => {
-    let tableHtml = "<table><tr><th>Key</th><th>Value</th></tr>";
-    for (const [key, value] of Object.entries(diagnostics)) {
-      tableHtml += `<tr><td>${key}</td><td>${
-        typeof value === "object" ? JSON.stringify(value, null, 2) : value
-      }</td></tr>`;
-    }
-    tableHtml += "</table>";
-    return tableHtml;
-  };
-
-  // Use provided CSS and diagnosticsTable function if available, or default
-  const css = options?.css ? options.css() : defaultCSS();
-  const diagnosticsTable = options?.diagnosticsTable
-    ? options.diagnosticsTable
-    : defaultDiagnosticsTable;
-
-  // Setup HTML document with dynamic CSS
-  let html =
-    `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>TAP Test Results</title><style>${css}</style></head><body>`;
-
-  // Version and Plan processing, unchanged from previous versions
-  if (tapContent.version) {
-    html += `<p>Version: ${tapContent.version.version}</p>`;
+    return tap.tapContentMarkdown(this.tapContent());
   }
 
-  // Recursive function to process test elements, including nested subtests
-  html += processTestElements(tapContent.body);
-
-  // Footers
-  for (const footer of tapContent.footers) {
-    html += `<footer>${footer.content}</footer>`;
-  }
-
-  // Close HTML document
-  html += "</body></html>";
-  return html;
-
-  // Inner function for processing test elements, including subtests
-  function processTestElements(
-    body: Iterable<tap.TestSuiteElement<Diagnosable>>,
-    level = 0,
-  ): string {
-    let contentHtml = "";
-    for (const element of body) {
-      if (element.nature === "test-case") {
-        const test = element as tap.TestCase<Diagnosable>;
-        const statusEmoji = test.ok
-          ? '<span class="ok">✅</span>'
-          : '<span class="not-ok">❌</span>';
-        contentHtml +=
-          `<details><summary>${statusEmoji} <strong>${test.description}</strong></summary><div class="test-case">`;
-
-        if (test.directive) {
-          contentHtml +=
-            `<p><em>[${test.directive.nature}: ${test.directive.reason}]</em></p>`;
-        }
-
-        if (test.diagnostics) {
-          contentHtml += `<div>${diagnosticsTable(test.diagnostics)}</div>`;
-        }
-
-        if (test.subtests) {
-          contentHtml += processTestElements(test.subtests.body, level + 1);
-        }
-
-        contentHtml += `</div></details>`;
-      } else if (element.nature === "comment") {
-        const comment = element as tap.CommentNode;
-        contentHtml += `<div class="comment">Comment: ${comment.content}</div>`;
-      }
-    }
-    return contentHtml;
-  }
-}
-
-interface TapContentMarkdownOptions {
-  diagnosticsFormatter?: (diagnostics: tap.Diagnostics) => string;
-}
-
-function tapContentMarkdown<Diagnosable extends tap.Diagnostics>(
-  tapContent: tap.TapContent<Diagnosable>,
-  options?: TapContentMarkdownOptions,
-) {
-  // Default diagnostics formatter function
-  const defaultDiagnosticsFormatter = (
-    diagnostics: tap.Diagnostics,
-  ) => {
-    return Object.entries(diagnostics)
-      .map(([key, value]) =>
-        `- ${key}: ${
-          typeof value === "object" ? JSON.stringify(value, null, 2) : value
-        }`
-      )
-      .join("\n");
-  };
-
-  // Use provided diagnosticsFormatter function if available, or default
-  const diagnosticsFormatter = options?.diagnosticsFormatter
-    ? options.diagnosticsFormatter
-    : defaultDiagnosticsFormatter;
-
-  let markdown = "";
-
-  // Version
-  if (tapContent.version) {
-    markdown += `## TAP Version ${tapContent.version.version}\n\n`;
-  }
-
-  // Plan
-  if (tapContent.plan) {
-    markdown +=
-      `### Test Plan\n- Start: ${tapContent.plan.start}\n- End: ${tapContent.plan.end}\n\n`;
-  }
-
-  // Process tests and comments
-  markdown += processTestElements(tapContent.body);
-
-  // Footers
-  for (const footer of tapContent.footers) {
-    markdown += `---\n${footer.content}\n`;
-  }
-
-  return markdown;
-
-  function processTestElements(
-    body: Iterable<tap.TestSuiteElement<Diagnosable>>,
-    indent = "",
-  ) {
-    let contentMarkdown = "";
-    for (const element of body) {
-      if (element.nature === "test-case") {
-        const test = element as tap.TestCase<Diagnosable>;
-        const status = test.ok ? "✅" : "❌";
-        contentMarkdown += `${indent}- ${status} ${test.description}\n`;
-
-        if (test.directive) {
-          contentMarkdown +=
-            `${indent}  - [${test.directive.nature}] ${test.directive.reason}\n`;
-        }
-
-        if (test.diagnostics) {
-          contentMarkdown += `${indent}  - Diagnostics:\n${indent}${
-            diagnosticsFormatter(test.diagnostics).split("\n").map((line) =>
-              `    ${line}`
-            ).join("\n")
-          }\n`;
-        }
-
-        if (test.subtests) {
-          contentMarkdown += `${indent}  - Subtests:\n${
-            processTestElements(test.subtests.body, indent + "    ")
-          }\n`;
-        }
-      } else if (element.nature === "comment") {
-        const comment = element as tap.CommentNode;
-        contentMarkdown += `${indent}<!-- ${comment.content} -->\n`;
-      }
-    }
-    return contentMarkdown;
+  tapContentJSON() {
+    return JSON.stringify(this.tapContent(), null, "  ");
   }
 }
