@@ -2,10 +2,10 @@
 
 import * as c from "./compliance.ts";
 
-const gcb = new c.GovernedComplianceBuilder();
-const { builders } = gcb;
+const qsGCB = new c.QualitySysComplianceBuilder();
+const { builders: qsBuilders } = qsGCB;
 
-await builders["Outcomes Management"].compliance(async function* (c) {
+await qsBuilders["Outcomes Management"].compliance(async function* (c) {
   yield c.ok("SCF Control ID: SYS.01 - Requirement #1234 completed");
   yield c.ok("SCF Control ID: SYS.02 - Requirement #1235 completed");
   yield c.notOk("SCF Control ID: SYS.03 - Requirement #1236 incomplete", {
@@ -17,7 +17,7 @@ await builders["Outcomes Management"].compliance(async function* (c) {
   });
 });
 
-await builders["Design and Development"].compliance(async function* (c) {
+await qsBuilders["Design and Development"].compliance(async function* (c) {
   yield c.ok("SCF Control ID: SYS.01 - Requirement #1234 completed");
   yield c.ok("SCF Control ID: SYS.02 - Requirement #1235 completed");
   yield c.notOk("SCF Control ID: SYS.03 - Requirement #1236 incomplete", {
@@ -31,4 +31,4 @@ await builders["Design and Development"].compliance(async function* (c) {
   });
 });
 
-console.log(gcb.tapContentText());
+console.log(qsGCB.tapContentText());
