@@ -35,7 +35,7 @@ const adminDemographicColumnNames = [
   "ETHNICITY_CODE",
   "ETHNICITY_CODE_DESCRIPTION",
   "ETHNICITY_CODE_SYSTEM_NAME",
-  "FACILITY_ID",
+  "FACILITY ID (Assigning authority)",
   "FIRST_NAME",
   "GENDER_IDENTITY_CODE",
   "GENDER_IDENTITY_CODE_SYSTEM_NAME",
@@ -62,14 +62,14 @@ const adminDemographicColumnNames = [
 
 const qeAdminDataColumnNames = [
   "PAT_MRN_ID",
-  "FACILITY_ID",
+  "FACILITY ID (Assigning authority)",
   "FACILITY_LONG_NAME",
   "ORGANIZATION_TYPE",
-  "FACILITY_ADDRESS1",
-  "FACILITY_ADDRESS2",
-  "FACILITY_CITY",
+  "FACILITY ADDRESS1",
+  "FACILITY ADDRESS2",
+  "FACILITY CITY",
   "FACILITY STATE",
-  "FACILITY_ZIP",
+  "FACILITY ZIP",
   "VISIT_PART_2_FLAG",
   "VISIT_OMH_FLAG",
   "VISIT_OPWDD_FLAG",
@@ -298,9 +298,10 @@ export class ScreeningExcelSheetIngestSource<
       ${await session.entryStateDML(sessionEntryID, "INGESTED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ScreeningExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
-      ${tr.intValueInAllRows("PAT_MRN_ID")}
+      ${tr.mandatoryValueInAllRows("FACILITY ID (Assigning authority)")}      
       ${tr.mandatoryValueInAllRows("SCREENING_NAME")}
       ${tr.mandatoryValueInAllRows("SCREENING_CODE_SYSTEM_NAME")}
+      ${tr.onlyAllowedValuesInAllRows("SCREENING_CODE_SYSTEM_NAME", "'LN', 'LOINC'")}
       ${tr.mandatoryValueInAllRows("SCREENING_CODE")}
       ${tr.onlyAllowedValuesInAllRows("SCREENING_METHOD", "'In-Person', 'Phone', 'Website'")}
       ${tr.mandatoryValueInAllRows("RECORDED_TIME")} 
@@ -308,18 +309,15 @@ export class ScreeningExcelSheetIngestSource<
       ${tr.mandatoryValueInAllRows("QUESTION")}
       ${tr.mandatoryValueInAllRows("MEAS_VALUE")}            
       ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
-      ${tr.onlyAllowedValuesInAllRows("QUESTION_CODE", "'71802-3', '96778-6'")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
       ${tr.onlyAllowedValuesInAllRows("QUESTION_CODE_SYSTEM_NAME", "'LN','LOIN'")}
       ${tr.mandatoryValueInAllRows("ANSWER_CODE")}
       ${tr.mandatoryValueInAllRows("ANSWER_CODE_SYSTEM_NAME")}
       ${tr.onlyAllowedValuesInAllRows("ANSWER_CODE_SYSTEM_NAME", "'LN','LOIN'")}
-      ${tr.mandatoryValueInAllRows("PARENT_QUESTION_CODE")}
-      ${tr.onlyAllowedValuesInAllRows("PARENT_QUESTION_CODE", "'88122-7','88123-5'")}
       ${tr.mandatoryValueInAllRows("SDOH_DOMAIN")}
       ${tr.mandatoryValueInAllRows("POTENTIAL_NEED_INDICATED")}
-      ${tr.onlyAllowedValuesInAllRows("POTENTIAL_NEED_INDICATED", "'TRUE','FALSE'")}
-      ${tr.onlyAllowedValuesInAllRows("ASSISTANCE_REQUESTED", "'YES','NO'")}
+      ${tr.onlyAllowedValuesInAllRows("POTENTIAL_NEED_INDICATED", "'Yes','No'")}
+      ${tr.onlyAllowedValuesInAllRows("ASSISTANCE_REQUESTED", "'Yes','No'")}
           
       ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ASSURED_EXCEL_WORKBOOK_SHEET", "ScreeningExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
@@ -349,6 +347,13 @@ export class ScreeningExcelSheetIngestSource<
 const ADMIN_DEMO_SHEET_TERMINAL_STATE =
   "EXIT(AdminDemographicExcelSheetIngestSource)" as const;
 
+/**
+ * The class AdminDemographicExcelSheetIngestSource that implements the o.ExcelSheetIngestSource interface. 
+ * The purpose of this class is to handle the ingestion of data from an Excel sheet into DuckDb database, specifically for the "Admin_Demographic" sheet.
+ * 
+ * The class is defined with generic type parameters for the table name (TableName) and initial state (InitState). 
+ * It implements the o.ExcelSheetIngestSource interface with specific types.
+ */
 export class AdminDemographicExcelSheetIngestSource<
   TableName extends string,
   InitState extends o.State,
@@ -469,6 +474,7 @@ export class AdminDemographicExcelSheetIngestSource<
     return this.govn.SQL`
       ${await session.entryStateDML(sessionEntryID, "INGESTED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "AdminDemographicExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
 
+
       ${tr.mandatoryValueInAllRows("FIRST_NAME")}
       ${tr.onlyAllowAlphabetsInAllRows("FIRST_NAME")}
       ${tr.onlyAllowAlphabetsInAllRows("MIDDLE_NAME")}
@@ -481,11 +487,17 @@ export class AdminDemographicExcelSheetIngestSource<
       ${tr.onlyAllowValidBirthDateInAllRows("PAT_BIRTH_DATE")}
       ${tr.mandatoryValueInAllRows("CITY")}
       ${tr.mandatoryValueInAllRows("STATE")}
+      ${tr.onlyAllowedValuesInAllRows("STATE", "'NY', 'New York'")}
       ${tr.mandatoryValueInAllRows("ZIP")}
-      ${tr.intValueInAllRows("ZIP")}
+      ${tr.onlyAllowedValuesInAllRows("GENDER_IDENTITY_CODE_SYSTEM_NAME", "'SNOMED-CT','SNOMED'")}
+      ${tr.onlyAllowedValuesInAllRows("SEXUAL_ORIENTATION_CODE_SYSTEM_NAME", "'SNOMED-CT','SNOMED'")}
+      ${tr.onlyAllowedValuesInAllRows("SEXUAL_ORIENTATION_DESCRIPTION", "'Bisexual','Heterosexual','Homosexual','other','unknown'")}
+      ${tr.onlyAllowedValuesInAllRows("SEXUAL_ORIENTATION_DESCRIPTION", "'ISO','ISO 639-2'")}
+      ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE'")}
+      ${tr.onlyAllowedValuesInAllRows("ETHNICITY_CODE_SYSTEM_NAME", "'CDC','CDCRE'")}
       ${tr.mandatoryValueInAllRows("MPI_ID")} 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
-      ${tr.mandatoryValueInAllRows("FACILITY_ID")}
+      ${tr.mandatoryValueInAllRows("FACILITY ID (Assigning authority)")}
           
       ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ASSURED_EXCEL_WORKBOOK_SHEET", "AdminDemographicExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
@@ -636,14 +648,23 @@ export class QeAdminDataExcelSheetIngestSource<
       ${await session.entryStateDML(sessionEntryID, "INGESTED_EXCEL_WORKBOOK_SHEET", "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "QeAdminDataExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
-      ${tr.mandatoryValueInAllRows("FACILITY_ID")}
+      ${tr.mandatoryValueInAllRows("FACILITY ID (Assigning authority)")}
+      ${tr.uniqueValueInAllRows("FACILITY ID (Assigning authority)")}
       ${tr.mandatoryValueInAllRows("FACILITY_LONG_NAME")}
-      ${tr.mandatoryValueInAllRows("FACILITY_ADDRESS1")}
-      ${tr.mandatoryValueInAllRows("FACILITY_ZIP")}
-      ${tr.intValueInAllRows("FACILITY_ZIP")}
+      ${tr.mandatoryValueInAllRows("ORGANIZATION_TYPE")}
+      ${tr.onlyAllowedValuesInAllRows("ORGANIZATION_TYPE", "'Hospital', 'DTC', 'SNF', 'SCN', 'CBO', 'OMH', 'OASAS', 'Practice', 'Article 36', 'Article 40', 'MCO'")}
+      ${tr.mandatoryValueInAllRows("FACILITY ADDRESS1")}
+      ${tr.uniqueValueInAllRows("FACILITY ADDRESS1")}    
+      ${tr.uniqueValueInAllRows("FACILITY ADDRESS2")}      
+      ${tr.mandatoryValueInAllRows("FACILITY STATE")}
+      ${tr.onlyAllowedValuesInAllRows("FACILITY STATE", "'NY', 'New York'")}
+      ${tr.mandatoryValueInAllRows("FACILITY ZIP")}
       ${tr.mandatoryValueInAllRows("VISIT_PART_2_FLAG")}
+      ${tr.onlyAllowedValuesInAllRows("VISIT_PART_2_FLAG", "'Yes', 'No'")}
       ${tr.mandatoryValueInAllRows("VISIT_OMH_FLAG")}
+      ${tr.onlyAllowedValuesInAllRows("VISIT_OMH_FLAG", "'Yes', 'No'")}
       ${tr.mandatoryValueInAllRows("VISIT_OPWDD_FLAG")}
+      ${tr.onlyAllowedValuesInAllRows("VISIT_OPWDD_FLAG", "'Yes', 'No'")}
           
       ${await session.entryStateDML(sessionEntryID, "ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE", "ASSURED_EXCEL_WORKBOOK_SHEET", "QeAdminDataExcelSheetIngestSource.assuranceSQL", this.govn.emitCtx.sqlEngineNow)}
     `;
