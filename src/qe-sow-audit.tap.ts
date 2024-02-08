@@ -25,4 +25,8 @@ await sowGCB.phase1.compliance(
   },
 );
 
-console.log(sowGCB.tapContentText());
+console.log(
+  Deno.args.find((a) => a == "--html")
+    ? sowGCB.tapContentHTML()
+    : sowGCB.tapContentText(),
+);

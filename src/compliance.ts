@@ -132,6 +132,10 @@ export class QualitySysComplianceBuilder {
   tapContentText() {
     return tap.stringify(this.tapContent());
   }
+
+  tapContentHTML() {
+    return tapContentHTML(this.tapContent());
+  }
 }
 
 export function sowPhase1TaskDescr<Task extends string>(task: Task) {
@@ -197,5 +201,111 @@ export class SowComplianceBuilder<Diagnosable extends tap.Diagnostics> {
 
   tapContentText() {
     return tap.stringify(this.tapContent());
+  }
+
+  tapContentHTML() {
+    return tapContentHTML(this.tapContent());
+  }
+}
+
+interface TapContentHTMLOptions {
+  css?: () => string;
+  diagnosticsTable?: (diagnostics: tap.Diagnostics) => string;
+}
+
+function tapContentHTML<Diagnosable extends tap.Diagnostics>(
+  tapContent: tap.TapContent<Diagnosable>,
+  options?: TapContentHTMLOptions,
+): string {
+  // Enhanced CSS styling for improved visual appearance and indentation
+  const defaultCSS = (): string => `
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f0f0f0; color: #333; }
+    details { margin-bottom: 5px; border-left: 3px solid #ccc; padding-left: 15px; }
+    details > summary { cursor: pointer; font-weight: bold; margin-bottom: 5px; }
+    details > summary > strong { color: #0056b3; }
+    .test-case { padding: 10px 0; }
+    .ok { color: #28a745; }
+    .not-ok { color: #dc3545; }
+    table { width: 100%; border-collapse: collapse; background-color: white; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    footer { margin-top: 20px; color: #777; }
+    .comment { font-style: italic; color: #6c757d; }
+  `;
+
+  // Default diagnostics table function
+  const defaultDiagnosticsTable = (diagnostics: tap.Diagnostics): string => {
+    let tableHtml = "<table><tr><th>Key</th><th>Value</th></tr>";
+    for (const [key, value] of Object.entries(diagnostics)) {
+      tableHtml += `<tr><td>${key}</td><td>${
+        typeof value === "object" ? JSON.stringify(value, null, 2) : value
+      }</td></tr>`;
+    }
+    tableHtml += "</table>";
+    return tableHtml;
+  };
+
+  // Use provided CSS and diagnosticsTable function if available, or default
+  const css = options?.css ? options.css() : defaultCSS();
+  const diagnosticsTable = options?.diagnosticsTable
+    ? options.diagnosticsTable
+    : defaultDiagnosticsTable;
+
+  // Setup HTML document with dynamic CSS
+  let html =
+    `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>TAP Test Results</title><style>${css}</style></head><body>`;
+
+  // Version and Plan processing, unchanged from previous versions
+  if (tapContent.version) {
+    html += `<p>Version: ${tapContent.version.version}</p>`;
+  }
+
+  // Recursive function to process test elements, including nested subtests
+  html += processTestElements(tapContent.body);
+
+  // Footers
+  for (const footer of tapContent.footers) {
+    html += `<footer>${footer.content}</footer>`;
+  }
+
+  // Close HTML document
+  html += "</body></html>";
+  return html;
+
+  // Inner function for processing test elements, including subtests
+  function processTestElements(
+    body: Iterable<tap.TestSuiteElement<Diagnosable>>,
+    level = 0,
+  ): string {
+    let contentHtml = "";
+    for (const element of body) {
+      if (element.nature === "test-case") {
+        const test = element as tap.TestCase<Diagnosable>;
+        const statusEmoji = test.ok
+          ? '<span class="ok">✅</span>'
+          : '<span class="not-ok">❌</span>';
+        contentHtml +=
+          `<details><summary>${statusEmoji} <strong>${test.description}</strong></summary><div class="test-case">`;
+
+        if (test.directive) {
+          contentHtml +=
+            `<p><em>[${test.directive.nature}: ${test.directive.reason}]</em></p>`;
+        }
+
+        if (test.diagnostics) {
+          contentHtml += `<div>${diagnosticsTable(test.diagnostics)}</div>`;
+        }
+
+        if (test.subtests) {
+          contentHtml += processTestElements(test.subtests.body, level + 1);
+        }
+
+        contentHtml += `</div></details>`;
+      } else if (element.nature === "comment") {
+        const comment = element as tap.CommentNode;
+        contentHtml += `<div class="comment">Comment: ${comment.content}</div>`;
+      }
+    }
+    return contentHtml;
   }
 }
