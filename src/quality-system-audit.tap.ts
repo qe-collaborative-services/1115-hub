@@ -34,5 +34,7 @@ await qsBuilders["Design and Development"].compliance(async function* (c) {
 console.log(
   Deno.args.find((a) => a == "--html")
     ? qsGCB.tapContentHTML()
-    : qsGCB.tapContentText(),
+    : (Deno.args.find((a) => a == "--md")
+      ? qsGCB.tapContentMarkdown()
+      : qsGCB.tapContentText()),
 );

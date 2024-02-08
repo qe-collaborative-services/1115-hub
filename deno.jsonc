@@ -8,8 +8,8 @@
     "audit": "deno run ./src/compliance-audit.tap.ts",
     "ahc-hrsn-screening-test-e2e": "deno run -A ./src/ahc-hrsn-elt/screening/test-e2e.ts",
     "ahc-hrsn-screening-doc": "deno doc --html --name=\"AHC HRSN Screening\" --output=./support/docs/lib/ahc-hrsn-elt/screening/ ./src/ahc-hrsn-elt/screening/mod.ts",
-    "compliance-qs-doc": "deno run -A ./src/quality-system-audit.tap.ts --html > ./support/docs/compliance-auto/quality-system-audit.tap.html",
-    "compliance-sow-doc": "deno run -A ./src/qe-sow-audit.tap.ts --html > ./support/docs/compliance-auto/qe-sow-audit.tap.html",
+    "compliance-qs-doc": "deno run -A ./src/quality-system-audit.tap.ts --html > ./support/docs/compliance-auto/quality-system-audit.tap.html && deno run -A ./src/quality-system-audit.tap.ts --md > ./support/docs/compliance-auto/quality-system-audit.tap.md",
+    "compliance-sow-doc": "deno run -A ./src/qe-sow-audit.tap.ts --html > ./support/docs/compliance-auto/qe-sow-audit.tap.html && deno run -A ./src/qe-sow-audit.tap.ts --md > ./support/docs/compliance-auto/qe-sow-audit.tap.md",
     "prepare-release": "deno task ahc-hrsn-screening-doc && deno task compliance-qs-doc && deno task compliance-sow-doc",
     "sqlpage": "DATABASE_URL=sqlite://./support/assurance/ahc-hrsn-elt/screening/results-test-e2e/resource.sqlite.db sqlpage",
     "ahc-hrsn-screening-test-serve": "deno task ahc-hrsn-screening-test-e2e && deno task sqlpage"

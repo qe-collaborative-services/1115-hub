@@ -136,6 +136,10 @@ export class QualitySysComplianceBuilder {
   tapContentHTML() {
     return tapContentHTML(this.tapContent());
   }
+
+  tapContentMarkdown() {
+    return tapContentMarkdown(this.tapContent());
+  }
 }
 
 export function sowPhase1TaskDescr<Task extends string>(task: Task) {
@@ -205,6 +209,10 @@ export class SowComplianceBuilder<Diagnosable extends tap.Diagnostics> {
 
   tapContentHTML() {
     return tapContentHTML(this.tapContent());
+  }
+
+  tapContentMarkdown() {
+    return tapContentMarkdown(this.tapContent());
   }
 }
 
@@ -307,5 +315,92 @@ function tapContentHTML<Diagnosable extends tap.Diagnostics>(
       }
     }
     return contentHtml;
+  }
+}
+
+interface TapContentMarkdownOptions {
+  diagnosticsFormatter?: (diagnostics: tap.Diagnostics) => string;
+}
+
+function tapContentMarkdown<Diagnosable extends tap.Diagnostics>(
+  tapContent: tap.TapContent<Diagnosable>,
+  options?: TapContentMarkdownOptions,
+) {
+  // Default diagnostics formatter function
+  const defaultDiagnosticsFormatter = (
+    diagnostics: tap.Diagnostics,
+  ) => {
+    return Object.entries(diagnostics)
+      .map(([key, value]) =>
+        `- ${key}: ${
+          typeof value === "object" ? JSON.stringify(value, null, 2) : value
+        }`
+      )
+      .join("\n");
+  };
+
+  // Use provided diagnosticsFormatter function if available, or default
+  const diagnosticsFormatter = options?.diagnosticsFormatter
+    ? options.diagnosticsFormatter
+    : defaultDiagnosticsFormatter;
+
+  let markdown = "";
+
+  // Version
+  if (tapContent.version) {
+    markdown += `## TAP Version ${tapContent.version.version}\n\n`;
+  }
+
+  // Plan
+  if (tapContent.plan) {
+    markdown +=
+      `### Test Plan\n- Start: ${tapContent.plan.start}\n- End: ${tapContent.plan.end}\n\n`;
+  }
+
+  // Process tests and comments
+  markdown += processTestElements(tapContent.body);
+
+  // Footers
+  for (const footer of tapContent.footers) {
+    markdown += `---\n${footer.content}\n`;
+  }
+
+  return markdown;
+
+  function processTestElements(
+    body: Iterable<tap.TestSuiteElement<Diagnosable>>,
+    indent = "",
+  ) {
+    let contentMarkdown = "";
+    for (const element of body) {
+      if (element.nature === "test-case") {
+        const test = element as tap.TestCase<Diagnosable>;
+        const status = test.ok ? "✅" : "❌";
+        contentMarkdown += `${indent}- ${status} ${test.description}\n`;
+
+        if (test.directive) {
+          contentMarkdown +=
+            `${indent}  - [${test.directive.nature}] ${test.directive.reason}\n`;
+        }
+
+        if (test.diagnostics) {
+          contentMarkdown += `${indent}  - Diagnostics:\n${indent}${
+            diagnosticsFormatter(test.diagnostics).split("\n").map((line) =>
+              `    ${line}`
+            ).join("\n")
+          }\n`;
+        }
+
+        if (test.subtests) {
+          contentMarkdown += `${indent}  - Subtests:\n${
+            processTestElements(test.subtests.body, indent + "    ")
+          }\n`;
+        }
+      } else if (element.nature === "comment") {
+        const comment = element as tap.CommentNode;
+        contentMarkdown += `${indent}<!-- ${comment.content} -->\n`;
+      }
+    }
+    return contentMarkdown;
   }
 }
