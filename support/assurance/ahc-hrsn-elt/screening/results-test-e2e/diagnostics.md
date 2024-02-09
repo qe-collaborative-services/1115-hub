@@ -19,19 +19,9 @@ sources:
     ingestionIssues: 1
   - uri: >-
       support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx
-    nature: Excel Workbook Sheet
-    tableName: ahc_hrsn_2023_12_25_valid_admin_demographic
-    ingestionIssues: 0
-  - uri: >-
-      support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx
-    nature: Excel Workbook Sheet
-    tableName: ahc_hrsn_2023_12_25_valid_screening
-    ingestionIssues: 0
-  - uri: >-
-      support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx
-    nature: Excel Workbook Sheet
-    tableName: ahc_hrsn_2023_12_25_valid_q_e_admin_data
-    ingestionIssues: 0
+    nature: ERROR
+    tableName: ERROR
+    ingestionIssues: 1
   - uri: >-
       support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx
     nature: ERROR
@@ -61,6 +51,16 @@ sources:
       support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx
     nature: Excel Workbook Sheet
     tableName: ahc_hrsn_2024_01_25_valid_q_e_admin_data
+    ingestionIssues: 0
+  - uri: >-
+      support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx
+    nature: Excel Workbook Sheet
+    tableName: ahc_hrsn_2024_01_25_valid_question_reference
+    ingestionIssues: 0
+  - uri: >-
+      support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx
+    nature: Excel Workbook Sheet
+    tableName: ahc_hrsn_2024_01_25_valid_answer_reference
     ingestionIssues: 0
 ---
 # Orchestration Diagnostics
@@ -182,7 +182,7 @@ CREATE VIEW IF NOT EXISTS "orch_session_diagnostic_text" AS
 
 -- register the current device and session and use the identifiers for all logging
 INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'EXCELSIOR', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO "orch_session" ("orch_session_id", "device_id", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', ('2024-02-08T19:48:19.676Z'), NULL, NULL, NULL, NULL, 'Session 05e8feaa-0bed-5909-a817-39812494b361 markdown diagnostics not provided (not completed?)');
+INSERT INTO "orch_session" ("orch_session_id", "device_id", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', ('2024-02-09T17:38:09.086Z'), NULL, NULL, NULL, NULL, 'Session 05e8feaa-0bed-5909-a817-39812494b361 markdown diagnostics not provided (not completed?)');
 
 -- no after-init SQL found
 ```
@@ -243,143 +243,73 @@ INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "sessio
 -- required by IngestEngine, setup the ingestion entry for logging
 INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a26ce332-3ced-5623-861d-23a2ef78e4a9', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
 INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('bc0c03b5-d1ba-5301-850f-5e4c42c1bf09', '05e8feaa-0bed-5909-a817-39812494b361', 'a26ce332-3ced-5623-861d-23a2ef78e4a9', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx (ahc_hrsn_2023_12_25_valid_admin_demographic)
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('ae477ba1-c7f1-5f34-847a-50bddb7130aa', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', 'ahc_hrsn_2023_12_25_valid_admin_demographic', NULL);
-     
--- state management diagnostics 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839', '05e8feaa-0bed-5909-a817-39812494b361', 'ae477ba1-c7f1-5f34-847a-50bddb7130aa', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'AdminDemographicExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-
--- ingest Excel workbook sheet 'Admin_Demographic' into ahc_hrsn_2023_12_25_valid_admin_demographic using spatial plugin
-INSTALL spatial; LOAD spatial;
-
--- be sure to add src_file_row_number and session_id columns to each row
--- because assurance CTEs require them
-CREATE TABLE ahc_hrsn_2023_12_25_valid_admin_demographic AS
-  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, 'ae477ba1-c7f1-5f34-847a-50bddb7130aa' as session_entry_id
-    FROM st_read('support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', layer='Admin_Demographic', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
-
-WITH required_column_names_in_src AS (
-    SELECT column_name
-      FROM (VALUES ('ADDRESS1'), ('ADDRESS2'), ('ADMINISTRATIVE_SEX'), ('CITY'), ('CONSENT'), ('ENCOUNTER_ID'), ('ETHNICITY_CODE'), ('ETHNICITY_CODE_DESCRIPTION'), ('ETHNICITY_CODE_SYSTEM_NAME'), ('FACILITY ID (ASSIGNING AUTHORITY)'), ('FIRST_NAME'), ('GENDER_IDENTITY_CODE'), ('GENDER_IDENTITY_CODE_SYSTEM_NAME'), ('GENDER_IDENTITY_DESCRIPTION'), ('LAST_NAME'), ('MEDICAID_CIN'), ('MIDDLE_NAME'), ('MPI_ID'), ('PAT_BIRTH_DATE'), ('PAT_MRN_ID'), ('PREFERRED_LANGUAGE_CODE'), ('PREFERRED_LANGUAGE_CODE_SYSTEM_NAME'), ('PREFERRED_LANGUAGE_DESCRIPTION'), ('RACE_CODE'), ('RACE_CODE_DESCRIPTION'), ('RACE_CODE_SYSTEM_NAME'), ('SEX_AT_BIRTH'), ('SEXUAL_ORIENTATION_CODE'), ('SEXUAL_ORIENTATION_CODE_SYSTEM_NAME'), ('SEXUAL_ORIENTATION_DESCRIPTION'), ('STATE'), ('ZIP')) AS required(column_name)
-     WHERE required.column_name NOT IN (
-         SELECT upper(trim(column_name))
-           FROM information_schema.columns
-          WHERE table_name = 'ahc_hrsn_2023_12_25_valid_admin_demographic')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Column',
-           'Required column ' || column_name || ' is missing in ahc_hrsn_2023_12_25_valid_admin_demographic.',
-           'Ensure ahc_hrsn_2023_12_25_valid_admin_demographic contains the column "' || column_name || '"'
-      FROM required_column_names_in_src;
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0', '05e8feaa-0bed-5909-a817-39812494b361', 'ae477ba1-c7f1-5f34-847a-50bddb7130aa', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'AdminDemographicExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx (ahc_hrsn_2023_12_25_valid_screening)
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('ae477ba1-c7f1-5f34-847a-50bddb7130aa', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839', '05e8feaa-0bed-5909-a817-39812494b361', 'ae477ba1-c7f1-5f34-847a-50bddb7130aa', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', 'ahc_hrsn_2023_12_25_valid_screening', NULL);
-     
--- state management diagnostics 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('591191c7-f693-5957-8734-ac87151ca981', '05e8feaa-0bed-5909-a817-39812494b361', '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'ScreeningExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-
--- ingest Excel workbook sheet 'Screening' into ahc_hrsn_2023_12_25_valid_screening using spatial plugin
-INSTALL spatial; LOAD spatial;
-
--- be sure to add src_file_row_number and session_id columns to each row
--- because assurance CTEs require them
-CREATE TABLE ahc_hrsn_2023_12_25_valid_screening AS
-  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49' as session_entry_id
-    FROM st_read('support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', layer='Screening', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
-
-WITH required_column_names_in_src AS (
-    SELECT column_name
-      FROM (VALUES ('ANSWER_CODE_SYSTEM_NAME'), ('ANSWER_CODE'), ('ASSISTANCE_REQUESTED'), ('FACILITY ID (ASSIGNING AUTHORITY)'), ('MEAS_VALUE'), ('PARENT_QUESTION_CODE'), ('PAT_MRN_ID'), ('POTENTIAL_NEED_INDICATED'), ('QUESTION_CODE_SYSTEM_NAME'), ('QUESTION_CODE'), ('QUESTION'), ('RECORDED_TIME'), ('SCREENING_CODE_SYSTEM_NAME'), ('SCREENING_CODE'), ('SCREENING_METHOD'), ('SCREENING_NAME'), ('SDOH_DOMAIN'), ('UCUM_UNITS')) AS required(column_name)
-     WHERE required.column_name NOT IN (
-         SELECT upper(trim(column_name))
-           FROM information_schema.columns
-          WHERE table_name = 'ahc_hrsn_2023_12_25_valid_screening')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Column',
-           'Required column ' || column_name || ' is missing in ahc_hrsn_2023_12_25_valid_screening.',
-           'Ensure ahc_hrsn_2023_12_25_valid_screening contains the column "' || column_name || '"'
-      FROM required_column_names_in_src;
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3b4eb0e5-6239-537a-8e67-e50e172e72a2', '05e8feaa-0bed-5909-a817-39812494b361', '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'ScreeningExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx (ahc_hrsn_2023_12_25_valid_q_e_admin_data)
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', '05e8feaa-0bed-5909-a817-39812494b361', 'b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('071f8fe1-4899-5c71-9c86-7d7377661d45', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', 'ahc_hrsn_2023_12_25_valid_q_e_admin_data', NULL);
-     
--- state management diagnostics 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('86b4a49e-7378-5159-9f41-b005208c31bc', '05e8feaa-0bed-5909-a817-39812494b361', '071f8fe1-4899-5c71-9c86-7d7377661d45', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'QeAdminDataExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-
--- ingest Excel workbook sheet 'QE_Admin_Data' into ahc_hrsn_2023_12_25_valid_q_e_admin_data using spatial plugin
-INSTALL spatial; LOAD spatial;
-
--- be sure to add src_file_row_number and session_id columns to each row
--- because assurance CTEs require them
-CREATE TABLE ahc_hrsn_2023_12_25_valid_q_e_admin_data AS
-  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '071f8fe1-4899-5c71-9c86-7d7377661d45' as session_entry_id
-    FROM st_read('support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', layer='QE_Admin_Data', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
-
-WITH required_column_names_in_src AS (
-    SELECT column_name
-      FROM (VALUES ('PAT_MRN_ID'), ('FACILITY ID (ASSIGNING AUTHORITY)'), ('FACILITY_LONG_NAME'), ('ORGANIZATION_TYPE'), ('FACILITY ADDRESS1'), ('FACILITY ADDRESS2'), ('FACILITY CITY'), ('FACILITY STATE'), ('FACILITY ZIP'), ('VISIT_PART_2_FLAG'), ('VISIT_OMH_FLAG'), ('VISIT_OPWDD_FLAG')) AS required(column_name)
-     WHERE required.column_name NOT IN (
-         SELECT upper(trim(column_name))
-           FROM information_schema.columns
-          WHERE table_name = 'ahc_hrsn_2023_12_25_valid_q_e_admin_data')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Column',
-           'Required column ' || column_name || ' is missing in ahc_hrsn_2023_12_25_valid_q_e_admin_data.',
-           'Ensure ahc_hrsn_2023_12_25_valid_q_e_admin_data contains the column "' || column_name || '"'
-      FROM required_column_names_in_src;
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a530fe1b-57ef-5a90-8bea-835ece2483da', '05e8feaa-0bed-5909-a817-39812494b361', '071f8fe1-4899-5c71-9c86-7d7377661d45', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'QeAdminDataExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('591191c7-f693-5957-8734-ac87151ca981', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('3b4eb0e5-6239-537a-8e67-e50e172e72a2', '05e8feaa-0bed-5909-a817-39812494b361', '591191c7-f693-5957-8734-ac87151ca981', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''ahc-hrsn-2023-12-25-valid.xlsx'' (available: Admin_Demographic, Screening, QE_Admin_Data)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('071f8fe1-4899-5c71-9c86-7d7377661d45', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('86b4a49e-7378-5159-9f41-b005208c31bc', '05e8feaa-0bed-5909-a817-39812494b361', '071f8fe1-4899-5c71-9c86-7d7377661d45', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''ahc-hrsn-2023-12-25-valid.xlsx'' (available: Admin_Demographic, Screening, QE_Admin_Data)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx', NULL, NULL);
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a3fe7098-8ae8-5612-81ac-cbe10780c19b', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('99e72a60-96ab-5ef1-a3af-3e7759777664', '05e8feaa-0bed-5909-a817-39812494b361', 'a3fe7098-8ae8-5612-81ac-cbe10780c19b', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a530fe1b-57ef-5a90-8bea-835ece2483da', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('a3fe7098-8ae8-5612-81ac-cbe10780c19b', '05e8feaa-0bed-5909-a817-39812494b361', 'a530fe1b-57ef-5a90-8bea-835ece2483da', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e36daa69-3c63-5384-b6a7-03fa3b00641d', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('89f7ec04-277a-5799-afaa-a70d0f2a8ed5', '05e8feaa-0bed-5909-a817-39812494b361', 'e36daa69-3c63-5384-b6a7-03fa3b00641d', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('99e72a60-96ab-5ef1-a3af-3e7759777664', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('e36daa69-3c63-5384-b6a7-03fa3b00641d', '05e8feaa-0bed-5909-a817-39812494b361', '99e72a60-96ab-5ef1-a3af-3e7759777664', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('c60cf3db-b1bf-5103-b278-b0c128ce924a', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f', '05e8feaa-0bed-5909-a817-39812494b361', 'c60cf3db-b1bf-5103-b278-b0c128ce924a', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('89f7ec04-277a-5799-afaa-a70d0f2a8ed5', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('c60cf3db-b1bf-5103-b278-b0c128ce924a', '05e8feaa-0bed-5909-a817-39812494b361', '89f7ec04-277a-5799-afaa-a70d0f2a8ed5', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('b10e248d-8c94-59ec-83fc-a1249dd3b111', '05e8feaa-0bed-5909-a817-39812494b361', 'b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('5222b730-9add-5b52-b0c9-6f2506b0af9d', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('fa7874f6-f848-572b-a9ab-9db4c8d5e959', '05e8feaa-0bed-5909-a817-39812494b361', '5222b730-9add-5b52-b0c9-6f2506b0af9d', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b10e248d-8c94-59ec-83fc-a1249dd3b111', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('5222b730-9add-5b52-b0c9-6f2506b0af9d', '05e8feaa-0bed-5909-a817-39812494b361', 'b10e248d-8c94-59ec-83fc-a1249dd3b111', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('c302047e-21cf-5059-a32c-e81a9bd3a9b9', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('3252fee6-3a9a-5f4c-81c6-739201046d79', '05e8feaa-0bed-5909-a817-39812494b361', 'c302047e-21cf-5059-a32c-e81a9bd3a9b9', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('fa7874f6-f848-572b-a9ab-9db4c8d5e959', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('c302047e-21cf-5059-a32c-e81a9bd3a9b9', '05e8feaa-0bed-5909-a817-39812494b361', 'fa7874f6-f848-572b-a9ab-9db4c8d5e959', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('78d6a904-035e-54ae-8ac2-ca5cdf3f75f7', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('9860873a-c387-5d98-9930-4ff296eb7192', '05e8feaa-0bed-5909-a817-39812494b361', '78d6a904-035e-54ae-8ac2-ca5cdf3f75f7', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('3252fee6-3a9a-5f4c-81c6-739201046d79', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('78d6a904-035e-54ae-8ac2-ca5cdf3f75f7', '05e8feaa-0bed-5909-a817-39812494b361', '3252fee6-3a9a-5f4c-81c6-739201046d79', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('d5d6e25d-81b4-5f98-8b91-ea2dbc155a9c', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('46171763-bd21-57a8-a403-0785f72643cf', '05e8feaa-0bed-5909-a817-39812494b361', 'd5d6e25d-81b4-5f98-8b91-ea2dbc155a9c', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('4971a2f5-06a3-5898-823d-364145d3b9a5', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('c2c0cbca-70cb-54f6-9dc7-66b47c4f3157', '05e8feaa-0bed-5909-a817-39812494b361', '4971a2f5-06a3-5898-823d-364145d3b9a5', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('8640a4b5-53ef-506e-bcde-83f00315d4b2', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('544998d3-58c5-5f65-9dc8-9f998508495f', '05e8feaa-0bed-5909-a817-39812494b361', '8640a4b5-53ef-506e-bcde-83f00315d4b2', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail.csv (synthetic_fail)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('9860873a-c387-5d98-9930-4ff296eb7192', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail.csv', 'synthetic_fail', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('0adb81bc-3df2-5f86-99cc-2d20e1dd5efd', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail.csv', 'synthetic_fail', NULL);
 
 -- state management diagnostics 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d5d6e25d-81b4-5f98-8b91-ea2dbc155a9c', '05e8feaa-0bed-5909-a817-39812494b361', '9860873a-c387-5d98-9930-4ff296eb7192', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'ScreeningCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('10d0290c-b2eb-581e-b627-b5b8fcbb830f', '05e8feaa-0bed-5909-a817-39812494b361', '0adb81bc-3df2-5f86-99cc-2d20e1dd5efd', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'ScreeningCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- be sure to add src_file_row_number and session_id columns to each row
 -- because assurance CTEs require them
 CREATE TABLE synthetic_fail AS
-  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '9860873a-c387-5d98-9930-4ff296eb7192' as session_entry_id
+  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '0adb81bc-3df2-5f86-99cc-2d20e1dd5efd' as session_entry_id
     FROM read_csv_auto('support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail.csv');
 
 WITH required_column_names_in_src AS (
@@ -393,20 +323,20 @@ WITH required_column_names_in_src AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '9860873a-c387-5d98-9930-4ff296eb7192',
+           '0adb81bc-3df2-5f86-99cc-2d20e1dd5efd',
            'Missing Column',
            'Required column ' || column_name || ' is missing in synthetic_fail.',
            'Ensure synthetic_fail contains the column "' || column_name || '"'
       FROM required_column_names_in_src;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('46171763-bd21-57a8-a403-0785f72643cf', '05e8feaa-0bed-5909-a817-39812494b361', '9860873a-c387-5d98-9930-4ff296eb7192', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'ScreeningCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('e6951d0b-be59-58c3-8a04-01181208c601', '05e8feaa-0bed-5909-a817-39812494b361', '0adb81bc-3df2-5f86-99cc-2d20e1dd5efd', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'ScreeningCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
     
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx (ahc_hrsn_2024_01_25_valid_admin_demographic)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('4971a2f5-06a3-5898-823d-364145d3b9a5', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', 'ahc_hrsn_2024_01_25_valid_admin_demographic', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('2afb3098-bcfd-5a54-8ebb-4d65d399c55e', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', 'ahc_hrsn_2024_01_25_valid_admin_demographic', NULL);
      
 -- state management diagnostics 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('c2c0cbca-70cb-54f6-9dc7-66b47c4f3157', '05e8feaa-0bed-5909-a817-39812494b361', '4971a2f5-06a3-5898-823d-364145d3b9a5', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'AdminDemographicExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0e074bf2-f1fe-55d4-bd44-a88cbed79aeb', '05e8feaa-0bed-5909-a817-39812494b361', '2afb3098-bcfd-5a54-8ebb-4d65d399c55e', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'AdminDemographicExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- ingest Excel workbook sheet 'Admin_Demographic' into ahc_hrsn_2024_01_25_valid_admin_demographic using spatial plugin
 INSTALL spatial; LOAD spatial;
@@ -414,33 +344,33 @@ INSTALL spatial; LOAD spatial;
 -- be sure to add src_file_row_number and session_id columns to each row
 -- because assurance CTEs require them
 CREATE TABLE ahc_hrsn_2024_01_25_valid_admin_demographic AS
-  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '4971a2f5-06a3-5898-823d-364145d3b9a5' as session_entry_id
+  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '2afb3098-bcfd-5a54-8ebb-4d65d399c55e' as session_entry_id
     FROM st_read('support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', layer='Admin_Demographic', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
 
 WITH required_column_names_in_src AS (
     SELECT column_name
-      FROM (VALUES ('ADDRESS1'), ('ADDRESS2'), ('ADMINISTRATIVE_SEX'), ('CITY'), ('CONSENT'), ('ENCOUNTER_ID'), ('ETHNICITY_CODE'), ('ETHNICITY_CODE_DESCRIPTION'), ('ETHNICITY_CODE_SYSTEM_NAME'), ('FACILITY ID (ASSIGNING AUTHORITY)'), ('FIRST_NAME'), ('GENDER_IDENTITY_CODE'), ('GENDER_IDENTITY_CODE_SYSTEM_NAME'), ('GENDER_IDENTITY_DESCRIPTION'), ('LAST_NAME'), ('MEDICAID_CIN'), ('MIDDLE_NAME'), ('MPI_ID'), ('PAT_BIRTH_DATE'), ('PAT_MRN_ID'), ('PREFERRED_LANGUAGE_CODE'), ('PREFERRED_LANGUAGE_CODE_SYSTEM_NAME'), ('PREFERRED_LANGUAGE_DESCRIPTION'), ('RACE_CODE'), ('RACE_CODE_DESCRIPTION'), ('RACE_CODE_SYSTEM_NAME'), ('SEX_AT_BIRTH'), ('SEXUAL_ORIENTATION_CODE'), ('SEXUAL_ORIENTATION_CODE_SYSTEM_NAME'), ('SEXUAL_ORIENTATION_DESCRIPTION'), ('STATE'), ('ZIP')) AS required(column_name)
+      FROM (VALUES ('ADDRESS1'), ('ADDRESS2'), ('ADMINISTRATIVE_SEX'), ('CITY'), ('CONSENT '), ('ENCOUNTER_ID'), ('ETHNICITY_CODE'), ('ETHNICITY_CODE_DESCRIPTION'), ('ETHNICITY_CODE_SYSTEM_NAME'), ('FACILITY ID (Assigning authority)'), ('FIRST_NAME'), ('GENDER_IDENTITY_CODE'), ('GENDER_IDENTITY_CODE_SYSTEM_NAME'), ('GENDER_IDENTITY_DESCRIPTION'), ('LAST_NAME'), ('MEDICAID_CIN'), ('MIDDLE_NAME'), ('MPI_ID'), ('PAT_BIRTH_DATE'), ('PAT_MRN_ID'), ('PREFERRED_LANGUAGE_CODE'), ('PREFERRED_LANGUAGE_CODE_SYSTEM_NAME'), ('PREFERRED_LANGUAGE_DESCRIPTION'), ('RACE_CODE'), ('RACE_CODE_DESCRIPTION'), ('RACE_CODE_SYSTEM_NAME'), ('SEX_AT_BIRTH'), ('SEXUAL_ORIENTATION_CODE'), ('SEXUAL_ORIENTATION_CODE_SYSTEM_NAME'), ('SEXUAL_ORIENTATION_DESCRIPTION'), ('STATE'), ('ZIP')) AS required(column_name)
      WHERE required.column_name NOT IN (
-         SELECT upper(trim(column_name))
+         SELECT column_name
            FROM information_schema.columns
           WHERE table_name = 'ahc_hrsn_2024_01_25_valid_admin_demographic')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Column',
            'Required column ' || column_name || ' is missing in ahc_hrsn_2024_01_25_valid_admin_demographic.',
            'Ensure ahc_hrsn_2024_01_25_valid_admin_demographic contains the column "' || column_name || '"'
       FROM required_column_names_in_src;
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8640a4b5-53ef-506e-bcde-83f00315d4b2', '05e8feaa-0bed-5909-a817-39812494b361', '4971a2f5-06a3-5898-823d-364145d3b9a5', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'AdminDemographicExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('e8b3dab4-5058-5c79-8088-45b423119149', '05e8feaa-0bed-5909-a817-39812494b361', '2afb3098-bcfd-5a54-8ebb-4d65d399c55e', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'AdminDemographicExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx (ahc_hrsn_2024_01_25_valid_screening)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('544998d3-58c5-5f65-9dc8-9f998508495f', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', 'ahc_hrsn_2024_01_25_valid_screening', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('9dabd022-4a26-55f2-98f4-e534e7704b23', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', 'ahc_hrsn_2024_01_25_valid_screening', NULL);
      
 -- state management diagnostics 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0adb81bc-3df2-5f86-99cc-2d20e1dd5efd', '05e8feaa-0bed-5909-a817-39812494b361', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'ScreeningExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('80af4eff-d697-565b-9e3f-a587e322b1da', '05e8feaa-0bed-5909-a817-39812494b361', '9dabd022-4a26-55f2-98f4-e534e7704b23', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'ScreeningExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- ingest Excel workbook sheet 'Screening' into ahc_hrsn_2024_01_25_valid_screening using spatial plugin
 INSTALL spatial; LOAD spatial;
@@ -448,33 +378,33 @@ INSTALL spatial; LOAD spatial;
 -- be sure to add src_file_row_number and session_id columns to each row
 -- because assurance CTEs require them
 CREATE TABLE ahc_hrsn_2024_01_25_valid_screening AS
-  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '544998d3-58c5-5f65-9dc8-9f998508495f' as session_entry_id
+  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '9dabd022-4a26-55f2-98f4-e534e7704b23' as session_entry_id
     FROM st_read('support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', layer='Screening', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
 
 WITH required_column_names_in_src AS (
     SELECT column_name
-      FROM (VALUES ('ANSWER_CODE_SYSTEM_NAME'), ('ANSWER_CODE'), ('ASSISTANCE_REQUESTED'), ('FACILITY ID (ASSIGNING AUTHORITY)'), ('MEAS_VALUE'), ('PARENT_QUESTION_CODE'), ('PAT_MRN_ID'), ('POTENTIAL_NEED_INDICATED'), ('QUESTION_CODE_SYSTEM_NAME'), ('QUESTION_CODE'), ('QUESTION'), ('RECORDED_TIME'), ('SCREENING_CODE_SYSTEM_NAME'), ('SCREENING_CODE'), ('SCREENING_METHOD'), ('SCREENING_NAME'), ('SDOH_DOMAIN'), ('UCUM_UNITS')) AS required(column_name)
+      FROM (VALUES ('ANSWER_CODE_SYSTEM_NAME'), ('ANSWER_CODE'), ('ASSISTANCE_REQUESTED'), ('FACILITY ID (Assigning authority)'), ('MEAS_VALUE'), ('PARENT_QUESTION_CODE'), ('PAT_MRN_ID'), ('POTENTIAL_NEED_INDICATED'), ('QUESTION_CODE_SYSTEM_NAME'), ('QUESTION_CODE'), ('QUESTION'), ('RECORDED_TIME'), ('SCREENING_CODE_SYSTEM_NAME'), ('SCREENING_CODE'), ('SCREENING_METHOD'), ('SCREENING_NAME'), ('SDOH_DOMAIN'), ('UCUM_UNITS')) AS required(column_name)
      WHERE required.column_name NOT IN (
-         SELECT upper(trim(column_name))
+         SELECT column_name
            FROM information_schema.columns
           WHERE table_name = 'ahc_hrsn_2024_01_25_valid_screening')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Column',
            'Required column ' || column_name || ' is missing in ahc_hrsn_2024_01_25_valid_screening.',
            'Ensure ahc_hrsn_2024_01_25_valid_screening contains the column "' || column_name || '"'
       FROM required_column_names_in_src;
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('10d0290c-b2eb-581e-b627-b5b8fcbb830f', '05e8feaa-0bed-5909-a817-39812494b361', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'ScreeningExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6fcd9df5-34cf-5c09-8fb5-e73617e28d73', '05e8feaa-0bed-5909-a817-39812494b361', '9dabd022-4a26-55f2-98f4-e534e7704b23', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'ScreeningExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx (ahc_hrsn_2024_01_25_valid_q_e_admin_data)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e6951d0b-be59-58c3-8a04-01181208c601', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', 'ahc_hrsn_2024_01_25_valid_q_e_admin_data', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', 'ahc_hrsn_2024_01_25_valid_q_e_admin_data', NULL);
      
 -- state management diagnostics 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('2afb3098-bcfd-5a54-8ebb-4d65d399c55e', '05e8feaa-0bed-5909-a817-39812494b361', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'QeAdminDataExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5b77d127-e62a-50a9-acee-bea63ff64dd5', '05e8feaa-0bed-5909-a817-39812494b361', '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'QeAdminDataExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- ingest Excel workbook sheet 'QE_Admin_Data' into ahc_hrsn_2024_01_25_valid_q_e_admin_data using spatial plugin
 INSTALL spatial; LOAD spatial;
@@ -482,26 +412,94 @@ INSTALL spatial; LOAD spatial;
 -- be sure to add src_file_row_number and session_id columns to each row
 -- because assurance CTEs require them
 CREATE TABLE ahc_hrsn_2024_01_25_valid_q_e_admin_data AS
-  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, 'e6951d0b-be59-58c3-8a04-01181208c601' as session_entry_id
+  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6' as session_entry_id
     FROM st_read('support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', layer='QE_Admin_Data', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
 
 WITH required_column_names_in_src AS (
     SELECT column_name
-      FROM (VALUES ('PAT_MRN_ID'), ('FACILITY ID (ASSIGNING AUTHORITY)'), ('FACILITY_LONG_NAME'), ('ORGANIZATION_TYPE'), ('FACILITY ADDRESS1'), ('FACILITY ADDRESS2'), ('FACILITY CITY'), ('FACILITY STATE'), ('FACILITY ZIP'), ('VISIT_PART_2_FLAG'), ('VISIT_OMH_FLAG'), ('VISIT_OPWDD_FLAG')) AS required(column_name)
+      FROM (VALUES ('PAT_MRN_ID'), ('FACILITY ID (Assigning authority)'), ('FACILITY_LONG_NAME'), ('ORGANIZATION_TYPE'), ('FACILITY ADDRESS1'), ('FACILITY ADDRESS2'), ('FACILITY CITY'), ('FACILITY STATE'), ('FACILITY ZIP'), ('VISIT_PART_2_FLAG'), ('VISIT_OMH_FLAG'), ('VISIT_OPWDD_FLAG')) AS required(column_name)
      WHERE required.column_name NOT IN (
-         SELECT upper(trim(column_name))
+         SELECT column_name
            FROM information_schema.columns
           WHERE table_name = 'ahc_hrsn_2024_01_25_valid_q_e_admin_data')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Column',
            'Required column ' || column_name || ' is missing in ahc_hrsn_2024_01_25_valid_q_e_admin_data.',
            'Ensure ahc_hrsn_2024_01_25_valid_q_e_admin_data contains the column "' || column_name || '"'
       FROM required_column_names_in_src;
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0e074bf2-f1fe-55d4-bd44-a88cbed79aeb', '05e8feaa-0bed-5909-a817-39812494b361', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'QeAdminDataExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a92a6466-6fe4-58d7-8948-e2e09dc2fec2', '05e8feaa-0bed-5909-a817-39812494b361', '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'QeAdminDataExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx (ahc_hrsn_2024_01_25_valid_question_reference)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('34e90086-3d06-5b10-972d-7d0b40a02289', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', 'ahc_hrsn_2024_01_25_valid_question_reference', NULL);
+     
+-- state management diagnostics 
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('21d7e4ec-32e3-5e20-9029-28fdd6c5fa66', '05e8feaa-0bed-5909-a817-39812494b361', '34e90086-3d06-5b10-972d-7d0b40a02289', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'QuestionReferenceExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+
+-- ingest Excel workbook sheet 'Question_Reference' into ahc_hrsn_2024_01_25_valid_question_reference using spatial plugin
+INSTALL spatial; LOAD spatial;
+
+-- be sure to add src_file_row_number and session_id columns to each row
+-- because assurance CTEs require them
+CREATE TABLE ahc_hrsn_2024_01_25_valid_question_reference AS
+  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '34e90086-3d06-5b10-972d-7d0b40a02289' as session_entry_id
+    FROM st_read('support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', layer='Question_Reference', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
+
+WITH required_column_names_in_src AS (
+    SELECT column_name
+      FROM (VALUES ('SCREENING_CODE'), ('QUESTION_CODE'), ('QUESTION'), ('SDOH_DOMAIN')) AS required(column_name)
+     WHERE required.column_name NOT IN (
+         SELECT column_name
+           FROM information_schema.columns
+          WHERE table_name = 'ahc_hrsn_2024_01_25_valid_question_reference')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '34e90086-3d06-5b10-972d-7d0b40a02289',
+           'Missing Column',
+           'Required column ' || column_name || ' is missing in ahc_hrsn_2024_01_25_valid_question_reference.',
+           'Ensure ahc_hrsn_2024_01_25_valid_question_reference contains the column "' || column_name || '"'
+      FROM required_column_names_in_src;
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4f7e4436-c5f6-5ba1-9793-580ab66789fb', '05e8feaa-0bed-5909-a817-39812494b361', '34e90086-3d06-5b10-972d-7d0b40a02289', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'QuestionReferenceExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx (ahc_hrsn_2024_01_25_valid_answer_reference)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('86ff3ab6-900d-5474-b63c-cbcac3c66f1a', '05e8feaa-0bed-5909-a817-39812494b361', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', 'ahc_hrsn_2024_01_25_valid_answer_reference', NULL);
+     
+-- state management diagnostics 
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f6d4aff4-4b71-5662-8f57-00ee247dc57c', '05e8feaa-0bed-5909-a817-39812494b361', '86ff3ab6-900d-5474-b63c-cbcac3c66f1a', 'ENTER(ingest)', 'ATTEMPT_EXCEL_INGEST', NULL, 'AnswerReferenceExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+
+-- ingest Excel workbook sheet 'Answer_Reference' into ahc_hrsn_2024_01_25_valid_answer_reference using spatial plugin
+INSTALL spatial; LOAD spatial;
+
+-- be sure to add src_file_row_number and session_id columns to each row
+-- because assurance CTEs require them
+CREATE TABLE ahc_hrsn_2024_01_25_valid_answer_reference AS
+  SELECT *, row_number() OVER () as src_file_row_number, '05e8feaa-0bed-5909-a817-39812494b361' as session_id, '86ff3ab6-900d-5474-b63c-cbcac3c66f1a' as session_entry_id
+    FROM st_read('support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2024-01-25-valid.xlsx', layer='Answer_Reference', open_options=['HEADERS=FORCE', 'FIELD_TYPES=AUTO']);          
+
+WITH required_column_names_in_src AS (
+    SELECT column_name
+      FROM (VALUES ('QUESTION_CODE'), ('ANSWER_CODE'), ('MEAS_VALUE')) AS required(column_name)
+     WHERE required.column_name NOT IN (
+         SELECT column_name
+           FROM information_schema.columns
+          WHERE table_name = 'ahc_hrsn_2024_01_25_valid_answer_reference')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '86ff3ab6-900d-5474-b63c-cbcac3c66f1a',
+           'Missing Column',
+           'Required column ' || column_name || ' is missing in ahc_hrsn_2024_01_25_valid_answer_reference.',
+           'Ensure ahc_hrsn_2024_01_25_valid_answer_reference contains the column "' || column_name || '"'
+      FROM required_column_names_in_src;
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', '05e8feaa-0bed-5909-a817-39812494b361', '86ff3ab6-900d-5474-b63c-cbcac3c66f1a', 'ATTEMPT_EXCEL_INGEST', 'INGESTED_EXCEL_WORKBOOK_SHEET', NULL, 'AnswerReferenceExcelSheetIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
 
 SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '05e8feaa-0bed-5909-a817-39812494b361'
 ```
@@ -510,33 +508,41 @@ SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, inval
 [{"session_entry_id":"641dff51-97fd-56b3-8443-c1ed568a6d66","orch_session_issue_id":"d70a4700-6b40-52fc-a7a2-69ef0d7f69ff","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
 {"session_entry_id":"47277588-99e8-59f5-8384-b24344a86073","orch_session_issue_id":"58b22e99-5854-53bf-adbe-08e67df99b85","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
 {"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","orch_session_issue_id":"bc0c03b5-d1ba-5301-850f-5e4c42c1bf09","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
-{"session_entry_id":"a3fe7098-8ae8-5612-81ac-cbe10780c19b","orch_session_issue_id":"99e72a60-96ab-5ef1-a3af-3e7759777664","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
-{"session_entry_id":"e36daa69-3c63-5384-b6a7-03fa3b00641d","orch_session_issue_id":"89f7ec04-277a-5799-afaa-a70d0f2a8ed5","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
-{"session_entry_id":"c60cf3db-b1bf-5103-b278-b0c128ce924a","orch_session_issue_id":"b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
-{"session_entry_id":"b10e248d-8c94-59ec-83fc-a1249dd3b111","orch_session_issue_id":"5222b730-9add-5b52-b0c9-6f2506b0af9d","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
-{"session_entry_id":"fa7874f6-f848-572b-a9ab-9db4c8d5e959","orch_session_issue_id":"c302047e-21cf-5059-a32c-e81a9bd3a9b9","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
-{"session_entry_id":"3252fee6-3a9a-5f4c-81c6-739201046d79","orch_session_issue_id":"78d6a904-035e-54ae-8ac2-ca5cdf3f75f7","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"5a4d2bd9-748e-4274-a749-ceb23b747654","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE_SYSTEM_NAME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"a03c08b3-dffa-4e09-9bde-071794eb6c59","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"8d6acf52-d452-4eeb-86b8-e66888bf5ce7","issue_type":"Missing Column","issue_message":"Required column ENCOUNTER_ID is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"2ee80b0f-8b77-48af-b9b4-011c3f8fcaa9","issue_type":"Missing Column","issue_message":"Required column FACILITY is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"a5ef7e46-c5f3-4c3f-81b1-03d9378c85f1","issue_type":"Missing Column","issue_message":"Required column FIRST_NAME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"9a6b84f0-b557-4515-bb9f-51127233baac","issue_type":"Missing Column","issue_message":"Required column LAST_NAME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"99242474-970e-469a-b21a-7ea28fd16460","issue_type":"Missing Column","issue_message":"Required column MEAS_VALUE is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"c3acff95-a477-43c8-a701-3da5331d61a6","issue_type":"Missing Column","issue_message":"Required column MEDICAID_CIN is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"54a8e73a-7cb5-4955-9470-dfd2fc3c434d","issue_type":"Missing Column","issue_message":"Required column NEED_INDICATED is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"a64ad6d7-3e16-4925-b31b-2626c6b58c87","issue_type":"Missing Column","issue_message":"Required column PAT_BIRTH_DATE is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"517ad31b-796a-497c-be46-6d8ab40dbe6e","issue_type":"Missing Column","issue_message":"Required column PAT_MRN_ID is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"63b59fd8-2168-4192-9062-977a1cd2e9ca","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE_SYSTEM_NAME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"0e0caaaa-f4d6-428a-a546-3362e9996f8f","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"390c013d-6728-429c-b151-ca4b4ee55999","issue_type":"Missing Column","issue_message":"Required column QUESTION is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"53585609-de98-4fe3-a0b9-260669e7872e","issue_type":"Missing Column","issue_message":"Required column RECORDED_TIME is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"53133ba4-02a2-401a-96d5-6927fd64c48c","issue_type":"Missing Column","issue_message":"Required column SDOH_DOMAIN is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"ea336bc6-a6a4-4e64-8663-91e9b9acb693","issue_type":"Missing Column","issue_message":"Required column SURVEY_ID is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"eddf1b52-43b2-4fee-ae2e-4cf0132155de","issue_type":"Missing Column","issue_message":"Required column SURVEY is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"3941cde7-4a7a-4fae-8352-701ad1660e9d","issue_type":"Missing Column","issue_message":"Required column VISIT_OMH_FLAG is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"24c75920-8411-4c99-a28f-31c6c985d0aa","issue_type":"Missing Column","issue_message":"Required column VISIT_OPWDD_FLAG is missing in synthetic_fail.","invalid_value":null},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"a3c1db45-da8c-46b3-98d5-0774ae3fd1a1","issue_type":"Missing Column","issue_message":"Required column VISIT_PART_2_FLAG is missing in synthetic_fail.","invalid_value":null}]
+{"session_entry_id":"ae477ba1-c7f1-5f34-847a-50bddb7130aa","orch_session_issue_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
+{"session_entry_id":"b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0","orch_session_issue_id":"7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
+{"session_entry_id":"591191c7-f693-5957-8734-ac87151ca981","orch_session_issue_id":"3b4eb0e5-6239-537a-8e67-e50e172e72a2","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'ahc-hrsn-2023-12-25-valid.xlsx' (available: Admin_Demographic, Screening, QE_Admin_Data)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx"},
+{"session_entry_id":"071f8fe1-4899-5c71-9c86-7d7377661d45","orch_session_issue_id":"86b4a49e-7378-5159-9f41-b005208c31bc","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'ahc-hrsn-2023-12-25-valid.xlsx' (available: Admin_Demographic, Screening, QE_Admin_Data)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-25-valid.xlsx"},
+{"session_entry_id":"a530fe1b-57ef-5a90-8bea-835ece2483da","orch_session_issue_id":"a3fe7098-8ae8-5612-81ac-cbe10780c19b","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"99e72a60-96ab-5ef1-a3af-3e7759777664","orch_session_issue_id":"e36daa69-3c63-5384-b6a7-03fa3b00641d","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"89f7ec04-277a-5799-afaa-a70d0f2a8ed5","orch_session_issue_id":"c60cf3db-b1bf-5103-b278-b0c128ce924a","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f","orch_session_issue_id":"b10e248d-8c94-59ec-83fc-a1249dd3b111","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"5222b730-9add-5b52-b0c9-6f2506b0af9d","orch_session_issue_id":"fa7874f6-f848-572b-a9ab-9db4c8d5e959","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"c302047e-21cf-5059-a32c-e81a9bd3a9b9","orch_session_issue_id":"3252fee6-3a9a-5f4c-81c6-739201046d79","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"78d6a904-035e-54ae-8ac2-ca5cdf3f75f7","orch_session_issue_id":"9860873a-c387-5d98-9930-4ff296eb7192","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"d5d6e25d-81b4-5f98-8b91-ea2dbc155a9c","orch_session_issue_id":"46171763-bd21-57a8-a403-0785f72643cf","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"4971a2f5-06a3-5898-823d-364145d3b9a5","orch_session_issue_id":"c2c0cbca-70cb-54f6-9dc7-66b47c4f3157","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"8640a4b5-53ef-506e-bcde-83f00315d4b2","orch_session_issue_id":"544998d3-58c5-5f65-9dc8-9f998508495f","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"14ec0063-7360-4d62-be4c-2f49738e623f","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE_SYSTEM_NAME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"6e9d04bb-4f75-4883-8639-20ae9b86180e","issue_type":"Missing Column","issue_message":"Required column ANSWER_CODE is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"30caaf6c-03b3-4c0d-8def-03af6b48e515","issue_type":"Missing Column","issue_message":"Required column ENCOUNTER_ID is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"443f5916-49c0-4036-a957-77016ca8cc23","issue_type":"Missing Column","issue_message":"Required column FACILITY is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"d4632564-4dc6-4961-a164-9b7b291d8760","issue_type":"Missing Column","issue_message":"Required column FIRST_NAME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"e28b592c-0f1a-4be1-94a7-943895a4176a","issue_type":"Missing Column","issue_message":"Required column LAST_NAME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"c6cb5fe2-8832-4f68-bfcc-66ccd8e55b17","issue_type":"Missing Column","issue_message":"Required column MEAS_VALUE is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"8116555c-8307-4773-8b0e-e293c5d4dc04","issue_type":"Missing Column","issue_message":"Required column MEDICAID_CIN is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"85e71def-7059-4002-9cfb-f23de73e6417","issue_type":"Missing Column","issue_message":"Required column NEED_INDICATED is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"d02b7e19-a3ed-428c-96d1-87af9526d558","issue_type":"Missing Column","issue_message":"Required column PAT_BIRTH_DATE is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"5b3e8525-f32a-4787-bda0-9c1c3925efc7","issue_type":"Missing Column","issue_message":"Required column PAT_MRN_ID is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"df8cb8ef-e5f6-4ff2-81ee-c4e8b67b76df","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE_SYSTEM_NAME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"9b151a91-f66d-424c-9415-dd53f54bfa48","issue_type":"Missing Column","issue_message":"Required column QUESTION_CODE is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"3f25232e-f6ee-40dc-96e9-bfd05436839b","issue_type":"Missing Column","issue_message":"Required column QUESTION is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"4625e5be-dbe8-4926-88f2-4ae020a2d6df","issue_type":"Missing Column","issue_message":"Required column RECORDED_TIME is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"6a8a558c-7827-4b0b-82ce-41aaa2000dac","issue_type":"Missing Column","issue_message":"Required column SDOH_DOMAIN is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"83f4c510-032b-45bd-8748-58831f88ae38","issue_type":"Missing Column","issue_message":"Required column SURVEY_ID is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"f2ec62c5-6d98-4a28-8b41-2f3e9a98fef6","issue_type":"Missing Column","issue_message":"Required column SURVEY is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"c8dba378-3986-49aa-bde4-3e66a7b799e1","issue_type":"Missing Column","issue_message":"Required column VISIT_OMH_FLAG is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"ec9e6a0b-bd83-4d8f-83c9-197e6a3823a8","issue_type":"Missing Column","issue_message":"Required column VISIT_OPWDD_FLAG is missing in synthetic_fail.","invalid_value":null},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"8b46621d-0bbe-4d3f-a429-2a126c5fdf17","issue_type":"Missing Column","issue_message":"Required column VISIT_PART_2_FLAG is missing in synthetic_fail.","invalid_value":null}]
 
 ```
 No STDERR emitted by `ingest`.
@@ -550,7 +556,7 @@ No STDERR emitted by `ingest`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('80af4eff-d697-565b-9e3f-a587e322b1da', '05e8feaa-0bed-5909-a817-39812494b361', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('9f13dd7d-9ff8-509d-b716-cde856c5f0f0', '05e8feaa-0bed-5909-a817-39812494b361', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 WITH mandatory_value AS (
     SELECT 'PAT_MRN_ID' AS issue_column,
@@ -1079,1194 +1085,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Use only allowed values ''TRUE'',''FALSE'' in ' || issue_column
       FROM allowed_values;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4f7e4436-c5f6-5ba1-9793-580ab66789fb', '05e8feaa-0bed-5909-a817-39812494b361', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05e8feaa-0bed-5909-a817-39812494b361', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6fcd9df5-34cf-5c09-8fb5-e73617e28d73', '05e8feaa-0bed-5909-a817-39812494b361', 'ae477ba1-c7f1-5f34-847a-50bddb7130aa', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'AdminDemographicExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
-
-
-WITH mandatory_value AS (
-    SELECT 'FIRST_NAME' AS issue_column,
-           "FIRST_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "FIRST_NAME" IS NULL
-        OR TRIM("FIRST_NAME") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH pattern AS (
-    SELECT 'FIRST_NAME' AS issue_column,
-           "FIRST_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "FIRST_NAME" NOT SIMILAR TO '^[A-Za-z]+$'
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Pattern Mismatch',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]+$',
-           'Follow the pattern ^[A-Za-z]+$ in ' || issue_column
-      FROM pattern;
-WITH pattern AS (
-    SELECT 'MIDDLE_NAME' AS issue_column,
-           "MIDDLE_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "MIDDLE_NAME" NOT SIMILAR TO '^[A-Za-z]+$'
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Pattern Mismatch',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]+$',
-           'Follow the pattern ^[A-Za-z]+$ in ' || issue_column
-      FROM pattern;
-WITH mandatory_value AS (
-    SELECT 'LAST_NAME' AS issue_column,
-           "LAST_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "LAST_NAME" IS NULL
-        OR TRIM("LAST_NAME") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH pattern AS (
-    SELECT 'LAST_NAME' AS issue_column,
-           "LAST_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "LAST_NAME" NOT SIMILAR TO '^[A-Za-z]+$'
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Pattern Mismatch',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]+$',
-           'Follow the pattern ^[A-Za-z]+$ in ' || issue_column
-      FROM pattern; 
-WITH mandatory_value AS (
-    SELECT 'ADMINISTRATIVE_SEX' AS issue_column,
-           "ADMINISTRATIVE_SEX" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "ADMINISTRATIVE_SEX" IS NULL
-        OR TRIM("ADMINISTRATIVE_SEX") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value; 
-WITH allowed_values AS (
-    SELECT 'ADMINISTRATIVE_SEX' AS issue_column,
-           "ADMINISTRATIVE_SEX" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "ADMINISTRATIVE_SEX" NOT IN ('M','F','X')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''M'',''F'',''X'')',
-           'Use only allowed values ''M'',''F'',''X'' in ' || issue_column
-      FROM allowed_values;   
-WITH allowed_values AS (
-    SELECT 'SEX_AT_BIRTH' AS issue_column,
-           "SEX_AT_BIRTH" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "SEX_AT_BIRTH" NOT IN ('M','F','X')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''M'',''F'',''X'')',
-           'Use only allowed values ''M'',''F'',''X'' in ' || issue_column
-      FROM allowed_values; 
-WITH mandatory_value AS (
-    SELECT 'PAT_BIRTH_DATE' AS issue_column,
-           "PAT_BIRTH_DATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "PAT_BIRTH_DATE" IS NULL
-        OR TRIM("PAT_BIRTH_DATE") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH valid_birth_date_in_all_rows AS (
-    SELECT 'PAT_BIRTH_DATE' AS issue_column,
-           "PAT_BIRTH_DATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "PAT_BIRTH_DATE" IS NOT NULL
-       AND TRY_CAST("PAT_BIRTH_DATE" AS DATE) IS NULL
-       AND EXTRACT(YEAR FROM TRY_CAST("PAT_BIRTH_DATE" AS TIMESTAMP)) < 1915
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Date',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid Birth Date "' || invalid_value || '" found in ' || issue_column,
-           'Provide a valid birthdate on or after 1915.'
-      FROM valid_birth_date_in_all_rows;
-WITH mandatory_value AS (
-    SELECT 'CITY' AS issue_column,
-           "CITY" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "CITY" IS NULL
-        OR TRIM("CITY") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'STATE' AS issue_column,
-           "STATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "STATE" IS NULL
-        OR TRIM("STATE") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'STATE' AS issue_column,
-           "STATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "STATE" NOT IN ('NY', 'New York')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''NY'', ''New York'')',
-           'Use only allowed values ''NY'', ''New York'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'ZIP' AS issue_column,
-           "ZIP" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "ZIP" IS NULL
-        OR TRIM("ZIP") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'GENDER_IDENTITY_CODE_SYSTEM_NAME' AS issue_column,
-           "GENDER_IDENTITY_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "GENDER_IDENTITY_CODE_SYSTEM_NAME" NOT IN ('SNOMED-CT','SNOMED')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''SNOMED-CT'',''SNOMED'')',
-           'Use only allowed values ''SNOMED-CT'',''SNOMED'' in ' || issue_column
-      FROM allowed_values;
-WITH allowed_values AS (
-    SELECT 'SEXUAL_ORIENTATION_CODE_SYSTEM_NAME' AS issue_column,
-           "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME" NOT IN ('SNOMED-CT','SNOMED')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''SNOMED-CT'',''SNOMED'')',
-           'Use only allowed values ''SNOMED-CT'',''SNOMED'' in ' || issue_column
-      FROM allowed_values;
-WITH allowed_values AS (
-    SELECT 'SEXUAL_ORIENTATION_DESCRIPTION' AS issue_column,
-           "SEXUAL_ORIENTATION_DESCRIPTION" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "SEXUAL_ORIENTATION_DESCRIPTION" NOT IN ('Bisexual','Heterosexual','Homosexual','other','unknown')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Bisexual'',''Heterosexual'',''Homosexual'',''other'',''unknown'')',
-           'Use only allowed values ''Bisexual'',''Heterosexual'',''Homosexual'',''other'',''unknown'' in ' || issue_column
-      FROM allowed_values;
-WITH allowed_values AS (
-    SELECT 'SEXUAL_ORIENTATION_DESCRIPTION' AS issue_column,
-           "SEXUAL_ORIENTATION_DESCRIPTION" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "SEXUAL_ORIENTATION_DESCRIPTION" NOT IN ('ISO','ISO 639-2')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''ISO'',''ISO 639-2'')',
-           'Use only allowed values ''ISO'',''ISO 639-2'' in ' || issue_column
-      FROM allowed_values;
-WITH allowed_values AS (
-    SELECT 'RACE_CODE_SYSTEM_NAME' AS issue_column,
-           "RACE_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "RACE_CODE_SYSTEM_NAME" NOT IN ('CDC','CDCRE')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''CDC'',''CDCRE'')',
-           'Use only allowed values ''CDC'',''CDCRE'' in ' || issue_column
-      FROM allowed_values;
-WITH allowed_values AS (
-    SELECT 'ETHNICITY_CODE_SYSTEM_NAME' AS issue_column,
-           "ETHNICITY_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "ETHNICITY_CODE_SYSTEM_NAME" NOT IN ('CDC','CDCRE')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''CDC'',''CDCRE'')',
-           'Use only allowed values ''CDC'',''CDCRE'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'MPI_ID' AS issue_column,
-           "MPI_ID" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "MPI_ID" IS NULL
-        OR TRIM("MPI_ID") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value; 
-WITH mandatory_value AS (
-    SELECT 'PAT_MRN_ID' AS issue_column,
-           "PAT_MRN_ID" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "PAT_MRN_ID" IS NULL
-        OR TRIM("PAT_MRN_ID") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'FACILITY ID (Assigning authority)' AS issue_column,
-           "FACILITY ID (Assigning authority)" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_admin_demographic"
-     WHERE "FACILITY ID (Assigning authority)" IS NULL
-        OR TRIM("FACILITY ID (Assigning authority)") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           'ae477ba1-c7f1-5f34-847a-50bddb7130aa',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-    
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('86ff3ab6-900d-5474-b63c-cbcac3c66f1a', '05e8feaa-0bed-5909-a817-39812494b361', 'ae477ba1-c7f1-5f34-847a-50bddb7130aa', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'AdminDemographicExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
-    
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', '05e8feaa-0bed-5909-a817-39812494b361', '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'ScreeningExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
-
-WITH mandatory_value AS (
-    SELECT 'PAT_MRN_ID' AS issue_column,
-           "PAT_MRN_ID" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "PAT_MRN_ID" IS NULL
-        OR TRIM("PAT_MRN_ID") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'FACILITY ID (Assigning authority)' AS issue_column,
-           "FACILITY ID (Assigning authority)" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "FACILITY ID (Assigning authority)" IS NULL
-        OR TRIM("FACILITY ID (Assigning authority)") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'SCREENING_NAME' AS issue_column,
-           "SCREENING_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "SCREENING_NAME" IS NULL
-        OR TRIM("SCREENING_NAME") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'SCREENING_CODE_SYSTEM_NAME' AS issue_column,
-           "SCREENING_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "SCREENING_CODE_SYSTEM_NAME" IS NULL
-        OR TRIM("SCREENING_CODE_SYSTEM_NAME") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'SCREENING_CODE_SYSTEM_NAME' AS issue_column,
-           "SCREENING_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "SCREENING_CODE_SYSTEM_NAME" NOT IN ('LN', 'LOINC')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''LN'', ''LOINC'')',
-           'Use only allowed values ''LN'', ''LOINC'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'SCREENING_CODE' AS issue_column,
-           "SCREENING_CODE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "SCREENING_CODE" IS NULL
-        OR TRIM("SCREENING_CODE") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'SCREENING_METHOD' AS issue_column,
-           "SCREENING_METHOD" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "SCREENING_METHOD" NOT IN ('In-Person', 'Phone', 'Website')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''In-Person'', ''Phone'', ''Website'')',
-           'Use only allowed values ''In-Person'', ''Phone'', ''Website'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'RECORDED_TIME' AS issue_column,
-           "RECORDED_TIME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "RECORDED_TIME" IS NULL
-        OR TRIM("RECORDED_TIME") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value; 
-WITH valid_date_time_in_all_rows AS (
-    SELECT 'RECORDED_TIME' AS issue_column,
-           "RECORDED_TIME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "RECORDED_TIME" IS NOT NULL
-       AND TRY_CAST("RECORDED_TIME" AS TIMESTAMP) IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Invalid Date',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid timestamp "' || invalid_value || '" found in ' || issue_column,
-           'Please be sure to provide both a valid date and time.'
-      FROM valid_date_time_in_all_rows;
-WITH mandatory_value AS (
-    SELECT 'QUESTION' AS issue_column,
-           "QUESTION" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "QUESTION" IS NULL
-        OR TRIM("QUESTION") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'MEAS_VALUE' AS issue_column,
-           "MEAS_VALUE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "MEAS_VALUE" IS NULL
-        OR TRIM("MEAS_VALUE") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;      
-WITH mandatory_value AS (
-    SELECT 'QUESTION_CODE' AS issue_column,
-           "QUESTION_CODE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "QUESTION_CODE" IS NULL
-        OR TRIM("QUESTION_CODE") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'QUESTION_CODE_SYSTEM_NAME' AS issue_column,
-           "QUESTION_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "QUESTION_CODE_SYSTEM_NAME" IS NULL
-        OR TRIM("QUESTION_CODE_SYSTEM_NAME") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'QUESTION_CODE_SYSTEM_NAME' AS issue_column,
-           "QUESTION_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "QUESTION_CODE_SYSTEM_NAME" NOT IN ('LN','LOIN')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''LN'',''LOIN'')',
-           'Use only allowed values ''LN'',''LOIN'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'ANSWER_CODE' AS issue_column,
-           "ANSWER_CODE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "ANSWER_CODE" IS NULL
-        OR TRIM("ANSWER_CODE") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'ANSWER_CODE_SYSTEM_NAME' AS issue_column,
-           "ANSWER_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "ANSWER_CODE_SYSTEM_NAME" IS NULL
-        OR TRIM("ANSWER_CODE_SYSTEM_NAME") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'ANSWER_CODE_SYSTEM_NAME' AS issue_column,
-           "ANSWER_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "ANSWER_CODE_SYSTEM_NAME" NOT IN ('LN','LOIN')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''LN'',''LOIN'')',
-           'Use only allowed values ''LN'',''LOIN'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'SDOH_DOMAIN' AS issue_column,
-           "SDOH_DOMAIN" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "SDOH_DOMAIN" IS NULL
-        OR TRIM("SDOH_DOMAIN") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'POTENTIAL_NEED_INDICATED' AS issue_column,
-           "POTENTIAL_NEED_INDICATED" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "POTENTIAL_NEED_INDICATED" IS NULL
-        OR TRIM("POTENTIAL_NEED_INDICATED") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'POTENTIAL_NEED_INDICATED' AS issue_column,
-           "POTENTIAL_NEED_INDICATED" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "POTENTIAL_NEED_INDICATED" NOT IN ('Yes','No')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'',''No'')',
-           'Use only allowed values ''Yes'',''No'' in ' || issue_column
-      FROM allowed_values;
-WITH allowed_values AS (
-    SELECT 'ASSISTANCE_REQUESTED' AS issue_column,
-           "ASSISTANCE_REQUESTED" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_screening"
-     WHERE "ASSISTANCE_REQUESTED" NOT IN ('Yes','No')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'',''No'')',
-           'Use only allowed values ''Yes'',''No'' in ' || issue_column
-      FROM allowed_values;
-    
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f6d4aff4-4b71-5662-8f57-00ee247dc57c', '05e8feaa-0bed-5909-a817-39812494b361', '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'ScreeningExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
-    
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5b77d127-e62a-50a9-acee-bea63ff64dd5', '05e8feaa-0bed-5909-a817-39812494b361', '071f8fe1-4899-5c71-9c86-7d7377661d45', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'QeAdminDataExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
-
-WITH mandatory_value AS (
-    SELECT 'PAT_MRN_ID' AS issue_column,
-           "PAT_MRN_ID" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "PAT_MRN_ID" IS NULL
-        OR TRIM("PAT_MRN_ID") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'FACILITY ID (Assigning authority)' AS issue_column,
-           "FACILITY ID (Assigning authority)" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "FACILITY ID (Assigning authority)" IS NULL
-        OR TRIM("FACILITY ID (Assigning authority)") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH unique_value AS (
-    SELECT 'FACILITY ID (Assigning authority)' AS issue_column,
-           "FACILITY ID (Assigning authority)" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "FACILITY ID (Assigning authority)" IS NOT NULL
-       AND "FACILITY ID (Assigning authority)" IN (
-          SELECT "FACILITY ID (Assigning authority)"
-            FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-        GROUP BY "FACILITY ID (Assigning authority)"
-          HAVING COUNT(*) > 1)
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Unique Value Violation',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Duplicate value "' || invalid_value || '" found in ' || issue_column,
-           'Ensure each value in column6 is unique'
-      FROM unique_value;
-WITH mandatory_value AS (
-    SELECT 'FACILITY_LONG_NAME' AS issue_column,
-           "FACILITY_LONG_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "FACILITY_LONG_NAME" IS NULL
-        OR TRIM("FACILITY_LONG_NAME") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'ORGANIZATION_TYPE' AS issue_column,
-           "ORGANIZATION_TYPE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "ORGANIZATION_TYPE" IS NULL
-        OR TRIM("ORGANIZATION_TYPE") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'ORGANIZATION_TYPE' AS issue_column,
-           "ORGANIZATION_TYPE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "ORGANIZATION_TYPE" NOT IN ('Hospital', 'DTC', 'SNF', 'SCN', 'CBO', 'OMH', 'OASAS', 'Practice', 'Article 36', 'Article 40', 'MCO')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Hospital'', ''DTC'', ''SNF'', ''SCN'', ''CBO'', ''OMH'', ''OASAS'', ''Practice'', ''Article 36'', ''Article 40'', ''MCO'')',
-           'Use only allowed values ''Hospital'', ''DTC'', ''SNF'', ''SCN'', ''CBO'', ''OMH'', ''OASAS'', ''Practice'', ''Article 36'', ''Article 40'', ''MCO'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'FACILITY ADDRESS1' AS issue_column,
-           "FACILITY ADDRESS1" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "FACILITY ADDRESS1" IS NULL
-        OR TRIM("FACILITY ADDRESS1") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH unique_value AS (
-    SELECT 'FACILITY ADDRESS1' AS issue_column,
-           "FACILITY ADDRESS1" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "FACILITY ADDRESS1" IS NOT NULL
-       AND "FACILITY ADDRESS1" IN (
-          SELECT "FACILITY ADDRESS1"
-            FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-        GROUP BY "FACILITY ADDRESS1"
-          HAVING COUNT(*) > 1)
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Unique Value Violation',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Duplicate value "' || invalid_value || '" found in ' || issue_column,
-           'Ensure each value in column6 is unique'
-      FROM unique_value;    
-WITH unique_value AS (
-    SELECT 'FACILITY ADDRESS2' AS issue_column,
-           "FACILITY ADDRESS2" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "FACILITY ADDRESS2" IS NOT NULL
-       AND "FACILITY ADDRESS2" IN (
-          SELECT "FACILITY ADDRESS2"
-            FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-        GROUP BY "FACILITY ADDRESS2"
-          HAVING COUNT(*) > 1)
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Unique Value Violation',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Duplicate value "' || invalid_value || '" found in ' || issue_column,
-           'Ensure each value in column6 is unique'
-      FROM unique_value;
-WITH mandatory_value AS (
-    SELECT 'FACILITY STATE' AS issue_column,
-           "FACILITY STATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "FACILITY STATE" IS NULL
-        OR TRIM("FACILITY STATE") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'FACILITY STATE' AS issue_column,
-           "FACILITY STATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "FACILITY STATE" NOT IN ('NY', 'New York')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''NY'', ''New York'')',
-           'Use only allowed values ''NY'', ''New York'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'FACILITY ZIP' AS issue_column,
-           "FACILITY ZIP" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "FACILITY ZIP" IS NULL
-        OR TRIM("FACILITY ZIP") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'VISIT_PART_2_FLAG' AS issue_column,
-           "VISIT_PART_2_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "VISIT_PART_2_FLAG" IS NULL
-        OR TRIM("VISIT_PART_2_FLAG") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'VISIT_PART_2_FLAG' AS issue_column,
-           "VISIT_PART_2_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "VISIT_PART_2_FLAG" NOT IN ('Yes', 'No')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
-           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'VISIT_OMH_FLAG' AS issue_column,
-           "VISIT_OMH_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "VISIT_OMH_FLAG" IS NULL
-        OR TRIM("VISIT_OMH_FLAG") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'VISIT_OMH_FLAG' AS issue_column,
-           "VISIT_OMH_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "VISIT_OMH_FLAG" NOT IN ('Yes', 'No')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
-           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'VISIT_OPWDD_FLAG' AS issue_column,
-           "VISIT_OPWDD_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "VISIT_OPWDD_FLAG" IS NULL
-        OR TRIM("VISIT_OPWDD_FLAG") = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'VISIT_OPWDD_FLAG' AS issue_column,
-           "VISIT_OPWDD_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2023_12_25_valid_q_e_admin_data"
-     WHERE "VISIT_OPWDD_FLAG" NOT IN ('Yes', 'No')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '071f8fe1-4899-5c71-9c86-7d7377661d45',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
-           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
-      FROM allowed_values;
-    
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', '05e8feaa-0bed-5909-a817-39812494b361', '071f8fe1-4899-5c71-9c86-7d7377661d45', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'QeAdminDataExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
-    
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a92a6466-6fe4-58d7-8948-e2e09dc2fec2', '05e8feaa-0bed-5909-a817-39812494b361', '4971a2f5-06a3-5898-823d-364145d3b9a5', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'AdminDemographicExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
-
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('9c0d34d3-bf09-527a-aef5-85004a400be5', '05e8feaa-0bed-5909-a817-39812494b361', '2afb3098-bcfd-5a54-8ebb-4d65d399c55e', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'AdminDemographicExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 WITH mandatory_value AS (
     SELECT 'FIRST_NAME' AS issue_column,
@@ -2279,7 +1100,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2297,7 +1118,7 @@ WITH pattern AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Pattern Mismatch',
            issue_row,
            issue_column,
@@ -2315,7 +1136,7 @@ WITH pattern AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Pattern Mismatch',
            issue_row,
            issue_column,
@@ -2334,7 +1155,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2352,7 +1173,7 @@ WITH pattern AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Pattern Mismatch',
            issue_row,
            issue_column,
@@ -2371,7 +1192,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2389,7 +1210,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -2407,7 +1228,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -2426,7 +1247,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2446,7 +1267,7 @@ WITH valid_birth_date_in_all_rows AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Invalid Date',
            issue_row,
            issue_column,
@@ -2465,7 +1286,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2484,7 +1305,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2502,7 +1323,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -2521,7 +1342,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2529,6 +1350,78 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
       FROM mandatory_value;
+WITH pattern AS (
+    SELECT 'ZIP' AS issue_column,
+           "ZIP" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
+     WHERE "ZIP" NOT SIMILAR TO '^\d{5}(\d{4})?$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^\d{5}(\d{4})?$',
+           'Follow the pattern ^\d{5}(\d{4})?$ in ' || issue_column
+      FROM pattern;
+WITH pattern AS (
+    SELECT 'ADDRESS1' AS issue_column,
+           "ADDRESS1" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
+     WHERE "ADDRESS1" NOT SIMILAR TO '^[a-zA-Z0-9\s]+$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[a-zA-Z0-9\s]+$',
+           'Follow the pattern ^[a-zA-Z0-9\s]+$ in ' || issue_column
+      FROM pattern;
+WITH allowed_values AS (
+    SELECT 'GENDER_IDENTITY_CODE' AS issue_column,
+           "GENDER_IDENTITY_CODE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
+     WHERE "GENDER_IDENTITY_CODE" NOT IN ('407377005','446141000124107','446151000124109','446131000124102','407376001','ASKU','OTH','UNK')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''407377005'',''446141000124107'',''446151000124109'',''446131000124102'',''407376001'',''ASKU'',''OTH'',''UNK'')',
+           'Use only allowed values ''407377005'',''446141000124107'',''446151000124109'',''446131000124102'',''407376001'',''ASKU'',''OTH'',''UNK'' in ' || issue_column
+      FROM allowed_values;
+WITH allowed_values AS (
+    SELECT 'GENDER_IDENTITY_DESCRIPTION' AS issue_column,
+           "GENDER_IDENTITY_DESCRIPTION" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
+     WHERE "GENDER_IDENTITY_DESCRIPTION" NOT IN ('Female-to-Male (FTM)','Transgender Male','Trans Man','Female','Male','Genderqueer','Male-to-Female (MTF)', 'Transgender Female','Trans Woman','Asked but unknown','Other','Unknown')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Female-to-Male (FTM)'',''Transgender Male'',''Trans Man'',''Female'',''Male'',''Genderqueer'',''Male-to-Female (MTF)'', ''Transgender Female'',''Trans Woman'',''Asked but unknown'',''Other'',''Unknown'')',
+           'Use only allowed values ''Female-to-Male (FTM)'',''Transgender Male'',''Trans Man'',''Female'',''Male'',''Genderqueer'',''Male-to-Female (MTF)'', ''Transgender Female'',''Trans Woman'',''Asked but unknown'',''Other'',''Unknown'' in ' || issue_column
+      FROM allowed_values;
 WITH allowed_values AS (
     SELECT 'GENDER_IDENTITY_CODE_SYSTEM_NAME' AS issue_column,
            "GENDER_IDENTITY_CODE_SYSTEM_NAME" AS invalid_value,
@@ -2539,13 +1432,31 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Invalid Value',
            issue_row,
            issue_column,
            invalid_value,
            'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''SNOMED-CT'',''SNOMED'')',
            'Use only allowed values ''SNOMED-CT'',''SNOMED'' in ' || issue_column
+      FROM allowed_values;
+WITH allowed_values AS (
+    SELECT 'SEXUAL_ORIENTATION_CODE' AS issue_column,
+           "SEXUAL_ORIENTATION_CODE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
+     WHERE "SEXUAL_ORIENTATION_CODE" NOT IN ('42035005','20430005','38628009','OTH','UNK')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''42035005'',''20430005'',''38628009'',''OTH'',''UNK'')',
+           'Use only allowed values ''42035005'',''20430005'',''38628009'',''OTH'',''UNK'' in ' || issue_column
       FROM allowed_values;
 WITH allowed_values AS (
     SELECT 'SEXUAL_ORIENTATION_CODE_SYSTEM_NAME' AS issue_column,
@@ -2557,7 +1468,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -2570,36 +1481,18 @@ WITH allowed_values AS (
            "SEXUAL_ORIENTATION_DESCRIPTION" AS invalid_value,
            src_file_row_number AS issue_row
       FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
-     WHERE "SEXUAL_ORIENTATION_DESCRIPTION" NOT IN ('Bisexual','Heterosexual','Homosexual','other','unknown')
+     WHERE "SEXUAL_ORIENTATION_DESCRIPTION" NOT IN ('Bisexual','Straight','Gay or lesbian','other','unknown')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Invalid Value',
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Bisexual'',''Heterosexual'',''Homosexual'',''other'',''unknown'')',
-           'Use only allowed values ''Bisexual'',''Heterosexual'',''Homosexual'',''other'',''unknown'' in ' || issue_column
-      FROM allowed_values;
-WITH allowed_values AS (
-    SELECT 'SEXUAL_ORIENTATION_DESCRIPTION' AS issue_column,
-           "SEXUAL_ORIENTATION_DESCRIPTION" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
-     WHERE "SEXUAL_ORIENTATION_DESCRIPTION" NOT IN ('ISO','ISO 639-2')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''ISO'',''ISO 639-2'')',
-           'Use only allowed values ''ISO'',''ISO 639-2'' in ' || issue_column
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Bisexual'',''Straight'',''Gay or lesbian'',''other'',''unknown'')',
+           'Use only allowed values ''Bisexual'',''Straight'',''Gay or lesbian'',''other'',''unknown'' in ' || issue_column
       FROM allowed_values;
 WITH allowed_values AS (
     SELECT 'RACE_CODE_SYSTEM_NAME' AS issue_column,
@@ -2611,7 +1504,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -2629,7 +1522,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -2648,7 +1541,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2667,7 +1560,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2686,18 +1579,73 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '4971a2f5-06a3-5898-823d-364145d3b9a5',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
            invalid_value,
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
-      FROM mandatory_value;
+      FROM mandatory_value;   
+WITH pattern AS (
+    SELECT 'MEDICAID_CIN' AS issue_column,
+           "MEDICAID_CIN" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
+     WHERE "MEDICAID_CIN" NOT SIMILAR TO '^[A-Za-z]{2}\d{5}[A-Za-z]$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]{2}\d{5}[A-Za-z]$',
+           'Follow the pattern ^[A-Za-z]{2}\d{5}[A-Za-z]$ in ' || issue_column
+      FROM pattern; 
+WITH mandatory_value AS (
+    SELECT 'CONSENT ' AS issue_column,
+           "CONSENT " AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
+     WHERE "CONSENT " IS NULL
+        OR TRIM("CONSENT ") = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value; 
+WITH allowed_values AS (
+    SELECT 'CONSENT ' AS issue_column,
+           "CONSENT " AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_admin_demographic"
+     WHERE "CONSENT " NOT IN ('Yes', 'No')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '2afb3098-bcfd-5a54-8ebb-4d65d399c55e',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
+           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
+      FROM allowed_values;
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4b7537b2-9d60-59f3-8c61-fa2ff4265c02', '05e8feaa-0bed-5909-a817-39812494b361', '4971a2f5-06a3-5898-823d-364145d3b9a5', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'AdminDemographicExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('c40829eb-7f91-583a-8af8-06de851777a0', '05e8feaa-0bed-5909-a817-39812494b361', '2afb3098-bcfd-5a54-8ebb-4d65d399c55e', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'AdminDemographicExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('34e90086-3d06-5b10-972d-7d0b40a02289', '05e8feaa-0bed-5909-a817-39812494b361', '544998d3-58c5-5f65-9dc8-9f998508495f', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'ScreeningExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('e2816d61-4406-5073-ac60-f129a107d938', '05e8feaa-0bed-5909-a817-39812494b361', '9dabd022-4a26-55f2-98f4-e534e7704b23', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'ScreeningExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 WITH mandatory_value AS (
     SELECT 'PAT_MRN_ID' AS issue_column,
@@ -2710,7 +1658,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2729,7 +1677,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2748,7 +1696,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2767,7 +1715,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2785,7 +1733,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -2804,7 +1752,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2822,7 +1770,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -2841,7 +1789,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2860,7 +1808,7 @@ WITH valid_date_time_in_all_rows AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Invalid Date',
            issue_row,
            issue_column,
@@ -2879,7 +1827,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2898,7 +1846,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2917,7 +1865,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2936,7 +1884,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2954,7 +1902,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -2973,7 +1921,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -2992,7 +1940,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3010,7 +1958,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -3029,7 +1977,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3048,7 +1996,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3061,41 +2009,62 @@ WITH allowed_values AS (
            "POTENTIAL_NEED_INDICATED" AS invalid_value,
            src_file_row_number AS issue_row
       FROM "ahc_hrsn_2024_01_25_valid_screening"
-     WHERE "POTENTIAL_NEED_INDICATED" NOT IN ('Yes','No')
+     WHERE "POTENTIAL_NEED_INDICATED" NOT IN ('Yes','No','NA')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Invalid Value',
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'',''No'')',
-           'Use only allowed values ''Yes'',''No'' in ' || issue_column
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'',''No'',''NA'')',
+           'Use only allowed values ''Yes'',''No'',''NA'' in ' || issue_column
       FROM allowed_values;
 WITH allowed_values AS (
     SELECT 'ASSISTANCE_REQUESTED' AS issue_column,
            "ASSISTANCE_REQUESTED" AS invalid_value,
            src_file_row_number AS issue_row
       FROM "ahc_hrsn_2024_01_25_valid_screening"
-     WHERE "ASSISTANCE_REQUESTED" NOT IN ('Yes','No')
+     WHERE "ASSISTANCE_REQUESTED" NOT IN ('Yes','No','NA')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
            'Invalid Value',
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'',''No'')',
-           'Use only allowed values ''Yes'',''No'' in ' || issue_column
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'',''No'',''NA'')',
+           'Use only allowed values ''Yes'',''No'',''NA'' in ' || issue_column
       FROM allowed_values;
+WITH valid_screening_questions_in_all_rows AS (
+    SELECT 'QUESTION_CODE' AS issue_column,
+           sr."QUESTION_CODE" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM ahc_hrsn_2024_01_25_valid_screening sr
+      LEFT JOIN ahc_hrsn_2024_01_25_valid_question_reference qr
+      ON sr.QUESTION_CODE = qr.QUESTION_CODE AND sr.SCREENING_CODE = qr.SCREENING_CODE            
+     WHERE sr.QUESTION_CODE IS NOT NULL
+      AND qr.QUESTION_CODE IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '9dabd022-4a26-55f2-98f4-e534e7704b23',
+           'Invalid Screening Question',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid Screening Question "' || invalid_value || '" found in ' || issue_column,
+           'Validate screening questions with question reference data'
+      FROM valid_screening_questions_in_all_rows;
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('657d6337-8d24-5b67-b139-87db6a228264', '05e8feaa-0bed-5909-a817-39812494b361', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'ScreeningExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a8ec8b43-9e16-5eeb-9683-bc14288971f1', '05e8feaa-0bed-5909-a817-39812494b361', '9dabd022-4a26-55f2-98f4-e534e7704b23', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'ScreeningExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('21d7e4ec-32e3-5e20-9029-28fdd6c5fa66', '05e8feaa-0bed-5909-a817-39812494b361', 'e6951d0b-be59-58c3-8a04-01181208c601', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'QeAdminDataExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('413ec5cd-eee9-5c62-90a5-6670f8b9ddff', '05e8feaa-0bed-5909-a817-39812494b361', '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'QeAdminDataExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 WITH mandatory_value AS (
     SELECT 'PAT_MRN_ID' AS issue_column,
@@ -3108,7 +2077,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3127,7 +2096,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3150,7 +2119,7 @@ WITH unique_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Unique Value Violation',
            issue_row,
            issue_column,
@@ -3169,7 +2138,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3188,7 +2157,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3206,7 +2175,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -3225,7 +2194,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3248,14 +2217,32 @@ WITH unique_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Unique Value Violation',
            issue_row,
            issue_column,
            invalid_value,
            'Duplicate value "' || invalid_value || '" found in ' || issue_column,
            'Ensure each value in column6 is unique'
-      FROM unique_value;    
+      FROM unique_value;   
+WITH pattern AS (
+    SELECT 'FACILITY ADDRESS1' AS issue_column,
+           "FACILITY ADDRESS1" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_q_e_admin_data"
+     WHERE "FACILITY ADDRESS1" NOT SIMILAR TO '^[a-zA-Z0-9\s]+$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[a-zA-Z0-9\s]+$',
+           'Follow the pattern ^[a-zA-Z0-9\s]+$ in ' || issue_column
+      FROM pattern; 
 WITH unique_value AS (
     SELECT 'FACILITY ADDRESS2' AS issue_column,
            "FACILITY ADDRESS2" AS invalid_value,
@@ -3271,7 +2258,7 @@ WITH unique_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Unique Value Violation',
            issue_row,
            issue_column,
@@ -3279,6 +2266,24 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Duplicate value "' || invalid_value || '" found in ' || issue_column,
            'Ensure each value in column6 is unique'
       FROM unique_value;
+WITH pattern AS (
+    SELECT 'FACILITY ADDRESS2' AS issue_column,
+           "FACILITY ADDRESS2" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_q_e_admin_data"
+     WHERE "FACILITY ADDRESS2" NOT SIMILAR TO '^[a-zA-Z0-9\s]+$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[a-zA-Z0-9\s]+$',
+           'Follow the pattern ^[a-zA-Z0-9\s]+$ in ' || issue_column
+      FROM pattern;    
 WITH mandatory_value AS (
     SELECT 'FACILITY STATE' AS issue_column,
            "FACILITY STATE" AS invalid_value,
@@ -3290,7 +2295,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3308,7 +2313,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -3327,7 +2332,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3335,6 +2340,24 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
       FROM mandatory_value;
+WITH pattern AS (
+    SELECT 'FACILITY ZIP' AS issue_column,
+           "FACILITY ZIP" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_q_e_admin_data"
+     WHERE "FACILITY ZIP" NOT SIMILAR TO '^\d{5}(\d{4})?$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^\d{5}(\d{4})?$',
+           'Follow the pattern ^\d{5}(\d{4})?$ in ' || issue_column
+      FROM pattern;
 WITH mandatory_value AS (
     SELECT 'VISIT_PART_2_FLAG' AS issue_column,
            "VISIT_PART_2_FLAG" AS invalid_value,
@@ -3346,7 +2369,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3364,7 +2387,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -3383,7 +2406,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3401,7 +2424,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -3420,7 +2443,7 @@ WITH mandatory_value AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3438,7 +2461,7 @@ WITH allowed_values AS (
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05e8feaa-0bed-5909-a817-39812494b361',
-           'e6951d0b-be59-58c3-8a04-01181208c601',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
            'Invalid Value',
            issue_row,
            issue_column,
@@ -3446,8 +2469,34 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
            'Use only allowed values ''Yes'', ''No'' in ' || issue_column
       FROM allowed_values;
+WITH pattern AS (
+    SELECT 'FACILITY_LONG_NAME' AS issue_column,
+           "FACILITY_LONG_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "ahc_hrsn_2024_01_25_valid_q_e_admin_data"
+     WHERE "FACILITY_LONG_NAME" NOT SIMILAR TO '^[a-zA-Z\s]+$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05e8feaa-0bed-5909-a817-39812494b361',
+           '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[a-zA-Z\s]+$',
+           'Follow the pattern ^[a-zA-Z\s]+$ in ' || issue_column
+      FROM pattern;
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('9f13dd7d-9ff8-509d-b716-cde856c5f0f0', '05e8feaa-0bed-5909-a817-39812494b361', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'QeAdminDataExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('35c62034-5b20-5891-8d38-3e9b051dec6e', '05e8feaa-0bed-5909-a817-39812494b361', '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'QeAdminDataExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+    
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6c48996f-0dd4-572f-b087-e5913926cd4b', '05e8feaa-0bed-5909-a817-39812494b361', '34e90086-3d06-5b10-972d-7d0b40a02289', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'QuestionReferenceExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+                
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('aa8b8d1a-c8cc-5a9b-b5aa-34a6fc85e11a', '05e8feaa-0bed-5909-a817-39812494b361', '34e90086-3d06-5b10-972d-7d0b40a02289', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'QuestionReferenceExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+    
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('bebf797d-855b-5e76-93d2-2a802febd5a2', '05e8feaa-0bed-5909-a817-39812494b361', '86ff3ab6-900d-5474-b63c-cbcac3c66f1a', 'INGESTED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', NULL, 'AnswerReferenceExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+                
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8278fd0f-7116-55bd-8d7a-0a30681b0d2f', '05e8feaa-0bed-5909-a817-39812494b361', '86ff3ab6-900d-5474-b63c-cbcac3c66f1a', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_ASSURANCE', 'ASSURED_EXCEL_WORKBOOK_SHEET', NULL, 'AnswerReferenceExcelSheetIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
 ```
 No STDOUT emitted by `ensureContent` (status: `0`).
@@ -3463,11 +2512,11 @@ No STDERR emitted by `ensureContent`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-02-08T19:48:22.684Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-02-08T19:48:22.684Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-02-08T19:48:22.684Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('9dabd022-4a26-55f2-98f4-e534e7704b23', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-02-08T19:48:22.684Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('e2816d61-4406-5073-ac60-f129a107d938', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-02-08T19:48:22.684Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-02-09T17:38:11.796Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-02-09T17:38:11.796Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-02-09T17:38:11.796Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('657d6337-8d24-5b67-b139-87db6a228264', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-02-09T17:38:11.796Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('97c2cca2-92f5-5937-97e6-d84beeb4018e', '05e8feaa-0bed-5909-a817-39812494b361', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-02-09T17:38:11.796Z'), NULL);
 
 -- removed SQLPage and execution diagnostics SQL DML from diagnostics Markdown
 
@@ -3483,7 +2532,7 @@ CREATE TABLE resource_db.orch_session_issue AS SELECT * FROM orch_session_issue;
 CREATE TABLE resource_db.sqlpage_files AS SELECT * FROM sqlpage_files;
 
 -- export content tables from DuckDb into the attached database (nature-dependent)
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('413ec5cd-eee9-5c62-90a5-6670f8b9ddff', '05e8feaa-0bed-5909-a817-39812494b361', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ASSURED_CSV', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('442b5e69-76fb-5da8-ae00-b79ea50cbedb', '05e8feaa-0bed-5909-a817-39812494b361', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ASSURED_CSV', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE resource_db.ahc_hrsn_2023_12_12_valid AS SELECT * FROM ahc_hrsn_2023_12_12_valid;
 
@@ -3519,43 +2568,37 @@ CREATE VIEW resource_db.ahc_hrsn_2023_12_12_valid_fhir AS
     ) AS FHIR_Observation
   FROM ahc_hrsn_2023_12_12_valid;
   
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('aa8b8d1a-c8cc-5a9b-b5aa-34a6fc85e11a', '05e8feaa-0bed-5909-a817-39812494b361', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('90a0010e-213e-58c3-9302-5e7310006b95', '05e8feaa-0bed-5909-a817-39812494b361', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6c48996f-0dd4-572f-b087-e5913926cd4b', '05e8feaa-0bed-5909-a817-39812494b361', 'ae477ba1-c7f1-5f34-847a-50bddb7130aa', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'AdminDemographicExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
-
-CREATE TABLE resource_db.ahc_hrsn_2023_12_25_valid_admin_demographic AS SELECT * FROM ahc_hrsn_2023_12_25_valid_admin_demographic;
-
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8278fd0f-7116-55bd-8d7a-0a30681b0d2f', '05e8feaa-0bed-5909-a817-39812494b361', 'ae477ba1-c7f1-5f34-847a-50bddb7130aa', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(AdminDemographicExcelSheetIngestSource)', NULL, 'AdminDemographicExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
-    
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('bebf797d-855b-5e76-93d2-2a802febd5a2', '05e8feaa-0bed-5909-a817-39812494b361', '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'ScreeningExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
-
-CREATE TABLE resource_db.ahc_hrsn_2023_12_25_valid_screening AS SELECT * FROM ahc_hrsn_2023_12_25_valid_screening;
-
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('c420c3ba-ddbc-582b-9cdf-361497beb034', '05e8feaa-0bed-5909-a817-39812494b361', '7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(ScreeningExcelSheetIngestSource)', NULL, 'ScreeningExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
-    
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05e8feaa-0bed-5909-a817-39812494b361', '071f8fe1-4899-5c71-9c86-7d7377661d45', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'QeAdminDataExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
-
-CREATE TABLE resource_db.ahc_hrsn_2023_12_25_valid_q_e_admin_data AS SELECT * FROM ahc_hrsn_2023_12_25_valid_q_e_admin_data;
-
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('97c2cca2-92f5-5937-97e6-d84beeb4018e', '05e8feaa-0bed-5909-a817-39812494b361', '071f8fe1-4899-5c71-9c86-7d7377661d45', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(AdminDemographicExcelSheetIngestSource)', NULL, 'QeAdminDataExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
-    
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('c40829eb-7f91-583a-8af8-06de851777a0', '05e8feaa-0bed-5909-a817-39812494b361', '4971a2f5-06a3-5898-823d-364145d3b9a5', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'AdminDemographicExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5a941253-b661-5282-a5e6-97cbfe5dfb32', '05e8feaa-0bed-5909-a817-39812494b361', '2afb3098-bcfd-5a54-8ebb-4d65d399c55e', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'AdminDemographicExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE resource_db.ahc_hrsn_2024_01_25_valid_admin_demographic AS SELECT * FROM ahc_hrsn_2024_01_25_valid_admin_demographic;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('442b5e69-76fb-5da8-ae00-b79ea50cbedb', '05e8feaa-0bed-5909-a817-39812494b361', '4971a2f5-06a3-5898-823d-364145d3b9a5', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(AdminDemographicExcelSheetIngestSource)', NULL, 'AdminDemographicExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f626602e-8be5-5e8c-824c-bdde91b22817', '05e8feaa-0bed-5909-a817-39812494b361', '2afb3098-bcfd-5a54-8ebb-4d65d399c55e', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(AdminDemographicExcelSheetIngestSource)', NULL, 'AdminDemographicExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a8ec8b43-9e16-5eeb-9683-bc14288971f1', '05e8feaa-0bed-5909-a817-39812494b361', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'ScreeningExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f58ee169-7478-59ca-9e36-aa384ddb501c', '05e8feaa-0bed-5909-a817-39812494b361', '9dabd022-4a26-55f2-98f4-e534e7704b23', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'ScreeningExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE resource_db.ahc_hrsn_2024_01_25_valid_screening AS SELECT * FROM ahc_hrsn_2024_01_25_valid_screening;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5a941253-b661-5282-a5e6-97cbfe5dfb32', '05e8feaa-0bed-5909-a817-39812494b361', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(ScreeningExcelSheetIngestSource)', NULL, 'ScreeningExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('398104b8-02dc-509b-998a-0b66b5a912e1', '05e8feaa-0bed-5909-a817-39812494b361', '9dabd022-4a26-55f2-98f4-e534e7704b23', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(ScreeningExcelSheetIngestSource)', NULL, 'ScreeningExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('35c62034-5b20-5891-8d38-3e9b051dec6e', '05e8feaa-0bed-5909-a817-39812494b361', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'QeAdminDataExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3cab2329-2aae-5475-9792-04e14e862f1e', '05e8feaa-0bed-5909-a817-39812494b361', '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'QeAdminDataExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE resource_db.ahc_hrsn_2024_01_25_valid_q_e_admin_data AS SELECT * FROM ahc_hrsn_2024_01_25_valid_q_e_admin_data;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f58ee169-7478-59ca-9e36-aa384ddb501c', '05e8feaa-0bed-5909-a817-39812494b361', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(AdminDemographicExcelSheetIngestSource)', NULL, 'QeAdminDataExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5476830d-6cd9-5866-a105-7049aa24426d', '05e8feaa-0bed-5909-a817-39812494b361', '7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(AdminDemographicExcelSheetIngestSource)', NULL, 'QeAdminDataExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+    
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('b63bd83d-959a-5a5f-8d60-08b84bf16c90', '05e8feaa-0bed-5909-a817-39812494b361', '34e90086-3d06-5b10-972d-7d0b40a02289', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'QuestionReferenceExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+
+CREATE TABLE resource_db.ahc_hrsn_2024_01_25_valid_question_reference AS SELECT * FROM ahc_hrsn_2024_01_25_valid_question_reference;
+
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0a26bdb9-1499-515c-aeb4-c6d1d0a20541', '05e8feaa-0bed-5909-a817-39812494b361', '34e90086-3d06-5b10-972d-7d0b40a02289', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(QuestionReferenceExcelSheetIngestSource)', NULL, 'QuestionReferenceExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+    
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('47d97ff4-908a-50f7-a2e2-443e2dad7056', '05e8feaa-0bed-5909-a817-39812494b361', '86ff3ab6-900d-5474-b63c-cbcac3c66f1a', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'AnswerReferenceExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+
+CREATE TABLE resource_db.ahc_hrsn_2024_01_25_valid_answer_reference AS SELECT * FROM ahc_hrsn_2024_01_25_valid_answer_reference;
+
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('334b7ece-79ec-5ea1-b98b-bb09d0e2b234', '05e8feaa-0bed-5909-a817-39812494b361', '86ff3ab6-900d-5474-b63c-cbcac3c66f1a', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(AnswerReferenceExcelSheetIngestSource)', NULL, 'AnswerReferenceExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
     ;
 
 DETACH DATABASE resource_db;

@@ -16,16 +16,22 @@ import {
 } from "./csv.ts";
 
 import {
+  AdminDemographicExcelSheetIngestSource,
+  AnswerReferenceExcelSheetIngestSource,
   ExcelSheetTodoIngestSource,
   ingestExcelSourcesSupplier,
+  QeAdminDataExcelSheetIngestSource,
+  QuestionReferenceExcelSheetIngestSource,
   ScreeningExcelSheetIngestSource,
 } from "./excel.ts";
-import { AdminDemographicExcelSheetIngestSource } from "./excel.ts";
 
 export type PotentialIngestSource =
   | ScreeningCsvFileIngestSource<string, o.State>
   | ScreeningExcelSheetIngestSource<string, o.State>
   | AdminDemographicExcelSheetIngestSource<string, o.State>
+  | QeAdminDataExcelSheetIngestSource<string, o.State>
+  | QuestionReferenceExcelSheetIngestSource<string, o.State>
+  | AnswerReferenceExcelSheetIngestSource<string, o.State>
   | ExcelSheetTodoIngestSource<string, o.State>
   | o.ErrorIngestSource<
     ddbo.DuckDbOrchGovernance,
@@ -392,7 +398,7 @@ export class OrchEngine {
           ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);
 
           -- copy relevant orchestration engine admin tables into the the attached database
-          ${adminTables.map((t) => ({SQL: () => `CREATE TABLE ${rdbSchemaName}.${t.tableName} AS SELECT * FROM ${t.tableName}`}))}
+          ${adminTables.map((t) => ({ SQL: () => `CREATE TABLE ${rdbSchemaName}.${t.tableName} AS SELECT * FROM ${t.tableName}` }))}
 
           -- export content tables from DuckDb into the attached database (nature-dependent)
           ${exportsSQL};
@@ -400,7 +406,7 @@ export class OrchEngine {
           DETACH DATABASE ${rdbSchemaName};
           
           ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
-        .SQL(this.govn.emitCtx),
+          .SQL(this.govn.emitCtx),
         isc.current.nbCellID,
       );
     }
@@ -469,10 +475,10 @@ export class OrchEngine {
       await Deno.writeTextFile(
         this.args.diagsMd,
         "---\n" +
-          yaml.stringify(stringifiableArgs) +
-          "---\n" +
-          "# Orchestration Diagnostics\n" +
-          markdown,
+        yaml.stringify(stringifiableArgs) +
+        "---\n" +
+        "# Orchestration Diagnostics\n" +
+        markdown,
       );
     }
 
@@ -485,13 +491,11 @@ export class OrchEngine {
     await dax.$`sqlite3 ${resourceDb}`.stdinText(
       `UPDATE ${sessTbl.tableName} SET 
         ${c.orch_finished_at} = CURRENT_TIMESTAMP, 
-        ${c.args_json} = ${
-        steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
+        ${c.args_json} = ${steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
       },
-        ${c.diagnostics_json} = ${
-        steo.quotedLiteral(
-          JSON.stringify(this.duckdb.diagnostics, null, "  "),
-        )[1]
+        ${c.diagnostics_json} = ${steo.quotedLiteral(
+        JSON.stringify(this.duckdb.diagnostics, null, "  "),
+      )[1]
       },
         ${c.diagnostics_md} = ${steo.quotedLiteral(markdown)[1]}
       WHERE ${c.orch_session_id} = '${sessionID}'`,

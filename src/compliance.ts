@@ -18,7 +18,7 @@ export type AuditSoftwareResults = AuditResults & {
 
 export function qsSubjectArea<
   Area extends string,
-  Auditable extends AuditResults,
+  Auditable extends AuditResults
 >(
   area: Area,
   descr: string,
@@ -29,13 +29,13 @@ export function qsSubjectArea<
 
     async compliance(
       elems: (
-        factory: tap.BodyFactory<Auditable>,
-      ) => AsyncGenerator<tap.TestSuiteElement<Auditable>>,
+        factory: tap.BodyFactory<Auditable>
+      ) => AsyncGenerator<tap.TestSuiteElement<Auditable>>
     ) {
       await this.subject(area, elems);
       return this;
     }
-  })(),
+  })()
 ) {
   return { area, descr, tcb };
 }
@@ -56,52 +56,52 @@ export const qualitySystemSubjectAreas = [
      desired functionality, and the impact the software is expected to have.
      It also entails setting clear, measurable outcomes and ensuring that the
      software development process is geared towards achieving these outcomes,
-     thus ensuring a more holistic approach to software development.`,
+     thus ensuring a more holistic approach to software development.`
   ),
   qsSubjectArea<"Design and Development", AuditSoftwareResults>(
     "Design and Development",
     `Covering aspects of software design, architecture, and development
      processes, including adherence to coding standards and effective
-     development methodologies.`,
+     development methodologies.`
   ),
   qsSubjectArea(
     "Testing and Quality Assurance",
     `Focusing on various forms of testing to identify and rectify bugs and
      defects and ensuring that the software meets quality standards
-     throughout its development.`,
+     throughout its development.`
   ),
   qsSubjectArea(
     "Configuration Management",
     `Managing changes to software products, including version control and
-     tracking of changes.`,
+     tracking of changes.`
   ),
   qsSubjectArea(
     "Risk Management",
     `Identifying, analyzing, and mitigating risks associated with software
-     development.`,
+     development.`
   ),
   qsSubjectArea(
     "Project Management",
     `Ensuring that the software project is delivered on time, within budget,
-     and according to the project plan.`,
+     and according to the project plan.`
   ),
   qsSubjectArea(
     "Compliance and Standards Adherence",
-    `Ensuring compliance with relevant industry standards and regulations.`,
+    `Ensuring compliance with relevant industry standards and regulations.`
   ),
   qsSubjectArea(
     "Documentation and Records Management",
     `Keeping accurate records and documentation throughout the software
-     development lifecycle.`,
+     development lifecycle.`
   ),
 ] as const;
 
 export type QualitySysComplianceSubjectArea =
-  typeof qualitySystemSubjectAreas[number]["area"];
+  (typeof qualitySystemSubjectAreas)[number]["area"];
 
 export type QualitySysComplianceBuilderType = {
   [K in QualitySysComplianceSubjectArea]: Extract<
-    typeof qualitySystemSubjectAreas[number],
+    (typeof qualitySystemSubjectAreas)[number],
     { area: K }
   >["tcb"];
 };
@@ -121,9 +121,9 @@ export class QualitySysComplianceBuilder {
     const tcb = new tap.TapComplianceBuilder();
     for (const sa of qualitySystemSubjectAreas) {
       tcb.contentBuilder.bb.content.push(
-        ...sa.tcb.contentBuilder.bb.content.filter((c) =>
-          c.nature === "test-case"
-        ),
+        ...sa.tcb.contentBuilder.bb.content.filter(
+          (c) => c.nature === "test-case"
+        )
       );
     }
     return tcb.tapContent();
@@ -153,21 +153,51 @@ export function sowPhase1TaskDescr<Task extends string>(task: Task) {
 // deno-fmt-ignore
 export const sowPhase1Tasks = [
   sowPhase1TaskDescr("Signed SOW"),
-  sowPhase1TaskDescr("Setting up secure transfer capabilities from the screening  contributor to the QE"),
-  sowPhase1TaskDescr("QE management of user credentials and permissions, ensuring that only authorized users can access the SFTP server for file transfers."),
-  sowPhase1TaskDescr("Files received via SFTP must be securely stored with appropriate access controls in place to maintain data integrity and confidentiality."),
-  sowPhase1TaskDescr("All received files must be encrypted during transmission to and from the SFTP server. Encryption standards and protocols should be in compliance with jointly-agreed security measures."),
-  sowPhase1TaskDescr("Upon successful file receipt, QEs are required to automatically forward these files to Data Quality Evaluation at their own QE or at QCS. Timing will be determined in collaboration with the QEs and decided by QCS and NYeC."),
-  sowPhase1TaskDescr("Each Qualified Entity (QE) is required to submit a thorough test plan designed to validate the successful implementation of the SFTP objectives and execute this test plan. QEs are strongly encouraged to collaborate in the development of their test plans. NYeC must approve each QEs test plan, and it is encouraged for multiple QEs to utilize a shared document for this purpose.")
+  sowPhase1TaskDescr(
+    "File Receipt – Setting up secure transfer capabilities from the screening  contributor to the QE: Setting up transfer capabilities to enable the safe and encrypted transfer of data files, including but not limited to 1115 screenings."
+  ),
+  sowPhase1TaskDescr(
+    "QE management of user credentials and permissions, ensuring that only authorized users can access the SFTP server for file transfers."
+  ),
+  sowPhase1TaskDescr(
+    "Files received via SFTP must be securely stored with appropriate access controls in place to maintain data integrity and confidentiality."
+  ),
+  sowPhase1TaskDescr(
+    "All received files must be encrypted during transmission to and from the SFTP server. Encryption standards and protocols should be in compliance with jointly-agreed security measures."
+  ),
+  sowPhase1TaskDescr(
+    "Upon successful file receipt, QEs are required to automatically forward these files to Data Quality Evaluation at their own QE or at QCS. Timing will be determined in collaboration with the QEs and decided by QCS and NYeC."
+  ),
+  sowPhase1TaskDescr(
+    "Each Qualified Entity (QE) is required to submit a thorough test plan designed to validate the successful implementation of the SFTP objectives and execute this test plan. QEs are strongly encouraged to collaborate in the development of their test plans. NYeC must approve each QEs test plan, and it is encouraged for multiple QEs to utilize a shared document for this purpose."
+  ),
+  sowPhase1TaskDescr(
+    "Each QE will submit a runbook that describes how this system operate. This run book will be reviewed by NYeC, and QEs will finalize for production. If QEs already have an SFTP run book, that can be submitted."
+  ),
+  sowPhase1TaskDescr(
+    "Each QE will complete all screening tests successfully using their SFTP."
+  ),
+  sowPhase1TaskDescr(
+    "Each QE will submit feedback to screeners that is consistent with SHIN-NY feedback utilizing their SFTP."
+  ),
+  sowPhase1TaskDescr(
+    "Local MPI: Updates to QE MPIs with any new patients or patient information from 1115 Waiver screenings."
+  ),
+  sowPhase1TaskDescr(
+    "Data Quality Evaluation and Mapping: A service capable of evaluating the quality of submitted 1115 screening data, either in text or API format."
+  ),
+  sowPhase1TaskDescr(
+    "File to JSON processing: A service capable of converting files with multiple lines of 1115 screening data to FHIR compliance JSON files, for submission to data lake."
+  ),
 ] as const;
 
-export type SowPhase1Task = typeof sowPhase1Tasks[number]["task"];
+export type SowPhase1Task = (typeof sowPhase1Tasks)[number]["task"];
 
 // subclass BodyFactory to make task-names (in `ok` and `notOk` type-safe)
 export class SowPhase1BodyFactory<Diagnosable extends tap.Diagnostics> {
   readonly bb = new tap.BodyBuilder<Diagnosable>();
-  readonly bf = new tap.BodyFactory<Diagnosable>(() =>
-    new tap.BodyBuilder<Diagnosable>()
+  readonly bf = new tap.BodyFactory<Diagnosable>(
+    () => new tap.BodyBuilder<Diagnosable>()
   );
 
   ok(description: SowPhase1Task, args?: tap.TestCaseBuilderArgs<Diagnosable>) {
@@ -176,15 +206,15 @@ export class SowPhase1BodyFactory<Diagnosable extends tap.Diagnostics> {
 
   notOk(
     description: SowPhase1Task,
-    args?: tap.TestCaseBuilderArgs<Diagnosable>,
+    args?: tap.TestCaseBuilderArgs<Diagnosable>
   ) {
     return this.bf.notOk(description, args);
   }
 
   async compliance(
     elems: (
-      factory: SowPhase1BodyFactory<Diagnosable>,
-    ) => AsyncGenerator<tap.TestSuiteElement<Diagnosable>>,
+      factory: SowPhase1BodyFactory<Diagnosable>
+    ) => AsyncGenerator<tap.TestSuiteElement<Diagnosable>>
   ) {
     const yielded = await Array.fromAsync(elems(this));
     for (const ey of yielded) {
@@ -196,13 +226,12 @@ export class SowPhase1BodyFactory<Diagnosable extends tap.Diagnostics> {
 export class SowComplianceBuilder<Diagnosable extends tap.Diagnostics> {
   readonly phase1 = new SowPhase1BodyFactory<Diagnosable>();
 
-  constructor() {
-  }
+  constructor() {}
 
   tapContent() {
     const tcb = new tap.TapComplianceBuilder(false);
     tcb.contentBuilder.bb.content.push(
-      ...this.phase1.bb.content.filter((c) => c.nature === "test-case"),
+      ...this.phase1.bb.content.filter((c) => c.nature === "test-case")
     );
     return tcb.tapContent();
   }
