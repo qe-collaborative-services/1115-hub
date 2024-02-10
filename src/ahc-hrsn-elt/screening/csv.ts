@@ -56,6 +56,7 @@ export class ScreeningCsvFileIngestSource<
     readonly govn: ddbo.DuckDbOrchGovernance,
   ) {}
 
+  // deno-lint-ignore require-await
   async workflow(
     session: o.OrchSession<
       ddbo.DuckDbOrchGovernance,
@@ -71,16 +72,15 @@ export class ScreeningCsvFileIngestSource<
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
-    const sessionDML = await session.orchSessionSqlDML();
     const ssr = new ScreeningCsvStructureRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
     const sar = new sg.ScreeningAssuranceRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );

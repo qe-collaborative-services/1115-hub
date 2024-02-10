@@ -1,47 +1,84 @@
 import {
   colors as c,
+  path,
   SQLa_orch as o,
   SQLa_orch_duckdb as ddbo,
 } from "./deps.ts";
 import * as mod from "./mod.ts";
 
-/**
- * End-to-End (e2e) test case for AHC HRSN Extract Load Transform (ELT) module.
- * TODO:
- * - add Deno 'watch' capability with specific directories so new files
- *   automatically run code
- * - add Deno 'cron' capability in case 'watch' functionality is not desired and
- *   time-based execution is more suitable.
- * - consider adding Cliffy-based CLI as controllers for watch / cron
- */
+export function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
+  const oePath = (childPath: string): mod.OrchEnginePath => {
+    const home = path.join(rootPath, childPath);
+    const resolvedPath = (child: string) => path.join(home, child);
+
+    return {
+      home,
+      resolvedPath,
+      movedPath: (path, dest) => {
+        // don't actually move anything during testing, just pretend
+        return dest.resolvedPath(path);
+      },
+    };
+  };
+
+  const oeStorablePath = (childPath: string): mod.OrchEngineStorablePath => {
+    const oep = oePath(childPath);
+    return {
+      ...oep,
+      storedContent: async (path, content) => {
+        const dest = oep.resolvedPath(path);
+        await Deno.writeTextFile(dest, content);
+        return dest;
+      },
+    };
+  };
+
+  const ingress = oePath(
+    "support/assurance/ahc-hrsn-elt/screening/synthetic-content",
+  );
+  const egress = oeStorablePath(
+    "support/assurance/ahc-hrsn-elt/screening/results-test-e2e",
+  );
+
+  return {
+    ingress,
+    inProcess: egress,
+    archive: egress,
+    egress,
+
+    duckDbFsPathSupplier: () => egress.resolvedPath("ingestion-center.duckdb"),
+    prepareDuckDbFsPath: async (duckDbFsPath: string) => {
+      try {
+        await Deno.remove(duckDbFsPath);
+      } catch (_err) {
+        // ignore errors if file does not exist
+      }
+    },
+  };
+}
 
 // Assume all paths are relative to the root of this repo because this module
 // is executed using `deno task ahc-hrsn-screening-test-e2e` from repo root.
 
-const ahcHrsnScreeningHome = `support/assurance/ahc-hrsn-elt/screening`;
-const resultsHome = `${ahcHrsnScreeningHome}/results-test-e2e`;
+const e2eTestFilePaths = e2eTestFsPathTree(Deno.cwd());
 const govn = new ddbo.DuckDbOrchGovernance(
   true,
   new ddbo.DuckDbOrchEmitContext(),
 );
-
+const sessionID = await govn.emitCtx.newUUID(true);
 const args: mod.OrchEngineArgs = {
-  session: new o.OrchSession(govn),
-  walkRootPaths: [`${ahcHrsnScreeningHome}/synthetic-content`],
-  duckDbDestFsPathSupplier: () => `${resultsHome}/ingestion-center.duckdb`,
-  prepareDuckDbFsPath: async (duckDbFsPath: string) => {
-    try {
-      await Deno.remove(duckDbFsPath);
-    } catch (_err) {
-      // ignore errors if file does not exist
-    }
-  },
-  diagsJson: `${resultsHome}/diagnostics.json`,
-  diagsMd: `${resultsHome}/diagnostics.md`,
-  diagsXlsx: `${resultsHome}/diagnostics.xlsx`,
-  resourceDb: `${resultsHome}/resource.sqlite.db`,
+  session: new o.OrchSession(sessionID, govn),
+  paths: e2eTestFilePaths,
+  walkRootPaths: [e2eTestFilePaths.ingress.home],
+  diagsJson: e2eTestFilePaths.egress.resolvedPath("diagnostics.json"),
+  diagsMd: e2eTestFilePaths.egress.resolvedPath("diagnostics.md"),
+  diagsXlsx: e2eTestFilePaths.egress.resolvedPath("diagnostics.xlsx"),
+  resourceDb: e2eTestFilePaths.egress.resolvedPath("resource.sqlite.db"),
   emitDagPuml: async (puml, _previewUrl) => {
-    await Deno.writeTextFile(`${resultsHome}/dag.puml`, puml);
+    await Deno.writeTextFile(
+      e2eTestFilePaths.egress.resolvedPath("dag.puml"),
+      puml,
+    );
   },
 };
 
@@ -74,4 +111,4 @@ if (args.resourceDb) {
   console.info(`📦 ${c.green(args.resourceDb)} has the aggregated content and \`orch_session_*\` validation tables.`);
 }
 // deno-fmt-ignore
-console.info(`🦆 ${c.yellow(args.duckDbDestFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);
+console.info(`🦆 ${c.yellow(e2eTestFilePaths.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);

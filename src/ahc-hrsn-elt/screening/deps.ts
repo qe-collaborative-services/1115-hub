@@ -9,13 +9,13 @@ export * as dax from "https://deno.land/x/dax@0.36.0/mod.ts";
 export * as safeText from "npm:string-ts";
 
 // local: ../../../../../netspective-labs/sql-aide
-// remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/x0.13.7
+// remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/x0.13.11
 
-export * as array from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/lib/universal/array.ts";
-export * as chainNB from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/lib/notebook/chain-of-responsibility.ts";
-export * as ws from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/lib/universal/whitespace.ts";
+export * as array from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.11/lib/universal/array.ts";
+export * as chainNB from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.11/lib/notebook/chain-of-responsibility.ts";
+export * as ws from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.11/lib/universal/whitespace.ts";
 
-export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/render/mod.ts";
-export * as SQLa_orch from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/pattern/orchestration/mod.ts";
-export * as SQLa_orch_duckdb from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/pattern/orchestration/duckdb/mod.ts";
-export * as SQLa_sqlpage from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/pattern/sqlpage/mod.ts";
+export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.11/render/mod.ts";
+export * as SQLa_orch from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.11/pattern/orchestration/mod.ts";
+export * as SQLa_orch_duckdb from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.11/pattern/orchestration/duckdb/mod.ts";
+export * as SQLa_sqlpage from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.11/pattern/sqlpage/mod.ts";

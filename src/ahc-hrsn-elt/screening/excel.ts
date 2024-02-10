@@ -257,6 +257,7 @@ export class ScreeningExcelSheetIngestSource<
     ) as TableName;
   }
 
+  // deno-lint-ignore require-await
   async workflow(
     session: o.OrchSession<
       ddbo.DuckDbOrchGovernance,
@@ -273,16 +274,15 @@ export class ScreeningExcelSheetIngestSource<
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
-    const sessionDML = await session.orchSessionSqlDML();
     const ssr = new ScreeningStructureRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
     const sar = new sg.ScreeningAssuranceRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
@@ -429,6 +429,7 @@ export class AdminDemographicExcelSheetIngestSource<
     ) as TableName;
   }
 
+  // deno-lint-ignore require-await
   async workflow(
     session: o.OrchSession<
       ddbo.DuckDbOrchGovernance,
@@ -445,16 +446,15 @@ export class AdminDemographicExcelSheetIngestSource<
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
-    const sessionDML = await session.orchSessionSqlDML();
     const ssr = new AdminDemographicStructureRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
     const sar = new sg.AdminDemographicAssuranceRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
@@ -615,6 +615,7 @@ export class QeAdminDataExcelSheetIngestSource<
     ) as TableName;
   }
 
+  // deno-lint-ignore require-await
   async workflow(
     session: o.OrchSession<
       ddbo.DuckDbOrchGovernance,
@@ -631,16 +632,15 @@ export class QeAdminDataExcelSheetIngestSource<
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
-    const sessionDML = await session.orchSessionSqlDML();
     const ssr = new QeAdminDataStructureRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
     const sar = new sg.QeAdminDataAssuranceRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
@@ -793,6 +793,7 @@ export class QuestionReferenceExcelSheetIngestSource<
     ) as TableName;
   }
 
+  // deno-lint-ignore require-await
   async workflow(
     session: o.OrchSession<
       ddbo.DuckDbOrchGovernance,
@@ -809,16 +810,15 @@ export class QuestionReferenceExcelSheetIngestSource<
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
-    const sessionDML = await session.orchSessionSqlDML();
     const ssr = new QuestionReferenceStructureRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
     const sar = new sg.QuestionReferenceAssuranceRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
@@ -948,6 +948,7 @@ export class AnswerReferenceExcelSheetIngestSource<
     ) as TableName;
   }
 
+  // deno-lint-ignore require-await
   async workflow(
     session: o.OrchSession<
       ddbo.DuckDbOrchGovernance,
@@ -964,16 +965,15 @@ export class AnswerReferenceExcelSheetIngestSource<
       ddbo.DuckDbOrchEmitContext
     >["workflow"]
   > {
-    const sessionDML = await session.orchSessionSqlDML();
     const ssr = new AnswerReferenceStructureRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );
     const sar = new sg.AnswerReferenceAssuranceRules(
       this.tableName,
-      sessionDML.sessionID,
+      session.sessionID,
       sessionEntryID,
       this.govn,
     );

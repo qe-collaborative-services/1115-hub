@@ -3,6 +3,7 @@ import {
   chainNB,
   dax,
   fs,
+  path,
   SQLa_orch as o,
   SQLa_orch_duckdb as ddbo,
   ws,
@@ -78,14 +79,80 @@ export type OrchStep = chainNB.NotebookCell<
 export type OrchStepContext = chainNB.NotebookCellContext<OrchEngine, OrchStep>;
 export const oeDescr = new chainNB.NotebookDescriptor<OrchEngine, OrchStep>();
 
+export type OrchEnginePath =
+  & { readonly home: string }
+  & o.OrchPathSupplier
+  & o.OrchPathMutator;
+
+export type OrchEngineStorablePath = OrchEnginePath & o.OrchPathStore;
+
+export interface OrchEnginePaths {
+  readonly ingress: OrchEnginePath;
+  readonly inProcess: OrchEngineStorablePath;
+  readonly archive: OrchEngineStorablePath;
+  readonly egress: OrchEngineStorablePath;
+
+  readonly duckDbFsPathSupplier: () => string;
+  readonly prepareDuckDbFsPath?: (duckDbFsPath: string) => Promise<void>;
+
+  readonly initializePaths?: () => Promise<void>;
+  readonly finalizePaths?: () => Promise<void>;
+}
+
+export function orchEngineFsPathTree(
+  rootPath: string,
+  sessionID: string,
+): OrchEnginePaths {
+  const oePath = (childPath: string): OrchEnginePath => {
+    const home = path.join(rootPath, childPath);
+    const resolvedPath = (child: string) => path.join(home, child);
+
+    return {
+      home,
+      resolvedPath,
+      movedPath: async (path, dest) => {
+        const movedToPath = dest.resolvedPath(path);
+        await Deno.rename(path, movedToPath);
+        return movedToPath;
+      },
+    };
+  };
+
+  const oeStorablePath = (childPath: string): OrchEngineStorablePath => {
+    const oep = oePath(childPath);
+    return {
+      ...oep,
+      storedContent: async (path, content) => {
+        const dest = oep.resolvedPath(path);
+        await Deno.writeTextFile(dest, content);
+        return dest;
+      },
+    };
+  };
+
+  const ingress = oePath("ingress");
+  const inProcess = oeStorablePath(path.join("in-process", sessionID));
+  const archive = oeStorablePath(path.join("archive", sessionID));
+  const egress = oeStorablePath(path.join("egress", sessionID));
+
+  return {
+    ingress,
+    inProcess,
+    archive,
+    egress,
+
+    duckDbFsPathSupplier: () =>
+      inProcess.resolvedPath("ingestion-center.duckdb"),
+  };
+}
+
 export interface OrchEngineArgs extends
   o.OrchArgs<
     ddbo.DuckDbOrchGovernance,
     OrchEngine,
     ddbo.DuckDbOrchEmitContext
   > {
-  readonly duckDbDestFsPathSupplier: (identity?: string) => string;
-  readonly prepareDuckDbFsPath?: (duckDbDestFsPath: string) => Promise<void>;
+  readonly paths: OrchEnginePaths;
   readonly walkRootPaths?: string[];
   readonly diagsJson?: string;
   readonly diagsXlsx?: string;
@@ -136,7 +203,7 @@ export class OrchEngine {
   ) {
     this.duckdb = new ddbo.DuckDbShell(args.session, {
       duckdbCmd: "duckdb",
-      dbDestFsPathSupplier: args.duckDbDestFsPathSupplier,
+      dbDestFsPathSupplier: args.paths.duckDbFsPathSupplier,
       preambleSQL: () =>
         `-- preambleSQL\nSET autoinstall_known_extensions=true;\nSET autoload_known_extensions=true;\n-- end preambleSQL\n`,
     });
@@ -149,11 +216,11 @@ export class OrchEngine {
    * database in case we want to initialize from scratch.
    * @param osc the type-safe notebook cell context for diagnostics or business rules
    */
-  async prepareInit(osc: OrchStepContext) {
-    const duckDbFsPath = this.duckdb.args.dbDestFsPathSupplier(
-      osc.current.nbCellID,
+  async prepareInit(_osc: OrchStepContext) {
+    await this.args.paths.initializePaths?.();
+    await this.args.paths.prepareDuckDbFsPath?.(
+      this.args.paths.duckDbFsPathSupplier(),
     );
-    await this.args.prepareDuckDbFsPath?.(duckDbFsPath);
   }
 
   /**
@@ -230,7 +297,7 @@ export class OrchEngine {
       govn: { emitCtx: ctx },
       args: { session },
     } = this;
-    const { sessionID } = await session.orchSessionSqlDML();
+    const { sessionID } = session;
 
     let psIndex = 0;
     this.potentialSources = Array.from(
@@ -475,10 +542,10 @@ export class OrchEngine {
       await Deno.writeTextFile(
         this.args.diagsMd,
         "---\n" +
-        yaml.stringify(stringifiableArgs) +
-        "---\n" +
-        "# Orchestration Diagnostics\n" +
-        markdown,
+          yaml.stringify(stringifiableArgs) +
+          "---\n" +
+          "# Orchestration Diagnostics\n" +
+          markdown,
       );
     }
 
@@ -487,18 +554,22 @@ export class OrchEngine {
       orchSession: { columnNames: c },
       emitCtx: { sqlTextEmitOptions: steo },
     } = this.govn;
-    const { sessionID } = await this.args.session.orchSessionSqlDML();
+    const { sessionID } = this.args.session;
     await dax.$`sqlite3 ${resourceDb}`.stdinText(
       `UPDATE ${sessTbl.tableName} SET 
         ${c.orch_finished_at} = CURRENT_TIMESTAMP, 
-        ${c.args_json} = ${steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
+        ${c.args_json} = ${
+        steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
       },
-        ${c.diagnostics_json} = ${steo.quotedLiteral(
-        JSON.stringify(this.duckdb.diagnostics, null, "  "),
-      )[1]
+        ${c.diagnostics_json} = ${
+        steo.quotedLiteral(
+          JSON.stringify(this.duckdb.diagnostics, null, "  "),
+        )[1]
       },
         ${c.diagnostics_md} = ${steo.quotedLiteral(markdown)[1]}
       WHERE ${c.orch_session_id} = '${sessionID}'`,
     );
+
+    await this.args.paths.finalizePaths?.();
   }
 }
