@@ -14,10 +14,8 @@ export function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
     return {
       home,
       resolvedPath,
-      movedPath: (path, dest) => {
-        // don't actually move anything during testing, just pretend
-        return dest.resolvedPath(path);
-      },
+      // don't actually move anything during testing, just pretend
+      movedPath: (path, dest) => dest.resolvedPath(path),
     };
   };
 
@@ -36,20 +34,31 @@ export function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
   const ingress = oePath(
     "support/assurance/ahc-hrsn-elt/screening/synthetic-content",
   );
-  const egress = oeStorablePath(
-    "support/assurance/ahc-hrsn-elt/screening/results-test-e2e",
-  );
+  const inProcess: mod.OrchEnginePaths["inProcess"] = {
+    ...oeStorablePath(
+      "support/assurance/ahc-hrsn-elt/screening/results-test-e2e",
+    ),
+    duckDbFsPathSupplier: () =>
+      inProcess.resolvedPath("ingestion-center.duckdb"),
+  };
+  const egress: mod.OrchEnginePaths["egress"] = {
+    ...oeStorablePath(
+      "support/assurance/ahc-hrsn-elt/screening/results-test-e2e",
+    ),
+    diagsJsonSupplier: () => egress.resolvedPath("diagnostics.json"),
+    diagsMdSupplier: () => egress.resolvedPath("diagnostics.md"),
+    diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
+    resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
+  };
 
   return {
     ingress,
-    inProcess: egress,
-    archive: egress,
+    inProcess,
     egress,
 
-    duckDbFsPathSupplier: () => egress.resolvedPath("ingestion-center.duckdb"),
-    prepareDuckDbFsPath: async (duckDbFsPath: string) => {
+    initializePaths: async () => {
       try {
-        await Deno.remove(duckDbFsPath);
+        await Deno.remove(inProcess.duckDbFsPathSupplier());
       } catch (_err) {
         // ignore errors if file does not exist
       }
@@ -70,13 +79,9 @@ const args: mod.OrchEngineArgs = {
   session: new o.OrchSession(sessionID, govn),
   paths: e2eTestFilePaths,
   walkRootPaths: [e2eTestFilePaths.ingress.home],
-  diagsJson: e2eTestFilePaths.egress.resolvedPath("diagnostics.json"),
-  diagsMd: e2eTestFilePaths.egress.resolvedPath("diagnostics.md"),
-  diagsXlsx: e2eTestFilePaths.egress.resolvedPath("diagnostics.xlsx"),
-  resourceDb: e2eTestFilePaths.egress.resolvedPath("resource.sqlite.db"),
   emitDagPuml: async (puml, _previewUrl) => {
     await Deno.writeTextFile(
-      e2eTestFilePaths.egress.resolvedPath("dag.puml"),
+      e2eTestFilePaths.inProcess.resolvedPath("dag.puml"),
       puml,
     );
   },
@@ -102,13 +107,15 @@ if (workflow?.duckdb.stdErrsEncountered) {
   );
 }
 
-if (args.diagsMd) {
-  console.info("📄 Diagnostics are in", c.cyan(args.diagsMd));
+const { diagsMdSupplier, resourceDbSupplier } = e2eTestFilePaths.egress;
+
+if (diagsMdSupplier) {
+  console.info("📄 Diagnostics are in", c.cyan(diagsMdSupplier()));
 }
 
-if (args.resourceDb) {
+if (resourceDbSupplier) {
   // deno-fmt-ignore
-  console.info(`📦 ${c.green(args.resourceDb)} has the aggregated content and \`orch_session_*\` validation tables.`);
+  console.info(`📦 ${c.green(resourceDbSupplier())} has the aggregated content and \`orch_session_*\` validation tables.`);
 }
 // deno-fmt-ignore
-console.info(`🦆 ${c.yellow(e2eTestFilePaths.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);
+console.info(`🦆 ${c.yellow(e2eTestFilePaths.inProcess.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);

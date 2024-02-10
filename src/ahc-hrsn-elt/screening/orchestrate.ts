@@ -87,13 +87,18 @@ export type OrchEnginePath =
 export type OrchEngineStorablePath = OrchEnginePath & o.OrchPathStore;
 
 export interface OrchEnginePaths {
-  readonly ingress: OrchEnginePath;
-  readonly inProcess: OrchEngineStorablePath;
-  readonly archive: OrchEngineStorablePath;
-  readonly egress: OrchEngineStorablePath;
-
-  readonly duckDbFsPathSupplier: () => string;
-  readonly prepareDuckDbFsPath?: (duckDbFsPath: string) => Promise<void>;
+  readonly ingress: OrchEnginePath & {
+    readonly archive?: OrchEngineStorablePath;
+  };
+  readonly inProcess: OrchEngineStorablePath & {
+    readonly duckDbFsPathSupplier: () => string;
+  };
+  readonly egress: OrchEngineStorablePath & {
+    readonly resourceDbSupplier?: () => string;
+    readonly diagsJsonSupplier?: () => string;
+    readonly diagsXlsxSupplier?: () => string;
+    readonly diagsMdSupplier?: () => string;
+  };
 
   readonly initializePaths?: () => Promise<void>;
   readonly finalizePaths?: () => Promise<void>;
@@ -130,19 +135,24 @@ export function orchEngineFsPathTree(
     };
   };
 
-  const ingress = oePath("ingress");
-  const inProcess = oeStorablePath(path.join("in-process", sessionID));
-  const archive = oeStorablePath(path.join("archive", sessionID));
-  const egress = oeStorablePath(path.join("egress", sessionID));
+  const ingress: OrchEnginePaths["ingress"] = {
+    ...oePath("ingress"),
+    archive: oeStorablePath(path.join("archive", sessionID)),
+  };
+  const inProcess: OrchEnginePaths["inProcess"] = {
+    ...oeStorablePath(path.join("in-process", sessionID)),
+    duckDbFsPathSupplier: () =>
+      inProcess.resolvedPath("ingestion-center.duckdb"),
+  };
+  const egress: OrchEnginePaths["egress"] = {
+    ...oeStorablePath(path.join("egress", sessionID)),
+    resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
+  };
 
   return {
     ingress,
     inProcess,
-    archive,
     egress,
-
-    duckDbFsPathSupplier: () =>
-      inProcess.resolvedPath("ingestion-center.duckdb"),
   };
 }
 
@@ -154,10 +164,6 @@ export interface OrchEngineArgs extends
   > {
   readonly paths: OrchEnginePaths;
   readonly walkRootPaths?: string[];
-  readonly diagsJson?: string;
-  readonly diagsXlsx?: string;
-  readonly diagsMd?: string;
-  readonly resourceDb?: string;
 }
 
 /**
@@ -203,7 +209,7 @@ export class OrchEngine {
   ) {
     this.duckdb = new ddbo.DuckDbShell(args.session, {
       duckdbCmd: "duckdb",
-      dbDestFsPathSupplier: args.paths.duckDbFsPathSupplier,
+      dbDestFsPathSupplier: args.paths.inProcess.duckDbFsPathSupplier,
       preambleSQL: () =>
         `-- preambleSQL\nSET autoinstall_known_extensions=true;\nSET autoload_known_extensions=true;\n-- end preambleSQL\n`,
     });
@@ -218,9 +224,6 @@ export class OrchEngine {
    */
   async prepareInit(_osc: OrchStepContext) {
     await this.args.paths.initializePaths?.();
-    await this.args.paths.prepareDuckDbFsPath?.(
-      this.args.paths.duckDbFsPathSupplier(),
-    );
   }
 
   /**
@@ -408,10 +411,11 @@ export class OrchEngine {
     >,
   ) {
     const {
-      args: { resourceDb, session },
+      args: { paths: { egress }, session },
       govn: { emitCtx: ctx },
     } = this;
-    if (resourceDb) {
+    if (egress.resourceDbSupplier) {
+      const resourceDb = egress.resourceDbSupplier();
       try {
         Deno.removeSync(resourceDb);
       } catch (_err) {
@@ -482,10 +486,9 @@ export class OrchEngine {
   // `finalize` means always run this even if errors abort the above methods
   @oeDescr.finalize()
   async emitDiagnostics() {
-    const {
-      args: { diagsXlsx, resourceDb },
-    } = this;
-    if (diagsXlsx) {
+    const { paths: { egress } } = this.args;
+    if (egress.diagsXlsxSupplier) {
+      const diagsXlsx = egress.diagsXlsxSupplier();
       // if Excel workbook already exists, GDAL xlsx driver will error
       try {
         Deno.removeSync(diagsXlsx);
@@ -526,9 +529,10 @@ export class OrchEngine {
       ),
     );
 
-    if (this.args.diagsJson) {
+    if (egress.diagsJsonSupplier) {
+      const diagsJson = egress.diagsJsonSupplier();
       await Deno.writeTextFile(
-        this.args.diagsJson,
+        diagsJson,
         JSON.stringify(
           { args: stringifiableArgs, diags: this.duckdb.diagnostics },
           null,
@@ -538,9 +542,10 @@ export class OrchEngine {
     }
 
     const markdown = this.duckdb.diagnosticsMarkdown();
-    if (this.args.diagsMd) {
+    if (egress.diagsMdSupplier) {
+      const diagsMd = egress.diagsMdSupplier();
       await Deno.writeTextFile(
-        this.args.diagsMd,
+        diagsMd,
         "---\n" +
           yaml.stringify(stringifiableArgs) +
           "---\n" +
@@ -549,26 +554,29 @@ export class OrchEngine {
       );
     }
 
-    const {
-      orchSession: sessTbl,
-      orchSession: { columnNames: c },
-      emitCtx: { sqlTextEmitOptions: steo },
-    } = this.govn;
-    const { sessionID } = this.args.session;
-    await dax.$`sqlite3 ${resourceDb}`.stdinText(
-      `UPDATE ${sessTbl.tableName} SET 
-        ${c.orch_finished_at} = CURRENT_TIMESTAMP, 
-        ${c.args_json} = ${
-        steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
-      },
-        ${c.diagnostics_json} = ${
-        steo.quotedLiteral(
-          JSON.stringify(this.duckdb.diagnostics, null, "  "),
-        )[1]
-      },
-        ${c.diagnostics_md} = ${steo.quotedLiteral(markdown)[1]}
-      WHERE ${c.orch_session_id} = '${sessionID}'`,
-    );
+    if (egress.resourceDbSupplier) {
+      const {
+        orchSession: sessTbl,
+        orchSession: { columnNames: c },
+        emitCtx: { sqlTextEmitOptions: steo },
+      } = this.govn;
+      const { sessionID } = this.args.session;
+      const resourceDb = egress.resourceDbSupplier();
+      await dax.$`sqlite3 ${resourceDb}`.stdinText(
+        `UPDATE ${sessTbl.tableName} SET 
+            ${c.orch_finished_at} = CURRENT_TIMESTAMP, 
+            ${c.args_json} = ${
+          steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
+        },
+            ${c.diagnostics_json} = ${
+          steo.quotedLiteral(
+            JSON.stringify(this.duckdb.diagnostics, null, "  "),
+          )[1]
+        },
+            ${c.diagnostics_md} = ${steo.quotedLiteral(markdown)[1]}
+          WHERE ${c.orch_session_id} = '${sessionID}'`,
+      );
+    }
 
     await this.args.paths.finalizePaths?.();
   }
