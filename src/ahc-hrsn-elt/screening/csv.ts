@@ -1,4 +1,4 @@
-import { fs, path, SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
+import { path, SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
 import * as sg from "./governance.ts";
 
 const screeningCsvColumnNames = [
@@ -243,9 +243,13 @@ export function ingestCsvFilesSourcesSupplier(
       extended: true,
       globstar: true,
     }),
-    sources: (entry: fs.WalkEntry) => {
-      const tableName = govn.toSnakeCase(path.basename(entry.path, ".csv"));
-      return [new ScreeningCsvFileIngestSource(entry.path, tableName, govn)];
+    sources: (entry) => {
+      const tableName = govn.toSnakeCase(
+        path.basename(String(entry.path), ".csv"),
+      );
+      return [
+        new ScreeningCsvFileIngestSource(String(entry.path), tableName, govn),
+      ];
     },
   };
 }

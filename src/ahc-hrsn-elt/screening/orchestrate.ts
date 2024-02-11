@@ -4,6 +4,7 @@ import {
   dax,
   fs,
   path,
+  safety,
   SQLa_orch as o,
   SQLa_orch_duckdb as ddbo,
   ws,
@@ -25,6 +26,7 @@ import {
   QuestionReferenceExcelSheetIngestSource,
   ScreeningExcelSheetIngestSource,
 } from "./excel.ts";
+import { isArray } from "https://deno.land/std@0.209.0/yaml/_utils.ts";
 
 export type PotentialIngestSource =
   | ScreeningCsvFileIngestSource<string, o.State>
@@ -40,7 +42,7 @@ export type PotentialIngestSource =
     ddbo.DuckDbOrchEmitContext
   >;
 
-export function fsPatternIngestSourcesSupplier(
+export function walkFsPatternIngestSourcesSupplier(
   govn: ddbo.DuckDbOrchGovernance,
 ): o.IngestSourcesSupplier<PotentialIngestSource, [string[] | undefined]> {
   return {
@@ -64,6 +66,87 @@ export function fsPatternIngestSourcesSupplier(
               }
             }
           }
+        }
+      }
+
+      return sources;
+    },
+  };
+}
+
+export type ScreeningIngressGroup = {
+  readonly groupID: string;
+  readonly component: string;
+  readonly entries: o.IngressEntry<string, string>[];
+  readonly onIngress: (group: ScreeningIngressGroup) => Promise<void> | void;
+};
+
+export class ScreeningIngressGroups {
+  // entries are like `screening-<groupID>_admin.csv`, `screening-<groupID>_questions.csv`, etc.
+  readonly pattern = /.*(screening)-([^_])_(.*)?.csv/i;
+  readonly groups = new Map<string, ScreeningIngressGroup>();
+
+  constructor(readonly onIngress: ScreeningIngressGroup["onIngress"]) {
+  }
+
+  potential(
+    entry: o.IngressEntry<string, string>,
+    onIngress?: ScreeningIngressGroup["onIngress"],
+  ) {
+    const groupMatch = entry.fsPath.match(this.pattern);
+    if (groupMatch) {
+      const [, _screening, groupID, component] = groupMatch;
+      let group = this.groups.get(groupID);
+      if (!group) {
+        group = {
+          groupID,
+          component,
+          entries: [entry],
+          onIngress: onIngress ?? this.onIngress,
+        };
+        this.groups.set(groupID, group);
+      } else {
+        group.entries.push(entry);
+      }
+      if (group.entries.length == 3) {
+        group.onIngress(group);
+      }
+    }
+    return undefined;
+  }
+}
+
+export function watchFsPatternIngestSourcesSupplier(
+  govn: ddbo.DuckDbOrchGovernance,
+  src: ScreeningIngressGroup | o.IngressEntry<string, string> | o.IngressEntry<
+    string,
+    string
+  >[],
+): o.IngestSourcesSupplier<PotentialIngestSource, [string[] | undefined]> {
+  const isSIG = safety.typeGuard<ScreeningIngressGroup>("groupID", "component");
+  return {
+    sources: async () => {
+      const sources: PotentialIngestSource[] = [];
+      const iss = [
+        ingestCsvFilesSourcesSupplier(govn),
+        ingestExcelSourcesSupplier(govn),
+      ];
+
+      const collect = async (path: string | URL) => {
+        for (const p of iss.filter((p) => p.pattern.test(String(path)))) {
+          for (const s of await p.sources({ path })) {
+            sources.push(s);
+          }
+        }
+      };
+
+      if (isSIG(src)) {
+        src.entries.forEach(async (entry) => await collect(entry.fsPath));
+      } else {
+        if (isArray(src)) {
+          src.forEach(async (entry) => await collect(entry.fsPath));
+        } else {
+          await collect(src.fsPath);
         }
       }
 

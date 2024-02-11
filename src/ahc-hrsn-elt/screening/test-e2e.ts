@@ -6,7 +6,52 @@ import {
 } from "./deps.ts";
 import * as mod from "./mod.ts";
 
-export function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
+async function ingressWorkflow(
+  govn: ddbo.DuckDbOrchGovernance,
+  src:
+    | mod.ScreeningIngressGroup
+    | o.IngressEntry<string, string>
+    | o.IngressEntry<string, string>[],
+) {
+  const workflow = await o.orchestrate<
+    ddbo.DuckDbOrchGovernance,
+    mod.OrchEngine,
+    mod.OrchEngineArgs,
+    ddbo.DuckDbOrchEmitContext
+  >(mod.OrchEngine.prototype, mod.oeDescr, {
+    govn,
+    newInstance: () =>
+      new mod.OrchEngine(
+        mod.watchFsPatternIngestSourcesSupplier(govn, src),
+        govn,
+        args,
+      ),
+  }, args);
+
+  if (workflow?.duckdb.stdErrsEncountered) {
+    // deno-fmt-ignore
+    console.error(`❌ ${c.brightRed("DuckDB orchestration SQL syntax/parsing errors encountered (ingestion state is indeterminate).")}`);
+  } else {
+    console.info(
+      "✅ No DuckDB orchestration SQL syntax or SQL parsing errors encountered.",
+    );
+  }
+
+  const { diagsMdSupplier, resourceDbSupplier } = e2eTestPaths.egress;
+
+  if (diagsMdSupplier) {
+    console.info("📄 Diagnostics are in", c.cyan(diagsMdSupplier()));
+  }
+
+  if (resourceDbSupplier) {
+    // deno-fmt-ignore
+    console.info(`📦 ${c.green(resourceDbSupplier())} has the aggregated content and \`orch_session_*\` validation tables.`);
+  }
+  // deno-fmt-ignore
+  console.info(`🦆 ${c.yellow(e2eTestPaths.inProcess.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);
+}
+
+function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
   const oePath = (childPath: string): mod.OrchEnginePath => {
     const home = path.join(rootPath, childPath);
     const resolvedPath = (child: string) => path.join(home, child);
@@ -69,7 +114,7 @@ export function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
 // Assume all paths are relative to the root of this repo because this module
 // is executed using `deno task ahc-hrsn-screening-test-e2e` from repo root.
 
-const e2eTestFilePaths = e2eTestFsPathTree(Deno.cwd());
+const e2eTestPaths = e2eTestFsPathTree(Deno.cwd());
 const govn = new ddbo.DuckDbOrchGovernance(
   true,
   new ddbo.DuckDbOrchEmitContext(),
@@ -77,45 +122,31 @@ const govn = new ddbo.DuckDbOrchGovernance(
 const sessionID = await govn.emitCtx.newUUID(true);
 const args: mod.OrchEngineArgs = {
   session: new o.OrchSession(sessionID, govn),
-  paths: e2eTestFilePaths,
-  walkRootPaths: [e2eTestFilePaths.ingress.home],
+  paths: e2eTestPaths,
+  walkRootPaths: [e2eTestPaths.ingress.home],
   emitDagPuml: async (puml, _previewUrl) => {
     await Deno.writeTextFile(
-      e2eTestFilePaths.inProcess.resolvedPath("dag.puml"),
+      e2eTestPaths.inProcess.resolvedPath("dag.puml"),
       puml,
     );
   },
 };
 
-const workflow = await o.orchestrate<
-  ddbo.DuckDbOrchGovernance,
-  mod.OrchEngine,
-  mod.OrchEngineArgs,
-  ddbo.DuckDbOrchEmitContext
->(mod.OrchEngine.prototype, mod.oeDescr, {
-  govn,
-  newInstance: () =>
-    new mod.OrchEngine(mod.fsPatternIngestSourcesSupplier(govn), govn, args),
-}, args);
+const screeningGroups = new mod.ScreeningIngressGroups(async (group) => {
+  await ingressWorkflow(govn, group);
+});
 
-if (workflow?.duckdb.stdErrsEncountered) {
-  // deno-fmt-ignore
-  console.error(`❌ ${c.brightRed("DuckDB orchestration SQL syntax/parsing errors encountered (ingestion state is indeterminate).")}`);
-} else {
-  console.info(
-    "✅ No DuckDB orchestration SQL syntax or SQL parsing errors encountered.",
-  );
-}
+const watchPaths: o.WatchFsPath<string, string>[] = [{
+  pathID: "ingress",
+  rootPath: e2eTestPaths.ingress.home,
+  onIngress: async (entry) => {
+    const group = screeningGroups.potential(entry);
+    await ingressWorkflow(govn, group ?? entry);
+  },
+}];
 
-const { diagsMdSupplier, resourceDbSupplier } = e2eTestFilePaths.egress;
-
-if (diagsMdSupplier) {
-  console.info("📄 Diagnostics are in", c.cyan(diagsMdSupplier()));
-}
-
-if (resourceDbSupplier) {
-  // deno-fmt-ignore
-  console.info(`📦 ${c.green(resourceDbSupplier())} has the aggregated content and \`orch_session_*\` validation tables.`);
-}
-// deno-fmt-ignore
-console.info(`🦆 ${c.yellow(e2eTestFilePaths.inProcess.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);
+await o.ingestWatchedFs({
+  drain: async (entries) => await ingressWorkflow(govn, entries),
+  watch: false,
+  watchPaths,
+});

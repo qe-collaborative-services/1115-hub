@@ -1,4 +1,4 @@
-import { fs, path, SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
+import { path, SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
 import * as sg from "./governance.ts";
 
 // @deno-types="https://cdn.sheetjs.com/xlsx-0.20.1/package/types/index.d.ts"
@@ -1089,8 +1089,8 @@ export function ingestExcelSourcesSupplier(
       extended: true,
       globstar: true,
     }),
-    sources: (entry: fs.WalkEntry) => {
-      const uri = entry.path;
+    sources: (entry) => {
+      const uri = String(entry.path);
       const sources: (
         | ScreeningExcelSheetIngestSource<string, o.State>
         | AdminDemographicExcelSheetIngestSource<string, o.State>
@@ -1126,11 +1126,11 @@ export function ingestExcelSourcesSupplier(
       };
 
       try {
-        const wb = xlsx.readFile(entry.path);
+        const wb = xlsx.readFile(uri);
 
         // deno-fmt-ignore
         const sheetNotFound = (name: string) =>
-          Error(`Excel workbook sheet '${name}' not found in '${path.basename(entry.path)}' (available: ${wb.SheetNames.join(", ")})`);
+          Error(`Excel workbook sheet '${name}' not found in '${path.basename(uri)}' (available: ${wb.SheetNames.join(", ")})`);
 
         let sheetsFound = 0;
         const expectedSheetNames = Object.keys(sheetsExpected);
@@ -1155,7 +1155,7 @@ export function ingestExcelSourcesSupplier(
           }
         }
       } catch (err) {
-        sources.push(new o.ErrorIngestSource(entry.path, err, "ERROR", govn));
+        sources.push(new o.ErrorIngestSource(uri, err, "ERROR", govn));
       }
       return sources;
     },
