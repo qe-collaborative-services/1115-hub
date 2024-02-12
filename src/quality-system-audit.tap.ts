@@ -5,10 +5,10 @@ import * as c from "./compliance.ts";
 const qsGCB = new c.QualitySysComplianceBuilder();
 const { builders: qsBuilders } = qsGCB;
 
-await qsBuilders["Outcomes Management"].compliance(async function* (c) {
-  yield c.ok("SCF Control ID: SYS.01 - Requirement #1234 completed");
-  yield c.ok("SCF Control ID: SYS.02 - Requirement #1235 completed");
-  yield c.notOk("SCF Control ID: SYS.03 - Requirement #1236 incomplete", {
+await qsBuilders["Outcomes Management"].compliance((bb) => {
+  bb.ok("SCF Control ID: SYS.01 - Requirement #1234 completed");
+  bb.ok("SCF Control ID: SYS.02 - Requirement #1235 completed");
+  bb.notOk("SCF Control ID: SYS.03 - Requirement #1236 incomplete", {
     diagnostics: {
       "Audit Note":
         "Pending minor revisions. See comments in Jira ticket ABC-123",
@@ -17,10 +17,10 @@ await qsBuilders["Outcomes Management"].compliance(async function* (c) {
   });
 });
 
-await qsBuilders["Design and Development"].compliance(async function* (c) {
-  yield c.ok("SCF Control ID: SYS.01 - Requirement #1234 completed");
-  yield c.ok("SCF Control ID: SYS.02 - Requirement #1235 completed");
-  yield c.notOk("SCF Control ID: SYS.03 - Requirement #1236 incomplete", {
+await qsBuilders["Design and Development"].compliance((bb) => {
+  bb.ok("SCF Control ID: SYS.01 - Requirement #1234 completed");
+  bb.ok("SCF Control ID: SYS.02 - Requirement #1235 completed");
+  bb.notOk("SCF Control ID: SYS.03 - Requirement #1236 incomplete", {
     diagnostics: {
       "Audit Note":
         "Pending minor revisions. See comments in Jira ticket ABC-123",

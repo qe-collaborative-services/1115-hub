@@ -1,8 +1,8 @@
-// import * as tap from "../../../netspective-labs/sql-aide/lib/tap/mod.ts";
-// export * as tap from "../../../netspective-labs/sql-aide/lib/tap/mod.ts";
+import * as tap from "../../../netspective-labs/sql-aide/lib/tap/mod.ts";
+export * as tap from "../../../netspective-labs/sql-aide/lib/tap/mod.ts";
 
-import * as tap from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/lib/tap/mod.ts";
-export * as tap from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/lib/tap/mod.ts";
+// import * as tap from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/lib/tap/mod.ts";
+// export * as tap from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.10/lib/tap/mod.ts";
 
 // deno-lint-ignore no-explicit-any
 type Any = any;
@@ -18,7 +18,7 @@ export type AuditSoftwareResults = AuditResults & {
 
 export function qsSubjectArea<
   Area extends string,
-  Auditable extends AuditResults
+  Auditable extends AuditResults,
 >(
   area: Area,
   descr: string,
@@ -27,15 +27,19 @@ export function qsSubjectArea<
       super(false); // don't include a header
     }
 
-    async compliance(
+    // wraps this.subject so that "subject area" title doesn't need to be passed
+    async compliance<
+      Topic extends string,
+      TopicDiagnosable extends tap.Diagnostics,
+    >(
       elems: (
-        factory: tap.BodyFactory<Auditable>
-      ) => AsyncGenerator<tap.TestSuiteElement<Auditable>>
+        bb: tap.BodyBuilder<Topic, TopicDiagnosable>,
+      ) => void | Promise<void>,
     ) {
-      await this.subject(area, elems);
+      await this.subject<Topic, TopicDiagnosable>(area, elems);
       return this;
     }
-  })()
+  })(),
 ) {
   return { area, descr, tcb };
 }
@@ -56,43 +60,43 @@ export const qualitySystemSubjectAreas = [
      desired functionality, and the impact the software is expected to have.
      It also entails setting clear, measurable outcomes and ensuring that the
      software development process is geared towards achieving these outcomes,
-     thus ensuring a more holistic approach to software development.`
+     thus ensuring a more holistic approach to software development.`,
   ),
   qsSubjectArea<"Design and Development", AuditSoftwareResults>(
     "Design and Development",
     `Covering aspects of software design, architecture, and development
      processes, including adherence to coding standards and effective
-     development methodologies.`
+     development methodologies.`,
   ),
   qsSubjectArea(
     "Testing and Quality Assurance",
     `Focusing on various forms of testing to identify and rectify bugs and
      defects and ensuring that the software meets quality standards
-     throughout its development.`
+     throughout its development.`,
   ),
   qsSubjectArea(
     "Configuration Management",
     `Managing changes to software products, including version control and
-     tracking of changes.`
+     tracking of changes.`,
   ),
   qsSubjectArea(
     "Risk Management",
     `Identifying, analyzing, and mitigating risks associated with software
-     development.`
+     development.`,
   ),
   qsSubjectArea(
     "Project Management",
     `Ensuring that the software project is delivered on time, within budget,
-     and according to the project plan.`
+     and according to the project plan.`,
   ),
   qsSubjectArea(
     "Compliance and Standards Adherence",
-    `Ensuring compliance with relevant industry standards and regulations.`
+    `Ensuring compliance with relevant industry standards and regulations.`,
   ),
   qsSubjectArea(
     "Documentation and Records Management",
     `Keeping accurate records and documentation throughout the software
-     development lifecycle.`
+     development lifecycle.`,
   ),
 ] as const;
 
@@ -120,10 +124,10 @@ export class QualitySysComplianceBuilder {
   tapContent() {
     const tcb = new tap.TapComplianceBuilder();
     for (const sa of qualitySystemSubjectAreas) {
-      tcb.contentBuilder.bb.content.push(
-        ...sa.tcb.contentBuilder.bb.content.filter(
-          (c) => c.nature === "test-case"
-        )
+      tcb.bb.content.push(
+        ...sa.tcb.bb.content.filter(
+          (c) => c.nature === "test-case",
+        ),
       );
     }
     return tcb.tapContent();
@@ -146,75 +150,230 @@ export class QualitySysComplianceBuilder {
   }
 }
 
-export function sowPhase1TaskDescr<Task extends string>(task: Task) {
-  return { task };
+export type TaskEvidenceStrategy<Strategy extends string> = {
+  readonly strategy: Strategy;
+  readonly description: string;
+};
+
+export function taskEvidenceStrategy<Strategy extends string>(
+  strategy: Strategy,
+  description: string,
+): TaskEvidenceStrategy<Strategy> {
+  return { strategy, description };
 }
 
-// deno-fmt-ignore
+const evidenceTBD = taskEvidenceStrategy(
+  "TODO",
+  "evidence strategy to be determined (TBD)",
+);
+const humanEvidence = taskEvidenceStrategy(
+  "human",
+  "must be performed by humans and has no easy machine evidence",
+);
+const securedFtpServer = taskEvidenceStrategy(
+  "secured-ftp-site",
+  "the existence and proper operation of a secured FTP server",
+);
+const docPublicEvidence = taskEvidenceStrategy(
+  "document-public",
+  "the existence of a document (with public URL) suffices as evidence",
+);
+const docSensitiveEvidence = taskEvidenceStrategy(
+  "document-sensitive",
+  "the existence of a document (private access) suffices as evidence",
+);
+const infraDeployedEvidence = taskEvidenceStrategy(
+  "infra-deployed",
+  "machine evidence from deployed software",
+);
+const softwareEvidence = taskEvidenceStrategy(
+  "software",
+  "evidence comes from the code itself",
+);
+
+export function sowPhase1Task<Task extends string, Strategy extends string>(
+  task: Task,
+  evidenceStrategy: TaskEvidenceStrategy<Strategy>,
+) {
+  return { task, evidenceStrategy };
+}
+
+export function sowPhase1Subtask<
+  Subtask extends string,
+  Strategy extends string,
+>(
+  task: Subtask,
+  evidenceStrategy: TaskEvidenceStrategy<Strategy>,
+) {
+  return sowPhase1Task<Subtask, Strategy>(task, evidenceStrategy);
+}
+
+export function sowPhase1TaskWithSubtasks<
+  Task extends string,
+  Strategy extends string,
+  Subtask extends string,
+>(
+  task: Task,
+  evidenceStrategy: TaskEvidenceStrategy<Strategy>,
+  args: {
+    readonly subtasks: ReturnType<typeof sowPhase1Subtask<Subtask, Strategy>>[];
+  },
+) {
+  return { task, evidenceStrategy, subtasks: args.subtasks };
+}
+
 export const sowPhase1Tasks = [
-  sowPhase1TaskDescr("Signed SOW"),
-  sowPhase1TaskDescr(
-    "File Receipt – Setting up secure transfer capabilities from the screening  contributor to the QE: Setting up transfer capabilities to enable the safe and encrypted transfer of data files, including but not limited to 1115 screenings."
+  sowPhase1Task("Signed SOW", docSensitiveEvidence),
+  sowPhase1Task(
+    "File Receipt – Setting up secure transfer capabilities from the screening  contributor to the QE: Setting up transfer capabilities to enable the safe and encrypted transfer of data files, including but not limited to 1115 screenings.",
+    securedFtpServer,
   ),
-  sowPhase1TaskDescr(
-    "QE management of user credentials and permissions, ensuring that only authorized users can access the SFTP server for file transfers."
+  sowPhase1Task(
+    "QE management of user credentials and permissions, ensuring that only authorized users can access the SFTP server for file transfers.",
+    evidenceTBD,
   ),
-  sowPhase1TaskDescr(
-    "Files received via SFTP must be securely stored with appropriate access controls in place to maintain data integrity and confidentiality."
+  sowPhase1Task(
+    "Files received via SFTP must be securely stored with appropriate access controls in place to maintain data integrity and confidentiality.",
+    evidenceTBD,
   ),
-  sowPhase1TaskDescr(
-    "All received files must be encrypted during transmission to and from the SFTP server. Encryption standards and protocols should be in compliance with jointly-agreed security measures."
+  sowPhase1Task(
+    "All received files must be encrypted during transmission to and from the SFTP server. Encryption standards and protocols should be in compliance with jointly-agreed security measures.",
+    evidenceTBD,
   ),
-  sowPhase1TaskDescr(
-    "Upon successful file receipt, QEs are required to automatically forward these files to Data Quality Evaluation at their own QE or at QCS. Timing will be determined in collaboration with the QEs and decided by QCS and NYeC."
+  sowPhase1Task(
+    "Upon successful file receipt, QEs are required to automatically forward these files to Data Quality Evaluation at their own QE or at QCS. Timing will be determined in collaboration with the QEs and decided by QCS and NYeC.",
+    evidenceTBD,
   ),
-  sowPhase1TaskDescr(
-    "Each Qualified Entity (QE) is required to submit a thorough test plan designed to validate the successful implementation of the SFTP objectives and execute this test plan. QEs are strongly encouraged to collaborate in the development of their test plans. NYeC must approve each QEs test plan, and it is encouraged for multiple QEs to utilize a shared document for this purpose."
+  sowPhase1Task(
+    "Each Qualified Entity (QE) is required to submit a thorough test plan designed to validate the successful implementation of the SFTP objectives and execute this test plan. QEs are strongly encouraged to collaborate in the development of their test plans. NYeC must approve each QEs test plan, and it is encouraged for multiple QEs to utilize a shared document for this purpose.",
+    evidenceTBD,
   ),
-  sowPhase1TaskDescr(
-    "Each QE will submit a runbook that describes how this system operate. This run book will be reviewed by NYeC, and QEs will finalize for production. If QEs already have an SFTP run book, that can be submitted."
+  sowPhase1TaskWithSubtasks(
+    "Each QE will submit a runbook that describes how this system operate. This run book will be reviewed by NYeC, and QEs will finalize for production. If QEs already have an SFTP run book, that can be submitted.",
+    evidenceTBD,
+    {
+      subtasks: [
+        sowPhase1Subtask(
+          "Introduction: A brief overview of the service, its purpose, and the intended audience for the runbook.",
+          evidenceTBD,
+        ),
+        sowPhase1Subtask(
+          "Participant Feedback: Document the end-to-end process for providing feedback to sources on any data quality issues. In the future, QEs will use the SHIN-NY quality assurance specification to define when feedback is needed.",
+          evidenceTBD,
+        ),
+        sowPhase1Subtask(
+          "System Architecture: A diagram or detailed description of the system's architecture, including how files will be automatically moved from the screening contributor to the QE to QCS or to the SHIN-NY Data Lake.",
+          evidenceTBD,
+        ),
+        sowPhase1Subtask(
+          "Authentication & Authorization: If the QE is using their current means and methods for user administration, this section can be left blank.  If the QE has modified their processes in support of 1115, describe the user provisioning processes related to 1115.",
+          evidenceTBD,
+        ),
+        sowPhase1Subtask(
+          "Onboarding New Data Submitters: A step-by-step guide to onboard a new data submitter, including setting up authentication, system configurations, and permissions. Checklists for validation tests that new submitters must pass to be considered fully onboarded. If such a checklist exists, provide a reference.",
+          evidenceTBD,
+        ),
+        sowPhase1Subtask(
+          "Monitoring and Logging: Describe how you will ensure that files all submitted by 1115 sources are dutifully and accurately submitted to QCS or the SHIN-NY Data Lake.",
+          evidenceTBD,
+        ),
+        sowPhase1Subtask(
+          "Incident Response: If the process for 1115 data submission issues are in some way distinct/unique from how all other incidents are handled, describe the variances.",
+          evidenceTBD,
+        ),
+        sowPhase1Subtask(
+          "Compliance and Auditing: If the process for 1115 data submission compliance and auditing is in some way distinct/unique from how all other incidents are handled, describe the variances.",
+          evidenceTBD,
+        ),
+      ],
+    },
   ),
-  sowPhase1TaskDescr(
-    "Each QE will complete all screening tests successfully using their SFTP."
+  sowPhase1Task(
+    "Each QE will complete all screening tests successfully using their SFTP.",
+    evidenceTBD,
   ),
-  sowPhase1TaskDescr(
-    "Each QE will submit feedback to screeners that is consistent with SHIN-NY feedback utilizing their SFTP."
+  sowPhase1Task(
+    "Each QE will submit feedback to screeners that is consistent with SHIN-NY feedback utilizing their SFTP.",
+    evidenceTBD,
   ),
-  sowPhase1TaskDescr(
-    "Local MPI: Updates to QE MPIs with any new patients or patient information from 1115 Waiver screenings."
+  sowPhase1Task(
+    "Local MPI: Updates to QE MPIs with any new patients or patient information from 1115 Waiver screenings.",
+    evidenceTBD,
   ),
-  sowPhase1TaskDescr(
-    "Data Quality Evaluation and Mapping: A service capable of evaluating the quality of submitted 1115 screening data, either in text or API format."
+  sowPhase1Task(
+    "Data Quality Evaluation and Mapping: A service capable of evaluating the quality of submitted 1115 screening data, either in text or API format.",
+    evidenceTBD,
   ),
-  sowPhase1TaskDescr(
-    "File to JSON processing: A service capable of converting files with multiple lines of 1115 screening data to FHIR compliance JSON files, for submission to data lake."
+  sowPhase1Task(
+    "File to JSON processing: A service capable of converting files with multiple lines of 1115 screening data to FHIR compliance JSON files, for submission to data lake.",
+    evidenceTBD,
   ),
 ] as const;
 
 export type SowPhase1Task = (typeof sowPhase1Tasks)[number]["task"];
 
 // subclass BodyFactory to make task-names (in `ok` and `notOk` type-safe)
-export class SowPhase1BodyFactory<Diagnosable extends tap.Diagnostics> {
-  readonly bb = new tap.BodyBuilder<Diagnosable>();
-  readonly bf = new tap.BodyFactory<Diagnosable>(
-    () => new tap.BodyBuilder<Diagnosable>()
-  );
+export class SowPhase1BodyFactory<
+  Describable extends SowPhase1Task,
+  Diagnosable extends tap.Diagnostics,
+> {
+  readonly bb = new tap.BodyBuilder<Describable, Diagnosable>();
+  readonly bf = new tap.BodyFactory<Describable, Diagnosable>();
 
-  ok(description: SowPhase1Task, args?: tap.TestCaseBuilderArgs<Diagnosable>) {
-    return this.bf.ok(description, args);
+  ok(
+    description: Describable,
+    init?: tap.TestCaseBuilderArgs<Describable, Diagnosable>,
+  ) {
+    return this.bf.ok(description, init);
   }
 
   notOk(
-    description: SowPhase1Task,
-    args?: tap.TestCaseBuilderArgs<Diagnosable>
+    description: Describable,
+    init?: tap.TestCaseBuilderArgs<Describable, Diagnosable>,
   ) {
-    return this.bf.notOk(description, args);
+    return this.bf.notOk(description, init);
+  }
+
+  async okParent<
+    SubtestDescribable extends string,
+    SubtestDiagnosable extends tap.Diagnostics,
+  >(
+    description: Describable,
+    init: tap.ParentTestCaseBuilderArgs<
+      Describable,
+      Diagnosable,
+      SubtestDescribable,
+      SubtestDiagnosable
+    >,
+  ) {
+    return await this.bf.okParent<SubtestDescribable, SubtestDiagnosable>(
+      description,
+      init,
+    );
+  }
+
+  async notOkParent<
+    SubtestDescribable extends string,
+    SubtestDiagnosable extends tap.Diagnostics,
+  >(
+    description: Describable,
+    init: tap.ParentTestCaseBuilderArgs<
+      Describable,
+      Diagnosable,
+      SubtestDescribable,
+      SubtestDiagnosable
+    >,
+  ) {
+    return await this.bf.notOkParent<SubtestDescribable, SubtestDiagnosable>(
+      description,
+      init,
+    );
   }
 
   async compliance(
     elems: (
-      factory: SowPhase1BodyFactory<Diagnosable>
-    ) => AsyncGenerator<tap.TestSuiteElement<Diagnosable>>
+      factory: SowPhase1BodyFactory<Describable, Diagnosable>,
+    ) => AsyncGenerator<tap.TestSuiteElement<Describable, Diagnosable>>,
   ) {
     const yielded = await Array.fromAsync(elems(this));
     for (const ey of yielded) {
@@ -223,15 +382,18 @@ export class SowPhase1BodyFactory<Diagnosable extends tap.Diagnostics> {
   }
 }
 
-export class SowComplianceBuilder<Diagnosable extends tap.Diagnostics> {
-  readonly phase1 = new SowPhase1BodyFactory<Diagnosable>();
+export class SowComplianceBuilder<
+  Describable extends SowPhase1Task,
+  Diagnosable extends tap.Diagnostics,
+> {
+  readonly phase1 = new SowPhase1BodyFactory<Describable, Diagnosable>();
 
   constructor() {}
 
   tapContent() {
     const tcb = new tap.TapComplianceBuilder(false);
-    tcb.contentBuilder.bb.content.push(
-      ...this.phase1.bb.content.filter((c) => c.nature === "test-case")
+    tcb.bb.content.push(
+      ...this.phase1.bb.content.filter((c) => c.nature === "test-case"),
     );
     return tcb.tapContent();
   }

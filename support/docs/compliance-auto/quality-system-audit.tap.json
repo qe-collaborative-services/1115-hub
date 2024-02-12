@@ -18,7 +18,7 @@
       "ok": true,
       "description": "Outcomes Management",
       "subtests": {
-        "nature": "sub-test",
+        "title": "Outcomes Management",
         "body": [
           {
             "nature": "test-case",
@@ -40,7 +40,6 @@
             }
           }
         ],
-        "title": "Outcomes Management",
         "plan": {
           "nature": "plan",
           "start": 1,
@@ -53,7 +52,7 @@
       "ok": true,
       "description": "Design and Development",
       "subtests": {
-        "nature": "sub-test",
+        "title": "Design and Development",
         "body": [
           {
             "nature": "test-case",
@@ -76,7 +75,6 @@
             }
           }
         ],
-        "title": "Design and Development",
         "plan": {
           "nature": "plan",
           "start": 1,
