@@ -1,5 +1,6 @@
 import {
   colors as c,
+  path,
   SQLa_orch as o,
   SQLa_orch_duckdb as ddbo,
 } from "./deps.ts";
@@ -7,26 +8,24 @@ import * as mod from "./mod.ts";
 
 async function ingressWorkflow(
   govn: ddbo.DuckDbOrchGovernance,
+  ip: mod.OrchEngineIngressPaths,
   src:
     | mod.ScreeningIngressGroup
     | o.IngressEntry<string, string>
     | o.IngressEntry<string, string>[],
 ) {
-  console.dir(src); // TODO: log this properly
-
   const sessionID = await govn.emitCtx.newUUID(false);
 
-  const paths = mod.orchEngineFsPathTree(sftpSimulator, sessionID);
-  await Deno.mkdir(paths.inProcess.home, { recursive: true });
-  await Deno.mkdir(paths.egress.home, { recursive: true });
+  const workflowPaths = mod.orchEngineWorkflowPaths(sftpSimulator, sessionID);
+  await workflowPaths.initializePaths?.();
 
   const args: mod.OrchEngineArgs = {
     session: new o.OrchSession(sessionID, govn),
-    paths,
-    walkRootPaths: [paths.ingress.home],
+    workflowPaths,
+    walkRootPaths: [ip.ingress.home],
     emitDagPuml: async (puml, _previewUrl) => {
       await Deno.writeTextFile(
-        paths.inProcess.resolvedPath("dag.puml"),
+        workflowPaths.inProcess.resolvedPath("dag.puml"),
         puml,
       );
     },
@@ -47,16 +46,26 @@ async function ingressWorkflow(
       ),
   }, args);
 
-  // TODO: if paths.ingress.archive is provided, move the sources to the archive
-  // if (mod.isScreeningIngressGroup(src)) {
-  //   src.entries.forEach(async (entry) => paths.ingress.archive);
-  // } else {
-  //   if (Array.isArray(src)) {
-  //     src.forEach(async (entry) => await collect(entry.fsPath));
-  //   } else {
-  //     await collect(src.fsPath);
-  //   }
-  // }
+  const archiveHome = workflowPaths.ingressArchive?.home;
+  const consumeIngressed = async (fsPath: string) => {
+    if (archiveHome) {
+      await Deno.rename(fsPath, path.join(archiveHome, path.basename(fsPath)));
+      console.info(c.dim(`moved ${fsPath} to ${archiveHome}`)); // TODO: move to proper log
+    } else {
+      await Deno.remove(fsPath);
+      console.info(c.dim(`consumed (removed) ${fsPath}`)); // TODO: move to proper log
+    }
+  };
+
+  if (mod.isScreeningIngressGroup(src)) {
+    src.entries.forEach(async (entry) => await consumeIngressed(entry.fsPath));
+  } else {
+    if (Array.isArray(src)) {
+      src.forEach(async (entry) => await consumeIngressed(entry.fsPath));
+    } else {
+      await consumeIngressed(src.fsPath);
+    }
+  }
 
   if (workflow?.duckdb.stdErrsEncountered) {
     // deno-fmt-ignore
@@ -67,7 +76,7 @@ async function ingressWorkflow(
     );
   }
 
-  const { diagsMdSupplier, resourceDbSupplier } = paths.egress;
+  const { diagsMdSupplier, resourceDbSupplier } = workflowPaths.egress;
 
   if (diagsMdSupplier) {
     console.info("📄 Diagnostics are in", c.cyan(diagsMdSupplier()));
@@ -78,29 +87,18 @@ async function ingressWorkflow(
     console.info(`📦 ${c.green(resourceDbSupplier())} has the aggregated content and \`orch_session_*\` validation tables.`);
   }
   // deno-fmt-ignore
-  console.info(`🦆 ${c.yellow(paths.inProcess.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);
-
-  // TODO: if no syntax/compile errors encountered, move "inprocess" to "egress"
-  // if (mod.isScreeningIngressGroup(src)) {
-  //   src.entries.forEach(async (entry) => paths.ingress.archive);
-  // } else {
-  //   if (Array.isArray(src)) {
-  //     src.forEach(async (entry) => await collect(entry.fsPath));
-  //   } else {
-  //     await collect(src.fsPath);
-  //   }
-  // }
+  console.info(`🦆 ${c.yellow(workflowPaths.inProcess.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);
 }
 
 // TODO: after testing, remove the simulator
 const sftpSimulator = "SFTP-simulator" as const;
-const sftpSimulatorIngress = `${sftpSimulator}/ingress` as const;
+const ingressPaths = mod.orchEngineIngressPaths(`${sftpSimulator}/ingress`);
 console.log("Removing and re-creating", sftpSimulator);
 try {
   await Deno.remove(sftpSimulator, { recursive: true });
   // deno-lint-ignore no-empty
 } catch (_) {}
-await Deno.mkdir(sftpSimulatorIngress, { recursive: true });
+await Deno.mkdir(ingressPaths.ingress.home, { recursive: true });
 
 const govn = new ddbo.DuckDbOrchGovernance(
   true,
@@ -108,22 +106,32 @@ const govn = new ddbo.DuckDbOrchGovernance(
 );
 
 const screeningGroups = new mod.ScreeningIngressGroups(async (group) => {
-  await ingressWorkflow(govn, group);
+  await ingressWorkflow(govn, ingressPaths, group);
 });
 
 const watchPaths: o.WatchFsPath<string, string>[] = [{
   pathID: "ingress",
-  rootPath: sftpSimulatorIngress,
-  onIngress: async (entry) => {
+  rootPath: ingressPaths.ingress.home,
+  // note: onIngress we just return promises (not awaited) so that we can
+  // allow each async workflow to work independently (better performance)
+  onIngress: (entry) => {
     const group = screeningGroups.potential(entry);
-    await ingressWorkflow(govn, group ?? entry);
+    try {
+      ingressWorkflow(govn, ingressPaths, group ?? entry);
+    } catch (err) {
+      // TODO: store the error in a proper log
+      console.dir(entry);
+      console.error(err);
+    }
   },
 }];
 
-console.log(`Waiting for files in ${sftpSimulatorIngress}`);
+console.log(`Waiting for files in ${ingressPaths.ingress.home}`);
 await o.ingestWatchedFs({
-  drain: async (entries) => {
-    if (entries.length) await ingressWorkflow(govn, entries);
+  drain: (entries) => {
+    // note: drain just return promise (not awaited) so that we can allow each
+    // async workflow to work independently (better performance).
+    if (entries.length) ingressWorkflow(govn, ingressPaths, entries);
   },
   watch: true,
   watchPaths,

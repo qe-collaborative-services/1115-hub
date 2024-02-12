@@ -172,10 +172,14 @@ export type OrchEnginePath =
 
 export type OrchEngineStorablePath = OrchEnginePath & o.OrchPathStore;
 
-export interface OrchEnginePaths {
-  readonly ingress: OrchEnginePath & {
-    readonly archive?: OrchEngineStorablePath;
-  };
+export interface OrchEngineIngressPaths {
+  readonly ingress: OrchEnginePath;
+  readonly initializePaths?: () => Promise<void>;
+  readonly finalizePaths?: () => Promise<void>;
+}
+
+export interface OrchEngineWorkflowPaths {
+  readonly ingressArchive?: OrchEngineStorablePath;
   readonly inProcess: OrchEngineStorablePath & {
     readonly duckDbFsPathSupplier: () => string;
   };
@@ -190,10 +194,31 @@ export interface OrchEnginePaths {
   readonly finalizePaths?: () => Promise<void>;
 }
 
-export function orchEngineFsPathTree(
+export function orchEngineIngressPaths(
+  home: string,
+  init?: Partial<OrchEngineIngressPaths>,
+): OrchEngineIngressPaths {
+  const ingress = (): OrchEnginePath => {
+    const resolvedPath = (child: string) => path.join(home, child);
+
+    return {
+      home,
+      resolvedPath,
+      movedPath: async (path, dest) => {
+        const movedToPath = dest.resolvedPath(path);
+        await Deno.rename(path, movedToPath);
+        return movedToPath;
+      },
+    };
+  };
+
+  return { ingress: ingress(), ...init };
+}
+
+export function orchEngineWorkflowPaths(
   rootPath: string,
   sessionID: string,
-): OrchEnginePaths {
+): OrchEngineWorkflowPaths {
   const oePath = (childPath: string): OrchEnginePath => {
     const home = path.join(rootPath, childPath);
     const resolvedPath = (child: string) => path.join(home, child);
@@ -221,27 +246,31 @@ export function orchEngineFsPathTree(
     };
   };
 
-  const ingress: OrchEnginePaths["ingress"] = {
-    ...oePath("ingress"),
-    archive: oeStorablePath(path.join("archive", sessionID)),
-  };
-  const inProcess: OrchEnginePaths["inProcess"] = {
-    ...oeStorablePath(path.join("in-process", sessionID)),
-    duckDbFsPathSupplier: () =>
-      inProcess.resolvedPath("ingestion-center.duckdb"),
-  };
-  const egress: OrchEnginePaths["egress"] = {
+  const egress: OrchEngineWorkflowPaths["egress"] = {
     ...oeStorablePath(path.join("egress", sessionID)),
     diagsJsonSupplier: () => egress.resolvedPath("diagnostics.json"),
     diagsMdSupplier: () => egress.resolvedPath("diagnostics.md"),
     diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
   };
+  const inProcess: OrchEngineWorkflowPaths["inProcess"] = {
+    ...oeStorablePath(path.join("egress", sessionID, ".workflow")),
+    duckDbFsPathSupplier: () =>
+      inProcess.resolvedPath("ingestion-center.duckdb"),
+  };
+  const ingressArchive: OrchEngineWorkflowPaths["ingressArchive"] =
+    oeStorablePath(path.join("egress", sessionID, ".consumed"));
 
   return {
-    ingress,
+    ingressArchive,
     inProcess,
     egress,
+
+    initializePaths: async () => {
+      await Deno.mkdir(ingressArchive.home, { recursive: true });
+      await Deno.mkdir(inProcess.home, { recursive: true });
+      await Deno.mkdir(egress.home, { recursive: true });
+    },
   };
 }
 
@@ -251,7 +280,7 @@ export interface OrchEngineArgs extends
     OrchEngine,
     ddbo.DuckDbOrchEmitContext
   > {
-  readonly paths: OrchEnginePaths;
+  readonly workflowPaths: OrchEngineWorkflowPaths;
   readonly walkRootPaths?: string[];
 }
 
@@ -298,7 +327,7 @@ export class OrchEngine {
   ) {
     this.duckdb = new ddbo.DuckDbShell(args.session, {
       duckdbCmd: "duckdb",
-      dbDestFsPathSupplier: args.paths.inProcess.duckDbFsPathSupplier,
+      dbDestFsPathSupplier: args.workflowPaths.inProcess.duckDbFsPathSupplier,
       preambleSQL: () =>
         `-- preambleSQL\nSET autoinstall_known_extensions=true;\nSET autoload_known_extensions=true;\n-- end preambleSQL\n`,
     });
@@ -312,7 +341,7 @@ export class OrchEngine {
    * @param osc the type-safe notebook cell context for diagnostics or business rules
    */
   async prepareInit(_osc: OrchStepContext) {
-    await this.args.paths.initializePaths?.();
+    await this.args.workflowPaths.initializePaths?.();
   }
 
   /**
@@ -500,7 +529,7 @@ export class OrchEngine {
     >,
   ) {
     const {
-      args: { paths: { egress }, session },
+      args: { workflowPaths: { egress }, session },
       govn: { emitCtx: ctx },
     } = this;
     if (egress.resourceDbSupplier) {
@@ -575,7 +604,7 @@ export class OrchEngine {
   // `finalize` means always run this even if errors abort the above methods
   @oeDescr.finalize()
   async emitDiagnostics() {
-    const { paths: { egress } } = this.args;
+    const { workflowPaths: { egress } } = this.args;
     if (egress.diagsXlsxSupplier) {
       const diagsXlsx = egress.diagsXlsxSupplier();
       // if Excel workbook already exists, GDAL xlsx driver will error
@@ -667,6 +696,6 @@ export class OrchEngine {
       );
     }
 
-    await this.args.paths.finalizePaths?.();
+    await this.args.workflowPaths.finalizePaths?.();
   }
 }

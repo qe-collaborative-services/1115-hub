@@ -51,7 +51,7 @@ async function ingressWorkflow(
   console.info(`🦆 ${c.yellow(e2eTestPaths.inProcess.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);
 }
 
-function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
+function e2eTestWorkflowPaths(rootPath: string): mod.OrchEngineWorkflowPaths {
   const oePath = (childPath: string): mod.OrchEnginePath => {
     const home = path.join(rootPath, childPath);
     const resolvedPath = (child: string) => path.join(home, child);
@@ -76,17 +76,14 @@ function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
     };
   };
 
-  const ingress = oePath(
-    "support/assurance/ahc-hrsn-elt/screening/synthetic-content",
-  );
-  const inProcess: mod.OrchEnginePaths["inProcess"] = {
+  const inProcess: mod.OrchEngineWorkflowPaths["inProcess"] = {
     ...oeStorablePath(
       "support/assurance/ahc-hrsn-elt/screening/results-test-e2e",
     ),
     duckDbFsPathSupplier: () =>
       inProcess.resolvedPath("ingestion-center.duckdb"),
   };
-  const egress: mod.OrchEnginePaths["egress"] = {
+  const egress: mod.OrchEngineWorkflowPaths["egress"] = {
     ...oeStorablePath(
       "support/assurance/ahc-hrsn-elt/screening/results-test-e2e",
     ),
@@ -97,7 +94,6 @@ function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
   };
 
   return {
-    ingress,
     inProcess,
     egress,
 
@@ -114,7 +110,10 @@ function e2eTestFsPathTree(rootPath: string): mod.OrchEnginePaths {
 // Assume all paths are relative to the root of this repo because this module
 // is executed using `deno task ahc-hrsn-screening-test-e2e` from repo root.
 
-const e2eTestPaths = e2eTestFsPathTree(Deno.cwd());
+const e2eIngressPaths = mod.orchEngineIngressPaths(
+  "support/assurance/ahc-hrsn-elt/screening/synthetic-content",
+);
+const e2eTestPaths = e2eTestWorkflowPaths(Deno.cwd());
 const govn = new ddbo.DuckDbOrchGovernance(
   true,
   new ddbo.DuckDbOrchEmitContext(),
@@ -122,8 +121,8 @@ const govn = new ddbo.DuckDbOrchGovernance(
 const sessionID = await govn.emitCtx.newUUID(true);
 const args: mod.OrchEngineArgs = {
   session: new o.OrchSession(sessionID, govn),
-  paths: e2eTestPaths,
-  walkRootPaths: [e2eTestPaths.ingress.home],
+  workflowPaths: e2eTestPaths,
+  walkRootPaths: [e2eIngressPaths.ingress.home],
   emitDagPuml: async (puml, _previewUrl) => {
     await Deno.writeTextFile(
       e2eTestPaths.inProcess.resolvedPath("dag.puml"),
@@ -138,7 +137,7 @@ const screeningGroups = new mod.ScreeningIngressGroups(async (group) => {
 
 const watchPaths: o.WatchFsPath<string, string>[] = [{
   pathID: "ingress",
-  rootPath: e2eTestPaths.ingress.home,
+  rootPath: e2eIngressPaths.ingress.home,
   onIngress: async (entry) => {
     const group = screeningGroups.potential(entry);
     await ingressWorkflow(govn, group ?? entry);
