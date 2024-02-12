@@ -15,9 +15,21 @@ async function ingressWorkflow(
     | o.IngressEntry<string, string>[],
 ) {
   const sessionID = await govn.emitCtx.newUUID(false);
+  const sessionStart = {
+    ingressPaths: ip,
+    initAt: new Date(),
+    sessionID,
+    src,
+  };
 
   const workflowPaths = mod.orchEngineWorkflowPaths(sftpSimulator, sessionID);
   await workflowPaths.initializePaths?.();
+
+  const sessionLogFsPath = workflowPaths.egress.resolvedPath("session.json");
+  Deno.writeTextFile(
+    sessionLogFsPath,
+    JSON.stringify(sessionStart, null, "  "),
+  );
 
   const args: mod.OrchEngineArgs = {
     session: new o.OrchSession(sessionID, govn),
@@ -31,7 +43,7 @@ async function ingressWorkflow(
     },
   };
 
-  const workflow = await o.orchestrate<
+  await o.orchestrate<
     ddbo.DuckDbOrchGovernance,
     mod.OrchEngine,
     mod.OrchEngineArgs,
@@ -46,14 +58,33 @@ async function ingressWorkflow(
       ),
   }, args);
 
+  const { diagsMdSupplier, resourceDbSupplier } = workflowPaths.egress;
+  const sessionEnd = {
+    ...sessionStart,
+    consumed: [] as {
+      readonly activity: "delete" | "move";
+      readonly fsPath: string;
+    }[],
+    stdErrsEncountered:
+      "✅ No DuckDB orchestration SQL syntax or SQL parsing errors encountered.",
+    diagsMarkdown: diagsMdSupplier
+      ? `📄 Diagnostics are in ${diagsMdSupplier()}`
+      : undefined,
+    duckDb:
+      `🦆 ${workflowPaths.inProcess.duckDbFsPathSupplier()} has the raw ingested content and \`orch_session_*\` validation tables.`,
+    sqliteDB: resourceDbSupplier
+      ? `📦 ${resourceDbSupplier()} has the aggregated content and \`orch_session_*\` validation tables.`
+      : undefined,
+  };
+
   const archiveHome = workflowPaths.ingressArchive?.home;
   const consumeIngressed = async (fsPath: string) => {
     if (archiveHome) {
       await Deno.rename(fsPath, path.join(archiveHome, path.basename(fsPath)));
-      console.info(c.dim(`moved ${fsPath} to ${archiveHome}`)); // TODO: move to proper log
+      sessionEnd.consumed.push({ activity: "move", fsPath });
     } else {
       await Deno.remove(fsPath);
-      console.info(c.dim(`consumed (removed) ${fsPath}`)); // TODO: move to proper log
+      sessionEnd.consumed.push({ activity: "delete", fsPath });
     }
   };
 
@@ -67,27 +98,11 @@ async function ingressWorkflow(
     }
   }
 
-  if (workflow?.duckdb.stdErrsEncountered) {
-    // deno-fmt-ignore
-    console.error(`❌ ${c.brightRed("DuckDB orchestration SQL syntax/parsing errors encountered (ingestion state is indeterminate).")}`);
-  } else {
-    console.info(
-      "✅ No DuckDB orchestration SQL syntax or SQL parsing errors encountered.",
-    );
-  }
-
-  const { diagsMdSupplier, resourceDbSupplier } = workflowPaths.egress;
-
-  if (diagsMdSupplier) {
-    console.info("📄 Diagnostics are in", c.cyan(diagsMdSupplier()));
-  }
-
-  if (resourceDbSupplier) {
-    // deno-fmt-ignore
-    console.info(`📦 ${c.green(resourceDbSupplier())} has the aggregated content and \`orch_session_*\` validation tables.`);
-  }
-  // deno-fmt-ignore
-  console.info(`🦆 ${c.yellow(workflowPaths.inProcess.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);
+  Deno.writeTextFile(
+    sessionLogFsPath,
+    JSON.stringify({ ...sessionEnd, finalizeAt: new Date() }, null, "  "),
+  );
+  console.info(c.dim(sessionLogFsPath));
 }
 
 // TODO: after testing, remove the simulator
