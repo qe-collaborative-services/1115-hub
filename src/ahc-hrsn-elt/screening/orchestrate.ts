@@ -232,6 +232,9 @@ export function orchEngineFsPathTree(
   };
   const egress: OrchEnginePaths["egress"] = {
     ...oeStorablePath(path.join("egress", sessionID)),
+    diagsJsonSupplier: () => egress.resolvedPath("diagnostics.json"),
+    diagsMdSupplier: () => egress.resolvedPath("diagnostics.md"),
+    diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
   };
 
