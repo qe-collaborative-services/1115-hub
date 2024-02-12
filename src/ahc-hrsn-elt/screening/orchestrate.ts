@@ -26,7 +26,6 @@ import {
   QuestionReferenceExcelSheetIngestSource,
   ScreeningExcelSheetIngestSource,
 } from "./excel.ts";
-import { isArray } from "https://deno.land/std@0.209.0/yaml/_utils.ts";
 
 export type PotentialIngestSource =
   | ScreeningCsvFileIngestSource<string, o.State>
@@ -81,6 +80,11 @@ export type ScreeningIngressGroup = {
   readonly onIngress: (group: ScreeningIngressGroup) => Promise<void> | void;
 };
 
+export const isScreeningIngressGroup = safety.typeGuard<ScreeningIngressGroup>(
+  "groupID",
+  "component",
+);
+
 export class ScreeningIngressGroups {
   // entries are like `screening-<groupID>_admin.csv`, `screening-<groupID>_questions.csv`, etc.
   readonly pattern = /.*(screening)-([^_])_(.*)?.csv/i;
@@ -123,7 +127,6 @@ export function watchFsPatternIngestSourcesSupplier(
     string
   >[],
 ): o.IngestSourcesSupplier<PotentialIngestSource, [string[] | undefined]> {
-  const isSIG = safety.typeGuard<ScreeningIngressGroup>("groupID", "component");
   return {
     sources: async () => {
       const sources: PotentialIngestSource[] = [];
@@ -140,10 +143,10 @@ export function watchFsPatternIngestSourcesSupplier(
         }
       };
 
-      if (isSIG(src)) {
+      if (isScreeningIngressGroup(src)) {
         src.entries.forEach(async (entry) => await collect(entry.fsPath));
       } else {
-        if (isArray(src)) {
+        if (Array.isArray(src)) {
           src.forEach(async (entry) => await collect(entry.fsPath));
         } else {
           await collect(src.fsPath);
