@@ -29,6 +29,17 @@ analyst-friendly format, QCS-OE employs the following architecture strategy:
     cloud provider (e.g. AWS, Azure, ORACLE Cloud).
 - Automatic upgrades of code using `semver` and GitHub tags.
 
+## Specifications
+
+NYeC's specifications are available in
+[support/docs/specifications/ahc-hrsn-elt/screening](support/docs/specifications/ahc-hrsn-elt/screening):
+
+- [ahc-hrsn-2024-02-12-valid-final.xlsx](support/docs/specifications/ahc-hrsn-elt/screening/ahc-hrsn-2024-02-12-valid-final.xlsx)
+- [CSV_QA_DQ_Validation_2.2024.docx](support/docs/specifications/ahc-hrsn-elt/screening/CSV_QA_DQ_Validation_2.2024.docx)
+- [DEMOGRAPHIC_DATA_2.2024.csv](support/docs/specifications/ahc-hrsn-elt/screening/DEMOGRAPHIC_DATA_2.2024.csv)
+- [QE_ADMIN_DATA_2.2024.csv](support/docs/specifications/ahc-hrsn-elt/screening/QE_ADMIN_DATA_2.2024.csv)
+- [SCREENING_2.2024.csv](support/docs/specifications/ahc-hrsn-elt/screening/SCREENING_2.2024.csv)
+
 ## Getting Started
 
 The following instructions are for setting up the code on a
