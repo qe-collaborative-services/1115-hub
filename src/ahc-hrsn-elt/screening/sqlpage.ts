@@ -376,7 +376,7 @@ export class SQLPageNotebook {
       `;
   }
 
-  // TODO: do not hard-code ahc_hrsn_2023_12_12_valid since the table name is driven by the file name
+  // TODO: do not hard-code screening_2_01hpkty3hctk826tvx5tasga55 since the table name is driven by the file name
   "1115-waiver-screenings.sql"() {
     const {
       comps: { text, table },
@@ -393,10 +393,10 @@ export class SQLPageNotebook {
         rows: [
           {
             SQL: () => `
-              SELECT format('[%s](?pat_mrn_id=%s)', pat_mrn_id, pat_mrn_id) as pat_mrn_id, facility, first_name, last_name
-                FROM ahc_hrsn_2023_12_12_valid
-            GROUP BY pat_mrn_id, facility, first_name, last_name
-            ORDER BY facility, last_name, first_name`,
+              SELECT format('[%s](?pat_mrn_id=%s)', pat_mrn_id, pat_mrn_id) as pat_mrn_id, facility_id
+                FROM screening_2_01hpkty3hctk826tvx5tasga55
+            GROUP BY pat_mrn_id, facility_id
+            ORDER BY facility_id`,
           },
         ],
         columns: { pat_mrn_id: { markdown: true } },
@@ -405,7 +405,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s %s Answers', first_name, last_name) from ahc_hrsn_2023_12_12_valid where pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s %s Answers') from screening_2_01hpkty3hctk826tvx5tasga55 where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -415,7 +415,7 @@ export class SQLPageNotebook {
           {
             SQL: () => `
             SELECT question, meas_value 
-              FROM "ahc_hrsn_2023_12_12_valid"
+              FROM "screening_2_01hpkty3hctk826tvx5tasga55"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
         ],
@@ -425,7 +425,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s %s FHIR Observations', first_name, last_name) from ahc_hrsn_2023_12_12_valid where pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s %s FHIR Observations', dmr.first_name, dmr.last_name) from screening_2_01hpkty3hctk826tvx5tasga55 as scr join demographic_data_2_01hpkty3hctk826tvx5tasga55 as dmr on scr.pat_mrn_id = dmr.pat_mrn_id where scr.pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -435,13 +435,31 @@ export class SQLPageNotebook {
           {
             SQL: () => `
             SELECT * 
-              FROM "ahc_hrsn_2023_12_12_valid_fhir"
+              FROM "screening_2_01hpkty3hctk826tvx5tasga55_fhir"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
         ],
         condition: { allExist: "$pat_mrn_id is not null" },
       })}
-
+      ${text({
+        title: {
+          SQL: () =>
+            `(select format('%s %s FHIR Questionnaire', dmr.first_name, dmr.last_name) from screening_2_01hpkty3hctk826tvx5tasga55 as scr join demographic_data_2_01hpkty3hctk826tvx5tasga55 as dmr on scr.pat_mrn_id = dmr.pat_mrn_id where scr.pat_mrn_id = $pat_mrn_id)`,
+        },
+      })}
+      ${table({
+        search: true,
+        sort: true,
+        rows: [
+          {
+            SQL: () => `
+            SELECT * 
+              FROM "screening_2_01hpkty3hctk826tvx5tasga55_fhir_questionnaire"
+             WHERE pat_mrn_id = $pat_mrn_id`,
+          },
+        ],
+        condition: { allExist: "$pat_mrn_id is not null" },
+      })}
     `;
   }
 

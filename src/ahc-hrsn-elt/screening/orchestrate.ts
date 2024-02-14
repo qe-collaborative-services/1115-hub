@@ -13,6 +13,7 @@ import {
 import * as sp from "./sqlpage.ts";
 
 import {
+  AdminDemographicCsvFileIngestSource,
   ingestCsvFilesSourcesSupplier,
   ScreeningCsvFileIngestSource,
 } from "./csv.ts";
@@ -26,15 +27,18 @@ import {
   QuestionReferenceExcelSheetIngestSource,
   ScreeningExcelSheetIngestSource,
 } from "./excel.ts";
+import { QeAdminDataCsvFileIngestSource } from "./csv.ts";
 
 export type PotentialIngestSource =
-  | ScreeningCsvFileIngestSource<string, o.State>
   | ScreeningExcelSheetIngestSource<string, o.State>
   | AdminDemographicExcelSheetIngestSource<string, o.State>
   | QeAdminDataExcelSheetIngestSource<string, o.State>
   | QuestionReferenceExcelSheetIngestSource<string, o.State>
   | AnswerReferenceExcelSheetIngestSource<string, o.State>
   | ExcelSheetTodoIngestSource<string, o.State>
+  | ScreeningCsvFileIngestSource<string, o.State>
+  | AdminDemographicCsvFileIngestSource<string, o.State>
+  | QeAdminDataCsvFileIngestSource<string, o.State>
   | o.ErrorIngestSource<
     ddbo.DuckDbOrchGovernance,
     o.State,
