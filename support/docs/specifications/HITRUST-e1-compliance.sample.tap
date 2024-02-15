@@ -1,0 +1,388 @@
+TAP version 14
+1..19
+# HITRUST e1 Assessment CSF Requirements - Domains 01, 08 through 19
+
+ok 1 - Domain 01: Information Protection Program
+  ---
+  comment: "Evaluation of the information protection program's development, implementation, and effectiveness."
+  evidence: "Information security policy fully documented, covering scope, roles, responsibilities, and management commitment."
+  policy_document: "InfoSecPolicy_2024-07.pdf"
+  review_record: "PolicyReviewRecord_2024-07.pdf"
+  training_completion: "PolicyTrainingCompletion_2024-07.pdf"
+  jira_issue: "INFOSEC-POLICY-101 - Annual policy review and update."
+  ...
+
+ok 2 - Domain 08: Network Protection
+  ---
+  comment: "Assessment of network protection controls and configurations."
+  ...
+    1..4
+    ok 1 - BUID 08.01a1: Firewall Configuration and Management
+      ---
+      evidence: "Firewall configuration audit confirms compliance with security policy."
+      configuration_audit: "FirewallConfigAudit_2023-10.pdf"
+      policy_document: "FirewallSecurityPolicy_v7.pdf"
+      automated_test_result: "PASS"
+      manual_review_notes: "Reviewed firewall rules for unnecessary access permissions, all rules compliant."
+      jira_issue: "NET-SEC-101 - Quarterly firewall configuration review."
+      ...
+    ok 2 - BUID 08.02b2: Intrusion Detection and Prevention Systems (IDPS)
+      ---
+      evidence: "IDPS operational status report shows active monitoring and incident response capabilities."
+      operational_status: "IDPS_StatusReport_2023-10.pdf"
+      incident_response_test: "IDPSResponseTest_2023-08.pdf - Successful detection and response to simulated attack."
+      github_issue: "https://github.com/org/netsec/issues/204 - IDPS tuning and false positive reduction."
+      ...
+    ok 3 - BUID 08.03c3: Secure Network Architecture
+      ---
+      evidence: "Network architecture review confirms segmentation and secure design principles applied."
+      architecture_review: "NetworkArchitectureReview_2023-09.pdf"
+      design_principles: "SecureDesignPrinciples_v3.pdf"
+      cli_output: "NetworkSegmentationCheck --result compliant --date 2023-10-05"
+      jira_issue: "NET-ARCH-303 - Implementation of additional network segmentation controls."
+      ...
+    ok 4 - BUID 08.04d4: Wireless Security Controls
+      ---
+      evidence: "Wireless network security assessment confirms encryption and access control measures are in place."
+      security_assessment: "WirelessSecurityAssessment_2023-10.pdf"
+      encryption_status: "WPA3EncryptionStatus_2023-10.pdf"
+      access_control_audit: "WirelessAccessControlAudit_2023-09.pdf"
+      jira_issue: "WIRELESS-SEC-404 - Upgrade to WPA3 across all office locations."
+      ...
+
+ok 3 - Domain 09: Transmission Protection
+  ---
+  comment: "Verification of secure data transmission controls and encryption protocols."
+  ...
+    1..3
+    ok 1 - BUID 09.01e1: Encryption of Data in Transit
+      ---
+      evidence: "TLS/SSL encryption verified across all external communication channels."
+      tls_verification: "SSLScanReport_2023-10.pdf"
+      policy_reference: "DataEncryptionPolicy_v4.pdf"
+      automated_test_result: "PASS"
+      manual_review_notes: "All external endpoints configured with TLS 1.2 or higher as of 2023-10-07."
+      jira_issue: "TRANS-PROT-111 - Update legacy systems to enforce TLS 1.2+."
+      ...
+    ok 2 - BUID 09.02f2: Secure Messaging Services
+      ---
+      evidence: "Secure messaging platform audit confirms end-to-end encryption for all messages."
+      platform_audit: "MessagingPlatformAudit_2023-09.pdf"
+      compliance_status: "Compliant with end-to-end encryption standards."
+      github_issue: "https://github.com/org/commsec/issues/157 - Review of messaging platform security."
+      ...
+    ok 3 - BUID 09.03g3: Management of Encryption Keys
+      ---
+      evidence: "Encryption key lifecycle management procedures are in place and followed."
+      key_management_audit: "KeyManagementAuditReport_2023-10.pdf"
+      key_rotation_policy: "KeyRotationPolicy_v2.pdf"
+      cli_output: "KeyRotationCheck --lastRun 2023-10-08 --status compliant"
+      jira_issue: "KEY-MGMT-222 - Quarterly key rotation compliance check."
+      ...
+
+ok 4 - Domain 10: Password Management
+  ---
+  comment: "Comprehensive assessment of password management policies and practices."
+  ...
+    1..4
+    ok 1 - BUID 10.01d1: Implementation of Password Management Policy
+      ---
+      evidence: "Password policy compliance scan report confirms adherence to defined complexity requirements."
+      policy_document: "PasswordPolicy_v8.pdf"
+      cli_output: "PasswordPolicyCheck --result allCompliant --date 2023-09-25"
+      jira_issue: "SEC-POLICY-321 - Review and update of password policy."
+      github_commit: "https://github.com/org/security-policies/commit/abcdef1234567890 - Updated password expiration policy."
+      automated_test_result: "PASS"
+      manual_review_notes: "Manual spot-checks conducted by security team on 2023-09-26 confirmed policy enforcement across critical systems."
+      ...
+    ok 2 - BUID 10.02d2: Regular User Password Change
+      ---
+      evidence: "Automated monitoring tool reports 100% compliance with mandatory 90-day password change policy."
+      monitoring_tool_output: "UserPasswordChangeMonitor --lastRun 2023-09-25 --complianceRate 100%"
+      jira_issue: "SEC-PASSWORD-432 - Addressing non-compliant accounts."
+      remediation_steps: "Non-compliant accounts identified and users notified for mandatory password update; all accounts compliant as of 2023-09-27."
+      ...
+    ok 3 - BUID 10.03d3: Password Strength and Complexity Verification
+      ---
+      evidence: "Password strength verification tool shows average password strength score above required threshold."
+      tool_output: "PasswordStrengthAssessor --averageScore 85 --date 2023-09-28"
+      policy_reference: "PasswordPolicy_v8.pdf - Section 4.2 Strength Requirements"
+      script_source: "https://github.com/org/security-tools/blob/master/PasswordStrengthAssessor"
+      external_audit_report: "2023-Q3 Password Strength Audit Report.pdf - Conducted by ExternalAuditor Inc., confirms high compliance level."
+      ...
+    ok 4 - BUID 10.04d4: Prohibition of Password Sharing
+      ---
+      evidence: "User access logs analysis shows no evidence of password sharing incidents."
+      analysis_tool: "AccessLogAnalyzer v3.1"
+      analysis_report: "AccessLogAnalysis_Q3_2023.pdf - Zero incidents of concurrent logins from geographically disparate locations."
+      policy_document: "AccessControlPolicy_v5.pdf - Section 6.1 Prohibition of Password Sharing"
+      training_completion_records: "SecurityAwarenessTraining_2023.pdf - 100% employee completion rate, includes module on password sharing risks."
+      ...
+
+ok 5 - Domain 11: Access Control
+  ---
+  comment: "Evaluation of access control mechanisms and policies."
+  ...
+    1..5
+    ok 1 - BUID 11.01e1: Effective implementation of access control systems
+      ---
+      evidence: "System access logs confirm adherence to access control policies."
+      policy_document: "AccessControlPolicy_v9.pdf"
+      cli_output: "AccessControlCheck --result allCompliant --date 2023-10-01"
+      jira_issue: "ACC-CONTROL-987 - Access control policy enforcement."
+      automated_test_result: "PASS"
+      manual_review_notes: "Quarterly access review completed, no unauthorized access detected."
+      ...
+    ok 2 - BUID 11.01p1: Periodic review of user access rights
+      ---
+      evidence: "User access rights review report indicates all access rights are appropriate and authorized."
+      review_tool_output: "UserAccessReviewTool --lastRun 2023-10-02"
+      jira_issue: "ACC-REVIEW-654 - Follow-up on access rights adjustments."
+      ...
+    ok 3 - BUID 11.01q1: Requirements for multi-factor authentication (MFA)
+      ---
+      evidence: "MFA deployment report shows 100% coverage across critical systems."
+      deployment_status: "MFAStatusReport_Q4_2023.pdf"
+      policy_reference: "MFAImplementationPolicy_v5.pdf"
+      github_issue: "https://github.com/org/security/issues/123 - MFA rollout completion."
+      ...
+    ok 4 - BUID 11.02d1: Control of privileged access rights
+      ---
+      evidence: "Privileged account management audit confirms strict controls and monitoring."
+      audit_report: "PrivilegedAccessAudit_2023.pdf"
+      tool_output: "PrivilegedAccountMonitor --auditDate 2023-10-03"
+      jira_issue: "PRIV-ACCESS-321 - Remediation of audit findings."
+      ...
+    ok 5 - BUID 11.03e2: Management of secret authentication information of users
+      ---
+      evidence: "Secrets management tool ensures secure storage and access to authentication information."
+      tool_report: "SecretsManagementReport_2023.pdf"
+      policy_document: "SecretsPolicy_v4.pdf"
+      cli_output: "SecretsPolicyCheck --compliance pass --date 2023-10-04"
+      ...
+    ok 6 - BUID 11190.01t1: Retention policies for audit logs specified and adhered to
+    ok 7 - BUID 1123.01q1: Allocation of privileges controlled through formal process
+
+ok 6 - Domain 12: Audit Logging & Monitoring
+  ---
+  comment: "Assessment of audit logging practices and monitoring mechanisms."
+  ...
+    1..4
+    ok 1 - BUID 12.01h1: Implementation of Centralized Logging
+      ---
+      evidence: "Centralized logging system operational and collecting logs from all critical systems."
+      logging_system_report: "CentralLoggingSystemReport_2023-11.pdf"
+      configuration_check: "LoggingConfigCheck --date 2023-11-01 --status allSystemsConfigured"
+      jira_issue: "LOG-MGMT-301 - Central logging system upgrade and integration."
+      ...
+    ok 2 - BUID 12.02i2: Real-Time Security Monitoring
+      ---
+      evidence: "Real-time monitoring tools deployed and operational, providing immediate alerts on security events."
+      monitoring_tool_output: "RealTimeMonitoringDashboard_2023-11.pdf"
+      alert_response_procedure: "SecurityEventResponseProcedure_v3.pdf"
+      github_issue: "https://github.com/org/secops/issues/262 - Tuning alert thresholds for reduced false positives."
+      ...
+    ok 3 - BUID 12.03j3: Regular Review of Logs
+      ---
+      evidence: "Monthly log review process confirms logs are regularly examined for security events."
+      log_review_report: "MonthlyLogReviewReport_2023-11.pdf"
+      review_frequency: "Monthly"
+      jira_issue: "LOG-REVIEW-402 - Implementation of automated log analysis tools."
+      ...
+    ok 4 - BUID 12.04k4: Protection of Log Information
+      ---
+      evidence: "Logs are encrypted, access-controlled, and integrity-protected to ensure their confidentiality and integrity."
+      log_protection_audit: "LogProtectionAudit_2023-11.pdf"
+      encryption_verification: "LogEncryptionStatus --date 2023-11-02"
+      jira_issue: "LOG-SEC-503 - Log data encryption project completion."
+      ...
+
+ok 7 - Domain 13: Education, Training & Awareness
+  ---
+  comment: "Evaluation of security awareness programs and training effectiveness."
+  ...
+    1..3
+    ok 1 - BUID 13.01l1: Security Awareness Program Implementation
+      ---
+      evidence: "Annual security awareness training program rolled out to all employees."
+      training_completion_report: "SecurityAwarenessTrainingCompletion_2023-12.pdf"
+      program_overview: "SecurityAwarenessProgram_2023.pdf"
+      jira_issue: "TRAIN-101 - Security training program updates and completion tracking."
+      ...
+    ok 2 - BUID 13.02m2: Ongoing Security Training for IT Staff
+      ---
+      evidence: "Specialized security training for IT staff, focusing on current threats and defense strategies."
+      it_training_records: "ITSecurityTrainingRecords_2023-12.pdf"
+      course_material: "AdvancedSecurityDefenseCourse_2023.pdf"
+      github_issue: "https://github.com/org/itsec-training/issues/188 - Advanced security training course enhancements."
+      ...
+    ok 3 - BUID 13.03n3: Phishing Awareness and Response Training
+      ---
+      evidence: "Phishing simulation exercises conducted quarterly with detailed follow-up training."
+      phishing_test_results: "PhishingExerciseResults_Q4_2023.pdf"
+      response_training_sessions: "PhishingResponseTraining_2023-12.pdf"
+      jira_issue: "PHISH-AWARE-303 - Post-exercise training session scheduling."
+      ...
+
+ok 8 - Domain 14: Third-Party Assurance
+  ---
+  comment: "Assessment of third-party service providers' security practices and compliance."
+  ...
+    1..3
+    ok 1 - BUID 14.01o1: Third-Party Service Provider Security Policy Compliance
+      ---
+      evidence: "Review of third-party security policies confirms compliance with organizational security requirements."
+      policy_compliance_report: "ThirdPartyPolicyCompliance_2024-01.pdf"
+      vendor_assessment_summary: "VendorAssessmentSummary_2024-01.pdf"
+      jira_issue: "VENDOR-SEC-401 - Annual third-party security policy review."
+      ...
+    ok 2 - BUID 14.02p2: Risk Assessment of Third-Party Service Providers
+      ---
+      evidence: "Risk assessments conducted for all critical third-party service providers, identifying and mitigating potential risks."
+      risk_assessment_report: "ThirdPartyRiskAssessment_2024-01.pdf"
+      mitigation_actions: "RiskMitigationActions_2024-01.pdf"
+      github_issue: "https://github.com/org/vendor-risk/issues/222 - Risk assessment follow-up and action plan."
+      ...
+    ok 3 - BUID 14.03q3: Monitoring of Third-Party Service Providers
+      ---
+      evidence: "Continuous monitoring of third-party service providers implemented, with regular reports on security posture."
+      monitoring_report: "ThirdPartyMonitoringReport_2024-01.pdf"
+      service_level_agreements: "SLAs_ThirdPartyMonitoring_2024.pdf"
+      jira_issue: "MONITOR-VENDORS-303 - Quarterly third-party monitoring report review."
+      ...
+
+ok 9 - Domain 15: Incident Management
+  ---
+  comment: "Evaluation of incident detection, response, and recovery processes."
+  ...
+    1..3
+    ok 1 - BUID 15.01r1: Incident Response Plan
+      ---
+      evidence: "Incident response plan documented, maintained, and communicated to all relevant personnel."
+      response_plan_document: "IncidentResponsePlan_2024-02.pdf"
+      training_records: "IncidentResponseTraining_2024-02.pdf"
+      jira_issue: "INCIDENT-MGMT-101 - Annual incident response plan review and update."
+      ...
+    ok 2 - BUID 15.02s2: Incident Detection and Analysis
+      ---
+      evidence: "Systems and processes in place for effective incident detection and analysis."
+      detection_tools_output: "IncidentDetectionReport_2024-02.pdf"
+      analysis_procedures: "IncidentAnalysisProcedures_2024.pdf"
+      github_issue: "https://github.com/org/incident-analysis/issues/334 - Enhancement of detection capabilities."
+      ...
+    ok 3 - BUID 15.03t3: Incident Mitigation and Recovery
+      ---
+      evidence: "Procedures for incident mitigation and recovery are effectively implemented and tested."
+      recovery_test_results: "IncidentRecoveryTestResults_2024-02.pdf"
+      mitigation_strategies: "IncidentMitigationStrategies_2024.pdf"
+      jira_issue: "RECOVERY-PLAN-212 - Post-incident recovery process improvement."
+      ...
+
+ok 10 - Domain 16: Business Continuity & Disaster Recovery
+  ---
+  comment: "Assessment of readiness for business continuity and disaster recovery."
+  ...
+    1..3
+    ok 1 - BUID 16.01u1: Business Continuity Plan Development
+      ---
+      evidence: "Comprehensive business continuity plan developed, covering all critical business functions."
+      bc_plan_document: "BusinessContinuityPlan_2024-03.pdf"
+      plan_review_record: "BCPlanReview_2024-03.pdf"
+      jira_issue: "BC-PLANNING-401 - Update to business continuity plan to include new business units."
+      ...
+    ok 2 - BUID 16.02v2: Disaster Recovery Plan for IT Systems
+      ---
+      evidence: "IT disaster recovery plan in place, aligned with business continuity objectives."
+      dr_plan_document: "ITDisasterRecoveryPlan_2024-03.pdf"
+      recovery_test_results: "DRPlanTestResults_2024-03.pdf"
+      github_issue: "https://github.com/org/dr-planning/issues/158 - Quarterly DR plan testing."
+      ...
+    ok 3 - BUID 16.03w3: Emergency Communications Plan
+      ---
+      evidence: "Emergency communications plan established, ensuring timely and effective communication during incidents."
+      communications_plan: "EmergencyCommunicationsPlan_2024-03.pdf"
+      communication_test_record: "EmergencyCommTestRecord_2024-03.pdf"
+      jira_issue: "EMER-COMM-502 - Review and simulation of emergency communication plan."
+      ...
+
+ok 11 - Domain 17: Risk Management
+  ---
+  comment: "Evaluation of risk management processes and risk assessment outcomes."
+  ...
+    1..3
+    ok 1 - BUID 17.01x1: Risk Assessment Process
+      ---
+      evidence: "Annual risk assessment completed, identifying and evaluating risks across the organization."
+      risk_assessment_report: "AnnualRiskAssessmentReport_2024-04.pdf"
+      risk_matrix: "OrganizationalRiskMatrix_2024-04.pdf"
+      jira_issue: "RISK-ASSESS-301 - Completion of annual risk assessment."
+      ...
+    ok 2 - BUID 17.02y2: Risk Treatment Plan
+      ---
+      evidence: "Risk treatment plans developed for high-priority risks, with implementation tracking."
+      treatment_plan_document: "RiskTreatmentPlans_2024-04.pdf"
+      implementation_status: "RiskTreatmentImplementationStatus_2024-04.pdf"
+      github_issue: "https://github.com/org/risk-management/issues/202 - Update to risk treatment plans."
+      ...
+    ok 3 - BUID 17.03z3: Risk Monitoring and Reporting
+      ---
+      evidence: "Ongoing risk monitoring program in place, with regular reporting to management."
+      monitoring_report: "RiskMonitoringQuarterlyReport_2024-04.pdf"
+      management_review_minutes: "ManagementReviewOfRiskReports_2024-04.pdf"
+      jira_issue: "RISK-MONITORING-403 - Enhancements to risk monitoring tools and techniques."
+      ...
+
+ok 12 - Domain 18: Physical & Environmental Security
+  ---
+  comment: "Evaluation of physical and environmental controls to protect information assets."
+  ...
+    1..3
+    ok 1 - BUID 18.01a1: Secure Area Access Controls
+      ---
+      evidence: "Access control systems in place for all secure areas, verified through audit logs and physical inspections."
+      access_control_audit: "SecureAreaAccessControlAudit_2024-05.pdf"
+      inspection_report: "PhysicalInspectionReport_2024-05.pdf"
+      jira_issue: "PHYS-SEC-101 - Quarterly secure area access review and update."
+      ...
+    ok 2 - BUID 18.02b2: Protection from Environmental Threats
+      ---
+      evidence: "Environmental controls verified to be operational, protecting against threats such as fire, flood, and power loss."
+      environmental_control_report: "EnvironmentalControlReport_2024-05.pdf"
+      maintenance_records: "EnvironmentalSystemMaintenance_2024-05.pdf"
+      github_issue: "https://github.com/org/facilities-management/issues/314 - Environmental control system upgrade."
+      ...
+    ok 3 - BUID 18.03c3: Equipment Security and Maintenance
+      ---
+      evidence: "Equipment maintenance schedules adhered to, with security measures in place to prevent unauthorized access."
+      equipment_audit: "EquipmentSecurityAudit_2024-05.pdf"
+      maintenance_log: "EquipmentMaintenanceLog_2024-05.pdf"
+      jira_issue: "EQUIP-SEC-212 - Annual review of equipment security and maintenance practices."
+      ...
+
+ok 13 - Domain 19: Data Protection & Privacy
+  ---
+  comment: "Assessment of data protection mechanisms and privacy practices."
+  ...
+    1..3
+    ok 1 - BUID 19.01d1: Data Classification and Handling
+      ---
+      evidence: "Data classification policies implemented, with regular training on data handling procedures."
+      classification_policy: "DataClassificationPolicy_2024-06.pdf"
+      training_records: "DataHandlingTraining_2024-06.pdf"
+      jira_issue: "DATA-CLASS-101 - Review and update of data classification guidelines."
+      ...
+    ok 2 - BUID 19.02e2: Data Encryption
+      ---
+      evidence: "All sensitive data encrypted in transit and at rest, confirmed by security scans."
+      encryption_audit: "DataEncryptionAudit_2024-06.pdf"
+      scan_results: "EncryptionScanResults_2024-06.pdf"
+      github_issue: "https://github.com/org/data-security/issues/422 - Enhancements to encryption practices."
+      ...
+    ok 3 - BUID 19.03f3: Privacy Notice
+      ---
+      evidence: "Privacy notice updated to reflect current data collection and use practices."
+      privacy_notice: "PrivacyNotice_2024-06.pdf"
+      update_log: "PrivacyNoticeUpdateLog_2024-06.pdf"
+      jira_issue: "PRIV-NOTICE-303 - Annual privacy notice review."
+      ...
+
