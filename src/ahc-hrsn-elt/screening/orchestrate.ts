@@ -286,6 +286,7 @@ export interface OrchEngineArgs extends
   > {
   readonly workflowPaths: OrchEngineWorkflowPaths;
   readonly walkRootPaths?: string[];
+  readonly referenceDataHome?: string;
 }
 
 /**
@@ -360,7 +361,11 @@ export class OrchEngine {
     const {
       govn,
       govn: { informationSchema: is },
-      args: { session },
+      args: {
+        session,
+        referenceDataHome =
+          "https://raw.githubusercontent.com/qe-collaborative-services/1115-hub/main/src/reference-data",
+      },
     } = this;
     const beforeInit = Array.from(
       session.sqlCatalogSqlSuppliers("before-init"),
@@ -377,6 +382,18 @@ export class OrchEngine {
       -- register the current device and session and use the identifiers for all logging
       ${await session.deviceSqlDML()}
       ${await session.orchSessionSqlDML()}
+      
+      -- Load Reference data from csvs
+      CREATE TABLE encounter_class_reference AS 
+        SELECT * FROM read_csv_auto('${referenceDataHome}/encounter-class-reference.csv',
+          delim = ',',
+          header = true,
+          columns = {
+            'Code': 'VARCHAR',
+            'System': 'VARCHAR',
+            'Display': 'VARCHAR',
+            'Definition': 'VARCHAR'
+          });
       
       ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`.SQL(
       this.govn.emitCtx,
@@ -595,6 +612,9 @@ export class OrchEngine {
 
           -- export content tables from DuckDb into the attached database (nature-dependent)
           ${exportsSQL};
+
+          -- export reference tables from DuckDb into the attached database (nature-dependent)
+          CREATE TABLE ${rdbSchemaName}.encounter_class_reference AS SELECT * FROM encounter_class_reference;
 
           DETACH DATABASE ${rdbSchemaName};
           

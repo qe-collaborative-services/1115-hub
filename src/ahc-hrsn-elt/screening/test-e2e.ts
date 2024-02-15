@@ -123,6 +123,7 @@ const args: mod.OrchEngineArgs = {
   session: new o.OrchSession(sessionID, govn),
   workflowPaths: e2eTestPaths,
   walkRootPaths: [e2eIngressPaths.ingress.home],
+  referenceDataHome: path.join(Deno.cwd(), "src/ahc-hrsn-elt/reference-data"),
   emitDagPuml: async (puml, _previewUrl) => {
     await Deno.writeTextFile(
       e2eTestPaths.inProcess.resolvedPath("dag.puml"),

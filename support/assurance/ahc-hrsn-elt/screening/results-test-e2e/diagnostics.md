@@ -8,6 +8,8 @@ workflowPaths:
       /home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e
 walkRootPaths:
   - support/assurance/ahc-hrsn-elt/screening/synthetic-content
+referenceDataHome: >-
+  /home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/ahc-hrsn-elt/reference-data
 sources:
   - uri: >-
       support/assurance/ahc-hrsn-elt/screening/synthetic-content/ahc-hrsn-2023-12-12-valid.csv
@@ -200,7 +202,19 @@ CREATE VIEW IF NOT EXISTS "orch_session_diagnostic_text" AS
 
 -- register the current device and session and use the identifiers for all logging
 INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'EXCELSIOR', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO "orch_session" ("orch_session_id", "device_id", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', ('2024-02-14T15:18:11.494Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
+INSERT INTO "orch_session" ("orch_session_id", "device_id", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', ('2024-02-15T16:08:21.022Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
+
+-- Load Reference data from csvs
+CREATE TABLE encounter_class_reference AS 
+  SELECT * FROM read_csv_auto('/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv',
+    delim = ',',
+    header = true,
+    columns = {
+      'Code': 'VARCHAR',
+      'System': 'VARCHAR',
+      'Display': 'VARCHAR',
+      'Definition': 'VARCHAR'
+    });
 
 -- no after-init SQL found
 ```
@@ -3403,11 +3417,11 @@ No STDERR emitted by `ensureContent`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-02-14T15:18:13.815Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-02-14T15:18:13.815Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-02-14T15:18:13.815Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-02-14T15:18:13.815Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0a26bdb9-1499-515c-aeb4-c6d1d0a20541', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-02-14T15:18:13.815Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-02-15T16:08:23.351Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-02-15T16:08:23.351Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-02-15T16:08:23.351Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-02-15T16:08:23.351Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0a26bdb9-1499-515c-aeb4-c6d1d0a20541', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-02-15T16:08:23.351Z'), NULL);
 
 -- removed SQLPage and execution diagnostics SQL DML from diagnostics Markdown
 
@@ -3511,6 +3525,27 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 
 CREATE TABLE resource_db.demographic_data_2_01hpkty3hctk826tvx5tasga55 AS SELECT * FROM demographic_data_2_01hpkty3hctk826tvx5tasga55;
   
+CREATE VIEW resource_db.demographic_data_2_01hpkty3hctk826tvx5tasga55_fhir_patient AS 
+  SELECT pat_mrn_id, json_object(
+        'resourceType', 'Patient',
+        'identifier', MPI_ID,
+        'active', true,
+        'name', CONCAT(FIRST_NAME,' ', LAST_NAME),
+        'telecom', '',
+        'gender', GENDER_IDENTITY_DESCRIPTION,
+        'birthDate', PAT_BIRTH_DATE,
+        'address', json_array(
+            json_object(
+              'text', ADDRESS1,
+              'line', ADDRESS2,
+              'city', CITY,
+              'state', STATE,
+              'postalCode', ZIP
+          )
+        )
+    ) AS FHIR_Patient
+  FROM demographic_data_2_01hpkty3hctk826tvx5tasga55; 
+  
   INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('09b84d82-4502-5597-99c1-a190fb056033', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '80af4eff-d697-565b-9e3f-a587e322b1da', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'AdminDemographicCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('63d56427-0888-5164-bea5-3f122e5805fd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5b77d127-e62a-50a9-acee-bea63ff64dd5', 'ASSURED_EXCEL_WORKBOOK_SHEET', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', NULL, 'AdminDemographicExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
@@ -3543,6 +3578,9 @@ CREATE TABLE resource_db.ahc_hrsn_2024_01_25_valid_answer_reference AS SELECT * 
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('841b1d15-81a7-5865-8dee-86f56e93ad92', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e2816d61-4406-5073-ac60-f129a107d938', 'ATTEMPT_EXCEL_WORKBOOK_SHEET_EXPORT', 'EXIT(AnswerReferenceExcelSheetIngestSource)', NULL, 'AnswerReferenceExcelSheetIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
     ;
+
+-- export reference tables from DuckDb into the attached database (nature-dependent)
+CREATE TABLE resource_db.encounter_class_reference AS SELECT * FROM encounter_class_reference;
 
 DETACH DATABASE resource_db;
 

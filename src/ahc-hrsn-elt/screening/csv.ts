@@ -646,6 +646,27 @@ export class AdminDemographicCsvFileIngestSource<
 
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
         
+      CREATE VIEW ${targetSchema}.${tableName}_fhir_patient AS 
+        SELECT pat_mrn_id, json_object(
+              'resourceType', 'Patient',
+              'identifier', MPI_ID,
+              'active', true,
+              'name', CONCAT(FIRST_NAME,' ', LAST_NAME),
+              'telecom', '',
+              'gender', GENDER_IDENTITY_DESCRIPTION,
+              'birthDate', PAT_BIRTH_DATE,
+              'address', json_array(
+                  json_object(
+                    'text', ADDRESS1,
+                    'line', ADDRESS2,
+                    'city', CITY,
+                    'state', STATE,
+                    'postalCode', ZIP
+                )
+              )
+          ) AS FHIR_Patient
+        FROM ${tableName}; 
+        
         ${await session.entryStateDML(
           sessionEntryID,
           "ATTEMPT_CSV_EXPORT",

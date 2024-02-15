@@ -280,11 +280,11 @@ export class SQLPageNotebook {
       ${table({ rows: [{ SQL: () => `SELECT * FROM ${tn.device}` }] })}
 
       ${table({
-        columns: { [os_c.orch_session_id]: { markdown: true } },
+        columns: { [os_c.orch_session_id]: { markdown: true },['SUMMARY']: { markdown: true } },
         rows: [
           {
             SQL: () =>
-              `SELECT '[' || ${os_c.orch_session_id} || '](session-diagnostics.sql?session_id='|| ${os_c.orch_session_id} ||')' as ${os_c.orch_session_id}, ${os_c.device_id}, ${os_c.orch_started_at}, ${os_c.orch_finished_at} FROM ${tn.orch_session}`,
+              `SELECT '[' || ${os_c.orch_session_id} || '](session-diagnostics.sql?session_id='|| ${os_c.orch_session_id} ||')' as ${os_c.orch_session_id},'[' || 'Summary' || '](session-summary.sql?session_id='|| ${os_c.orch_session_id} ||')' as SUMMARY, ${os_c.device_id}, ${os_c.orch_started_at}, ${os_c.orch_finished_at} FROM ${tn.orch_session}`,
           },
         ],
       })}        
@@ -339,6 +339,40 @@ export class SQLPageNotebook {
           },
         },
       })}`;
+  }
+
+  "session-summary.sql"() {
+    const {
+      comps: { table, text },
+      govn,
+      govn: { SQL },
+    } = this;
+    const {
+      tableNames: tn,
+      columnNames: { orch_session_issue: c },
+    } = govn;
+
+    // NOTE: this page assumes that /asset/session/<orch_session_id>/diagnostics.sql
+    // is inserted by the orchestration engine (it's not in the SQLPageNotebook).
+
+    // deno-fmt-ignore
+    return SQL`
+      ${this.shell()}
+      ${text({
+        title: 'Summary',
+      })}
+      ${table({
+        search: true,
+        columns: {  },
+        rows: [
+          {
+            SQL: () =>
+              `SELECT ${c.issue_type},COUNT(${c.orch_session_issue_id}) as issue_count from ${tn.orch_session_issue} group by ${c.issue_type}`,
+          },
+        ],
+      })}
+
+      `;
   }
 
   "issues.sql"() {
@@ -421,7 +455,25 @@ export class SQLPageNotebook {
         ],
         condition: { anyExists: "$pat_mrn_id" },
       })}
-
+      ${text({
+        title: {
+          SQL: () =>
+            `(select format('%s %s FHIR Patient', first_name, last_name) from demographic_data_2_01hpkty3hctk826tvx5tasga55 where pat_mrn_id = $pat_mrn_id)`,
+        },
+      })}
+      ${table({
+        search: true,
+        sort: true,
+        rows: [
+          {
+            SQL: () => `
+            SELECT * 
+              FROM "demographic_data_2_01hpkty3hctk826tvx5tasga55_fhir_patient"
+             WHERE pat_mrn_id = $pat_mrn_id`,
+          },
+        ],
+        condition: { allExist: "$pat_mrn_id is not null" },
+      })}
       ${text({
         title: {
           SQL: () =>
