@@ -285,6 +285,7 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("MEAS_VALUE")}            
       ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
+      ${sar.onlyAllowValidEncounterClassInAllRows("ENCOUNTER_CLASS_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "QUESTION_CODE_SYSTEM_NAME",
         "'LN','LOIN'"

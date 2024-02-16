@@ -394,7 +394,74 @@ export class OrchEngine {
             'Display': 'VARCHAR',
             'Definition': 'VARCHAR'
           });
+
+      CREATE TABLE screening_status_code_reference AS 
+        SELECT * FROM read_csv_auto('${referenceDataHome}/screening-status-code-reference.csv',
+          delim = ',',
+          header = true,
+          columns = {
+            'Lvl': 'VARCHAR',
+            'Code': 'VARCHAR',
+            'Display': 'VARCHAR',
+            'Definition': 'VARCHAR'
+          });
       
+      CREATE TABLE encounter_status_code_reference AS 
+        SELECT * FROM read_csv_auto('${referenceDataHome}/encounter-status-code-reference.csv',
+          delim = ',',
+          header = true,
+          columns = {
+            'Code': 'VARCHAR',
+            'Display': 'VARCHAR',
+            'Definition': 'VARCHAR'
+          });
+
+      CREATE TABLE encounter_type_code_reference AS 
+        SELECT * FROM read_csv_auto('${referenceDataHome}/encounter-type-code-reference.csv',
+          delim = ',',
+          header = true,
+          columns = {
+            'Code': 'VARCHAR',
+            'System': 'VARCHAR',
+            'Display': 'VARCHAR'
+          });
+
+      CREATE TABLE business_rules AS 
+        SELECT * FROM read_csv_auto('${referenceDataHome}/business-rules.csv',
+          delim = ',',
+          header = true,
+          columns = {
+            'Worksheet': 'VARCHAR',
+            'Field': 'VARCHAR',
+            'Required': 'VARCHAR',
+            'Permissible Values': 'VARCHAR', 
+            'Criteria-1': 'VARCHAR',
+            'Criteria-2': 'VARCHAR',
+            'Criteria-3': 'VARCHAR',
+            'Criteria-4': 'VARCHAR',
+            'Criteria-5': 'VARCHAR',
+            'Criteria-6': 'VARCHAR',
+            'Criteria-7': 'VARCHAR',
+            'Remarks': 'VARCHAR'
+          });
+
+      CREATE TABLE ahc_cross_walk AS 
+        SELECT * FROM read_csv_auto('${referenceDataHome}/ahc-cross-walk.csv',
+          delim = ',',
+          header = true,
+          columns = {
+            'SCREENING_CODE': 'VARCHAR',
+            'SCREENING_CODE_DESCRIPTION': 'VARCHAR',
+            'QUESTION': 'VARCHAR',
+            'QUESTION_CODE': 'VARCHAR',
+            'ANSWER_VALUE': 'VARCHAR',
+            'ANSWER_CODE': 'VARCHAR',
+            'SCORE': 'VARCHAR',
+            'UCUM Units': 'VARCHAR',
+            'SDOH_DOMAIN': 'VARCHAR',
+            'POTENTIAL_NEED_INDICATED': 'VARCHAR',
+          });
+
       ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`.SQL(
       this.govn.emitCtx,
     );
@@ -615,6 +682,11 @@ export class OrchEngine {
 
           -- export reference tables from DuckDb into the attached database (nature-dependent)
           CREATE TABLE ${rdbSchemaName}.encounter_class_reference AS SELECT * FROM encounter_class_reference;
+          CREATE TABLE ${rdbSchemaName}.screening_status_code_reference AS SELECT * FROM screening_status_code_reference;
+          CREATE TABLE ${rdbSchemaName}.encounter_status_code_reference AS SELECT * FROM encounter_status_code_reference;
+          CREATE TABLE ${rdbSchemaName}.encounter_type_code_reference AS SELECT * FROM encounter_type_code_reference;
+          CREATE TABLE ${rdbSchemaName}.business_rules AS SELECT * FROM business_rules;
+          CREATE TABLE ${rdbSchemaName}.ahc_cross_walk AS SELECT * FROM ahc_cross_walk;
 
           DETACH DATABASE ${rdbSchemaName};
           

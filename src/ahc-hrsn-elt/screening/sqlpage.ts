@@ -167,6 +167,7 @@ export class SQLPageNotebook {
         { title: "Screenings", link: "/1115-waiver-screenings.sql" },
         { title: "Sessions", link: "/sessions.sql" },
         { title: "Schema", link: "/schema.sql" },
+        { title: "Reference", link: "/reference.sql" },
       ],
       javascript: [
         "https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js",
@@ -299,6 +300,103 @@ export class SQLPageNotebook {
           },
         ],
       })}
+    `;
+  }
+
+  "reference.sql"() {
+    const {
+      comps: { table, text },
+      govn: { SQL },
+    } = this;
+
+    // deno-fmt-ignore
+    return SQL`
+      ${this.shell()}
+
+      ${text({
+        title: 'Encounter Class Reference',
+      })}
+
+      ${table({
+        columns: { },
+        rows: [
+          {
+            SQL: () =>
+              `SELECT * FROM encounter_class_reference`,
+          },
+        ],
+      })}        
+
+      ${text({
+        title: 'Encounter Status Code Reference',
+      })}
+
+      ${table({
+        columns: { },
+        rows: [
+          {
+            SQL: () =>
+              `SELECT * FROM encounter_status_code_reference`,
+          },
+        ],
+      })}        
+
+      ${text({
+        title: 'Encounter Type Code Reference',
+      })}
+
+      ${table({
+        columns: { },
+        rows: [
+          {
+            SQL: () =>
+              `SELECT * FROM encounter_type_code_reference`,
+          },
+        ],
+      })}        
+
+      ${text({
+        title: 'Screening Status Code Reference',
+      })}
+
+      ${table({
+        columns: { },
+        rows: [
+          {
+            SQL: () =>
+              `SELECT * FROM screening_status_code_reference`,
+          },
+        ],
+      })}        
+
+      ${text({
+        title: 'Business Rules',
+      })}
+
+      ${table({
+        columns: { },
+        rows: [
+          {
+            SQL: () =>
+              `SELECT * FROM business_rules`,
+          },
+        ],
+      })}        
+
+      ${text({
+        title: 'AHC Cross Walk',
+      })}
+
+      ${table({
+        columns: { },
+        rows: [
+          {
+            SQL: () =>
+              `SELECT * FROM ahc_cross_walk`,
+          },
+        ],
+      })}        
+
     `;
   }
 

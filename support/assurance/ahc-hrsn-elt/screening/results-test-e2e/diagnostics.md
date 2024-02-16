@@ -202,7 +202,7 @@ CREATE VIEW IF NOT EXISTS "orch_session_diagnostic_text" AS
 
 -- register the current device and session and use the identifiers for all logging
 INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'EXCELSIOR', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO "orch_session" ("orch_session_id", "device_id", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', ('2024-02-15T16:08:21.022Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
+INSERT INTO "orch_session" ("orch_session_id", "device_id", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', ('2024-02-16T16:13:30.775Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
 
 -- Load Reference data from csvs
 CREATE TABLE encounter_class_reference AS 
@@ -214,6 +214,73 @@ CREATE TABLE encounter_class_reference AS
       'System': 'VARCHAR',
       'Display': 'VARCHAR',
       'Definition': 'VARCHAR'
+    });
+
+CREATE TABLE screening_status_code_reference AS 
+  SELECT * FROM read_csv_auto('/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv',
+    delim = ',',
+    header = true,
+    columns = {
+      'Lvl': 'VARCHAR',
+      'Code': 'VARCHAR',
+      'Display': 'VARCHAR',
+      'Definition': 'VARCHAR'
+    });
+
+CREATE TABLE encounter_status_code_reference AS 
+  SELECT * FROM read_csv_auto('/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv',
+    delim = ',',
+    header = true,
+    columns = {
+      'Code': 'VARCHAR',
+      'Display': 'VARCHAR',
+      'Definition': 'VARCHAR'
+    });
+
+CREATE TABLE encounter_type_code_reference AS 
+  SELECT * FROM read_csv_auto('/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv',
+    delim = ',',
+    header = true,
+    columns = {
+      'Code': 'VARCHAR',
+      'System': 'VARCHAR',
+      'Display': 'VARCHAR'
+    });
+
+CREATE TABLE business_rules AS 
+  SELECT * FROM read_csv_auto('/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv',
+    delim = ',',
+    header = true,
+    columns = {
+      'Worksheet': 'VARCHAR',
+      'Field': 'VARCHAR',
+      'Required': 'VARCHAR',
+      'Permissible Values': 'VARCHAR', 
+      'Criteria-1': 'VARCHAR',
+      'Criteria-2': 'VARCHAR',
+      'Criteria-3': 'VARCHAR',
+      'Criteria-4': 'VARCHAR',
+      'Criteria-5': 'VARCHAR',
+      'Criteria-6': 'VARCHAR',
+      'Criteria-7': 'VARCHAR',
+      'Remarks': 'VARCHAR'
+    });
+
+CREATE TABLE ahc_cross_walk AS 
+  SELECT * FROM read_csv_auto('/home/snshah/workspaces/github.com/qe-collaborative-services/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv',
+    delim = ',',
+    header = true,
+    columns = {
+      'SCREENING_CODE': 'VARCHAR',
+      'SCREENING_CODE_DESCRIPTION': 'VARCHAR',
+      'QUESTION': 'VARCHAR',
+      'QUESTION_CODE': 'VARCHAR',
+      'ANSWER_VALUE': 'VARCHAR',
+      'ANSWER_CODE': 'VARCHAR',
+      'SCORE': 'VARCHAR',
+      'UCUM Units': 'VARCHAR',
+      'SDOH_DOMAIN': 'VARCHAR',
+      'POTENTIAL_NEED_INDICATED': 'VARCHAR',
     });
 
 -- no after-init SQL found
@@ -1264,6 +1331,27 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
       FROM mandatory_value;
+WITH valid_encounter_class_in_all_rows AS (
+    SELECT 'ENCOUNTER_CLASS_CODE' AS issue_column,
+           sr."ENCOUNTER_CLASS_CODE" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM screening_2_01hpkty3hctk826tvx5tasga55 sr
+      LEFT JOIN encounter_class_reference ecr
+      ON sr.ENCOUNTER_CLASS_CODE = ecr.Code         
+     WHERE sr.ENCOUNTER_CLASS_CODE IS NOT NULL
+      AND ecr.Code IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '0e074bf2-f1fe-55d4-bd44-a88cbed79aeb',
+           'Invalid Encounter Class',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid Encounter Class "' || invalid_value || '" found in ' || issue_column,
+           'Validate Encounter Class Code with encounter class reference data'
+      FROM valid_encounter_class_in_all_rows;
 WITH allowed_values AS (
     SELECT 'QUESTION_CODE_SYSTEM_NAME' AS issue_column,
            "QUESTION_CODE_SYSTEM_NAME" AS invalid_value,
@@ -3417,11 +3505,11 @@ No STDERR emitted by `ensureContent`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-02-15T16:08:23.351Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-02-15T16:08:23.351Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-02-15T16:08:23.351Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-02-15T16:08:23.351Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0a26bdb9-1499-515c-aeb4-c6d1d0a20541', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-02-15T16:08:23.351Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-02-16T16:13:33.202Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-02-16T16:13:33.202Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-02-16T16:13:33.202Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-02-16T16:13:33.202Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0a26bdb9-1499-515c-aeb4-c6d1d0a20541', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-02-16T16:13:33.202Z'), NULL);
 
 -- removed SQLPage and execution diagnostics SQL DML from diagnostics Markdown
 
@@ -3581,6 +3669,11 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 
 -- export reference tables from DuckDb into the attached database (nature-dependent)
 CREATE TABLE resource_db.encounter_class_reference AS SELECT * FROM encounter_class_reference;
+CREATE TABLE resource_db.screening_status_code_reference AS SELECT * FROM screening_status_code_reference;
+CREATE TABLE resource_db.encounter_status_code_reference AS SELECT * FROM encounter_status_code_reference;
+CREATE TABLE resource_db.encounter_type_code_reference AS SELECT * FROM encounter_type_code_reference;
+CREATE TABLE resource_db.business_rules AS SELECT * FROM business_rules;
+CREATE TABLE resource_db.ahc_cross_walk AS SELECT * FROM ahc_cross_walk;
 
 DETACH DATABASE resource_db;
 

@@ -88,16 +88,49 @@ export class ScreeningAssuranceRules<
            WHERE sr.${columnName} IS NOT NULL
             AND qr.QUESTION_CODE IS NULL
       )
-      ${this.insertRowValueIssueCtePartial(
-      cteName,
-      "Invalid Screening Question",
-      "issue_row",
-      "issue_column",
-      "invalid_value",
-      `'Invalid Screening Question "' || invalid_value || '" found in ' || issue_column`,
-      `'Validate screening questions with question reference data'`,
-    )
-      }`;
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        "Invalid Screening Question",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid Screening Question "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate screening questions with question reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidEncounterClassInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_encounter_class_in_all_rows";
+    // Construct the name of the question reference table based on the provided parameter 'baseName'
+    const encounterClassReferenceTable = "encounter_class_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${encounterClassReferenceTable} ecr
+            ON sr.ENCOUNTER_CLASS_CODE = ecr.Code         
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.Code IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        "Invalid Encounter Class",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid Encounter Class "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate Encounter Class Code with encounter class reference data'`,
+      )
+    }`;
   }
 }
 
