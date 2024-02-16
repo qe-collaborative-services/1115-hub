@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  sftp_server:
+    build:
+      context: .
+      dockerfile: Dockerfile.sftp
+    volumes:
+      - shared_data:/home
+    ports:
+      - "22:22"
+
+  processing_server:
+    build:
+      context: .
+      dockerfile: Dockerfile.workflow
+    volumes:
+      - shared_data:/data
+
+volumes:
+  shared_data:
