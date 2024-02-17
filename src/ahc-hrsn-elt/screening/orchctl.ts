@@ -106,7 +106,7 @@ async function ingressWorkflow(
 }
 
 // TODO: after testing, remove the simulator
-const sftpSimulator = "SFTP" as const;
+const sftpSimulator = "/SFTP" as const;
 const ingressPaths = mod.orchEngineIngressPaths(`${sftpSimulator}/ingress`);
 console.log("Removing and re-creating", sftpSimulator);
 try {
