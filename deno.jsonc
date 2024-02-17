@@ -1,16 +1,14 @@
 {
   "compilerOptions": {
-     // required for Deno 1.40+ until SQLa/lib/notebook is upgraded to support TC39 decorators
+    // required for Deno 1.40+ until SQLa/lib/notebook is upgraded to support TC39 decorators
     "experimentalDecorators": true
   },
   "tasks": {
     "doctor": "deno run -A ./support/bin/doctor.ts",
-    "audit": "deno run ./src/compliance-audit.tap.ts",
+    "audit": "echo 'TODO: use code from quality-system repo to generate SOW and SDLC audit'",
     "ahc-hrsn-screening-test-e2e": "deno run -A ./src/ahc-hrsn-elt/screening/test-e2e.ts",
     "ahc-hrsn-screening-doc": "deno doc --html --name=\"AHC HRSN Screening\" --output=./support/docs/lib/ahc-hrsn-elt/screening/ ./src/ahc-hrsn-elt/screening/mod.ts",
-    "compliance-qs-doc": "deno run -A ./src/quality-system-audit.tap.ts --html > ./support/docs/compliance-auto/quality-system-audit.tap.html && deno run -A ./src/quality-system-audit.tap.ts --md > ./support/docs/compliance-auto/quality-system-audit.tap.md && deno run -A ./src/quality-system-audit.tap.ts --json > ./support/docs/compliance-auto/quality-system-audit.tap.json",
-    "compliance-sow-doc": "deno run -A ./src/qe-sow-audit.tap.ts --html > ./support/docs/compliance-auto/qe-sow-audit.tap.html && deno run -A ./src/qe-sow-audit.tap.ts --md > ./support/docs/compliance-auto/qe-sow-audit.tap.md && deno run -A ./src/qe-sow-audit.tap.ts --json > ./support/docs/compliance-auto/qe-sow-audit.tap.json",
-    "prepare-release": "deno task ahc-hrsn-screening-doc && deno task compliance-qs-doc && deno task compliance-sow-doc",
+    "prepare-release": "deno task ahc-hrsn-screening-doc",
     "sqlpage": "DATABASE_URL=sqlite://./support/assurance/ahc-hrsn-elt/screening/results-test-e2e/resource.sqlite.db sqlpage",
     "ahc-hrsn-screening-test-serve": "deno task ahc-hrsn-screening-test-e2e && deno task sqlpage"
   }
