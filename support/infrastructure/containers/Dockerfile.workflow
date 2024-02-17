@@ -30,12 +30,13 @@ RUN deno run -A ./1115-hub/support/bin/doctor.ts >doctor_log.txt
 RUN mkdir -p /etc/cron.d && \
     touch /etc/cron.d/deno_cron && \
     for i in $(seq 1 6); do \
-        echo "* * * * * cd /SFTP/qe$i/ingress && deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts >> /var/log/cron_qe$i.log 2>&1" >> /etc/cron.d/deno_cron; \
+        echo "* * * * * cd /SFTP/qe$i/ingress && /bin/deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts >> /var/log/cron_qe$i.log 2>&1" >> /etc/cron.d/deno_cron; \
         touch /var/log/cron_qe$i.log; \
     done && \
     chmod 0644 /etc/cron.d/deno_cron && \
     crontab /etc/cron.d/deno_cron
 
+CMD ["deno", "run", "-A", "/app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts"]
 
 # Ensure cron is running in the foreground to keep the container alive
-CMD ["cron", "-f"]
+# CMD ["cron", "-f","-l","2"]
