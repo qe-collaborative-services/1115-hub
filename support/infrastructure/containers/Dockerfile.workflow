@@ -21,7 +21,7 @@ RUN rm duckdb.zip
 
 # Clone the specified GitHub repository
 WORKDIR /app
-RUN git clone https://github.com/qe-collaborative-services/1115-hub.git
+RUN git clone https://github.com/softservesoftware/1115-hub.git
 
 # Run a Deno script from the cloned repo and store its output in a log file
 RUN deno run -A ./1115-hub/support/bin/doctor.ts >doctor_log.txt
