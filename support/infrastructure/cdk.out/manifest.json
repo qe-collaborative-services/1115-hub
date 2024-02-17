@@ -1,0 +1,221 @@
+{
+  "version": "36.0.0",
+  "artifacts": {
+    "ElevenFifteenInfrastructure.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ElevenFifteenInfrastructure.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ElevenFifteenInfrastructure": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "ElevenFifteenInfrastructure.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/d76e0e49b3f76da02861ab30718a0216eba65ed9091bb93e4c058c3a2bd2e6d8.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ElevenFifteenInfrastructure.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ElevenFifteenInfrastructure.assets"
+      ],
+      "metadata": {
+        "/ElevenFifteenInfrastructure/VPC/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCB9E5F0B4"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/compute-subnetSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCcomputesubnetSubnet1Subnet93651DA8"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/compute-subnetSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCcomputesubnetSubnet1RouteTable5EB8D007"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/compute-subnetSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCcomputesubnetSubnet1RouteTableAssociation47EAA4EE"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/compute-subnetSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCcomputesubnetSubnet1DefaultRoute01BFF147"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/compute-subnetSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCcomputesubnetSubnet2SubnetDE6A68F9"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/compute-subnetSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCcomputesubnetSubnet2RouteTable7ABD8F68"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/compute-subnetSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCcomputesubnetSubnet2RouteTableAssociation9B0AB111"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/compute-subnetSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCcomputesubnetSubnet2DefaultRouteCA5E8C9E"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/data-subnetSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCdatasubnetSubnet1Subnet4551EF92"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/data-subnetSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCdatasubnetSubnet1RouteTable2DE58AAC"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/data-subnetSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCdatasubnetSubnet1RouteTableAssociation190A6F69"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/data-subnetSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCdatasubnetSubnet2Subnet83437AF9"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/data-subnetSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCdatasubnetSubnet2RouteTable078460E1"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/data-subnetSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCdatasubnetSubnet2RouteTableAssociation0A83CF71"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCIGWB7E252D3"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCVPCGW99B986DC"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/VPC/RestrictDefaultSecurityGroupCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VPCRestrictDefaultSecurityGroupCustomResource59474679"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/Ec2SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2SecurityGroup55889913"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/Ec2Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Ec2Role2FD9A272"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/ElevenFifteenComputeInstance/InstanceProfile": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ElevenFifteenComputeInstanceInstanceProfile63ADD3AE"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/ElevenFifteenComputeInstance/AmiMap": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ElevenFifteenComputeInstanceAmiMap32028FE6"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/ElevenFifteenComputeInstance/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ElevenFifteenComputeInstance504098C8"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ElevenFifteenInfrastructure/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ElevenFifteenInfrastructure"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
