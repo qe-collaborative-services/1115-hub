@@ -84,6 +84,16 @@ class ComputeStack extends Stack {
 
     // run commands on the instance for initial setup
     this.instance.userData.addCommands(
+      "sudo apt-get update -y",
+      "sudo apt-get upgrade -y",
+      "sudo install -m 0755 -d /etc/apt/keyrings",
+      "sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc",
+      "sudo chmod a+r /etc/apt/keyrings/docker.asc",
+      "sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common -y",
+      "curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -",
+      "sudo add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable'",
+      "sudo apt-get update -y",
+      "sudo apt-get install docker-ce docker-ce-cli containerd.io -y",
       "curl -o ./pkgx --compressed -f --proto '=https' https://pkgx.sh/$(uname)/$(uname -m)",
       "sudo install -m 755 pkgx /usr/local/bin",
       "export PATH=$PATH:/home/admin/.local/bin",
@@ -94,7 +104,7 @@ class ComputeStack extends Stack {
       "git clone https://github.com/softservesoftware/1115-hub.git",
       "cd 1115-hub/support/infrastructure/containers",
       "sudo systemctl start docker",
-      "docker-compose up --build",
+      "docker-compose up --build"
     );
   }
 }
