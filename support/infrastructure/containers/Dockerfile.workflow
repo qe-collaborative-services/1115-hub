@@ -2,7 +2,8 @@
 FROM debian:bullseye-slim
 # Avoid prompts from apt during build
 ENV DEBIAN_FRONTEND=noninteractive
-
+# Declare REPO_URL as a build-time argument
+ARG REPO_URL
 # Update packages and install necessary dependencies
 RUN apt-get update
 RUN apt-get install -y curl unzip wget sqlite3 git cron
@@ -21,7 +22,7 @@ RUN rm duckdb.zip
 
 # Clone the specified GitHub repository
 WORKDIR /app
-RUN git clone https://github.com/softservesoftware/1115-hub.git
+RUN git clone ${REPO_URL}
 
 # Run a Deno script from the cloned repo and store its output in a log file
 RUN deno run -A ./1115-hub/support/bin/doctor.ts >doctor_log.txt
