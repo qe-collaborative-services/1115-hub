@@ -26,17 +26,22 @@ RUN git clone https://github.com/softservesoftware/1115-hub.git
 # Run a Deno script from the cloned repo and store its output in a log file
 RUN deno run -A ./1115-hub/support/bin/doctor.ts >doctor_log.txt
 
-# Corrected Dockerfile snippet to create crontab entries and log files using a single RUN instruction
-RUN mkdir -p /etc/cron.d && \
-    touch /etc/cron.d/deno_cron && \
-    for i in $(seq 1 6); do \
-        echo "* * * * * cd /SFTP/qe$i/ingress && /bin/deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts >> /var/log/cron_qe$i.log 2>&1" >> /etc/cron.d/deno_cron; \
-        touch /var/log/cron_qe$i.log; \
-    done && \
-    chmod 0644 /etc/cron.d/deno_cron && \
-    crontab /etc/cron.d/deno_cron
+# create a cron job for each qe1-6 to run the deno script
+RUN echo "* * * * * deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts --qe=qe1" > /etc/cron.d/1115-hub
+RUN echo "* * * * * deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts --qe=qe2" > /etc/cron.d/1115-hub
+RUN echo "* * * * * deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts --qe=qe3" > /etc/cron.d/1115-hub
+RUN echo "* * * * * deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts --qe=qe4" > /etc/cron.d/1115-hub
+RUN echo "* * * * * deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts --qe=qe5" > /etc/cron.d/1115-hub
+RUN echo "* * * * * deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts --qe=qe6" > /etc/cron.d/1115-hub
+RUN chmod 0644 /etc/cron.d/1115-hub
+RUN crontab /etc/cron.d/1115-hub
 
-CMD ["deno", "run", "-A", "/app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts"]
+# Run the cron job
+RUN service cron start
 
-# Ensure cron is running in the foreground to keep the container alive
-# CMD ["cron", "-f","-l","2"]
+
+
+# keep container open with cron
+CMD ["cron", "-f"]
+
+# CMD ["deno", "run", "-A", "/app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts"]

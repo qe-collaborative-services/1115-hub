@@ -1,0 +1,34 @@
+{
+  "hediet.vscode-drawio.theme": "Kennedy",
+  "deno.enable": true,
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[json]": {
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[jsonc]": {
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[markdown]": {
+    "files.trimTrailingWhitespace": false,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[markdown-react]": {
+    "files.trimTrailingWhitespace": false,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true,
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+}
