@@ -1,21 +1,30 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  sftp_server:
-    build:
-      context: .
-      dockerfile: Dockerfile.sftp
+  sftp:
+    image: atmoz/sftp
     volumes:
-      - shared_data:/home
+      - sftp_data:/home
     ports:
       - "22:22"
+    command: >
+      qe1:pass:::ingress/
+      qe2:pass:::ingress/
+      qe3:pass:::ingress/
+      qe4:pass:::ingress/
+      qe5:pass:::ingress/
+      qe6:pass:::ingress/
 
-  processing_server:
+  workflow:
     build:
       context: .
       dockerfile: Dockerfile.workflow
+      args:
+        - REPO_URL=https://github.com/qe-collaborative-services/1115-hub.git
     volumes:
-      - shared_data:/data
+      - sftp_data:/SFTP
+    depends_on:
+      - sftp
 
 volumes:
-  shared_data:
+  sftp_data:

@@ -22,10 +22,16 @@ These containers share a volume to facilitate file transfers and processing.
    your Windows laptop. Download it from the official Docker website.
 2. **Clone the repository**: Clone or download the repository containing the
    Dockerfiles and `docker-compose.yml`.
-3. **Open a terminal**: Navigate to the directory containing the cloned or
+3. **Disable autosave linting on Dockerfiles** you will have errors with docker
+   build as a result of the repo settings/ automatic linting. disable this for
+   docker images.
+4. **Open a terminal**: Navigate to the directory containing the cloned or
    downloaded files.
-4. **Build and Run**: Execute `docker-compose up --build` to build the images
+5. **Build and Run**: Execute `docker-compose up --build` to build the images
    and start the containers.
+6. **Testing**: After docker compose starts, run
+   `scp fixtures-sftp-simulator/* qe1@localhost:/ingress`. You can then view
+   logs in the container at `/var/log/qe1.log`.
 
 ### On a Virtual Machine (VM)
 
@@ -39,23 +45,27 @@ These containers share a volume to facilitate file transfers and processing.
 ### In an AWS Environment with ECS or Fargate
 
 1. **Prepare the Docker Images**:
+
    - Build the Docker images locally or in a CI/CD pipeline.
    - Push the images to Amazon ECR (Elastic Container Registry). Use
      `aws ecr create-repository` to create repositories for each image if
      needed.
 
 2. **Create an ECS Task Definition**:
+
    - Go to the ECS console and create a new task definition.
    - For each container, specify the image URL from ECR, memory and CPU
      requirements, and set the volume mount points. Use `/home` for the SFTP
      server and `/data` for the processing server.
 
 3. **Create an ECS Cluster**:
+
    - Choose the Fargate launch type if you prefer serverless or EC2 if you want
      more control over the hosting environment.
    - Follow the prompts to configure networking and security settings.
 
 4. **Run the Task**:
+
    - Once the cluster is set up, you can run the task by specifying the task
      definition and desired count.
    - Configure the task's network settings to ensure the SFTP port (22) is
