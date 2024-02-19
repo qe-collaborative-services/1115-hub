@@ -40,6 +40,7 @@ async function ingressWorkflow(
     session: new o.OrchSession(sessionID, govn),
     workflowPaths,
     walkRootPaths: [ip.ingress.home],
+    referenceDataHome: path.join(Deno.cwd(), "src/ahc-hrsn-elt/reference-data"),
     emitDagPuml: async (puml, _previewUrl) => {
       await Deno.writeTextFile(
         workflowPaths.inProcess.resolvedPath("dag.puml"),

@@ -51,7 +51,7 @@ function sessionEntries(
       SQL: () =>
         sp.text`
           <h1>${tla.title}</h1>
-  
+
           <ul>
           {{#each_row}}
               <li><a href="?${pp.session_entry_id}=${rc.orch_session_entry_id}">${rc.ingest_src}</a> (${rc.ingest_table_name})</li>
@@ -72,7 +72,7 @@ function sessionEntries(
           (topLevel) =>
             govn.SQL`
               ${topLevel}
-              SELECT ${c.orch_session_entry_id}, ${c.ingest_src}, ${c.ingest_table_name} 
+              SELECT ${c.orch_session_entry_id}, ${c.ingest_src}, ${c.ingest_table_name}
                 FROM ${tn.orch_session_entry}`,
         ),
       };
@@ -288,7 +288,7 @@ export class SQLPageNotebook {
               `SELECT '[' || ${os_c.orch_session_id} || '](session-diagnostics.sql?session_id='|| ${os_c.orch_session_id} ||')' as ${os_c.orch_session_id},'[' || 'Summary' || '](session-summary.sql?session_id='|| ${os_c.orch_session_id} ||')' as SUMMARY, ${os_c.device_id}, ${os_c.orch_started_at}, ${os_c.orch_finished_at} FROM ${tn.orch_session}`,
           },
         ],
-      })}        
+      })}
 
       ${table({
         search: true,
@@ -325,7 +325,7 @@ export class SQLPageNotebook {
               `SELECT * FROM encounter_class_reference`,
           },
         ],
-      })}        
+      })}
 
       ${text({
         title: 'Encounter Status Code Reference',
@@ -339,7 +339,7 @@ export class SQLPageNotebook {
               `SELECT * FROM encounter_status_code_reference`,
           },
         ],
-      })}        
+      })}
 
       ${text({
         title: 'Encounter Type Code Reference',
@@ -353,7 +353,7 @@ export class SQLPageNotebook {
               `SELECT * FROM encounter_type_code_reference`,
           },
         ],
-      })}        
+      })}
 
       ${text({
         title: 'Screening Status Code Reference',
@@ -367,7 +367,7 @@ export class SQLPageNotebook {
               `SELECT * FROM screening_status_code_reference`,
           },
         ],
-      })}        
+      })}
 
       ${text({
         title: 'Business Rules',
@@ -381,7 +381,7 @@ export class SQLPageNotebook {
               `SELECT * FROM business_rules`,
           },
         ],
-      })}        
+      })}
 
       ${text({
         title: 'AHC Cross Walk',
@@ -395,7 +395,7 @@ export class SQLPageNotebook {
               `SELECT * FROM ahc_cross_walk`,
           },
         ],
-      })}        
+      })}
 
     `;
   }
@@ -546,7 +546,7 @@ export class SQLPageNotebook {
         rows: [
           {
             SQL: () => `
-            SELECT question, meas_value 
+            SELECT question, meas_value
               FROM "screening_2_01hpkty3hctk826tvx5tasga55"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
@@ -556,7 +556,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s %s FHIR Patient', first_name, last_name) from demographic_data_2_01hpkty3hctk826tvx5tasga55 where pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s %s FHIR Patient', first_name, last_name) from admin_demographics_2_01hpkty3hctk826tvx5tasga55 where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -565,8 +565,8 @@ export class SQLPageNotebook {
         rows: [
           {
             SQL: () => `
-            SELECT * 
-              FROM "demographic_data_2_01hpkty3hctk826tvx5tasga55_fhir_patient"
+            SELECT *
+              FROM "admin_demographics_2_01hpkty3hctk826tvx5tasga55_fhir_patient"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
         ],
@@ -575,7 +575,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s %s FHIR Observations', dmr.first_name, dmr.last_name) from screening_2_01hpkty3hctk826tvx5tasga55 as scr join demographic_data_2_01hpkty3hctk826tvx5tasga55 as dmr on scr.pat_mrn_id = dmr.pat_mrn_id where scr.pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s FHIR Observations', display_name) from screening_2_01hpkty3hctk826tvx5tasga55_fhir where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -584,7 +584,7 @@ export class SQLPageNotebook {
         rows: [
           {
             SQL: () => `
-            SELECT * 
+            SELECT *
               FROM "screening_2_01hpkty3hctk826tvx5tasga55_fhir"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
@@ -594,7 +594,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s %s FHIR Questionnaire', dmr.first_name, dmr.last_name) from screening_2_01hpkty3hctk826tvx5tasga55 as scr join demographic_data_2_01hpkty3hctk826tvx5tasga55 as dmr on scr.pat_mrn_id = dmr.pat_mrn_id where scr.pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s FHIR Questionnaire', display_name) from screening_2_01hpkty3hctk826tvx5tasga55_fhir_questionnaire where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -603,7 +603,7 @@ export class SQLPageNotebook {
         rows: [
           {
             SQL: () => `
-            SELECT * 
+            SELECT *
               FROM "screening_2_01hpkty3hctk826tvx5tasga55_fhir_questionnaire"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },

@@ -157,6 +157,10 @@ export class ScreeningCsvFileIngestSource<
   constructor(
     readonly uri: string,
     readonly tableName: TableName,
+    readonly relatedTableNames: {
+      readonly adminDemographicsTableName: string;
+      readonly qeAdminDataTableName: string;
+    },
     readonly govn: ddbo.DuckDbOrchGovernance,
   ) {}
 
@@ -219,7 +223,7 @@ export class ScreeningCsvFileIngestSource<
       -- required by IngestEngine, setup the ingestion entry for logging
       ${await issac.sessionEntryInsertDML()}
 
-      -- state management diagnostics 
+      -- state management diagnostics
       ${await session.entryStateDML(
         sessionEntryID,
         issac.initState(),
@@ -235,7 +239,7 @@ export class ScreeningCsvFileIngestSource<
           FROM read_csv_auto('${uri}');
 
       ${ssr.requiredColumnNames()}
-      
+
       ${await session.entryStateDML(
         sessionEntryID,
         "ATTEMPT_CSV_INGEST",
@@ -266,7 +270,7 @@ export class ScreeningCsvFileIngestSource<
         this.govn.emitCtx.sqlEngineNow
       )}
 
-      
+
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
       ${tr.mandatoryValueInAllRows("SCREENING_CODE_SYSTEM_NAME")}
@@ -279,10 +283,10 @@ export class ScreeningCsvFileIngestSource<
         "SCREENING_CODE",
         "'96777-8', '97023-6'"
       )}
-      ${tr.mandatoryValueInAllRows("RECORDED_TIME")} 
+      ${tr.mandatoryValueInAllRows("RECORDED_TIME")}
       ${tr.onlyAllowValidDateTimeInAllRows("RECORDED_TIME")}
       ${tr.mandatoryValueInAllRows("QUESTION")}
-      ${tr.mandatoryValueInAllRows("MEAS_VALUE")}            
+      ${tr.mandatoryValueInAllRows("MEAS_VALUE")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
       ${sar.onlyAllowValidEncounterClassInAllRows("ENCOUNTER_CLASS_CODE")}
@@ -303,7 +307,7 @@ export class ScreeningCsvFileIngestSource<
         "ASSISTANCE_REQUESTED",
         "'Yes','No','NA'"
       )}
-          
+
 
       ${await session.entryStateDML(
         sessionEntryID,
@@ -326,6 +330,7 @@ export class ScreeningCsvFileIngestSource<
     const {
       govn: { SQL },
       tableName,
+      relatedTableNames,
     } = this;
 
     // deno-fmt-ignore
@@ -342,75 +347,80 @@ export class ScreeningCsvFileIngestSource<
 
       -- try sqltofhir Visual Studio Code extension for writing FHIR resources with SQL.
       -- see https://marketplace.visualstudio.com/items?itemName=arkhn.sqltofhir-vscode
-      CREATE VIEW ${targetSchema}.${tableName}_fhir AS 
-        SELECT pat_mrn_id, json_object(
+      CREATE VIEW ${targetSchema}.${tableName}_fhir AS
+        SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'Observation',
-              'id', ENCOUNTER_ID,
+              'id', tab_screening.ENCOUNTER_ID,
               'status', 'final',
               'code', json_object(
                   'coding', json_array(
                       json_object(
-                          'system', QUESTION_CODE_SYSTEM_NAME,
-                          'code', QUESTION_CODE,
-                          'display', QUESTION
+                          'system', tab_screening.QUESTION_CODE_SYSTEM_NAME,
+                          'code', tab_screening.QUESTION_CODE,
+                          'display', tab_screening.QUESTION
                       )
                   )
               ),
               'subject', json_object(
-                  'reference', 'Patient/' || PAT_MRN_ID
+                  'reference', 'Patient/' || tab_screening.PAT_MRN_ID,
+                  'display',  CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME)
               ),
-              'effectiveDateTime', RECORDED_TIME,
-              'valueString', MEAS_VALUE,
+              'effectiveDateTime', tab_screening.RECORDED_TIME,
+              'valueString', tab_screening.MEAS_VALUE,
               'performer', json_array(
                   json_object(
-                      'reference', 'Practitioner/' || session_id
+                      'reference', 'Practitioner/' || tab_screening.session_id
                   )
               ),
               'context', json_object(
-                  'reference', 'Encounter/' || ENCOUNTER_ID
+                  'reference', 'Encounter/' || tab_screening.ENCOUNTER_ID
               )
           ) AS FHIR_Observation
-        FROM ${tableName};
-        
+        FROM ${tableName} as tab_screening LEFT JOIN ${relatedTableNames.adminDemographicsTableName} as tab_demograph
+        ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
+
               -- TODO: Need to fill out subject->display, source->display, questionnaire
-      CREATE VIEW ${targetSchema}.${tableName}_fhir_questionnaire AS 
-        SELECT pat_mrn_id, json_object(
+      CREATE VIEW ${targetSchema}.${tableName}_fhir_questionnaire AS
+        SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'QuestionnaireResponse',
-              'id', ENCOUNTER_ID,
+              'id', tab_screening.ENCOUNTER_ID,
               'status', 'completed',
               'questionnaire', '',
               '_questionnaire', json_object(
                   'extension', json_array(
                       json_object(
-                          'url', QUESTION_CODE_SYSTEM_NAME,
-                          'valueString', QUESTION_CODE
+                          'url', tab_screening.QUESTION_CODE_SYSTEM_NAME,
+                          'valueString', tab_screening.QUESTION_CODE
                       )
                   )
               ),
               'subject', json_object(
-                  'reference', 'Patient/' || PAT_MRN_ID 
+                  'reference', 'Patient/' || tab_screening.PAT_MRN_ID,
+                  'display',  CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME)
               ),
-              'authored', RECORDED_TIME,
+              'authored', tab_screening.RECORDED_TIME,
               'source', json_object(
-                  'reference', 'Patient/' || PAT_MRN_ID
+                  'reference', 'Patient/' || tab_screening.PAT_MRN_ID,
+                  'display',  CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME)
               ),
               'item', json_array(
                   json_object(
-                      'linkId', QUESTION_CODE,
-                      'text', QUESTION,
+                      'linkId', tab_screening.QUESTION_CODE,
+                      'text', tab_screening.QUESTION,
                       'answer',  json_array(
                         json_object(
                             'valueCoding', json_object(
                               'system', 'http://loinc.org',
-                              'code', ANSWER_CODE,
-                              'display', MEAS_VALUE
+                              'code', tab_screening.ANSWER_CODE,
+                              'display', tab_screening.MEAS_VALUE
                             )
                         )
                       )
                   )
               )
           ) AS FHIR_Questionnaire
-        FROM ${tableName}; 
+        FROM ${tableName} as tab_screening LEFT JOIN ${relatedTableNames.adminDemographicsTableName} as tab_demograph
+        ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
         ${await session.entryStateDML(
           sessionEntryID,
@@ -441,6 +451,10 @@ export class AdminDemographicCsvFileIngestSource<
   constructor(
     readonly uri: string,
     readonly tableName: TableName,
+    readonly relatedTableNames: {
+      readonly screeningTableName: string;
+      readonly qeAdminDataTableName: string;
+    },
     readonly govn: ddbo.DuckDbOrchGovernance,
   ) {}
 
@@ -506,7 +520,7 @@ export class AdminDemographicCsvFileIngestSource<
       -- required by IngestEngine, setup the ingestion entry for logging
       ${await issac.sessionEntryInsertDML()}
 
-      -- state management diagnostics 
+      -- state management diagnostics
       ${await session.entryStateDML(
         sessionEntryID,
         issac.initState(),
@@ -522,7 +536,7 @@ export class AdminDemographicCsvFileIngestSource<
           FROM read_csv_auto('${uri}');
 
       ${ssr.requiredColumnNames()}
-      
+
       ${await session.entryStateDML(
         sessionEntryID,
         "ATTEMPT_CSV_INGEST",
@@ -560,14 +574,14 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.onlyAllowAlphabetsInAllRows("FIRST_NAME")}
       ${tr.onlyAllowAlphabetsInAllRows("MIDDLE_NAME")}
       ${tr.mandatoryValueInAllRows("LAST_NAME")}
-      ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")} 
-      ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX_CODE")} 
+      ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")}
+      ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "ADMINISTRATIVE_SEX_CODE",
         "'M', 'F', 'X (UN)', 'UNK', 'OTH. ASKU'"
-      )}   
-      ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE", "'M', 'F', 'ASKU', 'OTH', 'UNK'")} 
-      ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION", "'Male', 'Female', 'Asked but Unknown', 'Other', 'Unknown'")} 
+      )}
+      ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE", "'M', 'F', 'ASKU', 'OTH', 'UNK'")}
+      ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION", "'Male', 'Female', 'Asked but Unknown', 'Other', 'Unknown'")}
       ${tr.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
       ${tr.onlyAllowValidBirthDateInAllRows("PAT_BIRTH_DATE")}
       ${tr.mandatoryValueInAllRows("CITY")}
@@ -583,7 +597,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.onlyAllowedValuesInAllRows(
         "ADMINISTRATIVE_SEX _CODE_DESCRIPTION",
         "'Male','Female','Asked but Unknown','Other','Unknown'"
-      )}      
+      )}
       ${tr.onlyAllowedValuesInAllRows(
         "GENDER_IDENTITY_CODE_SYSTEM_NAME",
         "'SNOMED-CT','SNOMED'"
@@ -605,11 +619,11 @@ export class AdminDemographicCsvFileIngestSource<
         "ETHNICITY_CODE_SYSTEM_NAME",
         "'CDC','CDCRE'"
       )}
-      ${tr.mandatoryValueInAllRows("MPI_ID")} 
+      ${tr.mandatoryValueInAllRows("MPI_ID")}
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
-      ${tr.mandatoryValueInAllRows("FACILITY_ID")}   
-      ${adar.car.onlyAllowValidMedicaidCinFormatInAllRows("MEDICAID_CIN")} 
-      ${tr.mandatoryValueInAllRows("CONSENT")} 
+      ${tr.mandatoryValueInAllRows("FACILITY_ID")}
+      ${adar.car.onlyAllowValidMedicaidCinFormatInAllRows("MEDICAID_CIN")}
+      ${tr.mandatoryValueInAllRows("CONSENT")}
       ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes','No','Y','N','Unknown'")}
 
       ${await session.entryStateDML(
@@ -646,8 +660,8 @@ export class AdminDemographicCsvFileIngestSource<
       )}
 
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
-        
-      CREATE VIEW ${targetSchema}.${tableName}_fhir_patient AS 
+
+      CREATE VIEW ${targetSchema}.${tableName}_fhir_patient AS
         SELECT pat_mrn_id, json_object(
               'resourceType', 'Patient',
               'identifier', MPI_ID,
@@ -666,8 +680,8 @@ export class AdminDemographicCsvFileIngestSource<
                 )
               )
           ) AS FHIR_Patient
-        FROM ${tableName}; 
-        
+        FROM ${tableName};
+
         ${await session.entryStateDML(
           sessionEntryID,
           "ATTEMPT_CSV_EXPORT",
@@ -697,6 +711,10 @@ export class QeAdminDataCsvFileIngestSource<
   constructor(
     readonly uri: string,
     readonly tableName: TableName,
+    readonly relatedTableNames: {
+      readonly adminDemographicsTableName: string;
+      readonly screeningTableName: string;
+    },
     readonly govn: ddbo.DuckDbOrchGovernance,
   ) {}
 
@@ -759,7 +777,7 @@ export class QeAdminDataCsvFileIngestSource<
       -- required by IngestEngine, setup the ingestion entry for logging
       ${await issac.sessionEntryInsertDML()}
 
-      -- state management diagnostics 
+      -- state management diagnostics
       ${await session.entryStateDML(
         sessionEntryID,
         issac.initState(),
@@ -775,7 +793,7 @@ export class QeAdminDataCsvFileIngestSource<
           FROM read_csv_auto('${uri}');
 
       ${ssr.requiredColumnNames()}
-      
+
       ${await session.entryStateDML(
         sessionEntryID,
         "ATTEMPT_CSV_INGEST",
@@ -816,14 +834,14 @@ export class QeAdminDataCsvFileIngestSource<
         "'Hospital', 'DTC', 'SNF', 'SCN', 'CBO', 'OMH', 'OASAS', 'Practice', 'Article 36', 'Article 40', 'MCO'"
       )}
       ${tr.mandatoryValueInAllRows("FACILITY ADDRESS1")}
-      ${tr.uniqueValueInAllRows("FACILITY ADDRESS1")}   
+      ${tr.uniqueValueInAllRows("FACILITY ADDRESS1")}
       ${qedar.car.onlyAllowAlphabetsAndNumbersWithSpaceInAllRows(
         "FACILITY ADDRESS1"
-      )} 
+      )}
       ${tr.uniqueValueInAllRows("FACILITY ADDRESS2")}
       ${qedar.car.onlyAllowAlphabetsAndNumbersWithSpaceInAllRows(
         "FACILITY ADDRESS2"
-      )}    
+      )}
       ${tr.mandatoryValueInAllRows("FACILITY STATE")}
       ${tr.onlyAllowedValuesInAllRows("FACILITY STATE", "'NY', 'New York'")}
       ${tr.mandatoryValueInAllRows("FACILITY ZIP")}
@@ -870,7 +888,7 @@ export class QeAdminDataCsvFileIngestSource<
       )}
 
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
-        
+
         ${await session.entryStateDML(
           sessionEntryID,
           "ATTEMPT_CSV_EXPORT",
@@ -912,36 +930,60 @@ export function ingestCsvFilesSourcesSupplier(
         >
       )[] = [];
       const fileName = path.basename(filePath);
-      const patterns =
-        /.*(SCREENING|QE_ADMIN_DATA|DEMOGRAPHIC_DATA)-([^_])_(.*)?.csv/i;
+      const patterns = /.*(SCREENING|QE_ADMIN_DATA|DEMOGRAPHIC_DATA)(.*)?.csv/i;
       const groupMatch = filePath.match(patterns);
-      const tableName = govn.toSnakeCase(
-        path.basename(String(entry.path).toLocaleLowerCase(), ".csv"),
-      );
-      const csvExpected: Record<
-        CsvFileName,
-        () =>
-          | ScreeningCsvFileIngestSource<string, o.State>
-          | AdminDemographicCsvFileIngestSource<string, o.State>
-          | QeAdminDataCsvFileIngestSource<string, o.State>
-      > = {
-        SCREENING: () =>
-          new ScreeningCsvFileIngestSource(String(entry.path), tableName, govn),
-        QE_ADMIN_DATA: () =>
-          new QeAdminDataCsvFileIngestSource(
-            String(entry.path),
-            tableName,
-            govn,
-          ),
-        DEMOGRAPHIC_DATA: () =>
-          new AdminDemographicCsvFileIngestSource(
-            String(entry.path),
-            tableName,
-            govn,
-          ),
-      };
+
       if (groupMatch) {
+        const suffix = groupMatch[2];
+        const screeningTableName = govn.toSnakeCase(
+          `screening${suffix}`.toLowerCase(),
+        );
+        const adminDemographicsTableName = govn.toSnakeCase(
+          `admin_demographics${suffix}`.toLowerCase(),
+        );
+        const qeAdminDataTableName = govn.toSnakeCase(
+          `qe_admin_data${suffix}`.toLowerCase(),
+        );
+
         const csvFileName: CsvFileName = groupMatch[1] as CsvFileName;
+        const csvExpected: Record<
+          CsvFileName,
+          () =>
+            | ScreeningCsvFileIngestSource<string, o.State>
+            | AdminDemographicCsvFileIngestSource<string, o.State>
+            | QeAdminDataCsvFileIngestSource<string, o.State>
+        > = {
+          SCREENING: () =>
+            new ScreeningCsvFileIngestSource(
+              String(entry.path),
+              screeningTableName,
+              {
+                adminDemographicsTableName,
+                qeAdminDataTableName,
+              },
+              govn,
+            ),
+          QE_ADMIN_DATA: () =>
+            new QeAdminDataCsvFileIngestSource(
+              String(entry.path),
+              qeAdminDataTableName,
+              {
+                adminDemographicsTableName,
+                screeningTableName,
+              },
+              govn,
+            ),
+          DEMOGRAPHIC_DATA: () =>
+            new AdminDemographicCsvFileIngestSource(
+              String(entry.path),
+              adminDemographicsTableName,
+              {
+                qeAdminDataTableName,
+                screeningTableName,
+              },
+              govn,
+            ),
+        };
         if (csvFileName in csvExpected) {
           sources.push(csvExpected?.[csvFileName]());
         }
