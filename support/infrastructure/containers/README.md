@@ -22,14 +22,11 @@ These containers share a volume to facilitate file transfers and processing.
    your Windows laptop. Download it from the official Docker website.
 2. **Clone the repository**: Clone or download the repository containing the
    Dockerfiles and `docker-compose.yml`.
-3. **Disable autosave linting on Dockerfiles** you will have errors with docker
-   build as a result of the repo settings/ automatic linting. disable this for
-   docker images.
-4. **Open a terminal**: Navigate to the directory containing the cloned or
+3. **Open a terminal**: Navigate to the directory containing the cloned or
    downloaded files.
-5. **Build and Run**: Execute `docker-compose up --build` to build the images
+4. **Build and Run**: Execute `docker-compose up --build` to build the images
    and start the containers.
-6. **Testing**: After docker compose starts, run
+5. **Testing** (use any SFTP client): After docker compose starts, run
    `scp fixtures-sftp-simulator/* qe1@localhost:/ingress`. You can then view
    logs in the container at `/var/log/qe1.log`.
 
