@@ -27,6 +27,9 @@ RUN git clone ${REPO_URL}
 # Run a Deno script from the cloned repo and store its output in a log file
 RUN deno run -A ./1115-hub/support/bin/doctor.ts >doctor_log.txt
 
+# Define system PATH in crontab
+RUN echo "PATH=/usr/local/bin:/usr/bin:/bin" >> /etc/cron.d/1115-hub
+
 # create a cron job for each qe1-6 to run the deno script
 RUN echo "* * * * * /root/.deno/bin/deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts --qe qe1 >> /var/log/qe1.log 2>&1" >> /etc/cron.d/1115-hub && \
     echo "* * * * * /root/.deno/bin/deno run -A /app/1115-hub/src/ahc-hrsn-elt/screening/orchctl.ts --qe qe2 >> /var/log/qe2.log 2>&1" >> /etc/cron.d/1115-hub && \
