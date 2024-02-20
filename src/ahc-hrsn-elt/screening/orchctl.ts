@@ -15,6 +15,7 @@ async function ingressWorkflow(
     | o.IngressEntry<string, string>
     | o.IngressEntry<string, string>[],
   workflowRootPath: string,
+  referenceDataHome: string,
 ) {
   const sessionID = await govn.emitCtx.newUUID(false);
   const sessionStart = {
@@ -40,7 +41,7 @@ async function ingressWorkflow(
     session: new o.OrchSession(sessionID, govn),
     workflowPaths,
     walkRootPaths: [ip.ingress.home],
-    referenceDataHome: path.join(Deno.cwd(), "src/ahc-hrsn-elt/reference-data"),
+    referenceDataHome,
     emitDagPuml: async (puml, _previewUrl) => {
       await Deno.writeTextFile(
         workflowPaths.inProcess.resolvedPath("dag.puml"),
@@ -117,7 +118,10 @@ await new Command()
   .version("v1.0.0")
   .option("--qe <qe>", "Qe user name.")
   .option("--sftp-root <path>", "Qe user name.", { default: "/SFTP" })
-  .action(async ({ qe, sftpRoot }) => {
+  .option("--reference-data-home <path>", "Qe user name.", {
+    default: path.join(Deno.cwd(), "src/ahc-hrsn-elt/reference-data"),
+  })
+  .action(async ({ qe, sftpRoot, referenceDataHome }) => {
     const rootPath = `${sftpRoot}/${qe}`;
     const ingressPaths = mod.orchEngineIngressPaths(`${rootPath}/ingress`);
     console.dir(ingressPaths);
@@ -128,7 +132,13 @@ await new Command()
     );
 
     const screeningGroups = new mod.ScreeningIngressGroups(async (group) => {
-      await ingressWorkflow(govn, ingressPaths, group, rootPath);
+      await ingressWorkflow(
+        govn,
+        ingressPaths,
+        group,
+        rootPath,
+        referenceDataHome,
+      );
     });
 
     const watchPaths: o.WatchFsPath<string, string>[] = [{
@@ -139,7 +149,13 @@ await new Command()
       onIngress: (entry) => {
         const group = screeningGroups.potential(entry);
         try {
-          ingressWorkflow(govn, ingressPaths, group ?? entry, rootPath);
+          ingressWorkflow(
+            govn,
+            ingressPaths,
+            group ?? entry,
+            rootPath,
+            referenceDataHome,
+          );
         } catch (err) {
           // TODO: store the error in a proper log
           console.dir(entry);
@@ -154,7 +170,13 @@ await new Command()
         // note: drain just return promise (not awaited) so that we can allow each
         // async workflow to work independently (better performance).
         if (entries.length) {
-          ingressWorkflow(govn, ingressPaths, entries, rootPath);
+          ingressWorkflow(
+            govn,
+            ingressPaths,
+            entries,
+            rootPath,
+            referenceDataHome,
+          );
         }
       },
       watch: false,
