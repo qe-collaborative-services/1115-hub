@@ -95,14 +95,14 @@ class ComputeStack extends Stack {
         $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
         sudo tee /etc/apt/sources.list.d/docker.list > /dev/null',
       "sudo apt-get update",
-      "curl -o ./pkgx --compressed -f --proto '=https' https://pkgx.sh/$(uname)/$(uname -m)",
+      "sudo curl -Ssf https://pkgx.sh | sh",
       "sudo install -m 755 pkgx /usr/local/bin",
       "export PATH=$PATH:/home/admin/.local/bin",
       "pkgx install git",
       "export PATH=$PATH:/home/admin/.local/bin",
       "git clone https://github.com/softservesoftware/1115-hub.git",
       "cd 1115-hub/support/infrastructure/containers",
-      "docker-compose up --build",
+      "sudo docker-compose up --build",
     );
   }
 }
