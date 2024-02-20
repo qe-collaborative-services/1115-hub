@@ -7,7 +7,7 @@ ARG REPO_URL
 # Update packages and install necessary dependencies
 RUN apt-get update
 RUN apt-get install -y curl unzip wget sqlite3 git cron
-RUN rm -rf /var/lib/apt/lists/*
+RUN rm -rf /SFTP/observe/lib/apt/lists/*
 
 # Install Deno
 RUN curl -fsSL https://deno.land/x/install/install.sh | sh
@@ -31,12 +31,12 @@ RUN deno run -A ./1115-hub/support/bin/doctor.ts > doctor_log.txt
 RUN echo "PATH=/usr/local/bin:/usr/bin:/bin" >> /etc/cron.d/1115-hub
 
 # create a cron job for each qe1-6 to run the deno script
-RUN echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe1 >> /var/log/qe1.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe2 >> /var/log/qe2.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe3 >> /var/log/qe3.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe4 >> /var/log/qe4.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe5 >> /var/log/qe5.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe6 >> /var/log/qe6.log 2>&1" >> /etc/cron.d/1115-hub
+RUN echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe1 >> /SFTP/observe/log/qe1.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe2 >> /SFTP/observe/log/qe2.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe3 >> /SFTP/observe/log/qe3.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe4 >> /SFTP/observe/log/qe4.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe5 >> /SFTP/observe/log/qe5.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe qe6 >> /SFTP/observe/log/qe6.log 2>&1" >> /etc/cron.d/1115-hub
 
 RUN chmod 0644 /etc/cron.d/1115-hub
 RUN crontab /etc/cron.d/1115-hub
