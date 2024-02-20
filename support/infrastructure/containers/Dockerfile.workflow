@@ -25,7 +25,7 @@ WORKDIR /app
 RUN git clone ${REPO_URL}
 
 # Run a Deno script from the cloned repo and store its output in a log file
-RUN deno run -A ./1115-hub/support/bin/doctor.ts > /SFTP/observe/log/doctor_log.txt
+RUN deno run -A ./1115-hub/support/bin/doctor.ts > doctor_log.txt
 
 # Define system PATH in crontab
 RUN echo "PATH=/usr/local/bin:/usr/bin:/bin" >> /etc/cron.d/1115-hub
