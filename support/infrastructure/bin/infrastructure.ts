@@ -72,9 +72,6 @@ class ComputeStack extends Stack {
     const userData = ec2.UserData.forLinux();
     // run commands on the instance for initial setup
     userData.addCommands(
-      'sudo sed -i "s/PasswordAuthentication no/PasswordAuthentication yes/" /etc/ssh/sshd_config',
-      "sudo systemctl restart sshd",
-      'echo "qe1:pass" | sudo chpasswd',
       "apt-get update -y",
       "apt-get install ca-certificates curl",
       "install -m 0755 -d /etc/apt/keyrings",
@@ -106,7 +103,7 @@ class ComputeStack extends Stack {
       role: role,
       userData: userData,
       // keyName is a temporary solution for testing
-      // keyName: "keys",
+      keyName: "keys",
       // should use a key pair for production (or not include to block ssh access)
       // keyPair: new ec2.KeyPair(this, "ComputeInstanceKeyPair", {}),
       vpcSubnets: {
