@@ -84,7 +84,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${questionReferenceTable} qr
-            ON sr.QUESTION_CODE = qr.QUESTION_CODE AND sr.SCREENING_CODE = qr.SCREENING_CODE            
+            ON sr.QUESTION_CODE = qr.QUESTION_CODE AND sr.SCREENING_CODE = qr.SCREENING_CODE
            WHERE sr.${columnName} IS NOT NULL
             AND qr.QUESTION_CODE IS NULL
       )
@@ -105,7 +105,6 @@ export class ScreeningAssuranceRules<
     columnName: ColumnName,
   ) {
     const cteName = "valid_encounter_class_in_all_rows";
-    // Construct the name of the question reference table based on the provided parameter 'baseName'
     const encounterClassReferenceTable = "encounter_class_reference";
 
     // Construct the SQL query using tagged template literals
@@ -116,7 +115,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterClassReferenceTable} ecr
-            ON sr.ENCOUNTER_CLASS_CODE = ecr.Code         
+            ON sr.ENCOUNTER_CLASS_CODE = ecr.Code
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
@@ -129,6 +128,136 @@ export class ScreeningAssuranceRules<
         "invalid_value",
         `'Invalid Encounter Class "' || invalid_value || '" found in ' || issue_column`,
         `'Validate Encounter Class Code with encounter class reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidAnswerCodeForQuestionCodeInAllRows(
+    columnName1: ColumnName,
+    columnName2: ColumnName,
+  ) {
+    const cteName = "valid_answer_code_in_all_rows";
+    const ahcCrossWalkReferenceTable = "ahc_cross_walk";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        SELECT '${columnName2}' AS issue_column,
+          scr."${columnName2}" AS invalid_value,
+          scr.src_file_row_number AS issue_row
+          FROM ${this.tableName} scr
+          LEFT OUTER JOIN ${ahcCrossWalkReferenceTable} crw
+            ON scr.SCREENING_CODE = crw.SCREENING_CODE
+            AND scr.${columnName1} = crw.${columnName1}
+            AND scr.ANSWER_CODE = crw.ANSWER_CODE
+          WHERE scr.SCREENING_CODE IS NOT NULL
+            AND scr.${columnName1} IS NOT NULL
+            AND scr.${columnName2} IS NOT NULL
+            AND crw.${columnName2} IS NULL
+      )
+
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        "Invalid Answer Code",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid Answer Code "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate Answer Code with ahc cross walk reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidEncounterStatusCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_encounter_status_code_in_all_rows";
+    const encounterStatusCodeReferenceTable = "encounter_status_code_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${encounterStatusCodeReferenceTable} ecr
+            ON sr.ENCOUNTER_STATUS_CODE = ecr.Code
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.Code IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        "Invalid Encounter Status Code",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid Encounter Status Code "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate Encounter Status Code with encounter status code reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidEncounterTypeCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_encounter_type_code_in_all_rows";
+    const encounterTypeCodeReferenceTable = "encounter_type_code_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
+            ON sr.ENCOUNTER_TYPE_CODE = ecr.Code
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.Code IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        "Invalid Encounter Type Code",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid Encounter Type Code "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate Encounter Type Code with encounter type code reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidScreeningStatusCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_screening_status_code_in_all_rows";
+    const screeningStatusCodeReferenceTable = "screening_status_code_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${screeningStatusCodeReferenceTable} ecr
+            ON sr.SCREENING_STATUS_CODE = ecr.Code
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.Code IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        "Invalid Screening Status Code",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid Screening Status Code "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate Screening Status Code with screening status code reference data'`,
       )
     }`;
   }
@@ -159,6 +288,31 @@ export class AdminDemographicAssuranceRules<
     );
   }
 
+  onlyAllowUniqueMedicaidCinPerMrnInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_unique_medicaid_cin_per_mrn_in_all_rows";
+    return this.govn.SQL`
+    WITH ${cteName} AS (
+      SELECT '${columnName}' AS issue_column,
+              "${columnName}" AS invalid_value,
+              min(src_file_row_number) AS issue_row
+        FROM ${this.tableName}
+        GROUP BY pat_mrn_id, MEDICAID_CIN
+        HAVING COUNT(*) > 1
+    )
+    ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        "Invalid Unique Medicaid Cin Per Mrn",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid Unique Medicaid Cin Per Mrn "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate Unique Medicaid Cin Per Mrn'`,
+      )
+    }`;
+  }
   // if there are any admin-demographic-specific business logic rules put them here;
 }
 

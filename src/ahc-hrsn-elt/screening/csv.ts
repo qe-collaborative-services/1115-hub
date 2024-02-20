@@ -8,6 +8,18 @@ export const csvFileNames = [
 ] as const;
 export type CsvFileName = (typeof csvFileNames)[number];
 
+export const csvTableNames = [
+  "screening",
+  "qe_admin_data",
+  "demographic_data",
+] as const;
+
+export const [
+  aggrScreeningTableName,
+  aggrQeAdminData,
+  aggrPatientDemogrTableName,
+] = csvTableNames;
+
 const screeningCsvColumnNames = [
   "PAT_MRN_ID",
   "FACILITY_ID",
@@ -290,6 +302,10 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
       ${sar.onlyAllowValidEncounterClassInAllRows("ENCOUNTER_CLASS_CODE")}
+      ${sar.onlyAllowValidEncounterStatusCodeInAllRows("ENCOUNTER_STATUS_CODE")}
+      ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
+      ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE")}
+      ${sar.onlyAllowValidAnswerCodeForQuestionCodeInAllRows("QUESTION_CODE","ANSWER_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "QUESTION_CODE_SYSTEM_NAME",
         "'LN','LOIN'"
@@ -343,11 +359,17 @@ export class ScreeningCsvFileIngestSource<
         this.govn.emitCtx.sqlEngineNow
       )}
 
+      CREATE TABLE IF NOT EXISTS ${aggrScreeningTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${aggrScreeningTableName} SELECT * FROM ${tableName};
+
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
+
+      CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrScreeningTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${targetSchema}.${aggrScreeningTableName} SELECT * FROM ${tableName};
 
       -- try sqltofhir Visual Studio Code extension for writing FHIR resources with SQL.
       -- see https://marketplace.visualstudio.com/items?itemName=arkhn.sqltofhir-vscode
-      CREATE VIEW ${targetSchema}.${tableName}_fhir AS
+      CREATE VIEW ${targetSchema}.${aggrScreeningTableName}_fhir AS
         SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'Observation',
               'id', tab_screening.ENCOUNTER_ID,
@@ -380,7 +402,7 @@ export class ScreeningCsvFileIngestSource<
         ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
               -- TODO: Need to fill out subject->display, source->display, questionnaire
-      CREATE VIEW ${targetSchema}.${tableName}_fhir_questionnaire AS
+      CREATE VIEW ${targetSchema}.${aggrScreeningTableName}_fhir_questionnaire AS
         SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'QuestionnaireResponse',
               'id', tab_screening.ENCOUNTER_ID,
@@ -583,7 +605,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE", "'M', 'F', 'ASKU', 'OTH', 'UNK'")}
       ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION", "'Male', 'Female', 'Asked but Unknown', 'Other', 'Unknown'")}
       ${tr.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
-      ${tr.onlyAllowValidBirthDateInAllRows("PAT_BIRTH_DATE")}
+      ${tr.onlyAllowValidDateTimeInAllRows("PAT_BIRTH_DATE")}
       ${tr.mandatoryValueInAllRows("CITY")}
       ${tr.mandatoryValueInAllRows("STATE")}
       ${tr.onlyAllowedValuesInAllRows("STATE", "'NY', 'New York'")}
@@ -623,6 +645,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
       ${adar.car.onlyAllowValidMedicaidCinFormatInAllRows("MEDICAID_CIN")}
+      ${adar.onlyAllowUniqueMedicaidCinPerMrnInAllRows("MEDICAID_CIN")}
       ${tr.mandatoryValueInAllRows("CONSENT")}
       ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes','No','Y','N','Unknown'")}
 
@@ -659,9 +682,15 @@ export class AdminDemographicCsvFileIngestSource<
         this.govn.emitCtx.sqlEngineNow
       )}
 
+      CREATE TABLE IF NOT EXISTS ${aggrPatientDemogrTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${aggrPatientDemogrTableName} SELECT * FROM ${tableName};
+
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
 
-      CREATE VIEW ${targetSchema}.${tableName}_fhir_patient AS
+      CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrPatientDemogrTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${targetSchema}.${aggrPatientDemogrTableName} SELECT * FROM ${tableName};
+
+      CREATE VIEW ${targetSchema}.${aggrPatientDemogrTableName}_fhir_patient AS
         SELECT pat_mrn_id, json_object(
               'resourceType', 'Patient',
               'identifier', MPI_ID,
@@ -887,7 +916,13 @@ export class QeAdminDataCsvFileIngestSource<
         this.govn.emitCtx.sqlEngineNow
       )}
 
+      CREATE TABLE IF NOT EXISTS ${aggrQeAdminData} AS SELECT * FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${aggrQeAdminData} SELECT * FROM ${tableName};
+
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
+
+      CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrQeAdminData} AS SELECT * FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${targetSchema}.${aggrQeAdminData} SELECT * FROM ${tableName};
 
         ${await session.entryStateDML(
           sessionEntryID,
