@@ -103,7 +103,7 @@ class ComputeStack extends Stack {
       role: role,
       userData: userData,
       // keyName is a temporary solution for testing
-      keyName: "keys",
+      // keyName: "keys",
       // should use a key pair for production (or not include to block ssh access)
       // keyPair: new ec2.KeyPair(this, "ComputeInstanceKeyPair", {}),
       vpcSubnets: {
