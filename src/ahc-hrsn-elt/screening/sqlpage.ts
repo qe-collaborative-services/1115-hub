@@ -508,7 +508,6 @@ export class SQLPageNotebook {
       `;
   }
 
-  // TODO: do not hard-code screening_2_01hpkty3hctk826tvx5tasga55 since the table name is driven by the file name
   "1115-waiver-screenings.sql"() {
     const {
       comps: { text, table },
@@ -526,7 +525,7 @@ export class SQLPageNotebook {
           {
             SQL: () => `
               SELECT format('[%s](?pat_mrn_id=%s)', pat_mrn_id, pat_mrn_id) as pat_mrn_id, facility_id
-                FROM screening_2_01hpkty3hctk826tvx5tasga55
+                FROM screening
             GROUP BY pat_mrn_id, facility_id
             ORDER BY facility_id`,
           },
@@ -537,7 +536,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s %s Answers') from screening_2_01hpkty3hctk826tvx5tasga55 where pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s %s Answers') from screening where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -547,7 +546,7 @@ export class SQLPageNotebook {
           {
             SQL: () => `
             SELECT question, meas_value
-              FROM "screening_2_01hpkty3hctk826tvx5tasga55"
+              FROM "screening"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
         ],
@@ -556,7 +555,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s %s FHIR Patient', first_name, last_name) from admin_demographics_2_01hpkty3hctk826tvx5tasga55 where pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s %s FHIR Patient', first_name, last_name) from demographic_data where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -566,7 +565,7 @@ export class SQLPageNotebook {
           {
             SQL: () => `
             SELECT *
-              FROM "admin_demographics_2_01hpkty3hctk826tvx5tasga55_fhir_patient"
+              FROM "demographic_data_fhir_patient"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
         ],
@@ -575,7 +574,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s FHIR Observations', display_name) from screening_2_01hpkty3hctk826tvx5tasga55_fhir where pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s FHIR Observations', display_name) from screening_fhir where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -585,7 +584,7 @@ export class SQLPageNotebook {
           {
             SQL: () => `
             SELECT *
-              FROM "screening_2_01hpkty3hctk826tvx5tasga55_fhir"
+              FROM "screening_fhir"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
         ],
@@ -594,7 +593,7 @@ export class SQLPageNotebook {
       ${text({
         title: {
           SQL: () =>
-            `(select format('%s FHIR Questionnaire', display_name) from screening_2_01hpkty3hctk826tvx5tasga55_fhir_questionnaire where pat_mrn_id = $pat_mrn_id)`,
+            `(select format('%s FHIR Questionnaire', display_name) from screening_fhir_questionnaire where pat_mrn_id = $pat_mrn_id)`,
         },
       })}
       ${table({
@@ -604,7 +603,7 @@ export class SQLPageNotebook {
           {
             SQL: () => `
             SELECT *
-              FROM "screening_2_01hpkty3hctk826tvx5tasga55_fhir_questionnaire"
+              FROM "screening_fhir_questionnaire"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },
         ],
