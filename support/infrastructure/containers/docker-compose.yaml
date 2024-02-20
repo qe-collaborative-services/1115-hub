@@ -21,7 +21,7 @@ services:
       context: .
       dockerfile: Dockerfile.workflow
       args:
-        - REPO_URL=https://github.com/softservesoftware/1115-hub.git
+        - REPO_URL=https://github.com/qe-collaborative-services/1115-hub.git
     volumes:
       - sftp_data:/SFTP
     depends_on:

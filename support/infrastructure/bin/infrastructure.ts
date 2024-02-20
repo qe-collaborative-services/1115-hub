@@ -85,7 +85,7 @@ class ComputeStack extends Stack {
       "export PATH=$PATH:/home/admin/.local/bin",
       "pkgx install git",
       "export PATH=$PATH:/home/admin/.local/bin",
-      "git clone https://github.com/softservesoftware/1115-hub.git",
+      "git clone https://github.com/qe-collaborative-services/1115-hub.git",
       "cd 1115-hub/support/infrastructure/containers",
       "docker compose up --build",
     );
