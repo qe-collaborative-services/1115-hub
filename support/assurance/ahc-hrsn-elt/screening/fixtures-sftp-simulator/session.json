@@ -1,0 +1,35 @@
+{
+  "ingressPaths": {
+    "ingress": {
+      "home": "/SFTP/qe2/ingress"
+    }
+  },
+  "initAt": "2024-02-20T18:26:03.283Z",
+  "sessionID": "1efc5379-d0c8-4823-96f8-ab2161ba1781",
+  "src": [
+    {
+      "fsPath": "/SFTP/qe2/ingress/QE_ADMIN_DATA-2_01HPKTY3HCTK826TVX5TASGA55.csv",
+      "watchPath": {
+        "pathID": "ingress",
+        "rootPath": "/SFTP/qe2/ingress"
+      },
+      "draining": true
+    },
+    {
+      "fsPath": "/SFTP/qe2/ingress/SCREENING-2_01HPKTY3HCTK826TVX5TASGA55.csv",
+      "watchPath": {
+        "pathID": "ingress",
+        "rootPath": "/SFTP/qe2/ingress"
+      },
+      "draining": true
+    },
+    {
+      "fsPath": "/SFTP/qe2/ingress/DEMOGRAPHIC_DATA-2_01HPKTY3HCTK826TVX5TASGA55.csv",
+      "watchPath": {
+        "pathID": "ingress",
+        "rootPath": "/SFTP/qe2/ingress"
+      },
+      "draining": true
+    }
+  ]
+}
