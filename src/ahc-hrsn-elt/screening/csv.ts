@@ -290,6 +290,10 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
       ${sar.onlyAllowValidEncounterClassInAllRows("ENCOUNTER_CLASS_CODE")}
+      ${sar.onlyAllowValidEncounterStatusCodeInAllRows("ENCOUNTER_STATUS_CODE")}
+      ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
+      ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE")}
+      ${sar.onlyAllowValidAnswerCodeForQuestionCodeInAllRows("QUESTION_CODE","ANSWER_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "QUESTION_CODE_SYSTEM_NAME",
         "'LN','LOIN'"
@@ -583,7 +587,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE", "'M', 'F', 'ASKU', 'OTH', 'UNK'")}
       ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION", "'Male', 'Female', 'Asked but Unknown', 'Other', 'Unknown'")}
       ${tr.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
-      ${tr.onlyAllowValidBirthDateInAllRows("PAT_BIRTH_DATE")}
+      ${tr.onlyAllowValidDateTimeInAllRows("PAT_BIRTH_DATE")}
       ${tr.mandatoryValueInAllRows("CITY")}
       ${tr.mandatoryValueInAllRows("STATE")}
       ${tr.onlyAllowedValuesInAllRows("STATE", "'NY', 'New York'")}
@@ -623,6 +627,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
       ${adar.car.onlyAllowValidMedicaidCinFormatInAllRows("MEDICAID_CIN")}
+      ${adar.onlyAllowUniqueMedicaidCinPerMrnInAllRows("MEDICAID_CIN")}
       ${tr.mandatoryValueInAllRows("CONSENT")}
       ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes','No','Y','N','Unknown'")}
 
