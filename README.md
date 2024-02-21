@@ -35,8 +35,8 @@ NYeC's specifications are available in
 [support/docs/specifications/ahc-hrsn-elt/screening](support/docs/specifications/ahc-hrsn-elt/screening):
 
 - `ahc-hrsn-2024-02-21-omnibus-rules.xlsx` contains the "Omnibus Rules" (sample
-  files and rules and remarks in a single Excel Workbook for convenience)
-- `CSV_QA_DQ_Validation_2.2024.docx` is the specification document
+  files, external references, business rules and remarks in a single Excel
+  Workbook for convenience)
 - DEMOGRAPHIC_DATA_2024-02-21.csv is sample data
 - QE_ADMIN_DATA_2024-02-21.csv is sample data
 - SCREENING_2024-02-21.csv is sample data
