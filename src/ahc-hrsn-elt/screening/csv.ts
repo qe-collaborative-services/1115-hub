@@ -399,6 +399,38 @@ export class ScreeningCsvFileIngestSource<
 
       -- try sqltofhir Visual Studio Code extension for writing FHIR resources with SQL.
       -- see https://marketplace.visualstudio.com/items?itemName=arkhn.sqltofhir-vscode
+      CREATE VIEW screening_fhir AS
+        SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
+              'resourceType', 'Observation',
+              'id', tab_screening.ENCOUNTER_ID,
+              'status', 'final',
+              'code', json_object(
+                  'coding', json_array(
+                      json_object(
+                          'system', tab_screening.QUESTION_CODE_SYSTEM_NAME,
+                          'code', tab_screening.QUESTION_CODE,
+                          'display', tab_screening.QUESTION
+                      )
+                  )
+              ),
+              'subject', json_object(
+                  'reference', 'Patient/' || tab_screening.PAT_MRN_ID,
+                  'display',  CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME)
+              ),
+              'effectiveDateTime', tab_screening.RECORDED_TIME,
+              'valueString', tab_screening.MEAS_VALUE,
+              'performer', json_array(
+                  json_object(
+                      'reference', 'Practitioner/' || tab_screening.session_id
+                  )
+              ),
+              'context', json_object(
+                  'reference', 'Encounter/' || tab_screening.ENCOUNTER_ID
+              )
+          ) AS FHIR_Observation
+        FROM ${tableName} as tab_screening LEFT JOIN ${relatedTableNames.adminDemographicsTableName} as tab_demograph
+        ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
+
       CREATE VIEW ${targetSchema}.${aggrScreeningTableName}_fhir AS
         SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'Observation',
