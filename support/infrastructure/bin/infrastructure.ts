@@ -44,16 +44,23 @@ class ComputeStack extends Stack {
       allowAllOutbound: true,
     });
 
+    // Allow SCP/SFTP access on port 2222 from any IP
+    ec2SecurityGroup.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(2222),
+      "Allow SCP/SFTP access on port 2222 from any IP",
+    );
+
     // Allow SSH access from a specific IP range, all for now
     ec2SecurityGroup.addIngressRule(
       ec2.Peer.anyIpv4(),
       ec2.Port.tcp(22),
-      "Allow SSH access from a specific block"
+      "Allow SSH access from a specific block",
     );
     ec2SecurityGroup.addIngressRule(
       ec2.Peer.anyIpv4(),
       ec2.Port.tcp(443),
-      "Allows HTTPS access from Internet"
+      "Allows HTTPS access from Internet",
     );
 
     // IAM Role for the EC2 Instance
@@ -61,6 +68,27 @@ class ComputeStack extends Stack {
       assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
       // Add necessary managed policies or inline policies here
     });
+
+    const userData = ec2.UserData.forLinux();
+    // run commands on the instance for initial setup
+    userData.addCommands(
+      "apt-get update -y",
+      "apt-get install ca-certificates curl",
+      "install -m 0755 -d /etc/apt/keyrings",
+      "curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc",
+      "chmod a+r /etc/apt/keyrings/docker.asc",
+      'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null',
+      "apt-get update",
+      "apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y",
+      "curl -Ssf https://pkgx.sh | sh",
+      "install -m 755 pkgx /usr/local/bin",
+      "export PATH=$PATH:/home/admin/.local/bin",
+      "pkgx install git",
+      "export PATH=$PATH:/home/admin/.local/bin",
+      "git clone https://github.com/qe-collaborative-services/1115-hub.git",
+      "cd 1115-hub/support/infrastructure/containers",
+      "docker compose up --build",
+    );
 
     // EC2 Instance
     this.instance = new ec2.Instance(this, "ElevenFifteenComputeInstance", {
@@ -73,39 +101,15 @@ class ComputeStack extends Stack {
       }),
       securityGroup: ec2SecurityGroup,
       role: role,
+      userData: userData,
       // keyName is a temporary solution for testing
-      keyName: "keys",
+      // keyName: "keys",
       // should use a key pair for production (or not include to block ssh access)
       // keyPair: new ec2.KeyPair(this, "ComputeInstanceKeyPair", {}),
       vpcSubnets: {
         subnetGroupName: "compute-subnet",
       },
     });
-
-    // run commands on the instance for initial setup
-    this.instance.userData.addCommands(
-      "sudo apt-get update -y",
-      "sudo apt-get upgrade -y",
-      "sudo install -m 0755 -d /etc/apt/keyrings",
-      "sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc",
-      "sudo chmod a+r /etc/apt/keyrings/docker.asc",
-      "sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common -y",
-      "curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -",
-      "sudo add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable'",
-      "sudo apt-get update -y",
-      "sudo apt-get install docker-ce docker-ce-cli containerd.io -y",
-      "curl -o ./pkgx --compressed -f --proto '=https' https://pkgx.sh/$(uname)/$(uname -m)",
-      "sudo install -m 755 pkgx /usr/local/bin",
-      "export PATH=$PATH:/home/admin/.local/bin",
-      "pkgx install docker",
-      "pkgx install docker-compose",
-      "pkgx install git",
-      "export PATH=$PATH:/home/admin/.local/bin",
-      "git clone https://github.com/softservesoftware/1115-hub.git",
-      "cd 1115-hub/support/infrastructure/containers",
-      "sudo systemctl start docker",
-      "docker-compose up --build"
-    );
   }
 }
 

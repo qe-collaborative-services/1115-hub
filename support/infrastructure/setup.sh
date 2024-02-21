@@ -1,1 +1,16 @@
-curl -o ./pkgx --compressed -f --proto '=https' https://pkgx.sh/$(uname)/$(uname -m) && sudo install -m 755 pkgx /usr/local/bin && pkgx install deno duckdb sqlite3 && export PATH=$PATH:/home/admin/.local/bin && deno run -A https://raw.githubusercontent.com/qe-collaborative-services/1115-hub/main/support/bin/doctor.ts && deno run -A https://raw.githubusercontent.com/qe-collaborative-services/1115-hub/main/src/ahc-hrsn-elt/screening/orchctl.ts
+apt-get update -y && \
+apt-get install ca-certificates curl && \
+install -m 0755 -d /etc/apt/keyrings && \
+curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc && \
+chmod a+r /etc/apt/keyrings/docker.asc && \
+echo 'deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo '$VERSION_CODENAME') stable' | tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt-get update && \
+apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y && \
+curl -Ssf https://pkgx.sh | sh && \
+install -m 755 pkgx /usr/local/bin && \
+export PATH=$PATH:/home/admin/.local/bin && \
+pkgx install git && \
+export PATH=$PATH:/home/admin/.local/bin && \
+git clone https://github.com/softservesoftware/1115-hub.git && \
+cd 1115-hub/support/infrastructure/containers && \
+docker compose up --build && \

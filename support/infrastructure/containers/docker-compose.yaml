@@ -6,7 +6,7 @@ services:
     volumes:
       - sftp_data:/home
     ports:
-      - "22:22"
+      - "2222:22"
     command: >
       qe1:pass:::ingress/
       qe2:pass:::ingress/
@@ -14,6 +14,7 @@ services:
       qe4:pass:::ingress/
       qe5:pass:::ingress/
       qe6:pass:::ingress/
+      observe:pass:::log/
 
   workflow:
     build:
