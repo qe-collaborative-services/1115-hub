@@ -192,6 +192,7 @@ export interface OrchEngineWorkflowPaths {
     readonly diagsJsonSupplier?: () => string;
     readonly diagsXlsxSupplier?: () => string;
     readonly diagsMdSupplier?: () => string;
+    readonly fhirJsonSupplier?: () => string;
   };
 
   readonly initializePaths?: () => Promise<void>;
@@ -256,6 +257,7 @@ export function orchEngineWorkflowPaths(
     diagsMdSupplier: () => egress.resolvedPath("diagnostics.md"),
     diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
+    fhirJsonSupplier: () => egress.resolvedPath("fhir.json"),
   };
   const inProcess: OrchEngineWorkflowPaths["inProcess"] = {
     ...oeStorablePath(path.join("egress", sessionID, ".workflow")),
@@ -372,7 +374,7 @@ export class OrchEngine {
     );
     const afterInit = Array.from(session.sqlCatalogSqlSuppliers("after-init"));
 
-    const initDDL = govn.SQL`      
+    const initDDL = govn.SQL`
       ${beforeInit.length > 0 ? beforeInit : "-- no before-init SQL found"}
       ${is.adminTables}
       ${is.adminTableIndexes}
@@ -382,9 +384,9 @@ export class OrchEngine {
       -- register the current device and session and use the identifiers for all logging
       ${await session.deviceSqlDML()}
       ${await session.orchSessionSqlDML()}
-      
+
       -- Load Reference data from csvs
-      CREATE TABLE encounter_class_reference AS 
+      CREATE TABLE encounter_class_reference AS
         SELECT * FROM read_csv_auto('${referenceDataHome}/encounter-class-reference.csv',
           delim = ',',
           header = true,
@@ -395,7 +397,7 @@ export class OrchEngine {
             'Definition': 'VARCHAR'
           });
 
-      CREATE TABLE screening_status_code_reference AS 
+      CREATE TABLE screening_status_code_reference AS
         SELECT * FROM read_csv_auto('${referenceDataHome}/screening-status-code-reference.csv',
           delim = ',',
           header = true,
@@ -405,8 +407,8 @@ export class OrchEngine {
             'Display': 'VARCHAR',
             'Definition': 'VARCHAR'
           });
-      
-      CREATE TABLE encounter_status_code_reference AS 
+
+      CREATE TABLE encounter_status_code_reference AS
         SELECT * FROM read_csv_auto('${referenceDataHome}/encounter-status-code-reference.csv',
           delim = ',',
           header = true,
@@ -416,7 +418,7 @@ export class OrchEngine {
             'Definition': 'VARCHAR'
           });
 
-      CREATE TABLE encounter_type_code_reference AS 
+      CREATE TABLE encounter_type_code_reference AS
         SELECT * FROM read_csv_auto('${referenceDataHome}/encounter-type-code-reference.csv',
           delim = ',',
           header = true,
@@ -426,7 +428,7 @@ export class OrchEngine {
             'Display': 'VARCHAR'
           });
 
-      CREATE TABLE business_rules AS 
+      CREATE TABLE business_rules AS
         SELECT * FROM read_csv_auto('${referenceDataHome}/business-rules.csv',
           delim = ',',
           header = true,
@@ -434,7 +436,7 @@ export class OrchEngine {
             'Worksheet': 'VARCHAR',
             'Field': 'VARCHAR',
             'Required': 'VARCHAR',
-            'Permissible Values': 'VARCHAR', 
+            'Permissible Values': 'VARCHAR',
             'Criteria-1': 'VARCHAR',
             'Criteria-2': 'VARCHAR',
             'Criteria-3': 'VARCHAR',
@@ -445,7 +447,7 @@ export class OrchEngine {
             'Remarks': 'VARCHAR'
           });
 
-      CREATE TABLE ahc_cross_walk AS 
+      CREATE TABLE ahc_cross_walk AS
         SELECT * FROM read_csv_auto('${referenceDataHome}/ahc-cross-walk.csv',
           delim = ',',
           header = true,
@@ -667,7 +669,7 @@ export class OrchEngine {
           -- diagnostics-md-ignore-start "SQLPage and execution diagnostics SQL DML"
           -- emit all the SQLPage content
           ${sqlPageCells};
-          
+
           -- emit all the execution diagnostics
           ${this.duckdb.diagnostics};
           -- diagnostics-md-ignore-finish "SQLPage and execution diagnostics SQL DML"
@@ -689,7 +691,7 @@ export class OrchEngine {
           CREATE TABLE ${rdbSchemaName}.ahc_cross_walk AS SELECT * FROM ahc_cross_walk;
 
           DETACH DATABASE ${rdbSchemaName};
-          
+
           ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
           .SQL(this.govn.emitCtx),
         isc.current.nbCellID,
@@ -755,6 +757,19 @@ export class OrchEngine {
       );
     }
 
+    if (egress.fhirJsonSupplier) {
+      const fhirJson = egress.fhirJsonSupplier();
+      await this.duckdb.execute(
+        this.govn.SQL`
+          COPY (
+              SELECT json_group_array(FHIR_Observation) as FHIR FROM screening_fhir
+          ) TO '${fhirJson}'
+        `.SQL(
+          this.govn.emitCtx,
+        ),
+      );
+    }
+
     const markdown = this.duckdb.diagnosticsMarkdown();
     if (egress.diagsMdSupplier) {
       const diagsMd = egress.diagsMdSupplier();
@@ -777,8 +792,8 @@ export class OrchEngine {
       const { sessionID } = this.args.session;
       const resourceDb = egress.resourceDbSupplier();
       await dax.$`sqlite3 ${resourceDb}`.stdinText(
-        `UPDATE ${sessTbl.tableName} SET 
-            ${c.orch_finished_at} = CURRENT_TIMESTAMP, 
+        `UPDATE ${sessTbl.tableName} SET
+            ${c.orch_finished_at} = CURRENT_TIMESTAMP,
             ${c.args_json} = ${
           steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
         },
