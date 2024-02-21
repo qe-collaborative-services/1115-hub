@@ -101,12 +101,11 @@ export class ScreeningAssuranceRules<
     }`;
   }
 
-  onlyAllowValidEncounterClassInAllRows(
+  onlyAllowValidEncounterClassSystemInAllRows(
     columnName: ColumnName,
   ) {
     const cteName = "valid_encounter_class_in_all_rows";
     const encounterClassReferenceTable = "encounter_class_reference";
-
     // Construct the SQL query using tagged template literals
     return this.govn.SQL`
       WITH ${cteName} AS (
@@ -115,19 +114,79 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterClassReferenceTable} ecr
-            ON sr.ENCOUNTER_CLASS_CODE = ecr.Code
+            ON sr.${columnName} = ecr.System
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.System IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ENCOUNTER CLASS CODE SYSTEM`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ENCOUNTER CLASS CODE SYSTEM "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ENCOUNTER CLASS CODE SYSTEM with encounter class reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidEncounterClassDiscriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_encounter_class_in_all_rows";
+    const encounterClassReferenceTable = "encounter_class_reference";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${encounterClassReferenceTable} ecr
+            ON sr.${columnName} = ecr.Display
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.Display IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ENCOUNTER CLASS CODE DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ENCOUNTER CLASS CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ENCOUNTER CLASS CODE DESCRIPTION with encounter class reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidEncounterClassCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_encounter_class_in_all_rows";
+    const encounterClassReferenceTable = "encounter_class_reference";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${encounterClassReferenceTable} ecr
+            ON sr.${columnName} = ecr.Code
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
       ${
       this.insertRowValueIssueCtePartial(
         cteName,
-        "Invalid Encounter Class",
+        `Invalid ENCOUNTER CLASS CODE`,
         "issue_row",
         "issue_column",
         "invalid_value",
-        `'Invalid Encounter Class "' || invalid_value || '" found in ' || issue_column`,
-        `'Validate Encounter Class Code with encounter class reference data'`,
+        `'Invalid ENCOUNTER CLASS CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ENCOUNTER CLASS CODE with encounter class reference data'`,
       )
     }`;
   }
@@ -174,7 +233,6 @@ export class ScreeningAssuranceRules<
   ) {
     const cteName = "valid_encounter_status_code_in_all_rows";
     const encounterStatusCodeReferenceTable = "encounter_status_code_reference";
-
     // Construct the SQL query using tagged template literals
     return this.govn.SQL`
       WITH ${cteName} AS (
@@ -183,19 +241,49 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterStatusCodeReferenceTable} ecr
-            ON sr.ENCOUNTER_STATUS_CODE = ecr.Code
+            ON sr.${columnName} = ecr.Code
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
       ${
       this.insertRowValueIssueCtePartial(
         cteName,
-        "Invalid Encounter Status Code",
+        `Invalid ENCOUNTER STATUS CODE`,
         "issue_row",
         "issue_column",
         "invalid_value",
-        `'Invalid Encounter Status Code "' || invalid_value || '" found in ' || issue_column`,
-        `'Validate Encounter Status Code with encounter status code reference data'`,
+        `'Invalid ENCOUNTER STATUS CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ENCOUNTER STATUS CODE with encounter status reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidEncounterStatusCodeDescriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_encounter_status_code_in_all_rows";
+    const encounterStatusCodeReferenceTable = "encounter_status_code_reference";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${encounterStatusCodeReferenceTable} ecr
+            ON sr.${columnName} = ecr.Display
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.Display IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ENCOUNTER STATUS CODE DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ENCOUNTER STATUS CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ENCOUNTER STATUS CODE DESCRIPTION with encounter status reference data'`,
       )
     }`;
   }
@@ -214,19 +302,50 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
-            ON sr.ENCOUNTER_TYPE_CODE = ecr.Code
+            ON sr.${columnName} = ecr.Code
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
       ${
       this.insertRowValueIssueCtePartial(
         cteName,
-        "Invalid Encounter Type Code",
+        `Invalid ENCOUNTER TYPE CODE`,
         "issue_row",
         "issue_column",
         "invalid_value",
-        `'Invalid Encounter Type Code "' || invalid_value || '" found in ' || issue_column`,
-        `'Validate Encounter Type Code with encounter type code reference data'`,
+        `'Invalid ENCOUNTER TYPE CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ENCOUNTER TYPE CODE with encounter type reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidEncounterTypeDescriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_encounter_type_code_in_all_rows";
+    const encounterTypeCodeReferenceTable = "encounter_type_code_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
+            ON sr.${columnName} = ecr.Display
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.Display IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ENCOUNTER TYPE CODE DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ENCOUNTER TYPE CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ENCOUNTER TYPE CODE DESCRIPTION with encounter type reference data'`,
       )
     }`;
   }
@@ -245,21 +364,80 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${screeningStatusCodeReferenceTable} ecr
-            ON sr.SCREENING_STATUS_CODE = ecr.Code
+            ON sr.${columnName} = ecr.Code
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
       ${
       this.insertRowValueIssueCtePartial(
         cteName,
-        "Invalid Screening Status Code",
+        `Invalid SCREENING STATUS CODE`,
         "issue_row",
         "issue_column",
         "invalid_value",
-        `'Invalid Screening Status Code "' || invalid_value || '" found in ' || issue_column`,
-        `'Validate Screening Status Code with screening status code reference data'`,
+        `'Invalid SCREENING STATUS CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate SCREENING STATUS CODE with screening status code reference data'`,
       )
     }`;
+  }
+
+  onlyAllowValidScreeningStatusDescriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_screening_status_code_in_all_rows";
+    const screeningStatusCodeReferenceTable = "screening_status_code_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${screeningStatusCodeReferenceTable} ecr
+            ON sr.${columnName} = ecr.Display
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.Display IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid SCREENING STATUS CODE`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid SCREENING STATUS CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate SCREENING STATUS CODE with screening status code reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidRecordedTimeInAllRows(
+    columnName: ColumnName,
+  ) {
+    // SELECT strptime('2023027  4:08:01 PM', '%Y%m%d %-I:%-M:%S %p')
+    // Construct the SQL query using tagged template literals
+    const cteName = "valid_date_time_in_all_rows";
+
+    // deno-fmt-ignore
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 "${columnName}" AS invalid_value,
+                 src_file_row_number AS issue_row
+            FROM "${this.tableName}"
+           WHERE "${columnName}" IS NOT NULL
+             AND strptime("${columnName}", '%Y%m%d %-I:%-M:%S %p') IS NULL
+      )
+      ${this.insertRowValueIssueCtePartial(
+        cteName,
+        "Invalid Date",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid timestamp "' || invalid_value || '" found in ' || issue_column`,
+        `'Please be sure to provide both a valid date and time.'`,
+      )}`;
   }
 }
 

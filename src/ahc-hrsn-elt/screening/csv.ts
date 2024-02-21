@@ -284,28 +284,58 @@ export class ScreeningCsvFileIngestSource<
 
 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
+      ${tr.uniqueValueInAllRows("PAT_MRN_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
+      ${tr.uniqueValueInAllRows("FACILITY_ID")}
+      ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE")}
+      ${sar.onlyAllowValidEncounterClassCodeInAllRows("ENCOUNTER_CLASS_CODE")}
+      ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
+      ${sar.onlyAllowValidEncounterClassSystemInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
+      ${sar.onlyAllowValidEncounterClassDiscriptionInAllRows("ENCOUNTER_CLASS_CODE_DESCRIPTION")}
+      ${tr.mandatoryValueInAllRows("ENCOUNTER_STATUS_CODE")}
+      ${sar.onlyAllowValidEncounterStatusCodeInAllRows("ENCOUNTER_STATUS_CODE")}
+      ${sar.onlyAllowValidEncounterStatusCodeDescriptionInAllRows("ENCOUNTER_STATUS_CODE_DESCRIPTION")}
+      ${tr.mandatoryValueInAllRows("ENCOUNTER_STATUS_CODE_SYSTEM")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "ENCOUNTER_STATUS_CODE_SYSTEM",
+        "'https://fhir-ru.github.io/valueset-encounter-status.html'"
+      )}
+      ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "ENCOUNTER_TYPE_CODE_SYSTEM_NAME",
+        "'SNOMED-CT', 'SNOMED', 'CPT'"
+      )}
+      ${sar.onlyAllowValidEncounterTypeDescriptionInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION")}
+      ${tr.mandatoryValueInAllRows("SCREENING_STATUS_CODE")}
+      ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE")}
+      ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE_DESCRIPTION")}
+      ${tr.mandatoryValueInAllRows("SCREENING_STATUS_CODE_SYSTEM")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "SCREENING_STATUS_CODE_SYSTEM",
+        "'http://hl7.org/fhir/observation-status'"
+      )}
+      ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
+      ${sar.onlyAllowValidAnswerCodeForQuestionCodeInAllRows("QUESTION_CODE","ANSWER_CODE")}
       ${tr.mandatoryValueInAllRows("SCREENING_CODE_SYSTEM_NAME")}
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_CODE_SYSTEM_NAME",
         "'LN', 'LOINC'"
       )}
       ${tr.mandatoryValueInAllRows("SCREENING_CODE")}
+      ${tr.mandatoryValueInAllRows("RECORDED_TIME")}
+      ${sar.onlyAllowValidRecordedTimeInAllRows("RECORDED_TIME")}
+
+
+
+      -- -----
+      -- TODO: Validate with crosswalk
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_CODE",
         "'96777-8', '97023-6'"
       )}
-      ${tr.mandatoryValueInAllRows("RECORDED_TIME")}
-      ${tr.onlyAllowValidDateTimeInAllRows("RECORDED_TIME")}
       ${tr.mandatoryValueInAllRows("QUESTION")}
       ${tr.mandatoryValueInAllRows("MEAS_VALUE")}
-      ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
-      ${sar.onlyAllowValidEncounterClassInAllRows("ENCOUNTER_CLASS_CODE")}
-      ${sar.onlyAllowValidEncounterStatusCodeInAllRows("ENCOUNTER_STATUS_CODE")}
-      ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
-      ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE")}
-      ${sar.onlyAllowValidAnswerCodeForQuestionCodeInAllRows("QUESTION_CODE","ANSWER_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "QUESTION_CODE_SYSTEM_NAME",
         "'LN','LOIN'"
