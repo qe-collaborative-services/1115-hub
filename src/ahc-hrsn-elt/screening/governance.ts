@@ -46,6 +46,28 @@ export class CommonAssuranceRules<
  * Represents assurance rules specific to screening data, extending from DuckDbOrchTableAssuranceRules.
  * Provides methods for enforcing screening-specific business logic.
  */
+
+export class AhcCrossWalkAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
 export class ScreeningAssuranceRules<
   TableName extends string,
   ColumnName extends string,
@@ -427,7 +449,7 @@ export class ScreeningAssuranceRules<
                  src_file_row_number AS issue_row
             FROM "${this.tableName}"
            WHERE "${columnName}" IS NOT NULL
-             AND strptime("${columnName}", '%Y%m%d %-I:%-M:%S %p') IS NULL
+             AND strptime("${columnName}", '%Y%d%m %-I:%-M:%S %p') IS NULL
       )
       ${this.insertRowValueIssueCtePartial(
         cteName,
