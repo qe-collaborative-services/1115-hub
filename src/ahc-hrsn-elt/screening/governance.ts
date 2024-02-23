@@ -46,6 +46,50 @@ export class CommonAssuranceRules<
  * Represents assurance rules specific to screening data, extending from DuckDbOrchTableAssuranceRules.
  * Provides methods for enforcing screening-specific business logic.
  */
+
+export class AhcCrossWalkAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class EncounterClassReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
 export class ScreeningAssuranceRules<
   TableName extends string,
   ColumnName extends string,
@@ -414,20 +458,29 @@ export class ScreeningAssuranceRules<
 
   onlyAllowValidRecordedTimeInAllRows(
     columnName: ColumnName,
+    minYear = 2023,
   ) {
-    // SELECT strptime('2023027  4:08:01 PM', '%Y%m%d %-I:%-M:%S %p')
     // Construct the SQL query using tagged template literals
     const cteName = "valid_date_time_in_all_rows";
 
     // deno-fmt-ignore
     return this.govn.SQL`
       WITH ${cteName} AS (
-          SELECT '${columnName}' AS issue_column,
-                 "${columnName}" AS invalid_value,
-                 src_file_row_number AS issue_row
-            FROM "${this.tableName}"
-           WHERE "${columnName}" IS NOT NULL
-             AND strptime("${columnName}", '%Y%m%d %-I:%-M:%S %p') IS NULL
+            SELECT  '${columnName}' AS issue_column,
+                    "${columnName}" AS invalid_value,
+                    src_file_row_number AS issue_row
+              FROM "${this.tableName}"
+              WHERE "${columnName}" IS NOT NULL
+              AND NOT (LENGTH("${columnName}") = 17
+                    AND SUBSTR("${columnName}", 9, 1) = ' '
+                    AND SUBSTR("${columnName}", 12, 1) = ':'
+                    AND LENGTH(SUBSTRING("${columnName}", 13, 2)) = 2
+                    AND SUBSTRING("${columnName}", 15, 1) = ':'
+                    AND LENGTH(SUBSTRING("${columnName}", 16, 2)) = 2
+                    )
+              OR TRY_CAST(SUBSTR("${columnName}", 1, 4) || '-' || SUBSTR("${columnName}", 5, 2) || '-' || SUBSTR("${columnName}", 7, 2) AS DATE) IS NULL
+              OR TRY_CAST(SUBSTRING("${columnName}", 10, 8) AS TIME) IS NULL
+              OR SUBSTR("${columnName}", 1, 4) < ${minYear}
       )
       ${this.insertRowValueIssueCtePartial(
         cteName,
@@ -436,7 +489,7 @@ export class ScreeningAssuranceRules<
         "issue_column",
         "invalid_value",
         `'Invalid timestamp "' || invalid_value || '" found in ' || issue_column`,
-        `'Please be sure to provide both a valid date and time.'`,
+        `'Please be sure to provide both a valid date and time (Format: YYYYMMDD HH:MM:SS).'`,
       )}`;
   }
 }
