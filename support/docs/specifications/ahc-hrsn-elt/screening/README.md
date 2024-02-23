@@ -1,11 +1,11 @@
 # NYeC Specifications
 
-- [ahc-hrsn-2024-02-21-omnibus-rules.xlsx](ahc-hrsn-2024-02-21-omnibus-rules.xlsx)
+- [ahc-hrsn-2024-02-22-omnibus-rules.xlsx](ahc-hrsn-2024-02-22-omnibus-rules.xlsx)
   contains the "Omnibus Rules" (sample files, external references, business
   rules and remarks in a single Excel Workbook for convenience)
-- [DEMOGRAPHIC_DATA_2024-02-21.csv](DEMOGRAPHIC_DATA_2024-02-21.csv) sample data
-- [QE_ADMIN_DATA_2024-02-21.csv](QE_ADMIN_DATA_2024-02-21.csv) sample data
-- [SCREENING_2024-02-21.csv](SCREENING_2024-02-21.csv) sample data
+- [DEMOGRAPHIC_DATA_2024-02-22.csv](DEMOGRAPHIC_DATA_2024-02-22.csv) sample data
+- [QE_ADMIN_DATA_2024-02-22.csv](QE_ADMIN_DATA_2024-02-22.csv) sample data
+- [SCREENING_2024-02-22.csv](SCREENING_2024-02-22.csv) sample data
 
 ## File naming conventions
 
