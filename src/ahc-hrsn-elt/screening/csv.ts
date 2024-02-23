@@ -30,7 +30,7 @@ const screeningCsvColumnNames = [
   "ENCOUNTER_STATUS_CODE_SYSTEM",
   "ENCOUNTER_STATUS_CODE",
   "ENCOUNTER_STATUS_CODE_DESCRIPTION",
-  "ENCOUNTER_TYPE_CODE_SYSTEM_NAME",
+  "ENCOUNTER_TYPE_CODE_SYSTEM",
   "ENCOUNTER_TYPE_CODE",
   "ENCOUNTER_TYPE_CODE_DESCRIPTION",
   "SCREENING_CODE_DESCRIPTION",
@@ -40,8 +40,8 @@ const screeningCsvColumnNames = [
   "SCREENING_STATUS_CODE",
   "SCREENING_STATUS_CODE_SYSTEM",
   "RECORDED_TIME",
-  "QUESTION",
-  "MEAS_VALUE",
+  "QUESTION_CODE_DESCRIPTION",
+  "ANSWER_CODE_DESCRIPTION",
   "UCUM_UNITS",
   "QUESTION_CODE",
   "QUESTION_CODE_SYSTEM_NAME",
@@ -75,7 +75,7 @@ const adminDemographicCsvColumnNames = [
   "ZIP",
   "GENDER_IDENTITY_CODE_SYSTEM_NAME",
   "GENDER_IDENTITY_CODE",
-  "GENDER_IDENTITY_DESCRIPTION",
+  "GENDER_IDENTITY_CODE_DESCRIPTION",
   "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME",
   "SEXUAL_ORIENTATION_CODE",
   "SEXUAL_ORIENTATION_DESCRIPTION",
@@ -302,7 +302,7 @@ export class ScreeningCsvFileIngestSource<
       )}
       ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
-        "ENCOUNTER_TYPE_CODE_SYSTEM_NAME",
+        "ENCOUNTER_TYPE_CODE_SYSTEM",
         "'SNOMED-CT', 'SNOMED', 'CPT'"
       )}
       ${sar.onlyAllowValidEncounterTypeDescriptionInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION")}
@@ -314,6 +314,7 @@ export class ScreeningCsvFileIngestSource<
         "SCREENING_STATUS_CODE_SYSTEM",
         "'http://hl7.org/fhir/observation-status'"
       )}
+      ${tr.mandatoryValueInAllRows("QUESTION_CODE_DESCRIPTION")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
       ${sar.onlyAllowValidAnswerCodeForQuestionCodeInAllRows("QUESTION_CODE","ANSWER_CODE")}
       ${tr.mandatoryValueInAllRows("SCREENING_CODE_SYSTEM_NAME")}
@@ -333,8 +334,7 @@ export class ScreeningCsvFileIngestSource<
         "SCREENING_CODE",
         "'96777-8', '97023-6'"
       )}
-      ${tr.mandatoryValueInAllRows("QUESTION")}
-      ${tr.mandatoryValueInAllRows("MEAS_VALUE")}
+      ${tr.mandatoryValueInAllRows("ANSWER_CODE_DESCRIPTION")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
       ${tr.onlyAllowedValuesInAllRows(
         "QUESTION_CODE_SYSTEM_NAME",
@@ -409,7 +409,7 @@ export class ScreeningCsvFileIngestSource<
                       json_object(
                           'system', tab_screening.QUESTION_CODE_SYSTEM_NAME,
                           'code', tab_screening.QUESTION_CODE,
-                          'display', tab_screening.QUESTION
+                          'display', tab_screening.QUESTION_CODE_DESCRIPTION
                       )
                   )
               ),
@@ -418,7 +418,7 @@ export class ScreeningCsvFileIngestSource<
                   'display',  CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME)
               ),
               'effectiveDateTime', tab_screening.RECORDED_TIME,
-              'valueString', tab_screening.MEAS_VALUE,
+              'valueString', tab_screening.ANSWER_CODE_DESCRIPTION,
               'performer', json_array(
                   json_object(
                       'reference', 'Practitioner/' || tab_screening.session_id
@@ -441,7 +441,7 @@ export class ScreeningCsvFileIngestSource<
                       json_object(
                           'system', tab_screening.QUESTION_CODE_SYSTEM_NAME,
                           'code', tab_screening.QUESTION_CODE,
-                          'display', tab_screening.QUESTION
+                          'display', tab_screening.QUESTION_CODE_DESCRIPTION
                       )
                   )
               ),
@@ -450,7 +450,7 @@ export class ScreeningCsvFileIngestSource<
                   'display',  CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME)
               ),
               'effectiveDateTime', tab_screening.RECORDED_TIME,
-              'valueString', tab_screening.MEAS_VALUE,
+              'valueString', tab_screening.ANSWER_CODE_DESCRIPTION,
               'performer', json_array(
                   json_object(
                       'reference', 'Practitioner/' || tab_screening.session_id
@@ -490,13 +490,13 @@ export class ScreeningCsvFileIngestSource<
               'item', json_array(
                   json_object(
                       'linkId', tab_screening.QUESTION_CODE,
-                      'text', tab_screening.QUESTION,
+                      'text', tab_screening.QUESTION_CODE_DESCRIPTION,
                       'answer',  json_array(
                         json_object(
                             'valueCoding', json_object(
                               'system', 'http://loinc.org',
                               'code', tab_screening.ANSWER_CODE,
-                              'display', tab_screening.MEAS_VALUE
+                              'display', tab_screening.ANSWER_CODE_DESCRIPTION
                             )
                         )
                       )
@@ -759,7 +759,7 @@ export class AdminDemographicCsvFileIngestSource<
               'active', true,
               'name', CONCAT(FIRST_NAME,' ', LAST_NAME),
               'telecom', '',
-              'gender', GENDER_IDENTITY_DESCRIPTION,
+              'gender', GENDER_IDENTITY_CODE_DESCRIPTION,
               'birthDate', PAT_BIRTH_DATE,
               'address', json_array(
                   json_object(

@@ -545,7 +545,7 @@ export class SQLPageNotebook {
         rows: [
           {
             SQL: () => `
-            SELECT question, meas_value
+            SELECT QUESTION_CODE_DESCRIPTION, ANSWER_CODE_DESCRIPTION
               FROM "screening"
              WHERE pat_mrn_id = $pat_mrn_id`,
           },

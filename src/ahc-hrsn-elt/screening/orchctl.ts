@@ -23,6 +23,7 @@ async function ingressWorkflow(
     initAt: new Date(),
     sessionID,
     src,
+    version: mod.ORCHESTRATE_VERSION,
   };
 
   const workflowPaths = mod.orchEngineWorkflowPaths(
@@ -38,7 +39,7 @@ async function ingressWorkflow(
   );
 
   const args: mod.OrchEngineArgs = {
-    session: new o.OrchSession(sessionID, govn),
+    session: new o.OrchSession(sessionID, govn, mod.ORCHESTRATE_VERSION),
     workflowPaths,
     walkRootPaths: [ip.ingress.home],
     referenceDataHome,
