@@ -41,6 +41,10 @@ export type PotentialIngestSource =
   | ScreeningCsvFileIngestSource<string, o.State>
   | AdminDemographicCsvFileIngestSource<string, o.State>
   | ref.AhcCrossWalkCsvFileIngestSource<"ahc_cross_walk", o.State>
+  | ref.EncounterClassReferenceCsvFileIngestSource<
+    "encounter_class_reference",
+    o.State
+  >
   | QeAdminDataCsvFileIngestSource<string, o.State>
   | o.ErrorIngestSource<
     ddbo.DuckDbOrchGovernance,
@@ -389,16 +393,6 @@ export class OrchEngine {
       ${await session.orchSessionSqlDML()}
 
       -- Load Reference data from csvs
-      CREATE TABLE encounter_class_reference AS
-        SELECT * FROM read_csv_auto('${referenceDataHome}/encounter-class-reference.csv',
-          delim = ',',
-          header = true,
-          columns = {
-            'Code': 'VARCHAR',
-            'System': 'VARCHAR',
-            'Display': 'VARCHAR',
-            'Definition': 'VARCHAR'
-          });
 
       CREATE TABLE screening_status_code_reference AS
         SELECT * FROM read_csv_auto('${referenceDataHome}/screening-status-code-reference.csv',
@@ -506,6 +500,12 @@ export class OrchEngine {
     );
     this.potentialSources.push(
       new ref.AhcCrossWalkCsvFileIngestSource(referenceDataHome, govn),
+    );
+    this.potentialSources.push(
+      new ref.EncounterClassReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
     );
     this.ingestables = [];
     for (const ps of this.potentialSources) {
@@ -676,12 +676,10 @@ export class OrchEngine {
           ${exportsSQL};
 
           -- export reference tables from DuckDb into the attached database (nature-dependent)
-          CREATE TABLE ${rdbSchemaName}.encounter_class_reference AS SELECT * FROM encounter_class_reference;
           CREATE TABLE ${rdbSchemaName}.screening_status_code_reference AS SELECT * FROM screening_status_code_reference;
           CREATE TABLE ${rdbSchemaName}.encounter_status_code_reference AS SELECT * FROM encounter_status_code_reference;
           CREATE TABLE ${rdbSchemaName}.encounter_type_code_reference AS SELECT * FROM encounter_type_code_reference;
           CREATE TABLE ${rdbSchemaName}.business_rules AS SELECT * FROM business_rules;
-          CREATE TABLE ${rdbSchemaName}.ahc_cross_walk AS SELECT * FROM ahc_cross_walk;
 
           DETACH DATABASE ${rdbSchemaName};
 

@@ -1,0 +1,6 @@
+SEXUAL_ORIENTATION_CODE,SEXUAL_ORIENTATION_CODE_DESCRIPTION,SEXUAL_ORIENTATION_CODE_SYSTEM_NAME
+42035005,Bisexual,http://snomed.info/sct
+20430005,Heterosexual,http://snomed.info/sct
+38628009,Homosexual,http://snomed.info/sct
+OTH,Other,http://snomed.info/sct
+UNK,Unknown,http://snomed.info/sct

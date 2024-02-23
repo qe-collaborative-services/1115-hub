@@ -1,0 +1,9 @@
+GENDER_IDENTITY_CODE,GENDER_IDENTITY_CODE_DESCRIPTION,GENDER_IDENTITY_CODE_SYSTEM_NAME
+407377005,"Female-to-Male (FTM), Transgender Male, Trans Man",http://snomed.info/sct
+446141000124107,Female,http://snomed.info/sct
+446151000124109,Male,http://snomed.info/sct
+446131000124102,Genderqueer,http://snomed.info/sct
+407376001,"Male-to-Female (MTF), Transgender Female, Trans Woman",http://snomed.info/sct
+ASKU,Asked but unknown,http://snomed.info/sct
+OTH,Other,http://snomed.info/sct
+UNK,Unknown,http://snomed.info/sct
