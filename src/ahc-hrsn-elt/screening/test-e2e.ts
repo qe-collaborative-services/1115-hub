@@ -121,7 +121,7 @@ const govn = new ddbo.DuckDbOrchGovernance(
 );
 const sessionID = await govn.emitCtx.newUUID(true);
 const args: mod.OrchEngineArgs = {
-  session: new o.OrchSession(sessionID, govn),
+  session: new o.OrchSession(sessionID, govn, mod.ORCHESTRATE_VERSION),
   workflowPaths: e2eTestPaths,
   walkRootPaths: [e2eIngressPaths.ingress.home],
   referenceDataHome: path.join(Deno.cwd(), "src/ahc-hrsn-elt/reference-data"),

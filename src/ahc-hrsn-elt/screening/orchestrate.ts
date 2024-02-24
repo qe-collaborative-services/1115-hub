@@ -31,6 +31,8 @@ import {
 } from "./excel.ts";
 import { QeAdminDataCsvFileIngestSource } from "./csv.ts";
 
+export const ORCHESTRATE_VERSION = "0.5.0";
+
 export type PotentialIngestSource =
   | ScreeningExcelSheetIngestSource<string, o.State>
   | AdminDemographicExcelSheetIngestSource<string, o.State>
