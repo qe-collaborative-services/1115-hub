@@ -70,8 +70,8 @@ class ComputeStack extends Stack {
 
     // create random string, forces the instance to run the commands on every deployment
     // less than ideal but works for now (until proper containerized deployment is implemented)
-    // avoids the need of separate stacks and cdk destroy/ deploy on instance
-    const randomString = Math.random().toString(36).substring(24);
+    // avoids the need of separate stacks and cdk destroy/ deploy on instance changes
+    const randomString = Math.floor(Date.now() / 1000);
 
     userData.addCommands(
       `echo deployment: ${randomString} > /etc/deployment.txt`,
