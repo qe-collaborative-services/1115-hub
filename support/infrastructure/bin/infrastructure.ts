@@ -1,15 +1,11 @@
 #!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
-import { Duration, Stack, StackProps } from "aws-cdk-lib";
+import { Stack, StackProps } from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import * as rds from "aws-cdk-lib/aws-rds";
 import { Construct } from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
-import * as transfer from "aws-cdk-lib/aws-transfer";
 
 interface ComputeStackProps extends StackProps {
-  // vpc: ec2.IVpc;
-  // database: rds.ServerlessCluster;
 }
 
 class ComputeStack extends Stack {
@@ -71,7 +67,14 @@ class ComputeStack extends Stack {
 
     const userData = ec2.UserData.forLinux();
     // run commands on the instance for initial setup
+
+    // create random string, forces the instance to run the commands on every deployment
+    // less than ideal but works for now (until proper containerized deployment is implemented)
+    // avoids the need of separate stacks and cdk destroy/ deploy on instance
+    const randomString = Math.random().toString(36).substring(24);
+
     userData.addCommands(
+      `echo deployment: ${randomString} > /etc/deployment.txt`,
       "apt-get update -y",
       "apt-get install ca-certificates curl",
       "install -m 0755 -d /etc/apt/keyrings",
@@ -110,9 +113,28 @@ class ComputeStack extends Stack {
         subnetGroupName: "compute-subnet",
       },
     });
+
+    // Allocate an Elastic IP
+    const eip = new ec2.CfnEIP(this, "EIP");
+
+    // create export for the EIP
+    new cdk.CfnOutput(this, "instanceIP", {
+      value: eip.ref,
+      description: "The Elastic IP for the compute instance",
+    });
+
+    // Associate the Elastic IP with the EC2 Instance
+    new ec2.CfnEIPAssociation(this, "EIPAssociation", {
+      eip: eip.ref, // Reference to the EIP resource
+      instanceId: this.instance.instanceId,
+    });
   }
 }
 
 const app = new cdk.App();
-const compute = new ComputeStack(app, "ElevenFifteenInfrastructure", {});
+const compute = new ComputeStack(
+  app,
+  `${process.env.STAGE}ElevenFifteenInfrastructure`,
+  {},
+);
 app.synth();
