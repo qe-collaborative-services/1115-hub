@@ -134,7 +134,7 @@ class ComputeStack extends Stack {
 const app = new cdk.App();
 const compute = new ComputeStack(
   app,
-  `${process.env.STAGE}ElevenFifteenInfrastructure`,
+  `${process.env.ENV}ElevenFifteenInfrastructure`,
   {},
 );
 app.synth();
