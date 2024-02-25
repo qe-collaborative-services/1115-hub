@@ -1,0 +1,81 @@
+name: 1115 CI Pipeline
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["main"]
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+jobs:
+  DocumentationDeployment:
+    needs: InfrastructureDeployment
+    environment:
+      # i think we should adjust the environment name to match the branch name
+      name: "github-pages"
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire docs directory
+          path: "./support/docs"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+  InfrastructureDeployment:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: install/configure cdk
+        run: |
+          npm install -g aws-cdk 
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID  --profile default
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile default
+          aws configure set default.region us-east-1 --profile default
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ENV: ${{ github.ref_name }}
+
+      - name: check changes to infrastructure
+        run: |
+          cd support/infrastructure
+          npm install
+          cdk diff
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+          ENV: ${{ github.ref_name }}
+
+      - name: deploy backend
+        run: |
+          cd support/infrastructure
+          npm install
+          cdk deploy --all --outputs-file output.json --require-approval never
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+          ENV: ${{ github.ref_name }}
+
+      - name: Upload cdk output artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: cdk-output-artifact
+          path: ./output.json
+          retention-days: 14
