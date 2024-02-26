@@ -1,78 +1,81 @@
-Worksheet,Field,Required,Permissible Values,Criteria-1,Criteria-2,Criteria-3,Criteria-4,Criteria-5,Criteria-6,Criteria-7,Remarks
-Screening,PAT_MRN_ID,Yes,Has a unique value per patient per facility. ,,,,,,,,
-Screening,FACILITY_ID,Yes,Has a unique value per facility.,,,,,,,,
-Screening,ENCOUNTER_ID,No,Is unique per encounter for each MRN_ID.,,,,,,,,
-Screening,ENCOUNTER_CLASS_CODE_SYSTEM,Yes,https://fhir-ru.github.io/v3/ActEncounterCode/vs.html,,,,,,,,
-Screening,ENCOUNTER_CLASS_CODE,Yes,https://fhir-ru.github.io/v3/ActEncounterCode/vs.html,,,,,,,,
-Screening,ENCOUNTER_CLASS_CODE_DESCRIPTION,No,https://fhir-ru.github.io/v3/ActEncounterCode/vs.html,,,,,,,,
-Screening,ENCOUNTER_STATUS_CODE_SYSTEM,Yes,https://fhir-ru.github.io/valueset-encounter-status.html ,,,,,,,,
-Screening,ENCOUNTER_STATUS_CODE,Yes,https://fhir-ru.github.io/valueset-encounter-status.html ,,,,,,,,
-Screening,ENCOUNTER_STATUS_CODE_DESCRIPTION,No,https://fhir-ru.github.io/valueset-encounter-status.html ,,,,,,,,
-Screening,ENCOUNTER_TYPE_CODE_SYSTEM,No,"SNOMED-CT or SNOMED, CPT",,,,,,,,
-Screening,ENCOUNTER_TYPE_CODE,No,https://build.fhir.org/ig/HL7/US-Core/ValueSet-us-core-encounter-type.html ,,,,,,,,
-Screening,ENCOUNTER_TYPE_CODE_DESCRIPTION,No,https://build.fhir.org/ig/HL7/US-Core/ValueSet-us-core-encounter-type.html ,,,,,,,,
-Screening,SCREENING_STATUS_CODE,Yes,http://hl7.org/fhir/observation-status,,,,,,,,
-Screening,SCREENING_STATUS_CODE_DESCRIPTION,No,http://hl7.org/fhir/observation-status,,,,,,,,
-Screening,SCREENING_STATUS_CODE_SYSTEM,Yes,http://hl7.org/fhir/observation-status,,,,,,,,
-Screening,SCREENING_CODE DESCRIPTION,Yes,Accountable health communities (AHC) health-related social needs screening (HRSN) tool (96777-8) or Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions,,,,,,,,
-Screening,SCREENING_CODE_SYSTEM_NAME,Yes,LN or LOINC,,,,,,,,
-Screening,SCREENING_CODE,Yes,96777-8 or 97023-6,,,,,,,,
-Screening,RECORDED_TIME,Yes,Date Time,Format: YYYYMMDD HH:MM:SS,YYYY is not before 2023.,,,,,,
-Screening,QUESTION,Yes,See CrossWalk,,,,,,,,
-Screening,ANSWER_VALUE,Yes,See CrossWalk,,,,,,,,
-Screening,UCUM_UNITS,No,See CrossWalk,,,,,,,,
-Screening,QUESTION_CODE,Yes,See CrossWalk,,,,,,,,
-Screening,QUESTION_CODE_SYSTEM_NAME,Yes,LN or LOINC,,,,,,,,
-Screening,ANSWER_CODE,Yes,Only LOINC codes,,,,,,,,
-Screening,ANSWER_CODE_SYSTEM_NAME,Yes,LN or LOINC,,,,,,,,
-Screening,PARENT_QUESTION_CODE,No,Should be blank for  AHC HRSN,,,,,,,,
-Screening,SDOH_DOMAIN,Yes,See CrossWalk,,,,,,,,
-Screening,POTENTIAL_NEED_INDICATED,Yes,"Yes/No/NA, Is only Yes if this is an underlined answer in AHC HRSN. Please see crosswalk.",,,,,,,,
-Screening,ASSISTANCE_REQUESTED,No,Yes/No,,,,,,,,
-Admin_Demographic,MPI_ID,Yes,,unique per patient.,,,,,,,
-Admin_Demographic,PAT_MRN_ID,Yes,,,,,,,,,
-Admin_Demographic,FACILITY_ID ,Yes,Has a unique value per facility.,,,,,,,,
-Admin_Demographic,CONSENT ,Yes,Yes/No/Y/N/Unknown,,,,,,,,
-Admin_Demographic,FIRST_NAME,Yes,, alphabetical name,,,,,,,
-Admin_Demographic,MIDDLE_NAME,No,,"If available-non-numeric, alphabetical name",,,,,,,
-Admin_Demographic,LAST_NAME,Yes,, alphabetical name,,,,,,,
-Admin_Demographic,ADMINISTRATIVE_SEX_CODE,Yes,"M, F, X (UN), UNK, OTH. ASKU",,,,,,,,
-Admin_Demographic,ADMINISTRATIVE_SEX_CODE_DESCRIPTION,No,"Male, Female, Asked but Unknown, Other, Unknown",,,,,,,,
-Admin_Demographic,ADMINISTRATIVE_SEX_CODE_SYSTEM,Yes,"http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender, http://terminology.hl7.org/CodeSystem/v3-NullFlavor",,,,,,,,
-Admin_Demographic,SEX_AT_BIRTH_CODE,No,"M, F, ASKU, OTH, UNK",,,,,,,,
-Admin_Demographic,SEX_AT_BIRTH_CODE_DESCRIPTION,No,"Male, Female, Asked but Unknown, Other, Unknown",,,,,,,,
-Admin_Demographic,SEX_AT_BIRTH_CODE_SYSTEM,No,"http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender, http://terminology.hl7.org/CodeSystem/v3-NullFlavor",,,,,,,,
-Admin_Demographic,PAT_BIRTH_DATE,Yes,Valid date,Format: YYYY-MM-DD,,,,,,,
-Admin_Demographic,ADDRESS1,No,Is not a string of numbers,numeric and alphabetic only,,,,,,,
-Admin_Demographic,ADDRESS2,No,Is not a string of numbers,numeric and alphabetic only,,,,,,,
-Admin_Demographic,CITY,Yes,Is a city in New York State.,,,,,,,,
-Admin_Demographic,STATE,Yes,New York or NY,,,,,,,,
-Admin_Demographic,ZIP,Yes,,All numeric,5 digits or 9 digits.,,,,,,
-Admin_Demographic,GENDER_IDENTITY_CODE_SYSTEM_NAME,No,SNOMED-CT or SNOMED,,,,,,,,
-Admin_Demographic,GENDER_IDENTITY_CODE,No,,,,,,,,,
-Admin_Demographic,GENDER_IDENTITY_DESCRIPTION,No,,,,,,,,,
-Admin_Demographic,SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,No,SNOMED-CT or SNOMED,,,,,,,,
-Admin_Demographic,SEXUAL_ORIENTATION_CODE,No,,,,,,,,,
-Admin_Demographic,SEXUAL_ORIENTATION_DESCRIPTION,No,"Bisexual, Heterosexual , Homosexual, other, unknown",,,,,,,,
-Admin_Demographic,PREFERRED_LANGUAGE_CODE_SYSTEM_NAME,No,ISO or ISO 639-2,,,,,,,,
-Admin_Demographic,PREFERRED_LANGUAGE_CODE,No,"If available, is complete across all rows Codes align with ISO.",,,,,,,,
-Admin_Demographic,PREFERRED_LANGUAGE_DESCRIPTION,No,"If available, is complete across all rows Codes align with ISO.",,,,,,,,
-Admin_Demographic,RACE_CODE_SYSTEM_NAME,No, CDC or CDCRE,,,,,,,,
-Admin_Demographic,RACE_CODE,No,Aligns with CDC version 1.2,,,,,,,,
-Admin_Demographic,RACE_CODE_DESCRIPTION,No,Aligns with CDC version 1.2,,,,,,,,
-Admin_Demographic,ETHNICITY_CODE_SYSTEM_NAME,No,CDC or CDCRE,,,,,,,,
-Admin_Demographic,ETHNICITY_CODE,No, Aligns with CDC version 1.2.,,,,,,,,
-Admin_Demographic,ETHNICITY_CODE_DESCRIPTION,No,Aligns with CDC version 1.2.,,,,,,,,
-Admin_Demographic,MEDICAID_CIN,No,,"Follows the format two letters, 5 numbers, one letter",Is unique per MRN_ID,,,,,,
-QE_Admin_Data,PAT_MRN_ID,Yes,,,,,,,,,
-QE_Admin_Data,FACILITY_ID ,Yes,,Has a unique value per facility.,,,,,,,
-QE_Admin_Data,FACILITY_LONG_NAME,Yes,,Is alphabetical.,,,,,,,
-QE_Admin_Data,ORGANIZATION_TYPE,Yes,,"Hospital, DTC, SNF, SCN, CBO, OMH, OASAS, Practice, Article 36, Article 40. MCO",,,,,,,
-QE_Admin_Data,FACILITY_ADDRESS1,Yes,,Address is unique per facility,Address is not a PO box,Contains both numeric and alphabetic values.,,,,,
-QE_Admin_Data,FACILITY_ADDRESS2,No,,Address is unique per facility,Address is not a PO box,Contains both numeric and alphabetic values.,,,,,
-QE_Admin_Data,FACILITY_CITY,No,,Is a city in New York State,,,,,,,
-QE_Admin_Data,FACILITY_STATE,No,New York or NY,,,,,,,,
-QE_Admin_Data,FACILITY_ZIP,Yes,,All numeric.,5 digits or 9 digits,,,,,,
-QE_Admin_Data,VISIT_PART_2_FLAG,Yes,,Yes/No,Only yes if part 2 facility.,,,,,,
-QE_Admin_Data,VISIT_OMH_FLAG,Yes,,Yes/No,Only yes if OMH facility.,,,,,,
-QE_Admin_Data,VISIT_OPWDD_FLAG,Yes,,Yes/No,Only yes if OPWDD facility.,,,,,,
+Worksheet,Field,Required,Permissible Values,True Rejection ,Warning Layer,Resolved by QE/QCS
+Quality Assurance,All Files,Yes,Rows should be not be displaced. Data in each row should match column header. ,Yes,,
+Quality Assurance,All Files,Yes,"All correct column headers are present, even if field value is not required. Order of columns does not matter.",Yes,,
+Quality Assurance,All Files,Yes,"PAT_MRN_ID, FACILITY_ID matches for a screening episode across all three files.",Yes,,
+Screening,PAT_MRN_ID,Yes,Has a unique value per patient per facility. ,Yes,,
+Screening,FACILITY_ID,Yes,Has a unique value per facility.,No,,Yes
+Screening,ENCOUNTER_ID,No,Is unique per encounter for each PAT_MRN_ID.,No,,Yes
+Screening,ENCOUNTER_CLASS_CODE_SYSTEM,Yes,Please see ENCOUNTER_CLASS_REFERENCE,No,,Yes
+Screening,ENCOUNTER_CLASS_CODE,Yes,Please see ENCOUNTER_CLASS_REFERENCE,,Yes,Yes
+Screening,ENCOUNTER_CLASS_CODE_DESCRIPTION,No,Please see ENCOUNTER_CLASS_REFERENCE,No,,Yes
+Screening,ENCOUNTER_STATUS_CODE_SYSTEM,Yes,Please see ENCOUNTER_STATUS_REFERENCE,No,,Yes
+Screening,ENCOUNTER_STATUS_CODE,Yes,Please see ENCOUNTER_STATUS_REFERENCE,,Yes,Yes
+Screening,ENCOUNTER_STATUS_CODE_DESCRIPTION,No,Please see ENCOUNTER_STATUS_REFERENCE,No,,Yes
+Screening,ENCOUNTER_TYPE_CODE_SYSTEM,No,"SNOMED-CT or SNOMED, CPT",No,,
+Screening,ENCOUNTER_TYPE_CODE,No,ENCOUNTER_TYPE REFERENCE,No,,
+Screening,ENCOUNTER_TYPE_CODE_DESCRIPTION,No,ENCOUNTER_TYPE REFERENCE,No,,
+Screening,SCREENING_STATUS_CODE,Yes,SCREENING_STATUS_REFERENCE,No,Yes,Yes
+Screening,SCREENING_STATUS_CODE_DESCRIPTION,No,SCREENING_STATUS_REFERENCE,No,,Yes
+Screening,SCREENING_STATUS_CODE_SYSTEM,Yes,SCREENING_STATUS_REFERENCE,No,,Yes
+Screening,SCREENING_CODE DESCRIPTION,Yes,Accountable health communities (AHC) health-related social needs screening (HRSN) tool (96777-8) or Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions,,Yes,Yes
+Screening,SCREENING_CODE_SYSTEM_NAME,Yes,LN or LOINC,,Yes,Yes
+Screening,SCREENING_CODE,Yes,96777-8 or 97023-6,,Yes,Yes
+Screening,RECORDED_TIME,Yes,Date Time- Format: YYYYMMDD HH:MM:SS YYYY is not before 2023.,Rejection if empty,,Can normalize to this format
+Screening,QUESTION_CODE_DESCRIPTION,Yes,See CrossWalk,Yes,,
+Screening,ANSWER_CODE_DESCRIPTION,Yes,See CrossWalk,Yes,,
+Screening,UCUM_UNITS,No,See CrossWalk,No,,Yes
+Screening,QUESTION_CODE,Yes,See CrossWalk,,Yes,Yes
+Screening,QUESTION_CODE_SYSTEM_NAME,Yes,LN or LOINC,,Yes,Yes
+Screening,ANSWER_CODE,Yes,Only LOINC codes,,Yes,Yes
+Screening,ANSWER_CODE_SYSTEM_NAME,Yes,LN or LOINC,,Yes,Yes
+Screening,PARENT_QUESTION_CODE,No,Should be blank for  AHC HRSN,No,, Confirm no data in parent question code
+Screening,SDOH_DOMAIN,Yes,See CrossWalk,,Yes,Yes
+Screening,POTENTIAL_NEED_INDICATED,Yes,"Yes/No/NA, Is only Yes if this is an underlined answer in AHC HRSN. Please see crosswalk.",Yes,,
+Screening,ASSISTANCE_REQUESTED,No,Yes/No,Yes,,
+Admin_Demographic,MPI_ID,Yes,unique per patient.,No,,Yes
+Admin_Demographic,PAT_MRN_ID,Yes,Has a unique value per patient per facility. ,Yes,,
+Admin_Demographic,FACILITY_ID ,Yes,Has a unique value per facility.,No,,Yes
+Admin_Demographic,CONSENT ,Yes,Yes/No/Y/N/Unknown/Unk,Yes- If Unk/Unknown QE needs to discuss further with SCN,,
+Admin_Demographic,FIRST_NAME,Yes, Alphabetical name,Yes,,
+Admin_Demographic,MIDDLE_NAME,No,"If available-non-numeric, alphabetical name",No,,
+Admin_Demographic,LAST_NAME,Yes, alphabetical name,Yes,,
+Admin_Demographic,ADMINISTRATIVE_SEX_CODE,Yes,"M, F, X (UN), UNK, OTH, ASKU",Threshold of completely empty administrative sex across all patients for the file.,Yes,Yes
+Admin_Demographic,ADMINISTRATIVE_SEX_CODE_DESCRIPTION,No,"Male, Female, Asked but Unknown, Other, Unknown",No,,Yes
+Admin_Demographic,ADMINISTRATIVE_SEX_CODE_SYSTEM,Yes,See ADMINISTRATIVE_SEX,,,Yes
+Admin_Demographic,SEX_AT_BIRTH_CODE,No,"M, F, ASKU, OTH, UNK",No,,
+Admin_Demographic,SEX_AT_BIRTH_CODE_DESCRIPTION,No,"Male, Female, Asked but Unknown, Other, Unknown",No,,
+Admin_Demographic,SEX_AT_BIRTH_CODE_SYSTEM,No,See SEX_AT_BIRTH,No,,
+Admin_Demographic,PAT_BIRTH_DATE,Yes,Valid date Format: YYYY-MM-DD,Yes,,
+Admin_Demographic,ADDRESS1,Required if Medicaid CIN not available,Is not a string of numbers,Threshold of completely blank address across all patients for the file or if Medicaid CIN is not available. ,Could be an issue if the patient has an address- provide feedback,
+Admin_Demographic,ADDRESS2,No,Is not a string of numbers,,Could be an issue if the patient has an address- provide feedback,
+Admin_Demographic,CITY,Yes,Is a city in New York State.,Threshold of completely empty state across all patients for the file.,Could be an issue if the patient has an address- provide feedback,
+Admin_Demographic,STATE,Yes,New York or NY,Threshold of completely empty city across all patients for the file.,,
+Admin_Demographic,ZIP,Yes,All numeric: 5 or 9 digits,Yes,,
+Admin_Demographic,GENDER_IDENTITY_CODE_SYSTEM_NAME,No,SNOMED-CT or SNOMED,No,,"If code is available, yes"
+Admin_Demographic,GENDER_IDENTITY_CODE,No,See GENDER_IDENTITY tab,No,,
+Admin_Demographic,GENDER_IDENTITY_DESCRIPTION,No,See GENDER_IDENTITY tab,No,,"If code is available, yes"
+Admin_Demographic,SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,No,SNOMED-CT or SNOMED,No,,"If code is available, yes"
+Admin_Demographic,SEXUAL_ORIENTATION_CODE,No,See SEXUAL_ORIENTATION tab,No,,
+Admin_Demographic,SEXUAL_ORIENTATION_DESCRIPTION,No,"Bisexual, Heterosexual , Homosexual, Other, Unknown",No,,"If code is available, yes"
+Admin_Demographic,PREFERRED_LANGUAGE_CODE_SYSTEM_NAME,No,ISO or ISO 639-2,No,,"If code is available, yes"
+Admin_Demographic,PREFERRED_LANGUAGE_CODE,No,"If available, is complete across all rows � Codes align with ISO. PREFERRED_LANGUAGE tab ",No,,
+Admin_Demographic,PREFERRED_LANGUAGE_DESCRIPTION,No,"If available, is complete across all rows � Codes align with ISO. PREFERRED_LANGUAGE tab",No,,"If code is available, yes"
+Admin_Demographic,RACE_CODE_SYSTEM_NAME,No, CDC or CDCRE,No,,"If code is available, yes"
+Admin_Demographic,RACE_CODE,No,Aligns with CDC version 1.2- RACE tab,No,,
+Admin_Demographic,RACE_CODE_DESCRIPTION,No,Aligns with CDC version 1.2- RACE tab,No,,"If code is available, yes"
+Admin_Demographic,ETHNICITY_CODE_SYSTEM_NAME,No,CDC or CDCRE,No,,"If code is available, yes"
+Admin_Demographic,ETHNICITY_CODE,No, Aligns with CDC version 1.2.- ETHNICITY tab,No,,
+Admin_Demographic,ETHNICITY_CODE_DESCRIPTION,No,Aligns with CDC version 1.2.- ETHNICITY tab,No,,"If code is available, yes"
+Admin_Demographic,MEDICAID_CIN,Required if address not available,"Is unique per PAT_MRN_ID. Follows the format two letters, 5 numbers, one letter",Yes only if address is not available,Yes,Yes
+QE_Admin_Data,PAT_MRN_ID,Yes,Has a unique value per patient per facility. ,Yes,,
+QE_Admin_Data,FACILITY_ID ,Yes,Has a unique value per facility.,No,,Yes
+QE_Admin_Data,FACILITY_LONG_NAME,Yes,Is alphabetical.,No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
+QE_Admin_Data,ORGANIZATION_TYPE,Yes,"Hospital, DTC, SNF, SCN, CBO, OMH, OASAS, Practice, Article 36, Article 40. MCO",No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
+QE_Admin_Data,FACILITY_ADDRESS1,Yes,Address is unique per facility- Address is not a PO box. Contains both numeric and alphabetic values.,No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
+QE_Admin_Data,FACILITY_ADDRESS2,No,Address is unique per facility- Address is not a PO box. Contains both numeric and alphabetic values.,No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
+QE_Admin_Data,FACILITY_CITY,No,Is a city in New York State,No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
+QE_Admin_Data,FACILITY_STATE,No,New York or NY,No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
+QE_Admin_Data,FACILITY_ZIP,Yes,All numeric. 5 or 9 numbers. ,No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
+QE_Admin_Data,VISIT_PART_2_FLAG,Yes,Yes/No,No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
+QE_Admin_Data,VISIT_OMH_FLAG,Yes,Yes/No,No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
+QE_Admin_Data,VISIT_OPWDD_FLAG,Yes,Yes/No,No,,Yes- Should have access to this information. Need to  confirm with organization details. Required to collect in SHIN-NY Salesforce. 
