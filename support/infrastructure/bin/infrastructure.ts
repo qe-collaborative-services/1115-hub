@@ -6,6 +6,8 @@ import { Construct } from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
 
 interface ComputeStackProps extends StackProps {
+  vpc: ec2.Vpc;
+  eip: ec2.CfnEIP;
 }
 
 class ComputeStack extends Stack {
@@ -14,28 +16,9 @@ class ComputeStack extends Stack {
   constructor(scope: Construct, id: string, props: ComputeStackProps) {
     super(scope, id, props);
 
-    // create a vpc that we can put an ec2 and rds instance into
-    const vpc = new ec2.Vpc(this, "VPC", {
-      maxAzs: 3, // Default is all AZs in region
-      subnetConfiguration: [
-        // we should also create a management subnet eventually
-        {
-          cidrMask: 24,
-          name: "compute-subnet",
-          // when management infra is created, this can be PRIVATE_ISOLATED
-          subnetType: ec2.SubnetType.PUBLIC,
-        },
-        {
-          cidrMask: 24,
-          name: "data-subnet",
-          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
-        },
-      ],
-    });
-
     // Security Group for compute EC2
     const ec2SecurityGroup = new ec2.SecurityGroup(this, "Ec2SecurityGroup", {
-      vpc: vpc,
+      vpc: props.vpc,
       description: "Security group for compute EC2 instance",
       allowAllOutbound: true,
     });
@@ -95,7 +78,7 @@ class ComputeStack extends Stack {
 
     // EC2 Instance
     this.instance = new ec2.Instance(this, "ElevenFifteenComputeInstance", {
-      vpc: vpc,
+      vpc: props.vpc,
       instanceType: new ec2.InstanceType("t3.micro"),
       machineImage: ec2.MachineImage.genericLinux({
         "us-east-1": "ami-0133fb3dded749b65", // debian bullseye latest amd64
@@ -113,28 +96,63 @@ class ComputeStack extends Stack {
         subnetGroupName: "compute-subnet",
       },
     });
+    // Associate the Elastic IP with the EC2 Instance
+    new ec2.CfnEIPAssociation(this, "EIPAssociation", {
+      eip: props.eip.ref, // Reference to the EIP resource
+      instanceId: this.instance.instanceId,
+    });
+  }
+}
+export interface networkStackProps extends cdk.StackProps {
+}
+class networkStack extends cdk.Stack {
+  readonly vpc: ec2.Vpc;
+  readonly eip: ec2.CfnEIP;
+  constructor(scope: Construct, id: string, props: networkStackProps) {
+    super(scope, id, props);
+    // create a vpc that we can put an ec2 and rds instance into
+    this.vpc = new ec2.Vpc(this, "VPC", {
+      maxAzs: 3, // Default is all AZs in region
+      subnetConfiguration: [
+        // we should also create a management subnet eventually
+        {
+          cidrMask: 24,
+          name: "compute-subnet",
+          // when management infra is created, this can be PRIVATE_ISOLATED
+          subnetType: ec2.SubnetType.PUBLIC,
+        },
+        {
+          cidrMask: 24,
+          name: "data-subnet",
+          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+        },
+      ],
+    });
 
     // Allocate an Elastic IP
-    const eip = new ec2.CfnEIP(this, "EIP");
+    this.eip = new ec2.CfnEIP(this, "EIP");
 
     // create export for the EIP
     new cdk.CfnOutput(this, "instanceIP", {
-      value: eip.ref,
+      value: this.eip.ref,
       description: "The Elastic IP for the compute instance",
-    });
-
-    // Associate the Elastic IP with the EC2 Instance
-    new ec2.CfnEIPAssociation(this, "EIPAssociation", {
-      eip: eip.ref, // Reference to the EIP resource
-      instanceId: this.instance.instanceId,
     });
   }
 }
 
 const app = new cdk.App();
-const compute = new ComputeStack(
+const network = new networkStack(
   app,
-  `${process.env.ENV}ElevenFifteenInfrastructure`,
+  `${process.env.ENV}ElevenFifteenNetwork`,
   {},
 );
+const compute = new ComputeStack(
+  app,
+  `${process.env.ENV}ElevenFifteenCompute`,
+  {
+    vpc: network.vpc,
+    eip: network.eip,
+  },
+);
+
 app.synth();
