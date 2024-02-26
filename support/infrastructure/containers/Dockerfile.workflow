@@ -10,7 +10,8 @@ RUN apt-get install -y curl unzip wget sqlite3 git cron
 RUN rm -rf /var/lib/apt/lists/*
 
 # Install Deno
-RUN curl -fsSL https://deno.land/x/install/install.sh | sh
+ARG DENO_VERSION=1.41.0
+RUN curl -fsSL https://deno.land/x/install/install.sh | DENO_VERSION=1.41.0 sh
 ENV PATH="/root/.deno/bin:$PATH"
 
 # Install DuckDB
