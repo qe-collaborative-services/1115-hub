@@ -436,14 +436,9 @@ export class OrchEngine {
             'Field': 'VARCHAR',
             'Required': 'VARCHAR',
             'Permissible Values': 'VARCHAR',
-            'Criteria-1': 'VARCHAR',
-            'Criteria-2': 'VARCHAR',
-            'Criteria-3': 'VARCHAR',
-            'Criteria-4': 'VARCHAR',
-            'Criteria-5': 'VARCHAR',
-            'Criteria-6': 'VARCHAR',
-            'Criteria-7': 'VARCHAR',
-            'Remarks': 'VARCHAR'
+            'True Rejection': 'VARCHAR',
+            'Warning Layer': 'VARCHAR',
+            'Resolved by QE/QCS': 'VARCHAR'
           });
 
       ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`.SQL(
@@ -669,6 +664,40 @@ export class OrchEngine {
           ${this.duckdb.diagnostics};
           -- diagnostics-md-ignore-finish "SQLPage and execution diagnostics SQL DML"
 
+          CREATE VIEW orch_session_issue_classification AS
+          WITH cte_business_rule AS (
+            SELECT worksheet as worksheet,
+                field as field,
+                required as required,
+                "Resolved by QE/QCS" as resolved_by_qe_qcs,
+                CONCAT(
+                    CASE WHEN UPPER("True Rejection") = 'YES' THEN 'REJECTION' ELSE '' END,
+                    CASE WHEN UPPER("Warning Layer") = 'YES' THEN 'WARNING' ELSE '' END
+                ) AS record_action
+            FROM
+                "ingestion-center".main.business_rules
+          )
+          --select * from cte_business_rule
+
+          SELECT
+            -- Including all other columns from 'orch_session'
+            ises.* EXCLUDE (orch_started_at, orch_finished_at),
+            -- TODO: Casting known timestamp columns to text so emit to Excel works with GDAL (spatial)
+              -- strftime(timestamptz orch_started_at, '%Y-%m-%d %H:%M:%S') AS orch_started_at,
+              -- strftime(timestamptz orch_finished_at, '%Y-%m-%d %H:%M:%S') AS orch_finished_at,
+            -- Including all columns from 'orch_session_entry'
+            isee.* EXCLUDE (session_id),
+            -- Including all other columns from 'orch_session_issue'
+            isi.* EXCLUDE (session_id, session_entry_id),
+            br.record_action AS disposition,
+            case when UPPER(br.resolved_by_qe_qcs) = 'YES' then 'Resolved By QE/QCS' else null end AS remediation
+            FROM orch_session AS ises
+            JOIN orch_session_entry AS isee ON ises.orch_session_id = isee.session_id
+            LEFT JOIN orch_session_issue AS isi ON isee.orch_session_entry_id = isi.session_entry_id
+            --LEFT JOIN business_rules br ON isi.issue_column = br.FIELD
+            LEFT OUTER JOIN cte_business_rule br ON br.field = isi.issue_column
+          ;
+
           ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);
 
           -- copy relevant orchestration engine admin tables into the the attached database
@@ -710,7 +739,7 @@ export class OrchEngine {
         ws.unindentWhitespace(`
           INSTALL spatial; LOAD spatial;
           -- TODO: join with orch_session table to give all the results in one sheet
-          COPY (SELECT * FROM orch_session_diagnostic_text) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+          COPY (SELECT * FROM orch_session_issue_classification) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
         "emitDiagnostics"
       );
     }
