@@ -66,7 +66,7 @@ jobs:
         run: |
           cd support/infrastructure
           npm install
-          cdk destroy ${{github.ref_name}}ElevenFifteenCompute
+          cdk destroy ${{github.ref_name}}ElevenFifteenCompute --require-approval never
           cdk deploy --all --outputs-file output.json --require-approval never
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
