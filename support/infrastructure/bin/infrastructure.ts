@@ -118,7 +118,7 @@ class networkStack extends cdk.Stack {
         {
           cidrMask: 24,
           name: "compute-subnet",
-          // when management infra is created, this can be PRIVATE_ISOLATED
+          // when management infra is created, this can be PRIVATE_ISOLATED instead
           subnetType: ec2.SubnetType.PUBLIC,
         },
         {
