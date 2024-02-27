@@ -1,4 +1,4 @@
-ADMINISTRATIVE_SEX_CODE,ADMINISTRATIVE_SEX _CODE_DESCRIPTION,ADMINISTRATIVE_SEX _CODE_SYSTEM
+ADMINISTRATIVE_SEX_CODE,ADMINISTRATIVE_SEX_CODE_DESCRIPTION,ADMINISTRATIVE_SEX_CODE_SYSTEM
 M,Male,http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender
 F,Female,http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender
 X or UN,Undifferentiated,http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender

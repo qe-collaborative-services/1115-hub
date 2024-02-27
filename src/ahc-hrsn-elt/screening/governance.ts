@@ -90,6 +90,183 @@ export class EncounterClassReferenceAssuranceRules<
     );
   }
 }
+
+export class EncounterStatusCodeReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class EncounterTypeCodeReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class ScreeningStatusCodeReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class AdministrativeSexReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class GenderIdentityReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class SexAtBirthReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class SexualOrientationReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class BusinessRulesReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
 export class ScreeningAssuranceRules<
   TableName extends string,
   ColumnName extends string,
