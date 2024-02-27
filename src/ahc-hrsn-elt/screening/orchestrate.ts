@@ -11,43 +11,59 @@ import {
   yaml,
 } from "./deps.ts";
 import * as sp from "./sqlpage.ts";
-
 import * as ref from "./reference.ts";
+import * as csv from "./csv.ts";
+import * as excel from "./excel.ts";
 
-import {
-  AdminDemographicCsvFileIngestSource,
-  ingestCsvFilesSourcesSupplier,
-  ScreeningCsvFileIngestSource,
-} from "./csv.ts";
-
-import {
-  AdminDemographicExcelSheetIngestSource,
-  AnswerReferenceExcelSheetIngestSource,
-  ExcelSheetTodoIngestSource,
-  ingestExcelSourcesSupplier,
-  QeAdminDataExcelSheetIngestSource,
-  QuestionReferenceExcelSheetIngestSource,
-  ScreeningExcelSheetIngestSource,
-} from "./excel.ts";
-import { QeAdminDataCsvFileIngestSource } from "./csv.ts";
-
-export const ORCHESTRATE_VERSION = "0.5.0";
+export const ORCHESTRATE_VERSION = "0.5.1";
 
 export type PotentialIngestSource =
-  | ScreeningExcelSheetIngestSource<string, o.State>
-  | AdminDemographicExcelSheetIngestSource<string, o.State>
-  | QeAdminDataExcelSheetIngestSource<string, o.State>
-  | QuestionReferenceExcelSheetIngestSource<string, o.State>
-  | AnswerReferenceExcelSheetIngestSource<string, o.State>
-  | ExcelSheetTodoIngestSource<string, o.State>
-  | ScreeningCsvFileIngestSource<string, o.State>
-  | AdminDemographicCsvFileIngestSource<string, o.State>
+  | excel.ScreeningExcelSheetIngestSource<string, o.State>
+  | excel.AdminDemographicExcelSheetIngestSource<string, o.State>
+  | excel.QeAdminDataExcelSheetIngestSource<string, o.State>
+  | excel.QuestionReferenceExcelSheetIngestSource<string, o.State>
+  | excel.AnswerReferenceExcelSheetIngestSource<string, o.State>
+  | excel.ExcelSheetTodoIngestSource<string, o.State>
+  | csv.ScreeningCsvFileIngestSource<string, o.State>
+  | csv.AdminDemographicCsvFileIngestSource<string, o.State>
   | ref.AhcCrossWalkCsvFileIngestSource<"ahc_cross_walk", o.State>
+  | ref.EncounterTypeCodeReferenceCsvFileIngestSource<
+    "encounter_type_code_reference",
+    o.State
+  >
   | ref.EncounterClassReferenceCsvFileIngestSource<
     "encounter_class_reference",
     o.State
   >
-  | QeAdminDataCsvFileIngestSource<string, o.State>
+  | ref.EncounterStatusCodeReferenceCsvFileIngestSource<
+    "encounter_status_code_reference",
+    o.State
+  >
+  | ref.ScreeningStatusCodeReferenceCsvFileIngestSource<
+    "screening_status_code_reference",
+    o.State
+  >
+  | ref.GenderIdentityReferenceCsvFileIngestSource<
+    "gender_identity_reference",
+    o.State
+  >
+  | ref.AdministrativeSexReferenceCsvFileIngestSource<
+    "administrative_sex_reference",
+    o.State
+  >
+  | ref.SexAtBirthReferenceCsvFileIngestSource<
+    "sex_at_birth_reference",
+    o.State
+  >
+  | ref.SexualOrientationReferenceCsvFileIngestSource<
+    "sexual_orientation_reference",
+    o.State
+  >
+  | ref.BusinessRulesReferenceCsvFileIngestSource<
+    "business_rules",
+    o.State
+  >
+  | csv.QeAdminDataCsvFileIngestSource<string, o.State>
   | o.ErrorIngestSource<
     ddbo.DuckDbOrchGovernance,
     o.State,
@@ -61,8 +77,8 @@ export function walkFsPatternIngestSourcesSupplier(
     sources: async (suggestedRootPaths?: string[]) => {
       const sources: PotentialIngestSource[] = [];
       const iss = [
-        ingestCsvFilesSourcesSupplier(govn),
-        ingestExcelSourcesSupplier(govn),
+        csv.ingestCsvFilesSourcesSupplier(govn),
+        excel.ingestExcelSourcesSupplier(govn),
       ];
       const rootPaths = suggestedRootPaths ?? [Deno.cwd()];
 
@@ -144,8 +160,8 @@ export function watchFsPatternIngestSourcesSupplier(
     sources: async () => {
       const sources: PotentialIngestSource[] = [];
       const iss = [
-        ingestCsvFilesSourcesSupplier(govn),
-        ingestExcelSourcesSupplier(govn),
+        csv.ingestCsvFilesSourcesSupplier(govn),
+        excel.ingestExcelSourcesSupplier(govn),
       ];
 
       const collect = async (path: string | URL) => {
@@ -374,8 +390,6 @@ export class OrchEngine {
       govn: { informationSchema: is },
       args: {
         session,
-        referenceDataHome =
-          "https://raw.githubusercontent.com/qe-collaborative-services/1115-hub/main/src/ahc-hrsn-elt/reference-data",
       },
     } = this;
     const beforeInit = Array.from(
@@ -395,51 +409,6 @@ export class OrchEngine {
       ${await session.orchSessionSqlDML()}
 
       -- Load Reference data from csvs
-
-      CREATE TABLE screening_status_code_reference AS
-        SELECT * FROM read_csv_auto('${referenceDataHome}/screening-status-code-reference.csv',
-          delim = ',',
-          header = true,
-          columns = {
-            'Lvl': 'VARCHAR',
-            'Code': 'VARCHAR',
-            'Display': 'VARCHAR',
-            'Definition': 'VARCHAR'
-          });
-
-      CREATE TABLE encounter_status_code_reference AS
-        SELECT * FROM read_csv_auto('${referenceDataHome}/encounter-status-code-reference.csv',
-          delim = ',',
-          header = true,
-          columns = {
-            'Code': 'VARCHAR',
-            'Display': 'VARCHAR',
-            'Definition': 'VARCHAR'
-          });
-
-      CREATE TABLE encounter_type_code_reference AS
-        SELECT * FROM read_csv_auto('${referenceDataHome}/encounter-type-code-reference.csv',
-          delim = ',',
-          header = true,
-          columns = {
-            'Code': 'VARCHAR',
-            'System': 'VARCHAR',
-            'Display': 'VARCHAR'
-          });
-
-      CREATE TABLE business_rules AS
-        SELECT * FROM read_csv_auto('${referenceDataHome}/business-rules.csv',
-          delim = ',',
-          header = true,
-          columns = {
-            'Worksheet': 'VARCHAR',
-            'Field': 'VARCHAR',
-            'Required': 'VARCHAR',
-            'Permissible Values': 'VARCHAR',
-            'True Rejection': 'VARCHAR',
-            'Warning Layer': 'VARCHAR',
-            'Resolved by QE/QCS': 'VARCHAR'
-          });
 
       ${afterInit.length > 0 ? afterInit : "-- no after-init SQL found"}`.SQL(
       this.govn.emitCtx,
@@ -495,15 +464,49 @@ export class OrchEngine {
     this.potentialSources = Array.from(
       await this.iss.sources(this.args.walkRootPaths),
     );
-    this.potentialSources.push(
+
+    const referenceIngestSources = [
       new ref.AhcCrossWalkCsvFileIngestSource(referenceDataHome, govn),
-    );
-    this.potentialSources.push(
       new ref.EncounterClassReferenceCsvFileIngestSource(
         referenceDataHome,
         govn,
       ),
-    );
+      new ref.EncounterStatusCodeReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.EncounterTypeCodeReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.ScreeningStatusCodeReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.GenderIdentityReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.AdministrativeSexReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.SexAtBirthReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.SexualOrientationReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.BusinessRulesReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+    ];
+
+    this.potentialSources.push(...referenceIngestSources);
+
     this.ingestables = [];
     for (const ps of this.potentialSources) {
       const { uri, tableName } = ps;
@@ -707,10 +710,6 @@ export class OrchEngine {
           ${exportsSQL};
 
           -- export reference tables from DuckDb into the attached database (nature-dependent)
-          CREATE TABLE ${rdbSchemaName}.screening_status_code_reference AS SELECT * FROM screening_status_code_reference;
-          CREATE TABLE ${rdbSchemaName}.encounter_status_code_reference AS SELECT * FROM encounter_status_code_reference;
-          CREATE TABLE ${rdbSchemaName}.encounter_type_code_reference AS SELECT * FROM encounter_type_code_reference;
-          CREATE TABLE ${rdbSchemaName}.business_rules AS SELECT * FROM business_rules;
 
           DETACH DATABASE ${rdbSchemaName};
 
