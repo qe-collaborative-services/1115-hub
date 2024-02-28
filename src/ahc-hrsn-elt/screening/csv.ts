@@ -95,11 +95,11 @@ const qeAdminDataCsvColumnNames = [
   "FACILITY_ID",
   "FACILITY_LONG_NAME",
   "ORGANIZATION_TYPE",
-  "FACILITY ADDRESS1",
-  "FACILITY ADDRESS2",
-  "FACILITY CITY",
-  "FACILITY STATE",
-  "FACILITY ZIP",
+  "FACILITY_ADDRESS1",
+  "FACILITY_ADDRESS2",
+  "FACILITY_CITY",
+  "FACILITY_STATE",
+  "FACILITY_ZIP",
   "VISIT_PART_2_FLAG",
   "VISIT_OMH_FLAG",
   "VISIT_OPWDD_FLAG",
@@ -919,19 +919,19 @@ export class QeAdminDataCsvFileIngestSource<
         "ORGANIZATION_TYPE",
         "'Hospital', 'DTC', 'SNF', 'SCN', 'CBO', 'OMH', 'OASAS', 'Practice', 'Article 36', 'Article 40', 'MCO'"
       )}
-      ${tr.mandatoryValueInAllRows("FACILITY ADDRESS1")}
-      ${tr.uniqueValueInAllRows("FACILITY ADDRESS1")}
+      ${tr.mandatoryValueInAllRows("FACILITY_ADDRESS1")}
+      ${tr.uniqueValueInAllRows("FACILITY_ADDRESS1")}
       ${qedar.car.onlyAllowAlphabetsAndNumbersWithSpaceInAllRows(
-        "FACILITY ADDRESS1"
+        "FACILITY_ADDRESS1"
       )}
-      ${tr.uniqueValueInAllRows("FACILITY ADDRESS2")}
+      ${tr.uniqueValueInAllRows("FACILITY_ADDRESS2")}
       ${qedar.car.onlyAllowAlphabetsAndNumbersWithSpaceInAllRows(
-        "FACILITY ADDRESS2"
+        "FACILITY_ADDRESS2"
       )}
-      ${tr.mandatoryValueInAllRows("FACILITY STATE")}
-      ${tr.onlyAllowedValuesInAllRows("FACILITY STATE", "'NY', 'New York'")}
-      ${tr.mandatoryValueInAllRows("FACILITY ZIP")}
-      ${qedar.car.onlyAllowValidZipInAllRows("FACILITY ZIP")}
+      ${tr.mandatoryValueInAllRows("FACILITY_STATE")}
+      ${tr.onlyAllowedValuesInAllRows("FACILITY_STATE", "'NY', 'New York'")}
+      ${tr.mandatoryValueInAllRows("FACILITY_ZIP")}
+      ${qedar.car.onlyAllowValidZipInAllRows("FACILITY_ZIP")}
       ${tr.mandatoryValueInAllRows("VISIT_PART_2_FLAG")}
       ${tr.onlyAllowedValuesInAllRows("VISIT_PART_2_FLAG", "'Yes', 'No'")}
       ${tr.mandatoryValueInAllRows("VISIT_OMH_FLAG")}
