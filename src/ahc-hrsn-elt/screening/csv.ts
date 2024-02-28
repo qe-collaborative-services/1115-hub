@@ -268,7 +268,7 @@ export class ScreeningCsvFileIngestSource<
     >,
     sar: sg.ScreeningAssuranceRules<TableName, ScreeningCsvColumnName>,
   ) {
-    const { govn } = this;
+    const { govn, relatedTableNames } = this;
     const { sessionEntryID, tableRules: tr } = sar;
 
     // deno-fmt-ignore
@@ -283,9 +283,9 @@ export class ScreeningCsvFileIngestSource<
 
 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
-      ${tr.uniqueValueInAllRows("PAT_MRN_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
       ${tr.uniqueValueInAllRows("FACILITY_ID")}
+      ${sar.matchesPatMrnIdAcrossScreeningQeAdminDemographics("PAT_MRN_ID", "FACILITY_ID", relatedTableNames)}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE")}
       ${sar.onlyAllowValidEncounterClassCodeInAllRows("ENCOUNTER_CLASS_CODE")}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}

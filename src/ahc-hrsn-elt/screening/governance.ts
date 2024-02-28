@@ -669,6 +669,61 @@ export class ScreeningAssuranceRules<
         `'Please be sure to provide both a valid date and time (Format: YYYYMMDD HH:MM:SS).'`,
       )}`;
   }
+
+  matchesPatMrnIdAcrossScreeningQeAdminDemographics(
+    patMrnIdcolumnName: ColumnName,
+    facilityIdcolumnName: ColumnName,
+    relatedTableNames: {
+      adminDemographicsTableName: string;
+      qeAdminDataTableName: string;
+    },
+  ) {
+    const cteName = "valid_pat_mrn_id_across_all_three_tables";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        SELECT '${patMrnIdcolumnName}' AS issue_column, '${this.tableName}' AS issue_table_name, a.${patMrnIdcolumnName} AS invalid_pat_value, a.${facilityIdcolumnName} AS invalid_facility_value, a.src_file_row_number AS issue_row
+        FROM ${this.tableName} a
+        LEFT JOIN ${relatedTableNames.qeAdminDataTableName} b
+        ON a.${patMrnIdcolumnName} = b.${patMrnIdcolumnName}
+        AND a.${facilityIdcolumnName} = b.${facilityIdcolumnName}
+        LEFT JOIN ${relatedTableNames.adminDemographicsTableName} c
+        ON a.${patMrnIdcolumnName} = c.${patMrnIdcolumnName}
+        AND a.${facilityIdcolumnName} = c.${facilityIdcolumnName}
+        WHERE b.${patMrnIdcolumnName} IS NULL OR c.${patMrnIdcolumnName} IS NULL OR b.${facilityIdcolumnName} IS NULL OR c.${facilityIdcolumnName} IS NULL
+        UNION
+        SELECT '${patMrnIdcolumnName}' AS issue_column, '${relatedTableNames.qeAdminDataTableName}' AS issue_table_name, b.${patMrnIdcolumnName} AS invalid_pat_value, b.${facilityIdcolumnName} AS invalid_facility_value, b.src_file_row_number AS issue_row
+        FROM ${relatedTableNames.qeAdminDataTableName} b
+        LEFT JOIN ${this.tableName} a
+        ON a.${patMrnIdcolumnName} = b.${patMrnIdcolumnName}
+        AND a.${facilityIdcolumnName} = b.${facilityIdcolumnName}
+        LEFT JOIN ${relatedTableNames.adminDemographicsTableName} c
+        ON b.${patMrnIdcolumnName} = c.${patMrnIdcolumnName}
+        AND b.${facilityIdcolumnName} = c.${facilityIdcolumnName}
+        WHERE a.${patMrnIdcolumnName} IS NULL OR c.${patMrnIdcolumnName} IS NULL OR a.${facilityIdcolumnName} IS NULL OR c.${facilityIdcolumnName} IS NULL
+        UNION
+        SELECT '${patMrnIdcolumnName}' AS issue_column, '${relatedTableNames.adminDemographicsTableName}' AS issue_table_name, c.${patMrnIdcolumnName} AS invalid_pat_value, c.${facilityIdcolumnName} AS invalid_facility_value, c.src_file_row_number AS issue_row
+        FROM ${relatedTableNames.adminDemographicsTableName} c
+        LEFT JOIN ${this.tableName} a
+        ON a.${patMrnIdcolumnName} = c.${patMrnIdcolumnName}
+        AND a.${facilityIdcolumnName} = c.${facilityIdcolumnName}
+        LEFT JOIN ${relatedTableNames.qeAdminDataTableName} b
+        ON c.${patMrnIdcolumnName} = b.${patMrnIdcolumnName}
+        AND c.${facilityIdcolumnName} = b.${facilityIdcolumnName}
+        WHERE a.${patMrnIdcolumnName} IS NULL OR b.${patMrnIdcolumnName} IS NULL OR a.${facilityIdcolumnName} IS NULL OR b.${facilityIdcolumnName} IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `${patMrnIdcolumnName} that does not match the ${facilityIdcolumnName}`,
+        "issue_row",
+        "issue_column",
+        "invalid_pat_value",
+        `'${patMrnIdcolumnName} ("' || invalid_pat_value || '") that does not match the ${facilityIdcolumnName} ("' || invalid_facility_value || '") across the files was found in "' || issue_table_name || '".'`,
+        `'Validate ${patMrnIdcolumnName} that maches the ${facilityIdcolumnName} across the files'`,
+      )
+    }`;
+  }
 }
 
 /**
