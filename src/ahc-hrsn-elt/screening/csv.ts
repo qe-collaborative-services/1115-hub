@@ -50,7 +50,6 @@ const screeningCsvColumnNames = [
   "PARENT_QUESTION_CODE",
   "SDOH_DOMAIN",
   "POTENTIAL_NEED_INDICATED",
-  "ASSISTANCE_REQUESTED",
 ] as const;
 
 const adminDemographicCsvColumnNames = [
@@ -93,7 +92,7 @@ const adminDemographicCsvColumnNames = [
 
 const qeAdminDataCsvColumnNames = [
   "PAT_MRN_ID",
-  "FACILITY ID (Assigning authority)",
+  "FACILITY_ID",
   "FACILITY_LONG_NAME",
   "ORGANIZATION_TYPE",
   "FACILITY ADDRESS1",
@@ -347,10 +346,6 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("POTENTIAL_NEED_INDICATED")}
       ${tr.onlyAllowedValuesInAllRows(
         "POTENTIAL_NEED_INDICATED",
-        "'Yes','No','NA'"
-      )}
-      ${tr.onlyAllowedValuesInAllRows(
-        "ASSISTANCE_REQUESTED",
         "'Yes','No','NA'"
       )}
 
@@ -916,8 +911,8 @@ export class QeAdminDataCsvFileIngestSource<
       )}
 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
-      ${tr.mandatoryValueInAllRows("FACILITY ID (Assigning authority)")}
-      ${tr.uniqueValueInAllRows("FACILITY ID (Assigning authority)")}
+      ${tr.mandatoryValueInAllRows("FACILITY_ID")}
+      ${tr.uniqueValueInAllRows("FACILITY_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_LONG_NAME")}
       ${tr.mandatoryValueInAllRows("ORGANIZATION_TYPE")}
       ${tr.onlyAllowedValuesInAllRows(
