@@ -268,7 +268,7 @@ export class ScreeningCsvFileIngestSource<
     >,
     sar: sg.ScreeningAssuranceRules<TableName, ScreeningCsvColumnName>,
   ) {
-    const { govn } = this;
+    const { govn, relatedTableNames } = this;
     const { sessionEntryID, tableRules: tr } = sar;
 
     // deno-fmt-ignore
@@ -283,9 +283,9 @@ export class ScreeningCsvFileIngestSource<
 
 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
-      ${tr.uniqueValueInAllRows("PAT_MRN_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
       ${tr.uniqueValueInAllRows("FACILITY_ID")}
+      ${sar.matchesPatMrnIdAcrossScreeningQeAdminDemographics("PAT_MRN_ID", "FACILITY_ID", relatedTableNames)}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE")}
       ${sar.onlyAllowValidEncounterClassCodeInAllRows("ENCOUNTER_CLASS_CODE")}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
@@ -324,11 +324,9 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("SCREENING_CODE")}
       ${tr.mandatoryValueInAllRows("RECORDED_TIME")}
       ${sar.onlyAllowValidRecordedTimeInAllRows("RECORDED_TIME")}
-
-
-
-      -- -----
-      -- TODO: Validate with crosswalk
+      ${tr.mandatoryValueInAllRows("SDOH_DOMAIN")}
+      ${sar.onlyAllowValidSdohDomainInAllRows("SDOH_DOMAIN")}
+      ${sar.onlyAllowValidQuestionCodeForScreeningCodeInAllRows("QUESTION_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_CODE",
         "'96777-8', '97023-6'"
@@ -342,7 +340,6 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("ANSWER_CODE")}
       ${tr.mandatoryValueInAllRows("ANSWER_CODE_SYSTEM_NAME")}
       ${tr.onlyAllowedValuesInAllRows("ANSWER_CODE_SYSTEM_NAME", "'LN','LOIN'")}
-      ${tr.mandatoryValueInAllRows("SDOH_DOMAIN")}
       ${tr.mandatoryValueInAllRows("POTENTIAL_NEED_INDICATED")}
       ${tr.onlyAllowedValuesInAllRows(
         "POTENTIAL_NEED_INDICATED",
