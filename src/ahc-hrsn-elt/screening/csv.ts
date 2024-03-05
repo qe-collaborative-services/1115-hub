@@ -284,7 +284,6 @@ export class ScreeningCsvFileIngestSource<
 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
-      ${tr.uniqueValueInAllRows("FACILITY_ID")}
       ${sar.matchesPatMrnIdAcrossScreeningQeAdminDemographics("PAT_MRN_ID", "FACILITY_ID", relatedTableNames)}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE")}
       ${sar.onlyAllowValidEncounterClassCodeInAllRows("ENCOUNTER_CLASS_CODE")}
@@ -909,7 +908,6 @@ export class QeAdminDataCsvFileIngestSource<
 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
-      ${tr.uniqueValueInAllRows("FACILITY_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_LONG_NAME")}
       ${tr.mandatoryValueInAllRows("ORGANIZATION_TYPE")}
       ${tr.onlyAllowedValuesInAllRows(
