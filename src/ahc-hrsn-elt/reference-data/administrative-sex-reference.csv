@@ -1,7 +1,8 @@
 ADMINISTRATIVE_SEX_CODE,ADMINISTRATIVE_SEX_CODE_DESCRIPTION,ADMINISTRATIVE_SEX_CODE_SYSTEM
 M,Male,http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender
 F,Female,http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender
-X or UN,Undifferentiated,http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender
+X,Undifferentiated,http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender
+UN,Undifferentiated,http://terminology.hl7.org/CodeSystem/v3-AdministrativeGender
 UNK,Unknown,http://terminology.hl7.org/CodeSystem/v3-NullFlavor
 OTH,Other,http://terminology.hl7.org/CodeSystem/v3-NullFlavor
 ASKU,Asked by Unknown,http://terminology.hl7.org/CodeSystem/v3-NullFlavor

@@ -299,14 +299,11 @@ export class ScreeningCsvFileIngestSource<
         "'https://fhir-ru.github.io/valueset-encounter-status.html'"
       )}
       ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
-      ${tr.onlyAllowedValuesInAllRows(
-        "ENCOUNTER_TYPE_CODE_SYSTEM",
-        "'SNOMED-CT', 'SNOMED', 'CPT'"
-      )}
+      ${sar.onlyAllowValidEncounterTypeSystemInAllRows("ENCOUNTER_TYPE_CODE_SYSTEM")}
       ${sar.onlyAllowValidEncounterTypeDescriptionInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION")}
       ${tr.mandatoryValueInAllRows("SCREENING_STATUS_CODE")}
       ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE")}
-      ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE_DESCRIPTION")}
+      ${sar.onlyAllowValidScreeningStatusDescriptionInAllRows("SCREENING_STATUS_CODE_DESCRIPTION")}
       ${tr.mandatoryValueInAllRows("SCREENING_STATUS_CODE_SYSTEM")}
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_STATUS_CODE_SYSTEM",
@@ -342,7 +339,7 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("POTENTIAL_NEED_INDICATED")}
       ${tr.onlyAllowedValuesInAllRows(
         "POTENTIAL_NEED_INDICATED",
-        "'Yes','No','NA'"
+        "'Yes','No','N/A'"
       )}
 
 
@@ -608,7 +605,7 @@ export class AdminDemographicCsvFileIngestSource<
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
-          FROM read_csv_auto('${uri}');
+          FROM read_csv_auto('${uri}', types={'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR'});
 
       ${ssr.requiredColumnNames()}
 
@@ -651,12 +648,12 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("LAST_NAME")}
       ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")}
       ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX_CODE")}
-      ${tr.onlyAllowedValuesInAllRows(
-        "ADMINISTRATIVE_SEX_CODE",
-        "'M', 'F', 'X (UN)', 'UNK', 'OTH. ASKU'"
-      )}
-      ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE", "'M', 'F', 'ASKU', 'OTH', 'UNK'")}
-      ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION", "'Male', 'Female', 'Asked but Unknown', 'Other', 'Unknown'")}
+      ${adar.onlyAllowValidAdministrativeSexCodeInAllRows("ADMINISTRATIVE_SEX_CODE")}
+      ${adar.onlyAllowValidAdministrativeSexCodeDescriptionInAllRows("ADMINISTRATIVE_SEX _CODE_DESCRIPTION")}
+      ${adar.onlyAllowValidAdministrativeSexCodeSystemInAllRows("ADMINISTRATIVE_SEX _CODE_SYSTEM")}
+      ${adar.onlyAllowValidSexAtBirthCodeInAllRows("SEX_AT_BIRTH_CODE")}
+      ${adar.onlyAllowValidSexAtBirthCodeDescriptionInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION")}
+      ${adar.onlyAllowValidSexAtBirthCodeSystemInAllRows("SEX_AT_BIRTH_CODE_SYSTEM")}
       ${tr.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
       ${tr.onlyAllowValidDateTimeInAllRows("PAT_BIRTH_DATE")}
       ${tr.mandatoryValueInAllRows("CITY")}
@@ -670,25 +667,12 @@ export class AdminDemographicCsvFileIngestSource<
         "'407377005','446141000124107','446151000124109','446131000124102','407376001','ASKU','OTH','UNK'"
       )}
       ${tr.onlyAllowedValuesInAllRows(
-        "ADMINISTRATIVE_SEX _CODE_DESCRIPTION",
-        "'Male','Female','Asked but Unknown','Other','Unknown'"
-      )}
-      ${tr.onlyAllowedValuesInAllRows(
         "GENDER_IDENTITY_CODE_SYSTEM_NAME",
         "'SNOMED-CT','SNOMED'"
       )}
-      ${tr.onlyAllowedValuesInAllRows(
-        "SEXUAL_ORIENTATION_CODE",
-        "'42035005','20430005','38628009','OTH','UNK'"
-      )}
-      ${tr.onlyAllowedValuesInAllRows(
-        "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME",
-        "'SNOMED-CT','SNOMED'"
-      )}
-      ${tr.onlyAllowedValuesInAllRows(
-        "SEXUAL_ORIENTATION_DESCRIPTION",
-        "'Bisexual','Straight','Gay or lesbian','other','unknown'"
-      )}
+      ${adar.onlyAllowValidSexualOrientationCodeInAllRows("SEXUAL_ORIENTATION_CODE")}
+      ${adar.onlyAllowValidSexualOrientationDescriptionInAllRows("SEXUAL_ORIENTATION_DESCRIPTION")}
+      ${adar.onlyAllowValidSexualOrientationCodeSystemInAllRows("SEXUAL_ORIENTATION_CODE_SYSTEM_NAME")}
       ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE'")}
       ${tr.onlyAllowedValuesInAllRows(
         "ETHNICITY_CODE_SYSTEM_NAME",
