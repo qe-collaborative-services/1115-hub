@@ -15,7 +15,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.5.3";
+export const ORCHESTRATE_VERSION = "0.6.0";
 
 export type PotentialIngestSource =
   | excel.ScreeningExcelSheetIngestSource<string, o.State>
@@ -218,6 +218,8 @@ export interface OrchEngineWorkflowPaths {
     readonly diagsXlsxSupplier?: () => string;
     readonly diagsMdSupplier?: () => string;
     readonly fhirJsonSupplier?: () => string;
+    readonly fhirTempJsonSupplier?: () => string;
+    readonly fhirHttpSupplier?: () => string;
   };
 
   readonly initializePaths?: () => Promise<void>;
@@ -283,6 +285,8 @@ export function orchEngineWorkflowPaths(
     diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
     fhirJsonSupplier: () => egress.resolvedPath("fhir.json"),
+    fhirTempJsonSupplier: () => egress.resolvedPath("temp-fhir.json"),
+    fhirHttpSupplier: () => egress.resolvedPath("fhir.http"),
   };
   const inProcess: OrchEngineWorkflowPaths["inProcess"] = {
     ...oeStorablePath(path.join("egress", sessionID, ".workflow")),
@@ -699,6 +703,7 @@ export class OrchEngine {
             LEFT JOIN orch_session_issue AS isi ON isee.orch_session_entry_id = isi.session_entry_id
             --LEFT JOIN business_rules br ON isi.issue_column = br.FIELD
             LEFT OUTER JOIN cte_business_rule br ON br.field = isi.issue_column
+            WHERE isi.orch_session_issue_id IS NOT NULL
           ;
 
           ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);
@@ -778,16 +783,38 @@ export class OrchEngine {
       );
     }
 
-    if (egress.fhirJsonSupplier) {
+    if (egress.fhirJsonSupplier && egress.fhirTempJsonSupplier) {
       const fhirJson = egress.fhirJsonSupplier();
+      const fhirTempJson = egress.fhirTempJsonSupplier();
       await this.duckdb.execute(
         this.govn.SQL`
           COPY (
-              SELECT json_group_array(FHIR_Observation) as FHIR FROM screening_fhir
-          ) TO '${fhirJson}'
+              SELECT FHIR_Bundle as FHIR FROM fhir_bundle
+        ) TO '${fhirTempJson}'
         `.SQL(
           this.govn.emitCtx,
         ),
+      );
+      const tempJsonContent = await Deno.readTextFile(fhirTempJson);
+      const tempJsonData = JSON.parse(tempJsonContent);
+      const originalJsonData = tempJsonData["FHIR"];
+      await Deno.writeTextFile(
+        fhirJson,
+        JSON.stringify(originalJsonData),
+      );
+      await Deno.remove(fhirTempJson);
+    }
+
+    if (egress.fhirHttpSupplier) {
+      const fhirHttp = egress.fhirHttpSupplier();
+      let fhirHttpContent = "### Submit FHIR Resource Bundle\n\n";
+      fhirHttpContent = fhirHttpContent +
+        "POST https://{{host}}/{{path}}?processingAgent=QE HTTP/1.1\n";
+      fhirHttpContent = fhirHttpContent + "content-type: application/json\n\n";
+      fhirHttpContent = fhirHttpContent + "< ./fhir.json";
+      await Deno.writeTextFile(
+        fhirHttp,
+        fhirHttpContent,
       );
     }
 

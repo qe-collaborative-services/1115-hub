@@ -31,4 +31,22 @@
     "files.trimTrailingWhitespace": true,
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
+  "rest-client.environmentVariables": {
+    "$shared": {
+      "host": "40lafnwsw7.execute-api.us-east-1.amazonaws.com",
+      "path": "dev"
+    },
+    "dev": {
+      "host": "40lafnwsw7.execute-api.us-east-1.amazonaws.com",
+      "path": "dev"
+    },
+    "singleResource": {
+      "host": "40lafnwsw7.execute-api.us-east-1.amazonaws.com",
+      "path": "dev"
+    },
+    "prod": {
+      "host": "40lafnwsw7.execute-api.us-east-1.amazonaws.com",
+      "path": "dev"
+    }
+  }
 }

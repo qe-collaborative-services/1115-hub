@@ -47,6 +47,7 @@ async function ingressWorkflow(
     // deno-fmt-ignore
     console.info(`📦 ${c.green(resourceDbSupplier())} has the aggregated content and \`orch_session_*\` validation tables.`);
   }
+
   // deno-fmt-ignore
   console.info(`🦆 ${c.yellow(e2eTestPaths.inProcess.duckDbFsPathSupplier())} has the raw ingested content and \`orch_session_*\` validation tables.`);
 }
@@ -92,12 +93,13 @@ function e2eTestWorkflowPaths(rootPath: string): mod.OrchEngineWorkflowPaths {
     diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
     fhirJsonSupplier: () => egress.resolvedPath("fhir.json"),
+    fhirTempJsonSupplier: () => egress.resolvedPath("temp-fhir.json"),
+    fhirHttpSupplier: () => egress.resolvedPath("fhir.http"),
   };
 
   return {
     inProcess,
     egress,
-
     initializePaths: async () => {
       try {
         await Deno.remove(inProcess.duckDbFsPathSupplier());

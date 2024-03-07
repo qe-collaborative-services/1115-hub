@@ -40,6 +40,33 @@ export class CommonAssuranceRules<
       "^[A-Za-z]{2}\\d{5}[A-Za-z]$",
     );
   }
+
+  onlyAllowValidIntegerAlphaNumericStringInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_integer_alphanumeric_string_in_all_rows";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        SELECT '${columnName}' AS issue_column,
+          t."${columnName}" AS invalid_value,
+          t.src_file_row_number AS issue_row
+        FROM ${this.tableName} t
+        WHERE t."${columnName}" SIMILAR TO '[0-9]+'
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Data Type Mismatch`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid value "' || invalid_value || '" found in ' || issue_column`,
+        `'Invalid string of numbers found'`,
+      )
+    }`;
+  }
 }
 
 /**
@@ -424,6 +451,7 @@ export class ScreeningAssuranceRules<
       WITH ${cteName} AS (
         SELECT '${columnName2}' AS issue_column,
           scr."${columnName2}" AS invalid_value,
+          scr."${columnName1}" AS invalid_question_value,
           scr.src_file_row_number AS issue_row
           FROM ${this.tableName} scr
           LEFT OUTER JOIN ${ahcCrossWalkReferenceTable} crw
@@ -443,8 +471,8 @@ export class ScreeningAssuranceRules<
         "issue_row",
         "issue_column",
         "invalid_value",
-        `'Invalid Answer Code "' || invalid_value || '" found in ' || issue_column`,
-        `'Validate Answer Code with ahc cross walk reference data'`,
+        `'Invalid Answer Code "' || invalid_value || '" for Question Code "' || invalid_question_value || '" found in ' || issue_column`,
+        `'Validate Question Code and Answer Code with ahc cross walk reference data'`,
       )
     }`;
   }
@@ -571,6 +599,37 @@ export class ScreeningAssuranceRules<
     }`;
   }
 
+  onlyAllowValidEncounterTypeSystemInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_encounter_type_code_system_in_all_rows";
+    const encounterTypeCodeReferenceTable = "encounter_type_code_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
+            ON sr.${columnName} = ecr.System
+           WHERE sr.${columnName} IS NOT NULL
+            AND ecr.System IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ENCOUNTER TYPE CODE SYSTEM`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ENCOUNTER TYPE CODE SYSTEM "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ENCOUNTER TYPE CODE SYSTEM with encounter type reference data'`,
+      )
+    }`;
+  }
+
   onlyAllowValidScreeningStatusCodeInAllRows(
     columnName: ColumnName,
   ) {
@@ -584,10 +643,10 @@ export class ScreeningAssuranceRules<
                  sr."${columnName}" AS invalid_value,
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
-            LEFT JOIN ${screeningStatusCodeReferenceTable} ecr
-            ON sr.${columnName} = ecr.Code
+            LEFT JOIN ${screeningStatusCodeReferenceTable} ref
+            ON sr.${columnName} = ref.Code
            WHERE sr.${columnName} IS NOT NULL
-            AND ecr.Code IS NULL
+            AND ref.Code IS NULL
       )
       ${
       this.insertRowValueIssueCtePartial(
@@ -833,6 +892,285 @@ export class AdminDemographicAssuranceRules<
         "invalid_value",
         `'Invalid Unique Medicaid Cin Per Mrn "' || invalid_value || '" found in ' || issue_column`,
         `'Validate Unique Medicaid Cin Per Mrn'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidSexualOrientationDescriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_sexual_orientation_description_in_all_rows";
+    const sexualOrientationReferenceTable = "sexual_orientation_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${sexualOrientationReferenceTable} ref
+            ON sr.${columnName} = ref.SEXUAL_ORIENTATION_CODE_DESCRIPTION
+           WHERE sr.${columnName} IS NOT NULL
+            AND ref.SEXUAL_ORIENTATION_CODE_DESCRIPTION IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid SEXUAL ORIENTATION CODE DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid SEXUAL ORIENTATION CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate SEXUAL ORIENTATION CODE DESCRIPTION with sexual orientation reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidSexualOrientationCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_sexual_orientation_code_in_all_rows";
+    const sexualOrientationReferenceTable = "sexual_orientation_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${sexualOrientationReferenceTable} ref
+            ON sr.${columnName} = ref.SEXUAL_ORIENTATION_CODE
+           WHERE sr.${columnName} IS NOT NULL
+            AND ref.SEXUAL_ORIENTATION_CODE IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid SEXUAL ORIENTATION CODE`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid SEXUAL ORIENTATION CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate SEXUAL ORIENTATION CODE with sexual orientation reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidSexualOrientationCodeSystemInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_sexual_orientation_code_system_in_all_rows";
+    const sexualOrientationReferenceTable = "sexual_orientation_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${sexualOrientationReferenceTable} ref
+            ON sr.${columnName} = ref.SEXUAL_ORIENTATION_CODE_SYSTEM_NAME
+           WHERE sr.${columnName} IS NOT NULL
+            AND ref.SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid SEXUAL ORIENTATION CODE SYSTEM NAME`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid SEXUAL ORIENTATION CODE SYSTEM NAME "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate SEXUAL ORIENTATION CODE SYSTEM NAME with sexual orientation reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidSexAtBirthCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_sex_at_birth_code_in_all_rows";
+    const sexAtBirthReferenceTable = "sex_at_birth_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${sexAtBirthReferenceTable} ref
+            ON sr.${columnName} = ref.SEX_AT_BIRTH_CODE
+           WHERE sr.${columnName} IS NOT NULL
+            AND ref.SEX_AT_BIRTH_CODE IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid SEX AT BIRTH CODE`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid SEX AT BIRTH CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate SEX AT BIRTH CODE with sex at birth reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidSexAtBirthCodeDescriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_sex_at_birth_code_description_in_all_rows";
+    const sexAtBirthReferenceTable = "sex_at_birth_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${sexAtBirthReferenceTable} ref
+            ON sr.${columnName} = ref.SEX_AT_BIRTH_CODE_DESCRIPTION
+           WHERE sr.${columnName} IS NOT NULL
+            AND ref.SEX_AT_BIRTH_CODE_DESCRIPTION IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid SEX_AT_BIRTH_CODE_DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid SEX_AT_BIRTH_CODE_DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate SEX_AT_BIRTH_CODE_DESCRIPTION with sex at birth reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidSexAtBirthCodeSystemInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_sex_at_birth_code_system_in_all_rows";
+    const sexAtBirthReferenceTable = "sex_at_birth_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${sexAtBirthReferenceTable} ref
+            ON sr.${columnName} = ref.SEX_AT_BIRTH_CODE_SYSTEM
+           WHERE sr.${columnName} IS NOT NULL
+            AND ref.SEX_AT_BIRTH_CODE_SYSTEM IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid SEX AT BIRTH CODE SYSTEM`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid SEX AT BIRTH CODE SYSTEM "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate SEX AT BIRTH CODE SYSTEM with sex at birth reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidAdministrativeSexCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_administrative_sex_code_in_all_rows";
+    const administrativeSexReferenceTable = "administrative_sex_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${administrativeSexReferenceTable} ref
+            ON sr."${columnName}" = ref.ADMINISTRATIVE_SEX_CODE
+           WHERE sr."${columnName}" IS NOT NULL
+            AND ref.ADMINISTRATIVE_SEX_CODE IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ADMINISTRATIVE SEX CODE`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ADMINISTRATIVE SEX CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ADMINISTRATIVE SEX CODE with administrative sex reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidAdministrativeSexCodeDescriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_administrative_sex_code_description_in_all_rows";
+    const administrativeSexReferenceTable = "administrative_sex_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${administrativeSexReferenceTable} ref
+            ON sr."${columnName}" = ref.ADMINISTRATIVE_SEX_CODE_DESCRIPTION
+           WHERE sr."${columnName}" IS NOT NULL
+            AND ref.ADMINISTRATIVE_SEX_CODE_DESCRIPTION IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ADMINISTRATIVE SEX CODE DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ADMINISTRATIVE SEX CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ADMINISTRATIVE SEX CODE DESCRIPTION with administrative sex reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidAdministrativeSexCodeSystemInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_administrative_sex_code_system_in_all_rows";
+    const administrativeSexReferenceTable = "administrative_sex_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${administrativeSexReferenceTable} ref
+            ON sr."${columnName}" = ref.ADMINISTRATIVE_SEX_CODE_SYSTEM
+           WHERE sr."${columnName}" IS NOT NULL
+            AND ref.ADMINISTRATIVE_SEX_CODE_SYSTEM IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ADMINISTRATIVE SEX CODE SYSTEM`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ADMINISTRATIVE SEX CODE SYSTEM "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ADMINISTRATIVE SEX CODE SYSTEM with administrative sex reference data'`,
       )
     }`;
   }

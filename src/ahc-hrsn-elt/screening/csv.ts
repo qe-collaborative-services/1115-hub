@@ -1,4 +1,9 @@
-import { path, SQLa_orch as o, SQLa_orch_duckdb as ddbo } from "./deps.ts";
+import {
+  path,
+  SQLa_orch as o,
+  SQLa_orch_duckdb as ddbo,
+  ulid,
+} from "./deps.ts";
 import * as sg from "./governance.ts";
 
 export const csvFileNames = [
@@ -299,14 +304,11 @@ export class ScreeningCsvFileIngestSource<
         "'https://fhir-ru.github.io/valueset-encounter-status.html'"
       )}
       ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
-      ${tr.onlyAllowedValuesInAllRows(
-        "ENCOUNTER_TYPE_CODE_SYSTEM",
-        "'SNOMED-CT', 'SNOMED', 'CPT'"
-      )}
+      ${sar.onlyAllowValidEncounterTypeSystemInAllRows("ENCOUNTER_TYPE_CODE_SYSTEM")}
       ${sar.onlyAllowValidEncounterTypeDescriptionInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION")}
       ${tr.mandatoryValueInAllRows("SCREENING_STATUS_CODE")}
       ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE")}
-      ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE_DESCRIPTION")}
+      ${sar.onlyAllowValidScreeningStatusDescriptionInAllRows("SCREENING_STATUS_CODE_DESCRIPTION")}
       ${tr.mandatoryValueInAllRows("SCREENING_STATUS_CODE_SYSTEM")}
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_STATUS_CODE_SYSTEM",
@@ -342,7 +344,7 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("POTENTIAL_NEED_INDICATED")}
       ${tr.onlyAllowedValuesInAllRows(
         "POTENTIAL_NEED_INDICATED",
-        "'Yes','No','NA'"
+        "'Yes','No','N/A'"
       )}
 
 
@@ -390,7 +392,7 @@ export class ScreeningCsvFileIngestSource<
 
       -- try sqltofhir Visual Studio Code extension for writing FHIR resources with SQL.
       -- see https://marketplace.visualstudio.com/items?itemName=arkhn.sqltofhir-vscode
-      CREATE VIEW screening_fhir AS
+      CREATE VIEW IF NOT EXISTS screening_fhir AS
         SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'Observation',
               'id', tab_screening.ENCOUNTER_ID,
@@ -422,7 +424,7 @@ export class ScreeningCsvFileIngestSource<
         FROM ${tableName} as tab_screening LEFT JOIN ${relatedTableNames.adminDemographicsTableName} as tab_demograph
         ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
-      CREATE VIEW ${targetSchema}.${aggrScreeningTableName}_fhir AS
+      CREATE VIEW IF NOT EXISTS ${targetSchema}.${aggrScreeningTableName}_fhir AS
         SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'Observation',
               'id', tab_screening.ENCOUNTER_ID,
@@ -455,7 +457,7 @@ export class ScreeningCsvFileIngestSource<
         ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
               -- TODO: Need to fill out subject->display, source->display, questionnaire
-      CREATE VIEW ${targetSchema}.${aggrScreeningTableName}_fhir_questionnaire AS
+      CREATE VIEW IF NOT EXISTS ${targetSchema}.${aggrScreeningTableName}_fhir_questionnaire AS
         SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'QuestionnaireResponse',
               'id', tab_screening.ENCOUNTER_ID,
@@ -608,7 +610,7 @@ export class AdminDemographicCsvFileIngestSource<
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
-          FROM read_csv_auto('${uri}');
+          FROM read_csv_auto('${uri}', types={'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR', 'SEXUAL_ORIENTATION_CODE': 'VARCHAR', 'GENDER_IDENTITY_CODE': 'VARCHAR'});
 
       ${ssr.requiredColumnNames()}
 
@@ -651,12 +653,12 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("LAST_NAME")}
       ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")}
       ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX_CODE")}
-      ${tr.onlyAllowedValuesInAllRows(
-        "ADMINISTRATIVE_SEX_CODE",
-        "'M', 'F', 'X (UN)', 'UNK', 'OTH. ASKU'"
-      )}
-      ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE", "'M', 'F', 'ASKU', 'OTH', 'UNK'")}
-      ${tr.onlyAllowedValuesInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION", "'Male', 'Female', 'Asked but Unknown', 'Other', 'Unknown'")}
+      ${adar.onlyAllowValidAdministrativeSexCodeInAllRows("ADMINISTRATIVE_SEX_CODE")}
+      ${adar.onlyAllowValidAdministrativeSexCodeDescriptionInAllRows("ADMINISTRATIVE_SEX _CODE_DESCRIPTION")}
+      ${adar.onlyAllowValidAdministrativeSexCodeSystemInAllRows("ADMINISTRATIVE_SEX _CODE_SYSTEM")}
+      ${adar.onlyAllowValidSexAtBirthCodeInAllRows("SEX_AT_BIRTH_CODE")}
+      ${adar.onlyAllowValidSexAtBirthCodeDescriptionInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION")}
+      ${adar.onlyAllowValidSexAtBirthCodeSystemInAllRows("SEX_AT_BIRTH_CODE_SYSTEM")}
       ${tr.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
       ${tr.onlyAllowValidDateTimeInAllRows("PAT_BIRTH_DATE")}
       ${tr.mandatoryValueInAllRows("CITY")}
@@ -664,31 +666,18 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.onlyAllowedValuesInAllRows("STATE", "'NY', 'New York'")}
       ${tr.mandatoryValueInAllRows("ZIP")}
       ${adar.car.onlyAllowValidZipInAllRows("ZIP")}
-      ${adar.car.onlyAllowAlphabetsAndNumbersWithSpaceInAllRows("ADDRESS1")}
+      ${adar.car.onlyAllowValidIntegerAlphaNumericStringInAllRows("ADDRESS1")}
       ${tr.onlyAllowedValuesInAllRows(
         "GENDER_IDENTITY_CODE",
         "'407377005','446141000124107','446151000124109','446131000124102','407376001','ASKU','OTH','UNK'"
       )}
       ${tr.onlyAllowedValuesInAllRows(
-        "ADMINISTRATIVE_SEX _CODE_DESCRIPTION",
-        "'Male','Female','Asked but Unknown','Other','Unknown'"
-      )}
-      ${tr.onlyAllowedValuesInAllRows(
         "GENDER_IDENTITY_CODE_SYSTEM_NAME",
         "'SNOMED-CT','SNOMED'"
       )}
-      ${tr.onlyAllowedValuesInAllRows(
-        "SEXUAL_ORIENTATION_CODE",
-        "'42035005','20430005','38628009','OTH','UNK'"
-      )}
-      ${tr.onlyAllowedValuesInAllRows(
-        "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME",
-        "'SNOMED-CT','SNOMED'"
-      )}
-      ${tr.onlyAllowedValuesInAllRows(
-        "SEXUAL_ORIENTATION_DESCRIPTION",
-        "'Bisexual','Straight','Gay or lesbian','other','unknown'"
-      )}
+      ${adar.onlyAllowValidSexualOrientationCodeInAllRows("SEXUAL_ORIENTATION_CODE")}
+      ${adar.onlyAllowValidSexualOrientationDescriptionInAllRows("SEXUAL_ORIENTATION_DESCRIPTION")}
+      ${adar.onlyAllowValidSexualOrientationCodeSystemInAllRows("SEXUAL_ORIENTATION_CODE_SYSTEM_NAME")}
       ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE'")}
       ${tr.onlyAllowedValuesInAllRows(
         "ETHNICITY_CODE_SYSTEM_NAME",
@@ -743,26 +732,116 @@ export class AdminDemographicCsvFileIngestSource<
       CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrPatientDemogrTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
       INSERT INTO ${targetSchema}.${aggrPatientDemogrTableName} SELECT * FROM ${tableName};
 
-      CREATE VIEW ${targetSchema}.${aggrPatientDemogrTableName}_fhir_patient AS
-        SELECT pat_mrn_id, json_object(
-              'resourceType', 'Patient',
-              'identifier', MPI_ID,
-              'active', true,
-              'name', CONCAT(FIRST_NAME,' ', LAST_NAME),
-              'telecom', '',
-              'gender', GENDER_IDENTITY_CODE_DESCRIPTION,
-              'birthDate', PAT_BIRTH_DATE,
-              'address', json_array(
-                  json_object(
-                    'text', ADDRESS1,
-                    'line', ADDRESS2,
-                    'city', CITY,
-                    'state', STATE,
-                    'postalCode', ZIP
+      CREATE VIEW IF NOT EXISTS fhir_bundle AS
+        WITH cte_fhir_patient AS (
+          SELECT json(FHIR_Patient) as FHIR_Patient FROM (SELECT adt.pat_mrn_id,json_object('fullUrl', '',
+          'resource', json_object(
+            'fullUrl', MPI_ID,
+            'resource', json_object(
+                  'resourceType', 'Patient',
+                  'id', MPI_ID,
+                  'meta', json_object(
+                    'lastUpdated','',
+                    'profile', json_array(),
+                    'language', PREFERRED_LANGUAGE_CODE
+                  ),
+                  'text', json_object(
+                    'status', 'extensions',
+                    'div', ''
+                  ),
+                  'extension', json_array(),
+                  'identifier', json_array(json_object(
+                    'type', json_object(
+                      'coding', json_array()
+                    ),
+                    'system', '',
+                    'value', '',
+                    'assigner', json_object(
+                      'reference', ''
+                    ))
+                  ),
+                  'name', json_array(json_object(
+                    'text', CONCAT(FIRST_NAME,' ', LAST_NAME),
+                    'family', LAST_NAME,
+                    'given', json_array(FIRST_NAME,LAST_NAME))
+                  ),
+                  'telecom', '',
+                  'gender', GENDER_IDENTITY_CODE_DESCRIPTION,
+                  'birthDate', PAT_BIRTH_DATE,
+                  'address', json_array(
+                      json_object(
+                        'text', CONCAT(ADDRESS1, ' ', ADDRESS2 ),
+                        'line', json_array(ADDRESS1,ADDRESS2),
+                        'city', CITY,
+                        'state', STATE,
+                        'postalCode', ZIP
+                    )
+                  ),
+                  'communication', json_array(
+                    json_object('language', json_object(
+                      'coding', json_array(
+                        'code', PREFERRED_LANGUAGE_CODE
+                      )
+                    ),
+                      'preferred', true
+                  ))
+            ))) AS FHIR_Patient
+        FROM ${tableName} adt LEFT JOIN ${this.relatedTableNames.qeAdminDataTableName} qat
+        ON adt.PAT_MRN_ID = qat.PAT_MRN_ID
+        )),
+        cte_fhir_org AS (
+          SELECT qed.PAT_MRN_ID, JSON_OBJECT(
+            'fullUrl', '',
+            'resource', JSON_OBJECT(
+                'resourceType', 'Organization',
+                'id', qed.FACILITY_ID,
+                'meta', JSON_OBJECT(
+                    'lastUpdated', '',
+                    'profile', JSON_ARRAY('')
+                ),
+                'text', JSON_OBJECT(
+                    'status', 'generated',
+                    'div', ''
+                ),
+                'identifier', JSON_ARRAY(
+                    JSON_OBJECT(
+                        'system', '',
+                        'value', ''
+                    )
+                ),
+                'active', true,
+                'type', JSON_ARRAY(
+                    JSON_OBJECT(
+                        'coding', JSON_ARRAY(
+                            JSON_OBJECT(
+                                'system', '',
+                                'code', '',
+                                'display', qed.ORGANIZATION_TYPE
+                            )
+                        )
+                    )
+                ),
+                'name', qed.FACILITY_LONG_NAME,
+                'address', JSON_ARRAY(
+                    JSON_OBJECT(
+                        'text', CONCAT(qed.FACILITY_ADDRESS1,' ', qed.FACILITY_ADDRESS2)
+                    )
                 )
-              )
-          ) AS FHIR_Patient
-        FROM ${tableName};
+            )
+        ) AS FHIR_Organization
+        FROM ${this.relatedTableNames.qeAdminDataTableName} qed)
+        SELECT json_object(
+          'resourceType', 'Bundle',
+          'id', '${ulid.ulid()}',
+          'type', 'transaction',
+          'entry', json(json_group_array(json_data))
+          ) AS FHIR_Bundle
+          FROM (
+            SELECT FHIR_Organization AS json_data FROM cte_fhir_org
+            UNION ALL
+            SELECT FHIR_Patient AS json_data FROM cte_fhir_patient
+          );
+
 
         ${await session.entryStateDML(
           sessionEntryID,
