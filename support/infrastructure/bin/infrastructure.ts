@@ -4,10 +4,12 @@ import { Stack, StackProps } from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { Construct } from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as efs from "aws-cdk-lib/aws-efs";
 
 interface ComputeStackProps extends StackProps {
   vpc: ec2.Vpc;
   eip: ec2.CfnEIP;
+  fileSystem: efs.FileSystem;
 }
 
 class ComputeStack extends Stack {
@@ -59,19 +61,22 @@ class ComputeStack extends Stack {
     userData.addCommands(
       `echo deployment: ${randomString} > /etc/deployment.txt`,
       "apt-get update -y",
-      "apt-get install ca-certificates curl",
+      "apt-get install -y ca-certificates curl nfs-common",
       "install -m 0755 -d /etc/apt/keyrings",
       "curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc",
       "chmod a+r /etc/apt/keyrings/docker.asc",
-      'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null',
+      `echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null`,
       "apt-get update",
-      "apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y",
+      "apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin",
       "curl -Ssf https://pkgx.sh | sh",
       "install -m 755 pkgx /usr/local/bin",
       "export PATH=$PATH:/home/admin/.local/bin",
       "pkgx install git",
       "export PATH=$PATH:/home/admin/.local/bin",
-      "git clone https://github.com/qe-collaborative-services/1115-hub.git",
+      "mkdir -p 1115-hub/support/infrastructure/containers",
+      `mount -t nfs4 -o nfsvers=4.1 ${props.fileSystem.fileSystemId}.efs.us-east-1.amazonaws.com:/ 1115-hub/support/infrastructure/containers`,
+      "mkdir -p 1115-hub/support/infrastructure/containers/example",
+      "git clone https://github.com/qe-collaborative-services/1115-hub.git 1115-hub/support/infrastructure/containers",
       "cd 1115-hub/support/infrastructure/containers",
       "docker compose up --build",
     );
@@ -140,18 +145,37 @@ class networkStack extends cdk.Stack {
   }
 }
 
+export interface dataStackProps extends cdk.StackProps {
+  vpc: ec2.Vpc;
+}
+
+export class DataStack extends cdk.Stack {
+  readonly fileSystem: efs.FileSystem;
+  constructor(scope: Construct, id: string, props: dataStackProps) {
+    super(scope, id, props);
+    // Create an EFS file system
+    this.fileSystem = new efs.FileSystem(this, "FileSystem", {
+      vpc: props.vpc,
+    });
+  }
+}
+
 const app = new cdk.App();
 const network = new networkStack(
   app,
   `${process.env.ENV}ElevenFifteenNetwork`,
   {},
 );
+const data = new DataStack(app, `${process.env.ENV}ElevenFifteenData`, {
+  vpc: network.vpc,
+});
 const compute = new ComputeStack(
   app,
   `${process.env.ENV}ElevenFifteenCompute`,
   {
     vpc: network.vpc,
     eip: network.eip,
+    fileSystem: data.fileSystem,
   },
 );
 

@@ -4,7 +4,7 @@ services:
   sftp:
     image: atmoz/sftp
     volumes:
-      - sftp_data:/home
+      - ${SFTP_DATA_DIR}:/home
     ports:
       - "2222:22"
     command: >
@@ -15,17 +15,44 @@ services:
       qe5:pass:::ingress/
       qe6:pass:::ingress/
       observe:pass:::log/
-
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: qe
+      POSTGRES_PASSWORD: qe
+      POSTGRES_DB: qe
+    volumes:
+      - ${PG_DATA_DIR}:/var/lib/postgresql/data
   workflow:
     build:
       context: .
       dockerfile: Dockerfile.workflow
       args:
-        - REPO_URL=https://github.com/qe-collaborative-services/1115-hub.git
+        - REPO_URL=${REPO_URL}
+      environment:
+        - PG_CONNECTION_STRING=postgresql://qe:qe@postgres:5432/qe
+        
     volumes:
-      - sftp_data:/SFTP
+      - ${SFTP_DATA_DIR}:/SFTP
     depends_on:
       - sftp
-
-volumes:
-  sftp_data:
+      - postgres
+  pg-sqlpage:
+    image: lovasoa/sqlpage
+    ports:
+      - "8080:8080"
+    environment:
+      - database_url=postgresql://qe:qe@postgres:5432/qe
+    depends_on:
+      - postgres
+  qe-sqlpage:
+    image: lovasoa/sqlpage
+    volumes:
+      - ${SFTP_DATA_DIR}:/SFTP
+    ports:
+      - "8081:8080"
+    environment:
+      - database_url=sqlite://SFTP/${SQL_PAGE_QE}/egress/content.sqlite.db?mode=rwc
+    depends_on:
+      - sftp
+      - workflow

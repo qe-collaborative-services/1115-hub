@@ -1,3 +1,10 @@
 # node git ignore
 node_modules
 cdk.out
+
+*/mnt/pg-data/*
+*/mnt/pg-sqlpage/*
+*/mnt/qe-sqlpage/*
+*/mnt/sftp-data/*
+
+.env.local
