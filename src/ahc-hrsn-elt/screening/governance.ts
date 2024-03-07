@@ -40,6 +40,33 @@ export class CommonAssuranceRules<
       "^[A-Za-z]{2}\\d{5}[A-Za-z]$",
     );
   }
+
+  onlyAllowValidIntegerAlphaNumericStringInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_integer_alphanumeric_string_in_all_rows";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        SELECT '${columnName}' AS issue_column,
+          t."${columnName}" AS invalid_value,
+          t.src_file_row_number AS issue_row
+        FROM ${this.tableName} t
+        WHERE t."${columnName}" SIMILAR TO '[0-9]+'
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Data Type Mismatch`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid value "' || invalid_value || '" found in ' || issue_column`,
+        `'Invalid string of numbers found'`,
+      )
+    }`;
+  }
 }
 
 /**

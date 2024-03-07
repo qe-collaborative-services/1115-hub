@@ -15,7 +15,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.5.3";
+export const ORCHESTRATE_VERSION = "0.5.4";
 
 export type PotentialIngestSource =
   | excel.ScreeningExcelSheetIngestSource<string, o.State>
@@ -699,6 +699,7 @@ export class OrchEngine {
             LEFT JOIN orch_session_issue AS isi ON isee.orch_session_entry_id = isi.session_entry_id
             --LEFT JOIN business_rules br ON isi.issue_column = br.FIELD
             LEFT OUTER JOIN cte_business_rule br ON br.field = isi.issue_column
+            WHERE isi.orch_session_issue_id IS NOT NULL
           ;
 
           ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);

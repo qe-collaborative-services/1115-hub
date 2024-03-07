@@ -387,7 +387,7 @@ export class ScreeningCsvFileIngestSource<
 
       -- try sqltofhir Visual Studio Code extension for writing FHIR resources with SQL.
       -- see https://marketplace.visualstudio.com/items?itemName=arkhn.sqltofhir-vscode
-      CREATE VIEW screening_fhir AS
+      CREATE VIEW IF NOT EXISTS screening_fhir AS
         SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'Observation',
               'id', tab_screening.ENCOUNTER_ID,
@@ -419,7 +419,7 @@ export class ScreeningCsvFileIngestSource<
         FROM ${tableName} as tab_screening LEFT JOIN ${relatedTableNames.adminDemographicsTableName} as tab_demograph
         ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
-      CREATE VIEW ${targetSchema}.${aggrScreeningTableName}_fhir AS
+      CREATE VIEW IF NOT EXISTS ${targetSchema}.${aggrScreeningTableName}_fhir AS
         SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'Observation',
               'id', tab_screening.ENCOUNTER_ID,
@@ -452,7 +452,7 @@ export class ScreeningCsvFileIngestSource<
         ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
               -- TODO: Need to fill out subject->display, source->display, questionnaire
-      CREATE VIEW ${targetSchema}.${aggrScreeningTableName}_fhir_questionnaire AS
+      CREATE VIEW IF NOT EXISTS ${targetSchema}.${aggrScreeningTableName}_fhir_questionnaire AS
         SELECT tab_screening.PAT_MRN_ID, CONCAT(tab_demograph.FIRST_NAME,' ', tab_demograph.LAST_NAME) as display_name, json_object(
               'resourceType', 'QuestionnaireResponse',
               'id', tab_screening.ENCOUNTER_ID,
@@ -605,7 +605,7 @@ export class AdminDemographicCsvFileIngestSource<
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
-          FROM read_csv_auto('${uri}', types={'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR'});
+          FROM read_csv_auto('${uri}', types={'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR', 'SEXUAL_ORIENTATION_CODE': 'VARCHAR', 'GENDER_IDENTITY_CODE': 'VARCHAR'});
 
       ${ssr.requiredColumnNames()}
 
@@ -661,7 +661,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.onlyAllowedValuesInAllRows("STATE", "'NY', 'New York'")}
       ${tr.mandatoryValueInAllRows("ZIP")}
       ${adar.car.onlyAllowValidZipInAllRows("ZIP")}
-      ${adar.car.onlyAllowAlphabetsAndNumbersWithSpaceInAllRows("ADDRESS1")}
+      ${adar.car.onlyAllowValidIntegerAlphaNumericStringInAllRows("ADDRESS1")}
       ${tr.onlyAllowedValuesInAllRows(
         "GENDER_IDENTITY_CODE",
         "'407377005','446141000124107','446151000124109','446131000124102','407376001','ASKU','OTH','UNK'"
@@ -727,7 +727,7 @@ export class AdminDemographicCsvFileIngestSource<
       CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrPatientDemogrTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
       INSERT INTO ${targetSchema}.${aggrPatientDemogrTableName} SELECT * FROM ${tableName};
 
-      CREATE VIEW ${targetSchema}.${aggrPatientDemogrTableName}_fhir_patient AS
+      CREATE VIEW IF NOT EXISTS ${targetSchema}.${aggrPatientDemogrTableName}_fhir_patient AS
         SELECT pat_mrn_id, json_object(
               'resourceType', 'Patient',
               'identifier', MPI_ID,
