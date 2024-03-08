@@ -5,3 +5,4 @@ Code,System,Display
 "185317003",http://snomed.info/sct,Telephone encounter
 453701000124103,http://snomed.info/sct,In-person encounter
 "185320006",http://snomed.info/sct,Encounter by computer link
+"261665006",http://snomed.info/sct,Unknown

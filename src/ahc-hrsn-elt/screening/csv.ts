@@ -301,7 +301,7 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("ENCOUNTER_STATUS_CODE_SYSTEM")}
       ${tr.onlyAllowedValuesInAllRows(
         "ENCOUNTER_STATUS_CODE_SYSTEM",
-        "'https://fhir-ru.github.io/valueset-encounter-status.html'"
+        "'http://hl7.org/fhir/encounter-status'"
       )}
       ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
       ${sar.onlyAllowValidEncounterTypeSystemInAllRows("ENCOUNTER_TYPE_CODE_SYSTEM")}
@@ -314,39 +314,39 @@ export class ScreeningCsvFileIngestSource<
         "SCREENING_STATUS_CODE_SYSTEM",
         "'http://hl7.org/fhir/observation-status'"
       )}
+      ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("ANSWER_CODE")}
+      ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("ANSWER_CODE_SYSTEM_NAME")}
+      ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("QUESTION_CODE")}
+      ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("QUESTION_CODE_SYSTEM_NAME")}
+      ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE_DESCRIPTION")}
+      ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE_SYSTEM_NAME")}
+      ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_DESCRIPTION")}
-      ${tr.mandatoryValueInAllRows("QUESTION_CODE")}
       ${sar.onlyAllowValidAnswerCodeForQuestionCodeInAllRows("QUESTION_CODE","ANSWER_CODE")}
-      ${tr.mandatoryValueInAllRows("SCREENING_CODE_SYSTEM_NAME")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "SCREENING_CODE",
+        "'96777-8', '97023-6'"
+      )}
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_CODE_SYSTEM_NAME",
-        "'LN', 'LOINC'"
+        "'LN', 'LOINC', 'http://loinc.org'"
       )}
-      ${tr.mandatoryValueInAllRows("SCREENING_CODE")}
       ${tr.mandatoryValueInAllRows("RECORDED_TIME")}
       ${sar.onlyAllowValidRecordedTimeInAllRows("RECORDED_TIME")}
       ${tr.mandatoryValueInAllRows("SDOH_DOMAIN")}
       ${sar.onlyAllowValidSdohDomainInAllRows("SDOH_DOMAIN")}
       ${sar.onlyAllowValidQuestionCodeForScreeningCodeInAllRows("QUESTION_CODE")}
-      ${tr.onlyAllowedValuesInAllRows(
-        "SCREENING_CODE",
-        "'96777-8', '97023-6'"
-      )}
       ${tr.mandatoryValueInAllRows("ANSWER_CODE_DESCRIPTION")}
-      ${tr.mandatoryValueInAllRows("QUESTION_CODE_SYSTEM_NAME")}
       ${tr.onlyAllowedValuesInAllRows(
         "QUESTION_CODE_SYSTEM_NAME",
-        "'LN','LOIN'"
+        "'LN','LOIN','http://loinc.org'"
       )}
-      ${tr.mandatoryValueInAllRows("ANSWER_CODE")}
-      ${tr.mandatoryValueInAllRows("ANSWER_CODE_SYSTEM_NAME")}
-      ${tr.onlyAllowedValuesInAllRows("ANSWER_CODE_SYSTEM_NAME", "'LN','LOIN'")}
+      ${tr.onlyAllowedValuesInAllRows("ANSWER_CODE_SYSTEM_NAME", "'LN','LOIN','http://loinc.org'")}
       ${tr.mandatoryValueInAllRows("POTENTIAL_NEED_INDICATED")}
       ${tr.onlyAllowedValuesInAllRows(
         "POTENTIAL_NEED_INDICATED",
-        "'Yes','No','N/A'"
+        "'Yes','No','NA'"
       )}
-
 
       ${await session.entryStateDML(
         sessionEntryID,
@@ -673,15 +673,18 @@ export class AdminDemographicCsvFileIngestSource<
       )}
       ${tr.onlyAllowedValuesInAllRows(
         "GENDER_IDENTITY_CODE_SYSTEM_NAME",
-        "'SNOMED-CT','SNOMED'"
+        "'SNOMED-CT','SNOMED','http://snomed.info/sct'"
       )}
       ${adar.onlyAllowValidSexualOrientationCodeInAllRows("SEXUAL_ORIENTATION_CODE")}
       ${adar.onlyAllowValidSexualOrientationDescriptionInAllRows("SEXUAL_ORIENTATION_DESCRIPTION")}
-      ${adar.onlyAllowValidSexualOrientationCodeSystemInAllRows("SEXUAL_ORIENTATION_CODE_SYSTEM_NAME")}
-      ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE'")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME",
+        "'SNOMED-CT','SNOMED','http://snomed.info/sct'"
+      )}
+      ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238'")}
       ${tr.onlyAllowedValuesInAllRows(
         "ETHNICITY_CODE_SYSTEM_NAME",
-        "'CDC','CDCRE'"
+        "'CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238'"
       )}
       ${tr.mandatoryValueInAllRows("MPI_ID")}
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
@@ -689,7 +692,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.car.onlyAllowValidMedicaidCinFormatInAllRows("MEDICAID_CIN")}
       ${adar.onlyAllowUniqueMedicaidCinPerMrnInAllRows("MEDICAID_CIN")}
       ${tr.mandatoryValueInAllRows("CONSENT")}
-      ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes','No','Y','N','Unknown'")}
+      ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes','No','Y','N','Unknown','UNK'")}
 
       ${await session.entryStateDML(
         sessionEntryID,
@@ -995,13 +998,8 @@ export class QeAdminDataCsvFileIngestSource<
       )}
       ${tr.mandatoryValueInAllRows("FACILITY_ADDRESS1")}
       ${tr.uniqueValueInAllRows("FACILITY_ADDRESS1")}
-      ${qedar.car.onlyAllowAlphabetsAndNumbersWithSpaceInAllRows(
-        "FACILITY_ADDRESS1"
-      )}
+      ${qedar.car.onlyAllowValidIntegerAlphaNumericStringInAllRows("FACILITY_ADDRESS1")}
       ${tr.uniqueValueInAllRows("FACILITY_ADDRESS2")}
-      ${qedar.car.onlyAllowAlphabetsAndNumbersWithSpaceInAllRows(
-        "FACILITY_ADDRESS2"
-      )}
       ${tr.mandatoryValueInAllRows("FACILITY_STATE")}
       ${tr.onlyAllowedValuesInAllRows("FACILITY_STATE", "'NY', 'New York'")}
       ${tr.mandatoryValueInAllRows("FACILITY_ZIP")}

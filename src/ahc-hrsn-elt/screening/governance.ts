@@ -707,17 +707,26 @@ export class ScreeningAssuranceRules<
                     src_file_row_number AS issue_row
               FROM "${this.tableName}"
               WHERE "${columnName}" IS NOT NULL
-              AND NOT (LENGTH("${columnName}") = 17
-                    AND SUBSTR("${columnName}", 9, 1) = ' '
-                    AND SUBSTR("${columnName}", 12, 1) = ':'
-                    AND LENGTH(SUBSTRING("${columnName}", 13, 2)) = 2
-                    AND SUBSTRING("${columnName}", 15, 1) = ':'
-                    AND LENGTH(SUBSTRING("${columnName}", 16, 2)) = 2
-                    )
-              OR TRY_CAST(SUBSTR("${columnName}", 1, 4) || '-' || SUBSTR("${columnName}", 5, 2) || '-' || SUBSTR("${columnName}", 7, 2) AS DATE) IS NULL
-              OR TRY_CAST(SUBSTRING("${columnName}", 10, 8) AS TIME) IS NULL
+              AND NOT (
+                LENGTH("${columnName}") = 24
+                AND TRY_CAST(SUBSTR("${columnName}", 1,4) as INT) = NULL
+                AND SUBSTR("${columnName}", 5, 1) = '-'
+                AND TRY_CAST(SUBSTR("${columnName}", 6,2) as INT) = NULL
+                AND SUBSTR("${columnName}", 8, 1) = '-'
+                AND TRY_CAST(SUBSTR("${columnName}", 9,2) as INT) = NULL
+                  AND SUBSTR("${columnName}", 11, 1) = 'T'
+                  AND TRY_CAST(SUBSTR("${columnName}", 12,2) as INT) = NULL
+                  AND SUBSTR("${columnName}", 14, 1) = ':'
+                  AND TRY_CAST(SUBSTR("${columnName}", 15,2) as INT) = NULL
+                AND SUBSTRING("${columnName}", 17, 1) = ':'
+                AND TRY_CAST(SUBSTR("${columnName}", 18,2) as INT) = NULL
+                AND SUBSTRING("${columnName}", 20, 1) = '.'
+                AND TRY_CAST(SUBSTR("${columnName}", 21,3) as INT) = NULL
+                AND SUBSTRING("${columnName}", 24, 1) = 'Z'
+              )
+              OR TRY_CAST("${columnName}" AS TIMESTAMP) IS NULL
               OR SUBSTR("${columnName}", 1, 4) < ${minYear}
-      )
+        )
       ${this.insertRowValueIssueCtePartial(
         cteName,
         "Invalid Date",
@@ -840,6 +849,44 @@ export class ScreeningAssuranceRules<
         "invalid_value",
         `'Invalid Question Code "' || invalid_value || '" found in ' || issue_column`,
         `'Validate Question Code with ahc cross walk reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName =
+      "valid_screening_question_answer_mandatory_values_in_all_rows";
+    // Construct the name of the question reference table based on the provided parameter 'baseName'
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+            SELECT  '${columnName}' AS issue_column,
+                    "${columnName}" AS invalid_value,
+                    src_file_row_number AS issue_row
+              FROM ${this.tableName}
+              WHERE (${columnName} IS NULL OR TRIM("${columnName}") = '')
+              AND src_file_row_number
+              NOT IN(
+                Select src_file_row_number
+                  FROM ${this.tableName}
+                  Where UPPER(QUESTION_CODE_DESCRIPTION)
+                  IN ('TOTAL SAFETY SCORE',
+                  'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+                  'CALCULATED MENTAL HEALTH SCORE')
+              )
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid value in ${columnName}`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Mandatory field "' || issue_column || '" is empty'`,
+        `'The required field value ${columnName} is missing'`,
       )
     }`;
   }
