@@ -34,7 +34,7 @@ analyst-friendly format, QCS-OE employs the following architecture strategy:
 NYeC's specifications are available in
 [support/docs/specifications/ahc-hrsn-elt/screening](support/docs/specifications/ahc-hrsn-elt/screening):
 
-- `ahc-hrsn-2024-02-21-omnibus-rules.xlsx` contains the "Omnibus Rules" (sample
+- `ahc-hrsn-2024-03-08-omnibus-rules.xlsx` contains the "Omnibus Rules" (sample
   files, external references, business rules and remarks in a single Excel
   Workbook for convenience)
 - DEMOGRAPHIC_DATA_2024-02-21.csv is sample data
