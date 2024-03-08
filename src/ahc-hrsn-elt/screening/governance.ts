@@ -863,9 +863,9 @@ export class ScreeningAssuranceRules<
     // Construct the SQL query using tagged template literals
     return this.govn.SQL`
       WITH ${cteName} AS (
-            SELECT '${columnName}' AS issue_column,
-                QUESTION_CODE_DESCRIPTION AS invalid_value,
-                src_file_row_number AS issue_row
+            SELECT  '${columnName}' AS issue_column,
+                    "${columnName}" AS invalid_value,
+                    src_file_row_number AS issue_row
               FROM ${this.tableName}
               WHERE (${columnName} IS NULL OR TRIM("${columnName}") = '')
               AND src_file_row_number
@@ -885,7 +885,7 @@ export class ScreeningAssuranceRules<
         "issue_row",
         "issue_column",
         "invalid_value",
-        `'Balnk/Empty value for QUESTION_CODE_DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Mandatory field "' || issue_column || '" is empty'`,
         `'The required field value ${columnName} is missing'`,
       )
     }`;

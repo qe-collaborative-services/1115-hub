@@ -681,10 +681,10 @@ export class AdminDemographicCsvFileIngestSource<
         "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME",
         "'SNOMED-CT','SNOMED','http://snomed.info/sct'"
       )}
-      ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE','2.16.840.1.113883.6.23'")}
+      ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238'")}
       ${tr.onlyAllowedValuesInAllRows(
         "ETHNICITY_CODE_SYSTEM_NAME",
-        "'CDC','CDCRE','2.16.840.1.113883.6.23'"
+        "'CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238'"
       )}
       ${tr.mandatoryValueInAllRows("MPI_ID")}
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
