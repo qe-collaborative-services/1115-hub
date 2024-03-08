@@ -148,7 +148,7 @@ await new Command()
     "--publish-fhir-qe-id <qe-id>",
     "Should be one of `BRONX`, `HEALTHECONN`, `GRRHIO`, `HEALTHIX`, `HEALTHELINK`, `HIXNY`",
     {
-      default: "QE",
+      default: "HEALTHELINK",
     },
   )
   .action(
