@@ -14,8 +14,13 @@ services:
       qe4:pass:::ingress/
       qe5:pass:::ingress/
       qe6:pass:::ingress/
+      BRONX:BRONX:::ingress/
+      HEALTHECONN:HEALTHECONN:::ingress/
+      GRRHIO:GRRHIO:::ingress/
+      HEALTHIX:HEALTHIX:::ingress/
+      HEALTHELINK:HEALTHELINK:::ingress/
+      HIXNY:HIXNY:::ingress/
       observe:pass:::log/
-
   workflow:
     build:
       context: .
