@@ -1,0 +1,1173 @@
+{
+  "resourceType": "Bundle",
+  "id": "63737ccb-acfc-40c1-b90b-7b87c3bf8601",
+  "meta": {
+    "lastUpdated": "2024-03-11T16:09:07.184117+00:00"
+  },
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:710aa5e6-ac4d-4148-8879-d425a2734ced",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "710aa5e6-ac4d-4148-8879-d425a2734ced",
+        "meta": {
+          "lastUpdated": "2024-03-11T16:09:07.184117+00:00",
+          "profile": [
+            "http://shinny.org/StructureDefinition/shinny-patient"
+          ]
+        },
+        "language": "en",
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex",
+            "valueCode": "OTH"
+          },
+          {
+            "extension": [
+              {
+                "url": "ombCategory",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.840.1.113883.6.238",
+                  "code": "2153-5",
+                  "display": "Mexican American Indian"
+                }
+              },
+              {
+                "url": "text",
+                "valueString": "Mexican American Indian"
+              }
+            ],
+            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+          },
+          {
+            "extension": [
+              {
+                "url": "ombCategory",
+                "valueCoding": {
+                  "system": "urn:oid:2.16.840.1.113883.6.238",
+                  "code": "1224-5",
+                  "display": "Marshall Islander"
+                }
+              },
+              {
+                "url": "text",
+                "valueString": "Marshall Islander"
+              }
+            ],
+            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+          },
+          {
+            "url": "http://shinny.org/StructureDefinition/shinny-sexual-orientation",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "OTH",
+                  "display": "Other"
+                }
+              ]
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http: //terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MR"
+                }
+              ],
+              "text": "Medical Record Number"
+            },
+            "system": "https://bronx.xxxx/facility/xxx",
+            "value": "healthelink-20240311-testcase1-MRN"
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "MA"
+                }
+              ],
+              "text": "Medicaid Client Identification Number"
+            },
+            "system": "http://www.medicaid.gov/",
+            "value": "WD40841C"
+          }
+        ],
+        "name": [
+          {
+            "family": "Johnson",
+            "given": [
+              "Ryan",
+              "Todd"
+            ]
+          }
+        ],
+        "gender": "other",
+        "birthDate": "2020-04-30",
+        "address": [
+          {
+            "line": [
+              "920 Johnson Rue",
+              "PO Box 34891"
+            ],
+            "city": "Elmira",
+            "state": "NY",
+            "postalCode": "14901"
+          }
+        ],
+        "communication": [
+          {
+            "language": {
+              "coding": [
+                {
+                  "code": "sun",
+                  "display": "Sundanese"
+                }
+              ]
+            },
+            "preferred": true
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "5a92a7fe-2f6d-45e6-9740-d54d8db64650",
+        "meta": {
+          "lastUpdated": "2024-03-11T16:09:07.184117+00:00",
+          "profile": [
+            "http://shinny.org/StructureDefinition/shin-ny-encounter"
+          ]
+        },
+        "identifier": [
+          {
+            "system": "ENCOUNTER_ID",
+            "value": "healthelinkILLFYXBSJ0"
+          }
+        ],
+        "status": "discharged",
+        "class": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "code": "IMP",
+                "display": "inpatient encounter"
+              }
+            ]
+          }
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "185320006",
+                "display": "Encounter by computer link"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "urn:uuid:710aa5e6-ac4d-4148-8879-d425a2734ced"
+        }
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "040c6403-b832-4428-864f-86a3ab0fd27a",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "I have a place to live today, but I am worried about losing it in the future",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "71802-3"
+                }
+              ]
+            },
+            "valueString": "What is your living situation today?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "0c1eb19a-a792-4e9c-8d24-27777bbfc697",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "None of the above",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "96778-6"
+                }
+              ]
+            },
+            "valueString": "Think about the place you live. Do you have problems with any of the following?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "0ad9afde-23ba-42f5-a460-3d53e1932e8e",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "Often true",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "88122-7"
+                }
+              ]
+            },
+            "valueString": "Within the past 12 months, you worried that your food would run out before you got money to buy more."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "5546aefa-e811-46cd-a739-29040e89a435",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "Sometimes true",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "88123-5"
+                }
+              ]
+            },
+            "valueString": "Within the past 12 months, the food you bought just didn't last and you didn't have money to get more."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "678439d1-570c-4a53-a400-4ea979854a79",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "Yes",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "93030-5"
+                }
+              ]
+            },
+            "valueString": "In the past 12 months, has lack of reliable transportation kept you from medical appointments, meetings, work or from getting things needed for daily living?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "d681d5f0-a829-44f6-8ab1-1e4169fc6c03",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "Already shut off",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "96779-4"
+                }
+              ]
+            },
+            "valueString": "In the past 12 months has the electric, gas, oil, or water company threatened to shut off services in your home?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c05c6655-fa2d-4f01-b062-0f65b11c91b6",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "Rarely",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "95618-5"
+                }
+              ]
+            },
+            "valueString": "How often does anyone, including family and friends, physically hurt you?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "b2fcba3a-e8fc-4987-9033-defcfc8a56d2",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "Sometimes",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "95617-7"
+                }
+              ]
+            },
+            "valueString": "How often does anyone, including family and friends, insult or talk down to you?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "86f257f2-1c6e-4a6a-a45d-0d5e5ec0fac5",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "Rarely",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "95616-9"
+                }
+              ]
+            },
+            "valueString": "How often does anyone, including family and friends, threaten you with harm?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "a1fed762-3783-475c-ac33-935768e8ef22",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "Fairly often",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "95615-1"
+                }
+              ]
+            },
+            "valueString": "How often does anyone, including family and friends, scream or curse at you?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "3a01841d-48d8-4d5c-9d6f-cdd6ef063726",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "1979-11-01T21:18:59+03:00",
+        "valueString": "11",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "95614-4"
+                }
+              ]
+            },
+            "valueString": "Total Safety Score"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "dfce311c-fb23-4e70-ba93-c233fb82c727",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Somewhat hard",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "76513-1"
+                }
+              ]
+            },
+            "valueString": "How hard is it for you to pay for the very basics like food, housing, medical care, and heating? Would you say it is"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "e453a0cf-0742-4c35-8e6a-7492e686f68f",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Yes, help finding work",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "96780-2"
+                }
+              ]
+            },
+            "valueString": "Do you want help finding or keeping work or a job?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "eef113fe-c29f-4618-96dd-accc9110b069",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "I need a lot more help",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "96781-0"
+                }
+              ]
+            },
+            "valueString": "If for any reason you need help with day-to-day activities such as bathing, preparing meals, shopping, managing finances, etc., do you get the help you need?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "671a1a5c-a25b-4eb2-b2ba-97d6c1156e13",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Always",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "93159-2"
+                }
+              ]
+            },
+            "valueString": "How often do you feel lonely or isolated from those around you?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "a41d89d2-1bf2-4019-8325-4c39f220fcec",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "No",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "97027-7"
+                }
+              ]
+            },
+            "valueString": "Do you speak a language other than English at home?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "e0992fc2-7ffe-4b5b-8ef8-6e0ac36735f4",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Yes",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "96782-8"
+                }
+              ]
+            },
+            "valueString": "Do you want help with school or training? For example, starting or completing job training or getting a high school diploma, GED or equivalent."
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "30606069-b55c-4ab3-b863-aa624c46a8df",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "7",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "89555-7"
+                }
+              ]
+            },
+            "valueString": "In the last 30 days, other than the activities you did for work, on average, how many days per week did you engage in moderate exercise (like walking fast, running, jogging, dancing, swimming, biking, or other similar activities)"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "269f425e-7917-4d8f-bf9b-415ffc1b3525",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "120",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "68516-4"
+                }
+              ]
+            },
+            "valueString": "On average, how many minutes did you usually spend exercising at this level on one of those days?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "7335eb99-8394-4c98-963b-e9bf6e51d23a",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "840",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "",
+                  "code": "Calculated weekly physical activity"
+                }
+              ]
+            },
+            "valueString": "Calculated weekly physical activity"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c552c055-11a3-4c42-9adf-f004865caccf",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Daily or almost daily",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "68517-2"
+                }
+              ]
+            },
+            "valueString": "How many times in the past 12 months have you had 5 or more drinks in a day (males) or 4 or more drinks in a day (females)?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "a358c564-85e5-4f15-8487-210ee1b1933a",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Once or Twice",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "96842-0"
+                }
+              ]
+            },
+            "valueString": "How many times in the past 12 months have you used tobacco products (like cigarettes, cigars, snuff, chew, electronic cigarettes)?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "e172543f-fb50-431a-a48d-f0015de83fa3",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Daily or almost daily",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "95530-2"
+                }
+              ]
+            },
+            "valueString": "How many times in the past year have you used prescription drugs for non-medical reasons?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "6e05a79d-bbc8-4ba2-ab61-0da923a7cb6c",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Weekly",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "68524-8"
+                }
+              ]
+            },
+            "valueString": "How many times in the past year have you used illegal drugs?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "fb1b7078-935d-43bd-a370-ea9112743db7",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Several days",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "44250-9"
+                }
+              ]
+            },
+            "valueString": "Little interest or pleasure in doing things?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "e0b53cad-1f19-460c-81a5-fb2e68156c4e",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Nearly every day",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "44255-8"
+                }
+              ]
+            },
+            "valueString": "Feeling down, depressed, or hopeless?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "5b7226bc-4673-4083-9af5-3556120801ed",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "4",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "",
+                  "code": "Calculated mental health score"
+                }
+              ]
+            },
+            "valueString": "Calculated mental health score"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "5b52475b-ff7a-47d6-9ed2-fd29a119ea71",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Quite a bit",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "93038-8"
+                }
+              ]
+            },
+            "valueString": "Stress means a situation in which a person feels tense, restless, nervous, or anxious, or is unable to sleep at night because his or her mind is troubled all the time. Do you feel this kind of stress these days?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "50f21e71-d680-4134-be2e-ca70fcb8c2ba",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Yes",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "69858-9"
+                }
+              ]
+            },
+            "valueString": "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Observation",
+        "id": "2eaca184-cbba-40c6-b71d-84816d8e218b",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240311-testcase1-MRN"
+        },
+        "effectiveDateTime": "2008-09-22T16:23:24-02:00",
+        "valueString": "Yes",
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "system": "http://loinc.org",
+                  "code": "69861-3"
+                }
+              ]
+            },
+            "valueString": "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a physician's office or shopping"
+          }
+        ]
+      }
+    }
+  ]
+}
