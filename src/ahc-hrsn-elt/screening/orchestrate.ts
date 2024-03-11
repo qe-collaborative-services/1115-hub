@@ -7,6 +7,7 @@ import {
   safety,
   SQLa_orch as o,
   SQLa_orch_duckdb as ddbo,
+  ulid,
   ws,
   yaml,
 } from "./deps.ts";
@@ -706,6 +707,7 @@ export class OrchEngine {
             WHERE isi.orch_session_issue_id IS NOT NULL
           ;
 
+
           ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);
 
           -- copy relevant orchestration engine admin tables into the the attached database
@@ -714,9 +716,138 @@ export class OrchEngine {
           -- export content tables from DuckDb into the attached database (nature-dependent)
           ${exportsSQL};
 
-          -- export reference tables from DuckDb into the attached database (nature-dependent)
 
           DETACH DATABASE ${rdbSchemaName};
+
+          CREATE VIEW IF NOT EXISTS fhir_bundle AS
+            WITH cte_fhir_patient AS (
+              SELECT json(FHIR_Patient) as FHIR_Patient FROM (SELECT adt.pat_mrn_id,json_object('fullUrl', '',
+              'resource', json_object(
+                'fullUrl', MPI_ID,
+                'resource', json_object(
+                      'resourceType', 'Patient',
+                      'id', MPI_ID,
+                      'meta', json_object(
+                        'lastUpdated','',
+                        'profile', json_array(),
+                        'language', PREFERRED_LANGUAGE_CODE
+                      ),
+                      'text', json_object(
+                        'status', 'extensions',
+                        'div', ''
+                      ),
+                      'extension', json_array(),
+                      'identifier', json_array(json_object(
+                        'type', json_object(
+                          'coding', json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v2-0203','code','MR')),
+                          'text', 'Medical Record Number'
+                        ),
+                        'system', 'https://bronx.xxxx/facility/xxx',
+                        'value', adt.PAT_MRN_ID,
+                        'assigner', json_object(
+                          'reference', ''
+                        ))
+                      ),
+                      'name', json_array(json_object(
+                        'text', CONCAT(FIRST_NAME,' ', LAST_NAME),
+                        'family', LAST_NAME,
+                        'given', json_array(FIRST_NAME,LAST_NAME))
+                      ),
+                      'telecom', '',
+                      'gender', GENDER_IDENTITY_CODE_DESCRIPTION,
+                      'birthDate', PAT_BIRTH_DATE,
+                      'address', json_array(
+                          json_object(
+                            'text', CONCAT(ADDRESS1, ' ', ADDRESS2 ),
+                            'line', json_array(ADDRESS1,ADDRESS2),
+                            'city', CITY,
+                            'state', STATE,
+                            'postalCode', ZIP
+                        )
+                      ),
+                      'communication', json_array(
+                        json_object('language', json_object(
+                          'coding', json_array(
+                            'code', PREFERRED_LANGUAGE_CODE
+                          )
+                        ),
+                          'preferred', true
+                      ))
+                ))) AS FHIR_Patient
+            FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrQeAdminData} qat
+            ON adt.PAT_MRN_ID = qat.PAT_MRN_ID
+            )),
+            cte_fhir_org AS (
+              SELECT qed.PAT_MRN_ID, JSON_OBJECT(
+                'fullUrl', '',
+                'resource', JSON_OBJECT(
+                    'resourceType', 'Organization',
+                    'id', qed.FACILITY_ID,
+                    'meta', JSON_OBJECT(
+                        'lastUpdated', '',
+                        'profile', JSON_ARRAY('')
+                    ),
+                    'text', JSON_OBJECT(
+                        'status', 'generated',
+                        'div', ''
+                    ),
+                    'identifier', JSON_ARRAY(
+                        JSON_OBJECT(
+                            'system', '',
+                            'value', ''
+                        )
+                    ),
+                    'active', true,
+                    'type', JSON_ARRAY(
+                        JSON_OBJECT(
+                            'coding', JSON_ARRAY(
+                                JSON_OBJECT(
+                                    'system', '',
+                                    'code', '',
+                                    'display', qed.ORGANIZATION_TYPE
+                                )
+                            )
+                        )
+                    ),
+                    'name', qed.FACILITY_LONG_NAME,
+                    'address', JSON_ARRAY(
+                        JSON_OBJECT(
+                            'text', CONCAT(qed.FACILITY_ADDRESS1,' ', qed.FACILITY_ADDRESS2)
+                        )
+                    )
+                )
+            ) AS FHIR_Organization
+            FROM ${csv.aggrQeAdminData} qed),
+            cte_fhir_observation AS (
+              SELECT scr.PAT_MRN_ID, JSON_OBJECT(
+                'fullUrl', '',
+                'resource', JSON_OBJECT(
+                  'resourceType', 'Observation',
+                      'id', '',
+                      'status', 'final',
+                      'code', json_object(
+                        'coding', json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE))
+                      ),
+                      'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
+                      'effectiveDateTime', RECORDED_TIME,
+                      'valueString', ANSWER_CODE_DESCRIPTION,
+                      'component', json_array(json_object('code',json_object('coding',json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE))),'valueString', QUESTION_CODE_DESCRIPTION))
+                  )
+            ) AS FHIR_Observation
+            FROM ${csv.aggrScreeningTableName} scr)
+            SELECT json_object(
+              'resourceType', 'Bundle',
+              'id', '${ulid.ulid()}',
+              'type', 'transaction',
+              'entry', json(json_group_array(json_data))
+              ) AS FHIR_Bundle
+              FROM (
+                SELECT FHIR_Organization AS json_data FROM cte_fhir_org
+                UNION ALL
+                SELECT FHIR_Patient AS json_data FROM cte_fhir_patient
+                UNION ALL
+                SELECT FHIR_Observation AS json_data FROM cte_fhir_observation
+              );
 
           ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
           .SQL(this.govn.emitCtx),
