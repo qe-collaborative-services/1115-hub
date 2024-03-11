@@ -8,18 +8,12 @@ services:
     ports:
       - "2222:22"
     command: >
-      qe1:pass:::ingress/
-      qe2:pass:::ingress/
-      qe3:pass:::ingress/
-      qe4:pass:::ingress/
-      qe5:pass:::ingress/
-      qe6:pass:::ingress/
-      BRONX:BRONX:::ingress/
-      HEALTHECONN:HEALTHECONN:::ingress/
-      GRRHIO:GRRHIO:::ingress/
-      HEALTHIX:HEALTHIX:::ingress/
-      HEALTHELINK:HEALTHELINK:::ingress/
-      HIXNY:HIXNY:::ingress/
+      bronx:bronx:::ingress/
+      healtheconn:healtheconn:::ingress/
+      grrhio:grrhio:::ingress/
+      healthix:healthix:::ingress/
+      healthelink:healthelink:::ingress/
+      hixny:hixny:::ingress/
       observe:pass:::log/
   workflow:
     build:

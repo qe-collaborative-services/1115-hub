@@ -32,12 +32,12 @@ RUN deno run -A ./1115-hub/support/bin/doctor.ts > doctor_log.txt
 RUN echo "PATH=/usr/local/bin:/usr/bin:/bin" >> /etc/cron.d/1115-hub
 
 # create a cron job for each qe1-6 to run the deno script
-RUN echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe BRONX --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/BRONX.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe HEALTHECONN --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/HEALTHECONN.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe GRRHIO --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/GRRHIO.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe HEALTHIX --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/HEALTHIX.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe HEALTHELINK --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/HEALTHELINK.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe HIXNY --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/HIXNY.log 2>&1" >> /etc/cron.d/1115-hub
+RUN echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe bronx --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/bronx.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe healtheconn --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/healtheconn.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe grrhio --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/grrhio.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe healthix --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/healthix.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe healthelink --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/healthelink.log 2>&1" >> /etc/cron.d/1115-hub && \
+    echo "* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe hixny --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev >> /SFTP/observe/log/hixny.log 2>&1" >> /etc/cron.d/1115-hub
 
 RUN chmod 0644 /etc/cron.d/1115-hub
 RUN crontab /etc/cron.d/1115-hub
