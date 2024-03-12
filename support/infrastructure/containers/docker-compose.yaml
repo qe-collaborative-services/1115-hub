@@ -8,12 +8,12 @@ services:
     ports:
       - "2222:22"
     command: >
-      bronx:bronx:::ingress/
-      healtheconn:healtheconn:::ingress/
-      grrhio:grrhio:::ingress/
-      healthix:healthix:::ingress/
-      healthelink:healthelink:::ingress/
-      hixny:hixny:::ingress/
+      bronx:pass:::ingress/
+      healtheconn:pass:::ingress/
+      grrhio:pass:::ingress/
+      healthix:pass:::ingress/
+      healthelink:pass:::ingress/
+      hixny:pass:::ingress/
       observe:pass:::log/
   workflow:
     build:
