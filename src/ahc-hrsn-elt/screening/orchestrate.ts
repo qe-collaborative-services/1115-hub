@@ -7,7 +7,7 @@ import {
   safety,
   SQLa_orch as o,
   SQLa_orch_duckdb as ddbo,
-  ulid,
+  uuid,
   ws,
   yaml,
 } from "./deps.ts";
@@ -16,7 +16,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.8.0";
+export const ORCHESTRATE_VERSION = "0.8.1";
 
 export type PotentialIngestSource =
   | excel.ScreeningExcelSheetIngestSource<string, o.State>
@@ -737,33 +737,103 @@ export class OrchEngine {
 
           CREATE VIEW IF NOT EXISTS fhir_bundle AS
             WITH cte_fhir_patient AS (
-              SELECT json(FHIR_Patient) as FHIR_Patient FROM (SELECT adt.pat_mrn_id,json_object('fullUrl', '',
-              'resource', json_object(
-                'fullUrl', MPI_ID,
+              SELECT adt.pat_mrn_id,json_object('fullUrl', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
                 'resource', json_object(
                       'resourceType', 'Patient',
-                      'id', MPI_ID,
+                      'id', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
                       'meta', json_object(
                         'lastUpdated','',
-                        'profile', json_array(),
-                        'language', PREFERRED_LANGUAGE_CODE
+                        'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
                       ),
-                      'text', json_object(
-                        'status', 'extensions',
-                        'div', ''
-                      ),
-                      'extension', json_array(),
-                      'identifier', json_array(json_object(
-                        'type', json_object(
-                          'coding', json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v2-0203','code','MR')),
-                          'text', 'Medical Record Number'
-                        ),
-                        'system', 'https://bronx.xxxx/facility/xxx',
-                        'value', adt.PAT_MRN_ID,
-                        'assigner', json_object(
-                          'reference', ''
-                        ))
-                      ),
+                      'language', PREFERRED_LANGUAGE_CODE,
+                      'extension', json_array(
+                                      json_object('extension',
+                                        json_array(
+                                          json_object(
+                                              'url','ombCategory',
+                                              'valueCoding',json_object(
+                                                            'system',RACE_CODE_SYSTEM_NAME,
+                                                            'code',RACE_CODE,
+                                                            'display',RACE_CODE_DESCRIPTION
+                                                            )
+                                                      )
+                                                  ),
+                                            'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+                                      ),
+                                      json_object('extension',
+                                        json_array(
+                                          json_object(
+                                              'url','ombCategory',
+                                              'valueCoding',json_object(
+                                                            'system',ETHNICITY_CODE_SYSTEM_NAME,
+                                                            'code',ETHNICITY_CODE,
+                                                            'display',ETHNICITY_CODE_DESCRIPTION
+                                                            )
+                                                      )
+                                                  ),
+                                            'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
+                                      ),
+                                      json_object('extension',
+                                        json_array(
+                                          json_object(
+                                              'url','ombCategory',
+                                              'valueCoding',json_object(
+                                                            'system',SEX_AT_BIRTH_CODE_SYSTEM,
+                                                            'code',SEX_AT_BIRTH_CODE,
+                                                            'display',SEX_AT_BIRTH_CODE_DESCRIPTION
+                                                            )
+                                                      )
+                                                  ),
+                                            'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'
+                                      ),
+                                      json_object('extension',
+                                        json_array(
+                                          json_object(
+                                              'url','ombCategory',
+                                              'valueCoding',json_object(
+                                                            'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
+                                                            'code',SEXUAL_ORIENTATION_CODE,
+                                                            'display',SEXUAL_ORIENTATION_DESCRIPTION
+                                                            )
+                                                      )
+                                                  ),
+                                            'url', 'http://shinny.org/StructureDefinition/shinny-sexual-orientation'
+                                      )
+                                    ),
+                      'identifier', CASE
+                                      WHEN MEDICAID_CIN != '' THEN
+                                          json_array(
+                                              json_object(
+                                                  'type', json_object(
+                                                      'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
+                                                      'text', 'Medical Record Number'
+                                                  ),
+                                                  'system', adt.FACILITY_ID,
+                                                  'value', qat.PAT_MRN_ID,
+                                                  'assigner', json_object('reference','Organization/' || LOWER(REPLACE(qat.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qat.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qat.FACILITY_ID, ' ', '-')))
+                                              ),
+                                              json_object(
+                                                  'type', json_object(
+                                                      'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MA'))
+                                                  ),
+                                                  'system', 'http://www.medicaid.gov/',
+                                                  'value', MEDICAID_CIN,
+                                                  'assigner', json_object('reference', 'Organization/2.16.840.1.113883.3.249')
+                                              )
+                                          )
+                                      ELSE
+                                          json_array(
+                                              json_object(
+                                                  'type', json_object(
+                                                      'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
+                                                      'text', 'Medical Record Number'
+                                                  ),
+                                                  'system', adt.FACILITY_ID,
+                                                  'value', qat.PAT_MRN_ID,
+                                                  'assigner', json_object('reference', 'Organization/' || LOWER(REPLACE(qat.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qat.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qat.FACILITY_ID, ' ', '-')))
+                                              )
+                                          )
+                                    END,
                       'name', json_array(json_object(
                         'text', CONCAT(FIRST_NAME,' ', LAST_NAME),
                         'family', LAST_NAME,
@@ -789,10 +859,10 @@ export class OrchEngine {
                         ),
                           'preferred', true
                       ))
-                ))) AS FHIR_Patient
+                )) AS FHIR_Patient
             FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrQeAdminData} qat
             ON adt.PAT_MRN_ID = qat.PAT_MRN_ID
-            )),
+            ),
             cte_fhir_org AS (
               SELECT qed.PAT_MRN_ID, JSON_OBJECT(
                 'fullUrl', '',
@@ -850,10 +920,26 @@ export class OrchEngine {
                       'component', json_array(json_object('code',json_object('coding',json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE))),'valueString', QUESTION_CODE_DESCRIPTION))
                   )
             ) AS FHIR_Observation
-            FROM ${csv.aggrScreeningTableName} scr)
+            FROM ${csv.aggrScreeningTableName} scr),
+            cte_fhir_encounter AS (
+              SELECT scr.ENCOUNTER_ID, JSON_OBJECT(
+                'resource', JSON_OBJECT(
+                  'resourceType', 'Encounter',
+                  'id', '${uuid.v1.generate()}',
+                  'meta', JSON_OBJECT(
+                      'lastUpdated', RECORDED_TIME,
+                      'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
+                  ),
+                  'status', ENCOUNTER_STATUS_CODE_DESCRIPTION,
+                  'class', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,'code',ENCOUNTER_CLASS_CODE)))),
+                  'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,'code',ENCOUNTER_TYPE_CODE)))),
+                  'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
+                )
+            ) AS FHIR_Encounter
+            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE_DESCRIPTION, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.PAT_MRN_ID, scr.FACILITY_ID)
             SELECT json_object(
               'resourceType', 'Bundle',
-              'id', '${ulid.ulid()}',
+              'id', '${uuid.v1.generate()}',
               'type', 'transaction',
               'entry', json(json_group_array(json_data))
               ) AS FHIR_Bundle
@@ -863,6 +949,8 @@ export class OrchEngine {
                 SELECT FHIR_Patient AS json_data FROM cte_fhir_patient
                 UNION ALL
                 SELECT FHIR_Observation AS json_data FROM cte_fhir_observation
+                UNION ALL
+                SELECT FHIR_Encounter AS json_data FROM cte_fhir_encounter
               );
 
           ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
@@ -933,23 +1021,28 @@ export class OrchEngine {
     if (egress.fhirJsonSupplier && egress.fhirTempJsonSupplier) {
       const fhirJson = egress.fhirJsonSupplier();
       const fhirTempJson = egress.fhirTempJsonSupplier();
-      await this.duckdb.execute(
-        this.govn.SQL`
-          COPY (
-              SELECT FHIR_Bundle as FHIR FROM fhir_bundle
-        ) TO '${fhirTempJson}'
-        `.SQL(
-          this.govn.emitCtx,
-        ),
-      );
-      const tempJsonContent = await Deno.readTextFile(fhirTempJson);
-      const tempJsonData = JSON.parse(tempJsonContent);
-      const originalJsonData = tempJsonData["FHIR"];
-      await Deno.writeTextFile(
-        fhirJson,
-        JSON.stringify(originalJsonData),
-      );
-      await Deno.remove(fhirTempJson);
+      try {
+        await this.duckdb.execute(
+          this.govn.SQL`
+            COPY (
+                SELECT FHIR_Bundle as FHIR FROM fhir_bundle
+          ) TO '${fhirTempJson}'
+          `.SQL(
+            this.govn.emitCtx,
+          ),
+        );
+        const tempJsonContent = await Deno.readTextFile(fhirTempJson);
+        const tempJsonData = JSON.parse(tempJsonContent);
+        const originalJsonData = tempJsonData["FHIR"];
+        await Deno.writeTextFile(
+          fhirJson,
+          JSON.stringify(originalJsonData),
+        );
+        await Deno.remove(fhirTempJson);
+      } catch (err) {
+        // TODO: store the error in a proper log
+        console.error(err);
+      }
     }
 
     if (egress.fhirHttpSupplier) {
