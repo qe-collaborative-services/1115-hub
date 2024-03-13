@@ -2064,3 +2064,418 @@ export class BusinessRulesReferenceCsvFileIngestSource<
           `;
   }
 }
+
+const raceReferenceColumnNames = [
+  "Concept Name",
+  "Concept Code",
+  "Hierarchical Code",
+  "Race Category (Concept Name)",
+  "Race Category (Concept Code)",
+  "Hiearchical Code",
+] as const;
+
+type RaceReferenceColumnName = (typeof raceReferenceColumnNames)[number];
+
+const RACE_TERMINAL_STATE = "EXIT(RaceReferenceCsvFileIngestSource)" as const;
+
+export class RaceReferenceStructureRules<
+  TableName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<
+  TableName,
+  RaceReferenceColumnName
+> {
+  requiredColumnNames() {
+    return this.tableRules.requiredColumnNamesStrict([
+      ...raceReferenceColumnNames,
+    ]);
+  }
+}
+export class RaceReferenceCsvFileIngestSource<
+  TableName extends "race_reference",
+  InitState extends o.State,
+> implements
+  o.CsvFileIngestSource<
+    TableName,
+    ddbo.DuckDbOrchGovernance,
+    InitState,
+    typeof RACE_TERMINAL_STATE,
+    ddbo.DuckDbOrchEmitContext
+  > {
+  readonly nature = "CSV";
+  constructor(
+    readonly dataHome: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+    readonly tableName = "race_reference" as TableName,
+    readonly uri = `${dataHome}/race-reference.csv`,
+  ) {
+  }
+
+  // deno-lint-ignore require-await
+  async workflow(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sessionEntryID: string,
+  ): ReturnType<
+    o.CsvFileIngestSource<
+      TableName,
+      ddbo.DuckDbOrchGovernance,
+      InitState,
+      typeof RACE_TERMINAL_STATE,
+      ddbo.DuckDbOrchEmitContext
+    >["workflow"]
+  > {
+    const ssr = new RaceReferenceStructureRules(
+      this.tableName,
+      session.sessionID,
+      sessionEntryID,
+      this.govn,
+    );
+    const sar = new sg.RaceReferenceAssuranceRules(
+      this.tableName,
+      session.sessionID,
+      sessionEntryID,
+      this.govn,
+    );
+
+    return {
+      ingestSQL: async (issac) =>
+        await this.ingestSQL(session, issac, ssr, sar),
+      assuranceSQL: async () => await this.assuranceSQL(session, sar),
+      exportResourceSQL: async (targetSchema) =>
+        await this.exportResourceSQL(session, sar.sessionEntryID, targetSchema),
+      terminalState: () => RACE_TERMINAL_STATE,
+    };
+  }
+
+  async ingestSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    issac: o.IngestSourceStructAssuranceContext<
+      InitState,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    ssr: RaceReferenceStructureRules<TableName>,
+    sar: sg.RaceReferenceAssuranceRules<
+      TableName,
+      RaceReferenceColumnName
+    >,
+  ) {
+    const { tableName, uri } = this;
+    const { sessionID, sessionEntryID } = sar;
+
+    // deno-fmt-ignore
+    return this.govn.SQL`
+        -- required by IngestEngine, setup the ingestion entry for logging
+        ${await issac.sessionEntryInsertDML()}
+
+        -- state management diagnostics
+        ${await session.entryStateDML(
+          sessionEntryID,
+          issac.initState(),
+          "ATTEMPT_CSV_INGEST",
+          "RaceReferenceCsvFileIngestSource.ingestSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+
+        -- be sure to add src_file_row_number and session_id columns to each row
+        -- because assurance CTEs require them
+        CREATE TABLE ${tableName} AS
+          SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
+            FROM read_csv_auto('${uri}',
+              header = true
+            );
+
+        ${ssr.requiredColumnNames()}
+
+        ${await session.entryStateDML(
+          sessionEntryID,
+          "ATTEMPT_CSV_INGEST",
+          "INGESTED_CSV",
+          "RaceReferenceCsvFileIngestSource.ingestSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+      `;
+  }
+
+  async assuranceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sar: sg.RaceReferenceAssuranceRules<
+      TableName,
+      RaceReferenceColumnName
+    >,
+  ) {
+    const { govn } = this;
+    const { sessionEntryID, tableRules: tr } = sar;
+
+    // deno-fmt-ignore
+    return govn.SQL`
+        ${await session.entryStateDML(
+          sessionEntryID,
+          "INGESTED_CSV",
+          "ATTEMPT_CSV_ASSURANCE",
+          "RaceReferenceCsvFileIngestSource.assuranceSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+
+        -- add field validation
+
+        ${await session.entryStateDML(
+          sessionEntryID,
+          "ATTEMPT_CSV_ASSURANCE",
+          "ASSURED_CSV",
+          "RaceReferenceCsvFileIngestSource.assuranceSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+      `;
+  }
+
+  async exportResourceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sessionEntryID: string,
+    targetSchema: string,
+  ) {
+    const {
+      govn: { SQL },
+      tableName,
+    } = this;
+    // deno-fmt-ignore
+    return SQL`
+        ${await session.entryStateDML(
+          sessionEntryID,
+          "ASSURED_CSV",
+          "EXIT(RaceReferenceCsvFileIngestSource)",
+          "RaceReferenceCsvFileIngestSource.exportResourceSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+
+        CREATE TABLE IF NOT EXISTS ${targetSchema}.${tableName} AS SELECT * FROM ${tableName} WHERE 0=1;
+        INSERT INTO ${targetSchema}.${tableName} SELECT * FROM ${tableName};
+
+          ${await session.entryStateDML(
+            sessionEntryID,
+            "ATTEMPT_CSV_EXPORT",
+            RACE_TERMINAL_STATE,
+            "RaceReferenceCsvFileIngestSource.exportResourceSQL",
+            this.govn.emitCtx.sqlEngineNow
+          )}
+          `;
+  }
+}
+
+const ethnicityReferenceColumnNames = [
+  "Concept Code",
+  "Concept Name",
+  "Hierarchical Code",
+  "Ethnicity Group (Concept Name)",
+  "Ethnicity Group (Concept Code)",
+] as const;
+
+type EthnicityReferenceColumnName =
+  (typeof ethnicityReferenceColumnNames)[number];
+
+const ETHNICITY_TERMINAL_STATE =
+  "EXIT(EthnicityReferenceCsvFileIngestSource)" as const;
+
+export class EthnicityReferenceStructureRules<
+  TableName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<
+  TableName,
+  EthnicityReferenceColumnName
+> {
+  requiredColumnNames() {
+    return this.tableRules.requiredColumnNamesStrict([
+      ...ethnicityReferenceColumnNames,
+    ]);
+  }
+}
+export class EthnicityReferenceCsvFileIngestSource<
+  TableName extends "ethnicity_reference",
+  InitState extends o.State,
+> implements
+  o.CsvFileIngestSource<
+    TableName,
+    ddbo.DuckDbOrchGovernance,
+    InitState,
+    typeof ETHNICITY_TERMINAL_STATE,
+    ddbo.DuckDbOrchEmitContext
+  > {
+  readonly nature = "CSV";
+  constructor(
+    readonly dataHome: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+    readonly tableName = "ethnicity_reference" as TableName,
+    readonly uri = `${dataHome}/ethnicity-reference.csv`,
+  ) {
+  }
+
+  // deno-lint-ignore require-await
+  async workflow(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sessionEntryID: string,
+  ): ReturnType<
+    o.CsvFileIngestSource<
+      TableName,
+      ddbo.DuckDbOrchGovernance,
+      InitState,
+      typeof ETHNICITY_TERMINAL_STATE,
+      ddbo.DuckDbOrchEmitContext
+    >["workflow"]
+  > {
+    const ssr = new EthnicityReferenceStructureRules(
+      this.tableName,
+      session.sessionID,
+      sessionEntryID,
+      this.govn,
+    );
+    const sar = new sg.EthnicityReferenceAssuranceRules(
+      this.tableName,
+      session.sessionID,
+      sessionEntryID,
+      this.govn,
+    );
+
+    return {
+      ingestSQL: async (issac) =>
+        await this.ingestSQL(session, issac, ssr, sar),
+      assuranceSQL: async () => await this.assuranceSQL(session, sar),
+      exportResourceSQL: async (targetSchema) =>
+        await this.exportResourceSQL(session, sar.sessionEntryID, targetSchema),
+      terminalState: () => ETHNICITY_TERMINAL_STATE,
+    };
+  }
+
+  async ingestSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    issac: o.IngestSourceStructAssuranceContext<
+      InitState,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    ssr: EthnicityReferenceStructureRules<TableName>,
+    sar: sg.EthnicityReferenceAssuranceRules<
+      TableName,
+      EthnicityReferenceColumnName
+    >,
+  ) {
+    const { tableName, uri } = this;
+    const { sessionID, sessionEntryID } = sar;
+
+    // deno-fmt-ignore
+    return this.govn.SQL`
+        -- required by IngestEngine, setup the ingestion entry for logging
+        ${await issac.sessionEntryInsertDML()}
+
+        -- state management diagnostics
+        ${await session.entryStateDML(
+          sessionEntryID,
+          issac.initState(),
+          "ATTEMPT_CSV_INGEST",
+          "EthnicityReferenceCsvFileIngestSource.ingestSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+
+        -- be sure to add src_file_row_number and session_id columns to each row
+        -- because assurance CTEs require them
+        CREATE TABLE ${tableName} AS
+          SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
+            FROM read_csv_auto('${uri}',
+              header = true
+            );
+
+        ${ssr.requiredColumnNames()}
+
+        ${await session.entryStateDML(
+          sessionEntryID,
+          "ATTEMPT_CSV_INGEST",
+          "INGESTED_CSV",
+          "EthnicityReferenceCsvFileIngestSource.ingestSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+      `;
+  }
+
+  async assuranceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sar: sg.EthnicityReferenceAssuranceRules<
+      TableName,
+      EthnicityReferenceColumnName
+    >,
+  ) {
+    const { govn } = this;
+    const { sessionEntryID, tableRules: tr } = sar;
+
+    // deno-fmt-ignore
+    return govn.SQL`
+        ${await session.entryStateDML(
+          sessionEntryID,
+          "INGESTED_CSV",
+          "ATTEMPT_CSV_ASSURANCE",
+          "EthnicityReferenceCsvFileIngestSource.assuranceSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+
+        -- add field validation
+
+        ${await session.entryStateDML(
+          sessionEntryID,
+          "ATTEMPT_CSV_ASSURANCE",
+          "ASSURED_CSV",
+          "EthnicityReferenceCsvFileIngestSource.assuranceSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+      `;
+  }
+
+  async exportResourceSQL(
+    session: o.OrchSession<
+      ddbo.DuckDbOrchGovernance,
+      ddbo.DuckDbOrchEmitContext
+    >,
+    sessionEntryID: string,
+    targetSchema: string,
+  ) {
+    const {
+      govn: { SQL },
+      tableName,
+    } = this;
+    // deno-fmt-ignore
+    return SQL`
+        ${await session.entryStateDML(
+          sessionEntryID,
+          "ASSURED_CSV",
+          "EXIT(EthnicityReferenceCsvFileIngestSource)",
+          "EthnicityReferenceCsvFileIngestSource.exportResourceSQL",
+          this.govn.emitCtx.sqlEngineNow
+        )}
+
+        CREATE TABLE IF NOT EXISTS ${targetSchema}.${tableName} AS SELECT * FROM ${tableName} WHERE 0=1;
+        INSERT INTO ${targetSchema}.${tableName} SELECT * FROM ${tableName};
+
+          ${await session.entryStateDML(
+            sessionEntryID,
+            "ATTEMPT_CSV_EXPORT",
+            ETHNICITY_TERMINAL_STATE,
+            "EthnicityReferenceCsvFileIngestSource.exportResourceSQL",
+            this.govn.emitCtx.sqlEngineNow
+          )}
+          `;
+  }
+}

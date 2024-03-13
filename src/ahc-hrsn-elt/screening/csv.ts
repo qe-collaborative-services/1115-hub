@@ -247,7 +247,7 @@ export class ScreeningCsvFileIngestSource<
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
-          FROM read_csv_auto('${uri}');
+          FROM read_csv_auto('${uri}', types={'RECORDED_TIME': 'VARCHAR'});
 
       ${ssr.requiredColumnNames()}
 
@@ -662,6 +662,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("ZIP")}
       ${adar.car.onlyAllowValidZipInAllRows("ZIP")}
       ${adar.car.onlyAllowValidIntegerAlphaNumericStringInAllRows("ADDRESS1")}
+      ${adar.onlyAllowValidAddress1OrMedicaidCinInAllRows("ADDRESS1","MEDICAID_CIN")}
       ${tr.onlyAllowedValuesInAllRows(
         "GENDER_IDENTITY_CODE",
         "'407377005','446141000124107','446151000124109','446131000124102','407376001','ASKU','OTH','UNK'"
@@ -676,6 +677,10 @@ export class AdminDemographicCsvFileIngestSource<
         "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME",
         "'SNOMED-CT','SNOMED','http://snomed.info/sct'"
       )}
+      ${adar.onlyAllowValidEthnicityCodeInAllRows("ETHNICITY_CODE")}
+      ${adar.onlyAllowValidEthnicityCodeDescriptionInAllRows("ETHNICITY_CODE_DESCRIPTION")}
+      ${adar.onlyAllowValidRaceCodeInAllRows("RACE_CODE")}
+      ${adar.onlyAllowValidRaceCodeDescriptionInAllRows("RACE_CODE_DESCRIPTION")}
       ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238'")}
       ${tr.onlyAllowedValuesInAllRows(
         "ETHNICITY_CODE_SYSTEM_NAME",
@@ -686,6 +691,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
       ${adar.car.onlyAllowValidMedicaidCinFormatInAllRows("MEDICAID_CIN")}
       ${adar.onlyAllowUniqueMedicaidCinPerMrnInAllRows("MEDICAID_CIN")}
+      ${adar.onlyAllowValidAddress1OrMedicaidCinInAllRows("MEDICAID_CIN","ADDRESS1")}
       ${tr.mandatoryValueInAllRows("CONSENT")}
       ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes','No','Y','N','Unknown','UNK'")}
 

@@ -64,6 +64,14 @@ export type PotentialIngestSource =
     "business_rules",
     o.State
   >
+  | ref.RaceReferenceCsvFileIngestSource<
+    "race_reference",
+    o.State
+  >
+  | ref.EthnicityReferenceCsvFileIngestSource<
+    "ethnicity_reference",
+    o.State
+  >
   | csv.QeAdminDataCsvFileIngestSource<string, o.State>
   | o.ErrorIngestSource<
     ddbo.DuckDbOrchGovernance,
@@ -505,6 +513,14 @@ export class OrchEngine {
         govn,
       ),
       new ref.BusinessRulesReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.RaceReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.EthnicityReferenceCsvFileIngestSource(
         referenceDataHome,
         govn,
       ),

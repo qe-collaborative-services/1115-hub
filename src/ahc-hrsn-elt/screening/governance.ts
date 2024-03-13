@@ -294,6 +294,50 @@ export class BusinessRulesReferenceAssuranceRules<
   }
 }
 
+export class RaceReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class EthnicityReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
 export class ScreeningAssuranceRules<
   TableName extends string,
   ColumnName extends string,
@@ -702,27 +746,29 @@ export class ScreeningAssuranceRules<
     // deno-fmt-ignore
     return this.govn.SQL`
       WITH ${cteName} AS (
-            SELECT  '${columnName}' AS issue_column,
+              SELECT  '${columnName}' AS issue_column,
                     "${columnName}" AS invalid_value,
                     src_file_row_number AS issue_row
               FROM "${this.tableName}"
               WHERE "${columnName}" IS NOT NULL
               AND NOT (
-                LENGTH("${columnName}") = 24
-                AND TRY_CAST(SUBSTR("${columnName}", 1,4) as INT) = NULL
+                TRY_CAST(SUBSTR("${columnName}", 1,4) as INT) = NULL
                 AND SUBSTR("${columnName}", 5, 1) = '-'
                 AND TRY_CAST(SUBSTR("${columnName}", 6,2) as INT) = NULL
                 AND SUBSTR("${columnName}", 8, 1) = '-'
                 AND TRY_CAST(SUBSTR("${columnName}", 9,2) as INT) = NULL
-                  AND SUBSTR("${columnName}", 11, 1) = 'T'
+                  AND UPPER(SUBSTR("${columnName}", 11, 1)) = 'T'
                   AND TRY_CAST(SUBSTR("${columnName}", 12,2) as INT) = NULL
                   AND SUBSTR("${columnName}", 14, 1) = ':'
                   AND TRY_CAST(SUBSTR("${columnName}", 15,2) as INT) = NULL
-                AND SUBSTRING("${columnName}", 17, 1) = ':'
-                AND TRY_CAST(SUBSTR("${columnName}", 18,2) as INT) = NULL
-                AND SUBSTRING("${columnName}", 20, 1) = '.'
-                AND TRY_CAST(SUBSTR("${columnName}", 21,3) as INT) = NULL
-                AND SUBSTRING("${columnName}", 24, 1) = 'Z'
+              AND SUBSTRING("${columnName}", 17, 1) = ':'
+              AND TRY_CAST(SUBSTR("${columnName}", 18,2) as INT) = NULL
+              AND SUBSTRING("${columnName}", 20, 1) = '.'
+              AND TRY_CAST(SUBSTR("${columnName}", 21,3) as INT) = NULL
+              AND UPPER(SUBSTRING("${columnName}", Length("${columnName}"), 1)) = 'Z'
+              AND TRY_CAST(SUBSTR("${columnName}",POSITION('.' IN "${columnName}") + 1,
+              LENGTH(SUBSTR("${columnName}", POSITION('.' IN "${columnName}") + 1, POSITION('Z' IN UPPER("${columnName}")) - POSITION('.' IN "${columnName}") - 1))
+              ) as INT) = NULL
               )
               OR TRY_CAST("${columnName}" AS TIMESTAMP) IS NULL
               OR SUBSTR("${columnName}", 1, 4) < ${minYear}
@@ -734,7 +780,7 @@ export class ScreeningAssuranceRules<
         "issue_column",
         "invalid_value",
         `'Invalid timestamp "' || invalid_value || '" found in ' || issue_column`,
-        `'Please be sure to provide both a valid date and time (Format: YYYYMMDD HH:MM:SS).'`,
+        `'Please be sure to provide both a valid date and time (Format: YYYY-MM-DDTHH:MM:SS.000Z).'`,
       )}`;
   }
 
@@ -927,6 +973,7 @@ export class AdminDemographicAssuranceRules<
               "${columnName}" AS invalid_value,
               min(src_file_row_number) AS issue_row
         FROM ${this.tableName}
+        WHERE MEDICAID_CIN IS NOT NULL
         GROUP BY pat_mrn_id, MEDICAID_CIN
         HAVING COUNT(*) > 1
     )
@@ -1218,6 +1265,157 @@ export class AdminDemographicAssuranceRules<
         "invalid_value",
         `'Invalid ADMINISTRATIVE SEX CODE SYSTEM "' || invalid_value || '" found in ' || issue_column`,
         `'Validate ADMINISTRATIVE SEX CODE SYSTEM with administrative sex reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidEthnicityCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_ethnicity_code_in_all_rows";
+    const ethnicityReferenceTable = "ethnicity_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 ad."${columnName}" AS invalid_value,
+                 ad.src_file_row_number AS issue_row
+            FROM ${this.tableName} ad
+            LEFT JOIN ${ethnicityReferenceTable} ref
+            ON ad."${columnName}" = ref."Concept Code"
+           WHERE ad."${columnName}" IS NOT NULL
+            AND ref."Concept Code" IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ETHNICITY CODE`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ETHNICITY CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ETHNICITY CODE with ethnicity reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidEthnicityCodeDescriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_ethnicity_code_description_in_all_rows";
+    const ethnicityReferenceTable = "ethnicity_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 ad."${columnName}" AS invalid_value,
+                 ad.src_file_row_number AS issue_row
+            FROM ${this.tableName} ad
+            LEFT JOIN ${ethnicityReferenceTable} ref
+            ON ad."${columnName}" = ref."Concept Name"
+           WHERE ad."${columnName}" IS NOT NULL
+            AND ref."Concept Name" IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ETHNICITY CODE DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ETHNICITY CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ETHNICITY CODE DESCRIPTION with ethnicity reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidRaceCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_race_code_in_all_rows";
+    const raceReferenceTable = "race_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 ad."${columnName}" AS invalid_value,
+                 ad.src_file_row_number AS issue_row
+            FROM ${this.tableName} ad
+            LEFT JOIN ${raceReferenceTable} ref
+            ON ad."${columnName}" = ref."Concept Code"
+           WHERE ad."${columnName}" IS NOT NULL
+            AND ref."Concept Code" IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid RACE CODE`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid RACE CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate RACE CODE with race reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidRaceCodeDescriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_race_code_description_in_all_rows";
+    const raceReferenceTable = "race_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 ad."${columnName}" AS invalid_value,
+                 ad.src_file_row_number AS issue_row
+            FROM ${this.tableName} ad
+            LEFT JOIN ${raceReferenceTable} ref
+            ON ad."${columnName}" = ref."Concept Name"
+           WHERE ad."${columnName}" IS NOT NULL
+            AND ref."Concept Name" IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid RACE CODE DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid RACE CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate RACE CODE DESCRIPTION with race reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidAddress1OrMedicaidCinInAllRows(
+    columnName1: ColumnName,
+    columnName2: ColumnName,
+  ) {
+    const cteName = "valid_address1_or_medicaid_cin_in_all_rows";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName1}' AS issue_column,
+                 ${columnName1} AS invalid_value,
+                 src_file_row_number AS issue_row
+            FROM ${this.tableName}
+            WHERE (${columnName1} IS NULL OR TRIM("${columnName1}") = '') AND (${columnName2} IS NULL OR TRIM("${columnName2}") = '')
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ${columnName1}`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Mandatory field "' || issue_column || '" is empty'`,
+        `'The required field value ${columnName1} is missing. This is required due to the absence of the ${columnName2}.'`,
       )
     }`;
   }
