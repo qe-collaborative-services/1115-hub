@@ -1,0 +1,44 @@
+Concept Code,Concept Name,Hierarchical Code,Ethnicity Group (Concept Name),Ethnicity Group (Concept Code)
+2135-2,Hispanic or Latino,E1,Ethnicity,2133-7
+2186-5,Not Hispanic or Latino,E2,Ethnicity,2133-7
+2137-8,Spaniard,E1.01,Hispanic or Latino,2135-2
+2148-5,Mexican,E1.02,Hispanic or Latino,2135-2
+2155-0,Central American,E1.03,Hispanic or Latino,2135-2
+2165-9,South American,E1.04,Hispanic or Latino,2135-2
+2178-2,Latin American,E1.05,Hispanic or Latino,2135-2
+2180-8,Puerto Rican,E1.06,Hispanic or Latino,2135-2
+2182-4,Cuban,E1.07,Hispanic or Latino,2135-2
+2184-0,Dominican,E1.08,Hispanic or Latino,2135-2
+2138-6,Andalusian,E1.01.001,Hispanic or Latino,2135-2
+2139-4,Asturian,E1.01.002,Hispanic or Latino,2135-2
+2140-2,Castillian,E1.01.003,Hispanic or Latino,2135-2
+2141-0,Catalonian,E1.01.004,Hispanic or Latino,2135-2
+2142-8,Belearic Islander,E1.01.005,Hispanic or Latino,2135-2
+2143-6,Gallego,E1.01.006,Hispanic or Latino,2135-2
+2144-4,Valencian,E1.01.007,Hispanic or Latino,2135-2
+2145-1,Canarian,E1.01.008,Hispanic or Latino,2135-2
+2146-9,Spanish Basque,E1.01.009,Hispanic or Latino,2135-2
+2149-3,Mexican American,E1.02.001,Hispanic or Latino,2135-2
+2150-1,Mexicano,E1.02.002,Hispanic or Latino,2135-2
+2151-9,Chicano,E1.02.003,Hispanic or Latino,2135-2
+2152-7,La Raza,E1.02.004,Hispanic or Latino,2135-2
+2153-5,Mexican American Indian,E1.02.005,Hispanic or Latino,2135-2
+2156-8,Costa Rican,E1.03.001,Hispanic or Latino,2135-2
+2157-6,Guatemalan,E1.03.002,Hispanic or Latino,2135-2
+2158-4,Honduran,E1.03.003,Hispanic or Latino,2135-2
+2159-2,Nicaraguan,E1.03.004,Hispanic or Latino,2135-2
+2160-0,Panamanian,E1.03.005,Hispanic or Latino,2135-2
+2161-8,Salvadoran,E1.03.006,Hispanic or Latino,2135-2
+2162-6,Central American Indian,E1.03.007,Hispanic or Latino,2135-2
+2163-4,Canal Zone,E1.03.008,Hispanic or Latino,2135-2
+2166-7,Argentinean,E1.04.001,Hispanic or Latino,2135-2
+2167-5,Bolivian,E1.04.002,Hispanic or Latino,2135-2
+2168-3,Chilean,E1.04.003,Hispanic or Latino,2135-2
+2169-1,Colombian,E1.04.004,Hispanic or Latino,2135-2
+2170-9,Ecuadorian,E1.04.005,Hispanic or Latino,2135-2
+2171-7,Paraguayan,E1.04.006,Hispanic or Latino,2135-2
+2172-5,Peruvian,E1.04.007,Hispanic or Latino,2135-2
+2173-3,Uruguayan,E1.04.008,Hispanic or Latino,2135-2
+2174-1,Venezuelan,E1.04.009,Hispanic or Latino,2135-2
+2175-8,South American Indian,E1.04.010,Hispanic or Latino,2135-2
+2176-6,Criollo,E1.04.011,Hispanic or Latino,2135-2
