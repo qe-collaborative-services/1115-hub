@@ -1283,7 +1283,7 @@ export class AdminDemographicAssuranceRules<
                  ad.src_file_row_number AS issue_row
             FROM ${this.tableName} ad
             LEFT JOIN ${ethnicityReferenceTable} ref
-            ON ad."${columnName}" = ref."Concept Code"
+            ON CAST(ad."${columnName}" AS VARCHAR) = CAST(ref."Concept Code" AS VARCHAR)
            WHERE ad."${columnName}" IS NOT NULL
             AND ref."Concept Code" IS NULL
       )
@@ -1345,7 +1345,7 @@ export class AdminDemographicAssuranceRules<
                  ad.src_file_row_number AS issue_row
             FROM ${this.tableName} ad
             LEFT JOIN ${raceReferenceTable} ref
-            ON ad."${columnName}" = ref."Concept Code"
+            ON CAST(ad."${columnName}" AS VARCHAR) = CAST(ref."Concept Code" AS VARCHAR)
            WHERE ad."${columnName}" IS NOT NULL
             AND ref."Concept Code" IS NULL
       )
