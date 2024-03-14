@@ -16,7 +16,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.8.1";
+export const ORCHESTRATE_VERSION = "0.8.2";
 
 export type PotentialIngestSource =
   | excel.ScreeningExcelSheetIngestSource<string, o.State>
@@ -742,7 +742,7 @@ export class OrchEngine {
                       'resourceType', 'Patient',
                       'id', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
                       'meta', json_object(
-                        'lastUpdated','',
+                        'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
                         'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
                       ),
                       'language', PREFERRED_LANGUAGE_CODE,
@@ -800,18 +800,18 @@ export class OrchEngine {
                                             'url', 'http://shinny.org/StructureDefinition/shinny-sexual-orientation'
                                       )
                                     ),
-                      'identifier', CASE
-                                      WHEN MEDICAID_CIN != '' THEN
-                                          json_array(
-                                              json_object(
-                                                  'type', json_object(
-                                                      'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
-                                                      'text', 'Medical Record Number'
-                                                  ),
-                                                  'system', adt.FACILITY_ID,
-                                                  'value', qat.PAT_MRN_ID,
-                                                  'assigner', json_object('reference','Organization/' || LOWER(REPLACE(qat.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qat.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qat.FACILITY_ID, ' ', '-')))
-                                              ),
+                      'identifier', json_array(
+                                      json_object(
+                                          'type', json_object(
+                                              'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
+                                              'text', 'Medical Record Number'
+                                          ),
+                                          'system', adt.FACILITY_ID,
+                                          'value', qat.PAT_MRN_ID,
+                                          'assigner', json_object('reference', 'Organization/' || LOWER(REPLACE(qat.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qat.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qat.FACILITY_ID, ' ', '-')))
+                                      ),
+                                      CASE
+                                          WHEN MEDICAID_CIN != '' THEN
                                               json_object(
                                                   'type', json_object(
                                                       'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MA'))
@@ -820,26 +820,25 @@ export class OrchEngine {
                                                   'value', MEDICAID_CIN,
                                                   'assigner', json_object('reference', 'Organization/2.16.840.1.113883.3.249')
                                               )
-                                          )
-                                      ELSE
-                                          json_array(
+                                          ELSE NULL
+                                      END,
+                                      CASE
+                                          WHEN adt.MPI_ID IS NOT NULL THEN
                                               json_object(
                                                   'type', json_object(
-                                                      'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
-                                                      'text', 'Medical Record Number'
+                                                      'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'PN'))
                                                   ),
-                                                  'system', adt.FACILITY_ID,
-                                                  'value', qat.PAT_MRN_ID,
-                                                  'assigner', json_object('reference', 'Organization/' || LOWER(REPLACE(qat.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qat.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qat.FACILITY_ID, ' ', '-')))
+                                                  'system', 'http://www.acme.com/identifiers/patient',
+                                                  'value', adt.MPI_ID
                                               )
-                                          )
-                                    END,
+                                          ELSE NULL
+                                      END
+                                  ),
                       'name', json_array(json_object(
                         'text', CONCAT(FIRST_NAME,' ', LAST_NAME),
                         'family', LAST_NAME,
                         'given', json_array(FIRST_NAME,LAST_NAME))
                       ),
-                      'telecom', '',
                       'gender', GENDER_IDENTITY_CODE_DESCRIPTION,
                       'birthDate', PAT_BIRTH_DATE,
                       'address', json_array(
@@ -848,7 +847,7 @@ export class OrchEngine {
                             'line', json_array(ADDRESS1,ADDRESS2),
                             'city', CITY,
                             'state', STATE,
-                            'postalCode', ZIP
+                            'postalCode', CAST(ZIP AS TEXT)
                         )
                       ),
                       'communication', json_array(
@@ -863,24 +862,49 @@ export class OrchEngine {
             FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrQeAdminData} qat
             ON adt.PAT_MRN_ID = qat.PAT_MRN_ID
             ),
+            cte_fhir_consent AS (
+              SELECT adt.pat_mrn_id,json_object('fullUrl', CONCAT('consentFor',adt.PAT_MRN_ID),
+                'resource', json_object(
+                      'resourceType', 'Consent',
+                      'id', CONCAT('consentFor',adt.PAT_MRN_ID),
+                      'meta', json_object(
+                        'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+                        'profile', json_array('http://shinny.org/StructureDefinition/shin-ny-organization')
+                      ),
+                      'status','active',
+                      'category', json_object(
+                        'coding',json_array(
+                          json_object('system', 'http://terminology.hl7.org/CodeSystem/v3-ActCode',
+                          'code', 'IDSCL')
+                        )
+                      ),
+                      'patient', json_object(
+                        'reference', CONCAT('Patient/',adt.PAT_MRN_ID)
+                      ),
+                      'datetime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+                      'organization', json_object('reference', 'Organization/' || LOWER(REPLACE(qat.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qat.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qat.FACILITY_ID, ' ', '-')))
+
+
+                )
+              ) AS FHIR_Consent
+            FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrQeAdminData} qat
+            ON adt.PAT_MRN_ID = qat.PAT_MRN_ID  WHERE
+            LOWER(adt.consent) = 'yes'
+            ),
             cte_fhir_org AS (
               SELECT qed.PAT_MRN_ID, JSON_OBJECT(
-                'fullUrl', '',
+                'fullUrl', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
                 'resource', JSON_OBJECT(
                     'resourceType', 'Organization',
-                    'id', qed.FACILITY_ID,
+                    'id', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
                     'meta', JSON_OBJECT(
-                        'lastUpdated', '',
-                        'profile', JSON_ARRAY('')
-                    ),
-                    'text', JSON_OBJECT(
-                        'status', 'generated',
-                        'div', ''
+                        'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),
+                        'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-organization')
                     ),
                     'identifier', JSON_ARRAY(
                         JSON_OBJECT(
-                            'system', '',
-                            'value', ''
+                            'system', qed.FACILITY_ID,
+                            'value', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-'))
                         )
                     ),
                     'active', true,
@@ -888,8 +912,8 @@ export class OrchEngine {
                         JSON_OBJECT(
                             'coding', JSON_ARRAY(
                                 JSON_OBJECT(
-                                    'system', '',
-                                    'code', '',
+                                    'system', 'http://terminology.hl7.org/CodeSystem/organization-type',
+                                    'code', qed.ORGANIZATION_TYPE,
                                     'display', qed.ORGANIZATION_TYPE
                                 )
                             )
@@ -898,7 +922,10 @@ export class OrchEngine {
                     'name', qed.FACILITY_LONG_NAME,
                     'address', JSON_ARRAY(
                         JSON_OBJECT(
-                            'text', CONCAT(qed.FACILITY_ADDRESS1,' ', qed.FACILITY_ADDRESS2)
+                            'text', CONCAT(qed.FACILITY_ADDRESS1,' ', qed.FACILITY_ADDRESS2),
+                            'city', qed.FACILITY_CITY,
+                            'state', qed.FACILITY_STATE,
+                            'postalCode', CAST(qed.FACILITY_ZIP AS TEXT)
                         )
                     )
                 )
@@ -906,10 +933,10 @@ export class OrchEngine {
             FROM ${csv.aggrQeAdminData} qed),
             cte_fhir_observation AS (
               SELECT scr.PAT_MRN_ID, JSON_OBJECT(
-                'fullUrl', '',
+                'fullUrl', CONCAT('observation',QUESTION_CODE),
                 'resource', JSON_OBJECT(
                   'resourceType', 'Observation',
-                      'id', '',
+                      'id', CONCAT('observation',QUESTION_CODE),
                       'status', 'final',
                       'code', json_object(
                         'coding', json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE))
@@ -932,7 +959,7 @@ export class OrchEngine {
                   ),
                   'status', ENCOUNTER_STATUS_CODE_DESCRIPTION,
                   'class', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,'code',ENCOUNTER_CLASS_CODE)))),
-                  'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,'code',ENCOUNTER_TYPE_CODE)))),
+                  'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,'code',  CAST(ENCOUNTER_TYPE_CODE AS TEXT) )))),
                   'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
                 )
             ) AS FHIR_Encounter
@@ -951,6 +978,8 @@ export class OrchEngine {
                 SELECT FHIR_Observation AS json_data FROM cte_fhir_observation
                 UNION ALL
                 SELECT FHIR_Encounter AS json_data FROM cte_fhir_encounter
+                UNION ALL
+                SELECT FHIR_Consent AS json_data FROM cte_fhir_consent
               );
 
           ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
