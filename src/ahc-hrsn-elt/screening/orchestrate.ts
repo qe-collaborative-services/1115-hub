@@ -843,9 +843,9 @@ export class OrchEngine {
                                       END
                                   ),
                       'name', json_array(json_object(
-                        'text', CONCAT(FIRST_NAME,' ', LAST_NAME),
+                        'text', CONCAT(FIRST_NAME,' ', MIDDLE_NAME,' ', LAST_NAME),
                         'family', LAST_NAME,
-                        'given', json_array(FIRST_NAME,LAST_NAME))
+                        'given', json_array(FIRST_NAME,MIDDLE_NAME))
                       ),
                       'gender', GENDER_IDENTITY_CODE_DESCRIPTION,
                       'birthDate', PAT_BIRTH_DATE,
@@ -945,14 +945,19 @@ export class OrchEngine {
                 'resource', JSON_OBJECT(
                   'resourceType', 'Observation',
                       'id', CONCAT('observation',QUESTION_CODE),
-                      'status', 'final',
+                      'meta', JSON_OBJECT(
+                          'lastUpdated', RECORDED_TIME,
+                          'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
+                      ),
+                      'status', SCREENING_STATUS_CODE,
+                      'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey')))),
                       'code', json_object(
-                        'coding', json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE))
+                        'coding', json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE,'display',QUESTION_CODE_DESCRIPTION))
                       ),
                       'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
                       'effectiveDateTime', RECORDED_TIME,
-                      'valueString', ANSWER_CODE_DESCRIPTION,
-                      'component', json_array(json_object('code',json_object('coding',json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE))),'valueString', QUESTION_CODE_DESCRIPTION))
+                      'issued', RECORDED_TIME,
+                      'valueCodeableConcept',json_object('coding',json_array(json_object('system','http://loinc.org','code',ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION)))
                   )
             ) AS FHIR_Observation
             FROM ${csv.aggrScreeningTableName} scr),
@@ -960,7 +965,7 @@ export class OrchEngine {
               SELECT scr.ENCOUNTER_ID, JSON_OBJECT(
                 'resource', JSON_OBJECT(
                   'resourceType', 'Encounter',
-                  'id', '${uuid.v1.generate()}',
+                  'id', scr.ENCOUNTER_ID,
                   'meta', JSON_OBJECT(
                       'lastUpdated', RECORDED_TIME,
                       'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
@@ -976,6 +981,10 @@ export class OrchEngine {
               'resourceType', 'Bundle',
               'id', '${uuid.v1.generate()}',
               'type', 'transaction',
+              'meta', JSON_OBJECT(
+                  'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
+              ),
+              'timestamp', CURRENT_TIMESTAMP,
               'entry', json(json_group_array(json_data))
               ) AS FHIR_Bundle
               FROM (

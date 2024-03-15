@@ -228,7 +228,7 @@ CREATE VIEW IF NOT EXISTS "orch_session_diagnostic_text" AS
 
 -- register the current device and session and use the identifiers for all logging
 INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'UNNIKRISHNAN-N', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.2', ('2024-03-15T11:13:00.557Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
+INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.2', ('2024-03-15T11:16:59.787Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
 
 -- Load Reference data from csvs
 
@@ -3590,11 +3590,11 @@ No STDERR emitted by `ensureContent`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-15T11:13:03.291Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-15T11:13:03.291Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-15T11:13:03.291Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('398104b8-02dc-509b-998a-0b66b5a912e1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-15T11:13:03.291Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('06369bd0-47ee-5066-bbce-a751235b365d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-15T11:13:03.291Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-15T11:17:02.475Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-15T11:17:02.475Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-15T11:17:02.475Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('398104b8-02dc-509b-998a-0b66b5a912e1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-15T11:17:02.475Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('06369bd0-47ee-5066-bbce-a751235b365d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-15T11:17:02.475Z'), NULL);
 
 -- removed SQLPage and execution diagnostics SQL DML from diagnostics Markdown
 
@@ -3988,9 +3988,9 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
                             END
                         ),
             'name', json_array(json_object(
-              'text', CONCAT(FIRST_NAME,' ', LAST_NAME),
+              'text', CONCAT(FIRST_NAME,' ', MIDDLE_NAME,' ', LAST_NAME),
               'family', LAST_NAME,
-              'given', json_array(FIRST_NAME,LAST_NAME))
+              'given', json_array(FIRST_NAME,MIDDLE_NAME))
             ),
             'gender', GENDER_IDENTITY_CODE_DESCRIPTION,
             'birthDate', PAT_BIRTH_DATE,
@@ -4090,14 +4090,19 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
       'resource', JSON_OBJECT(
         'resourceType', 'Observation',
             'id', CONCAT('observation',QUESTION_CODE),
-            'status', 'final',
+            'meta', JSON_OBJECT(
+                'lastUpdated', RECORDED_TIME,
+                'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
+            ),
+            'status', SCREENING_STATUS_CODE,
+            'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey')))),
             'code', json_object(
-              'coding', json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE))
+              'coding', json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE,'display',QUESTION_CODE_DESCRIPTION))
             ),
             'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
             'effectiveDateTime', RECORDED_TIME,
-            'valueString', ANSWER_CODE_DESCRIPTION,
-            'component', json_array(json_object('code',json_object('coding',json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE))),'valueString', QUESTION_CODE_DESCRIPTION))
+            'issued', RECORDED_TIME,
+            'valueCodeableConcept',json_object('coding',json_array(json_object('system','http://loinc.org','code',ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION)))
         )
   ) AS FHIR_Observation
   FROM screening scr),
@@ -4105,7 +4110,7 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
     SELECT scr.ENCOUNTER_ID, JSON_OBJECT(
       'resource', JSON_OBJECT(
         'resourceType', 'Encounter',
-        'id', 'fdb04220-e2bc-11ee-8813-ed503b8fc6f6',
+        'id', scr.ENCOUNTER_ID,
         'meta', JSON_OBJECT(
             'lastUpdated', RECORDED_TIME,
             'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
@@ -4119,8 +4124,12 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
   FROM screening scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE_DESCRIPTION, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.PAT_MRN_ID, scr.FACILITY_ID)
   SELECT json_object(
     'resourceType', 'Bundle',
-    'id', 'fdb04221-e2bc-11ee-8813-ed503b8fc6f6',
+    'id', '8c40fe30-e2bd-11ee-87fa-d1fbbef3bbbe',
     'type', 'transaction',
+    'meta', JSON_OBJECT(
+        'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
+    ),
+    'timestamp', CURRENT_TIMESTAMP,
     'entry', json(json_group_array(json_data))
     ) AS FHIR_Bundle
     FROM (
