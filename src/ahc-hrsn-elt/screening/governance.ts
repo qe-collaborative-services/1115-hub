@@ -198,10 +198,17 @@ export class CommonAssuranceRules<
     }"
         WHERE tbl."${columnName1}" is not null
         and tbl."${columnName2}" is not null
-        and tbl."${columnName2}" NOT IN ( SELECT tbl."${columnName2}" FROM ${
+        and NOT EXISTS ( SELECT "${
+      columnReference[columnName2 as keyof typeof columnReference]
+        .referenceFieldName
+    }" FROM ${
       columnReference[columnName1 as keyof typeof columnReference]
         .referenceTableName
-    }))
+    } WHERE tbl."${columnName2}" = "${
+      columnReference[columnName2 as keyof typeof columnReference]
+        .referenceFieldName
+    }")
+      )
       ${
       this.insertRowValueIssueCtePartial(
         cteName,
