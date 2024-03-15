@@ -198,11 +198,10 @@ export class CommonAssuranceRules<
     }"
         WHERE tbl."${columnName1}" is not null
         and tbl."${columnName2}" is not null
-        and tbl."${columnName2}" != ref."${
-      columnReference[columnName2 as keyof typeof columnReference]
-        .referenceFieldName
-    }"
-      )
+        and tbl."${columnName2}" NOT IN ( SELECT tbl."${columnName2}" FROM ${
+      columnReference[columnName1 as keyof typeof columnReference]
+        .referenceTableName
+    }))
       ${
       this.insertRowValueIssueCtePartial(
         cteName,
