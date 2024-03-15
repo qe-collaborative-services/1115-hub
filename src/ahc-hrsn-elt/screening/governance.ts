@@ -67,6 +67,155 @@ export class CommonAssuranceRules<
       )
     }`;
   }
+
+  onlyAllowValidFieldCombinationsInAllRows(
+    columnName1: ColumnName,
+    columnName2: ColumnName,
+  ) {
+    const cteName = "valid_field_combination_in_all_rows";
+    const columnReference = {
+      "ENCOUNTER_CLASS_CODE": {
+        referenceTableName: "encounter_class_reference",
+        referenceFieldName: "Code",
+      },
+      "ENCOUNTER_CLASS_CODE_DESCRIPTION": {
+        referenceTableName: "encounter_class_reference",
+        referenceFieldName: "Display",
+      },
+      "ENCOUNTER_STATUS_CODE": {
+        referenceTableName: "encounter_status_code_reference",
+        referenceFieldName: "Code",
+      },
+      "ENCOUNTER_STATUS_CODE_DESCRIPTION": {
+        referenceTableName: "encounter_status_code_reference",
+        referenceFieldName: "Display",
+      },
+      "ENCOUNTER_TYPE_CODE": {
+        referenceTableName: "encounter_type_code_reference",
+        referenceFieldName: "Code",
+      },
+      "ENCOUNTER_TYPE_CODE_DESCRIPTION": {
+        referenceTableName: "encounter_type_code_reference",
+        referenceFieldName: "Display",
+      },
+      "SCREENING_CODE": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "SCREENING_CODE",
+      },
+      "SCREENING_CODE_DESCRIPTION": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "SCREENING_CODE_DESCRIPTION",
+      },
+      "QUESTION_CODE": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "QUESTION_CODE",
+      },
+      "QUESTION_CODE_DESCRIPTION": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "QUESTION",
+      },
+
+      "ANSWER_CODE": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "ANSWER_CODE",
+      },
+      "ANSWER_CODE_DESCRIPTION": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "ANSWER_VALUE",
+      },
+      "SCREENING_STATUS_CODE": {
+        referenceTableName: "screening_status_code_reference",
+        referenceFieldName: "Code",
+      },
+      "SCREENING_STATUS_CODE_DESCRIPTION": {
+        referenceTableName: "screening_status_code_reference",
+        referenceFieldName: "Display",
+      },
+      "ADMINISTRATIVE_SEX_CODE": {
+        referenceTableName: "administrative_sex_reference",
+        referenceFieldName: "ADMINISTRATIVE_SEX_CODE",
+      },
+      "ADMINISTRATIVE_SEX _CODE_DESCRIPTION": {
+        referenceTableName: "administrative_sex_reference",
+        referenceFieldName: "ADMINISTRATIVE_SEX_CODE_DESCRIPTION",
+      },
+      "SEX_AT_BIRTH_CODE": {
+        referenceTableName: "sex_at_birth_reference",
+        referenceFieldName: "SEX_AT_BIRTH_CODE",
+      },
+      "SEX_AT_BIRTH_CODE_DESCRIPTION": {
+        referenceTableName: "sex_at_birth_reference",
+        referenceFieldName: "SEX_AT_BIRTH_CODE_DESCRIPTION",
+      },
+      "SEXUAL_ORIENTATION_CODE": {
+        referenceTableName: "sexual_orientation_reference",
+        referenceFieldName: "SEXUAL_ORIENTATION_CODE",
+      },
+      "SEXUAL_ORIENTATION_DESCRIPTION": {
+        referenceTableName: "sexual_orientation_reference",
+        referenceFieldName: "SEXUAL_ORIENTATION_CODE_DESCRIPTION",
+      },
+      "RACE_CODE": {
+        referenceTableName: "race_reference",
+        referenceFieldName: "Concept Code",
+      },
+      "RACE_CODE_DESCRIPTION": {
+        referenceTableName: "race_reference",
+        referenceFieldName: "Concept Name",
+      },
+      "ETHNICITY_CODE": {
+        referenceTableName: "ethnicity_reference",
+        referenceFieldName: "Concept Code",
+      },
+      "ETHNICITY_CODE_DESCRIPTION": {
+        referenceTableName: "ethnicity_reference",
+        referenceFieldName: "Concept Name",
+      },
+      "GENDER_IDENTITY_CODE": {
+        referenceTableName: "gender_identity_reference",
+        referenceFieldName: "GENDER_IDENTITY_CODE",
+      },
+      "GENDER_IDENTITY_CODE_DESCRIPTION": {
+        referenceTableName: "gender_identity_reference",
+        referenceFieldName: "GENDER_IDENTITY_CODE_DESCRIPTION",
+      },
+    };
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        SELECT 	'${columnName1}' AS issue_column,
+            tbl."${columnName1}" AS invalid_value,
+            tbl."${columnName2}" AS dependent_value,
+            tbl.src_file_row_number AS issue_row
+        FROM ${this.tableName}  tbl
+        WHERE tbl."${columnName1}" is not null
+        and tbl."${columnName2}" is not null
+        and NOT EXISTS ( SELECT "${
+      columnReference[columnName2 as keyof typeof columnReference]
+        .referenceFieldName
+    }" FROM ${
+      columnReference[columnName1 as keyof typeof columnReference]
+        .referenceTableName
+    } WHERE tbl."${columnName2}" = "${
+      columnReference[columnName2 as keyof typeof columnReference]
+        .referenceFieldName
+    }" AND tbl."${columnName1}" = "${
+      columnReference[columnName1 as keyof typeof columnReference]
+        .referenceFieldName
+    }")
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Combination Not Matching`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid value "' || invalid_value || '" found in ' || issue_column`,
+        `'The ${columnName1} "' || invalid_value || '" of ${columnName2} "' || dependent_value || '" is not matching with the ${columnName1} of ${columnName2} in reference data'`,
+      )
+    }`;
+  }
 }
 
 /**
@@ -75,6 +224,28 @@ export class CommonAssuranceRules<
  */
 
 export class AhcCrossWalkAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
+export class PreferredLanguageReferenceAssuranceRules<
   TableName extends string,
   ColumnName extends string,
 > extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
@@ -751,25 +922,7 @@ export class ScreeningAssuranceRules<
                     src_file_row_number AS issue_row
               FROM "${this.tableName}"
               WHERE "${columnName}" IS NOT NULL
-              AND NOT (
-                TRY_CAST(SUBSTR("${columnName}", 1,4) as INT) = NULL
-                AND SUBSTR("${columnName}", 5, 1) = '-'
-                AND TRY_CAST(SUBSTR("${columnName}", 6,2) as INT) = NULL
-                AND SUBSTR("${columnName}", 8, 1) = '-'
-                AND TRY_CAST(SUBSTR("${columnName}", 9,2) as INT) = NULL
-                  AND UPPER(SUBSTR("${columnName}", 11, 1)) = 'T'
-                  AND TRY_CAST(SUBSTR("${columnName}", 12,2) as INT) = NULL
-                  AND SUBSTR("${columnName}", 14, 1) = ':'
-                  AND TRY_CAST(SUBSTR("${columnName}", 15,2) as INT) = NULL
-              AND SUBSTRING("${columnName}", 17, 1) = ':'
-              AND TRY_CAST(SUBSTR("${columnName}", 18,2) as INT) = NULL
-              AND SUBSTRING("${columnName}", 20, 1) = '.'
-              AND TRY_CAST(SUBSTR("${columnName}", 21,3) as INT) = NULL
-              AND UPPER(SUBSTRING("${columnName}", Length("${columnName}"), 1)) = 'Z'
-              AND TRY_CAST(SUBSTR("${columnName}",POSITION('.' IN "${columnName}") + 1,
-              LENGTH(SUBSTR("${columnName}", POSITION('.' IN "${columnName}") + 1, POSITION('Z' IN UPPER("${columnName}")) - POSITION('.' IN "${columnName}") - 1))
-              ) as INT) = NULL
-              )
+              AND "${columnName}" NOT SIMILAR TO '([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$'
               OR TRY_CAST("${columnName}" AS TIMESTAMP) IS NULL
               OR SUBSTR("${columnName}", 1, 4) < ${minYear}
         )
@@ -780,7 +933,7 @@ export class ScreeningAssuranceRules<
         "issue_column",
         "invalid_value",
         `'Invalid timestamp "' || invalid_value || '" found in ' || issue_column`,
-        `'Please be sure to provide both a valid date and time (Format: YYYY-MM-DDTHH:MM:SS.000Z).'`,
+        `'Please be sure to provide both a valid date and time.'`,
       )}`;
   }
 
@@ -1017,6 +1170,37 @@ export class AdminDemographicAssuranceRules<
         "invalid_value",
         `'Invalid SEXUAL ORIENTATION CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
         `'Validate SEXUAL ORIENTATION CODE DESCRIPTION with sexual orientation reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidGenderIdentityCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_gender_identity_code_in_all_rows";
+    const genderIdentityReferenceTable = "gender_identity_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 sr."${columnName}" AS invalid_value,
+                 sr.src_file_row_number AS issue_row
+            FROM ${this.tableName} sr
+            LEFT JOIN ${genderIdentityReferenceTable} ref
+            ON sr.${columnName} = ref.GENDER_IDENTITY_CODE
+           WHERE sr.${columnName} IS NOT NULL
+            AND ref.GENDER_IDENTITY_CODE IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid GENDER IDENTITY CODE`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid GENDER IDENTITY CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate GENDER IDENTITY CODE with gender identity reference data'`,
       )
     }`;
   }
