@@ -106,6 +106,23 @@ export class CommonAssuranceRules<
         referenceTableName: "ahc_cross_walk",
         referenceFieldName: "SCREENING_CODE_DESCRIPTION",
       },
+      "QUESTION_CODE": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "QUESTION_CODE",
+      },
+      "QUESTION_CODE_DESCRIPTION": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "QUESTION",
+      },
+
+      "ANSWER_CODE": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "ANSWER_CODE",
+      },
+      "ANSWER_CODE_DESCRIPTION": {
+        referenceTableName: "ahc_cross_walk",
+        referenceFieldName: "ANSWER_VALUE",
+      },
       "SCREENING_STATUS_CODE": {
         referenceTableName: "screening_status_code_reference",
         referenceFieldName: "Code",

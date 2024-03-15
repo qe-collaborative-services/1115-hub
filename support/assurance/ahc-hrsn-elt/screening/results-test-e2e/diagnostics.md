@@ -223,7 +223,7 @@ CREATE VIEW IF NOT EXISTS "orch_session_diagnostic_text" AS
 
 -- register the current device and session and use the identifiers for all logging
 INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'UNNIKRISHNAN-N', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.2', ('2024-03-15T06:33:49.424Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
+INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.2', ('2024-03-15T06:47:41.701Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
 
 -- Load Reference data from csvs
 
@@ -3137,6 +3137,98 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Invalid Answer Code "' || invalid_value || '" for Question Code "' || invalid_question_value || '" found in ' || issue_column,
            'Validate Question Code and Answer Code with ahc cross walk reference data'
       FROM valid_answer_code_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'QUESTION_CODE' AS issue_column,
+      tbl."QUESTION_CODE" AS invalid_value,
+      tbl."QUESTION_CODE_DESCRIPTION" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM screening_20240307  tbl
+  LEFT JOIN ahc_cross_walk  ref
+  ON tbl."QUESTION_CODE"  = ref."QUESTION_CODE"
+  WHERE tbl."QUESTION_CODE" is not null
+  and tbl."QUESTION_CODE_DESCRIPTION" is not null
+  and tbl."QUESTION_CODE_DESCRIPTION" != ref."QUESTION"
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The QUESTION_CODE "' || invalid_value || '" of QUESTION_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the QUESTION_CODE of QUESTION_CODE_DESCRIPTION in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'QUESTION_CODE_DESCRIPTION' AS issue_column,
+      tbl."QUESTION_CODE_DESCRIPTION" AS invalid_value,
+      tbl."QUESTION_CODE" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM screening_20240307  tbl
+  LEFT JOIN ahc_cross_walk  ref
+  ON tbl."QUESTION_CODE_DESCRIPTION"  = ref."QUESTION"
+  WHERE tbl."QUESTION_CODE_DESCRIPTION" is not null
+  and tbl."QUESTION_CODE" is not null
+  and tbl."QUESTION_CODE" != ref."QUESTION_CODE"
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The QUESTION_CODE_DESCRIPTION "' || invalid_value || '" of QUESTION_CODE "' || dependent_value || '" is not matching with the QUESTION_CODE_DESCRIPTION of QUESTION_CODE in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'ANSWER_CODE' AS issue_column,
+      tbl."ANSWER_CODE" AS invalid_value,
+      tbl."ANSWER_CODE_DESCRIPTION" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM screening_20240307  tbl
+  LEFT JOIN ahc_cross_walk  ref
+  ON tbl."ANSWER_CODE"  = ref."ANSWER_CODE"
+  WHERE tbl."ANSWER_CODE" is not null
+  and tbl."ANSWER_CODE_DESCRIPTION" is not null
+  and tbl."ANSWER_CODE_DESCRIPTION" != ref."ANSWER_VALUE"
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The ANSWER_CODE "' || invalid_value || '" of ANSWER_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the ANSWER_CODE of ANSWER_CODE_DESCRIPTION in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'ANSWER_CODE_DESCRIPTION' AS issue_column,
+      tbl."ANSWER_CODE_DESCRIPTION" AS invalid_value,
+      tbl."ANSWER_CODE" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM screening_20240307  tbl
+  LEFT JOIN ahc_cross_walk  ref
+  ON tbl."ANSWER_CODE_DESCRIPTION"  = ref."ANSWER_VALUE"
+  WHERE tbl."ANSWER_CODE_DESCRIPTION" is not null
+  and tbl."ANSWER_CODE" is not null
+  and tbl."ANSWER_CODE" != ref."ANSWER_CODE"
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The ANSWER_CODE_DESCRIPTION "' || invalid_value || '" of ANSWER_CODE "' || dependent_value || '" is not matching with the ANSWER_CODE_DESCRIPTION of ANSWER_CODE in reference data'
+      FROM valid_field_combination_in_all_rows;
 WITH allowed_values AS (
     SELECT 'SCREENING_CODE' AS issue_column,
            "SCREENING_CODE" AS invalid_value,
@@ -3453,11 +3545,11 @@ No STDERR emitted by `ensureContent`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-15T06:33:51.957Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-15T06:33:51.957Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-15T06:33:51.957Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('47d97ff4-908a-50f7-a2e2-443e2dad7056', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-15T06:33:51.957Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a8d1b1bd-8eb4-5138-9be5-e990a57810dd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-15T06:33:51.957Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-15T06:47:44.481Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-15T06:47:44.481Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-15T06:47:44.481Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('47d97ff4-908a-50f7-a2e2-443e2dad7056', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-15T06:47:44.481Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a8d1b1bd-8eb4-5138-9be5-e990a57810dd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-15T06:47:44.481Z'), NULL);
 
 -- removed SQLPage and execution diagnostics SQL DML from diagnostics Markdown
 
@@ -3961,7 +4053,7 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
     SELECT scr.ENCOUNTER_ID, JSON_OBJECT(
       'resource', JSON_OBJECT(
         'resourceType', 'Encounter',
-        'id', 'fd1dd7e0-e295-11ee-b2c4-1b53d2629fa2',
+        'id', 'ed569e80-e297-11ee-9311-79f665fa2443',
         'meta', JSON_OBJECT(
             'lastUpdated', RECORDED_TIME,
             'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
@@ -3975,7 +4067,7 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
   FROM screening scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE_DESCRIPTION, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.PAT_MRN_ID, scr.FACILITY_ID)
   SELECT json_object(
     'resourceType', 'Bundle',
-    'id', 'fd1dd7e1-e295-11ee-b2c4-1b53d2629fa2',
+    'id', 'ed569e81-e297-11ee-9311-79f665fa2443',
     'type', 'transaction',
     'entry', json(json_group_array(json_data))
     ) AS FHIR_Bundle
