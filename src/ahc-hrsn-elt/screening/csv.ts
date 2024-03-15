@@ -287,12 +287,16 @@ export class ScreeningCsvFileIngestSource<
       ${sar.matchesPatMrnIdAcrossScreeningQeAdminDemographics("PAT_MRN_ID", "FACILITY_ID", relatedTableNames)}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE")}
       ${sar.onlyAllowValidEncounterClassCodeInAllRows("ENCOUNTER_CLASS_CODE")}
+      ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_CLASS_CODE","ENCOUNTER_CLASS_CODE_DESCRIPTION")}
+      ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_CLASS_CODE_DESCRIPTION","ENCOUNTER_CLASS_CODE")}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
       ${sar.onlyAllowValidEncounterClassSystemInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
       ${sar.onlyAllowValidEncounterClassDiscriptionInAllRows("ENCOUNTER_CLASS_CODE_DESCRIPTION")}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_STATUS_CODE")}
       ${sar.onlyAllowValidEncounterStatusCodeInAllRows("ENCOUNTER_STATUS_CODE")}
       ${sar.onlyAllowValidEncounterStatusCodeDescriptionInAllRows("ENCOUNTER_STATUS_CODE_DESCRIPTION")}
+      ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_STATUS_CODE","ENCOUNTER_STATUS_CODE_DESCRIPTION")}
+      ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_STATUS_CODE_DESCRIPTION","ENCOUNTER_STATUS_CODE")}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_STATUS_CODE_SYSTEM")}
       ${tr.onlyAllowedValuesInAllRows(
         "ENCOUNTER_STATUS_CODE_SYSTEM",
@@ -301,9 +305,13 @@ export class ScreeningCsvFileIngestSource<
       ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
       ${sar.onlyAllowValidEncounterTypeSystemInAllRows("ENCOUNTER_TYPE_CODE_SYSTEM")}
       ${sar.onlyAllowValidEncounterTypeDescriptionInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION")}
+      ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_TYPE_CODE","ENCOUNTER_TYPE_CODE_DESCRIPTION")}
+      ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION","ENCOUNTER_TYPE_CODE")}
       ${tr.mandatoryValueInAllRows("SCREENING_STATUS_CODE")}
       ${sar.onlyAllowValidScreeningStatusCodeInAllRows("SCREENING_STATUS_CODE")}
       ${sar.onlyAllowValidScreeningStatusDescriptionInAllRows("SCREENING_STATUS_CODE_DESCRIPTION")}
+      ${sar.car.onlyAllowValidFieldCombinationsInAllRows("SCREENING_STATUS_CODE","SCREENING_STATUS_CODE_DESCRIPTION")}
+      ${sar.car.onlyAllowValidFieldCombinationsInAllRows("SCREENING_STATUS_CODE_DESCRIPTION","SCREENING_STATUS_CODE")}
       ${tr.mandatoryValueInAllRows("SCREENING_STATUS_CODE_SYSTEM")}
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_STATUS_CODE_SYSTEM",
@@ -651,9 +659,13 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.onlyAllowValidAdministrativeSexCodeInAllRows("ADMINISTRATIVE_SEX_CODE")}
       ${adar.onlyAllowValidAdministrativeSexCodeDescriptionInAllRows("ADMINISTRATIVE_SEX _CODE_DESCRIPTION")}
       ${adar.onlyAllowValidAdministrativeSexCodeSystemInAllRows("ADMINISTRATIVE_SEX _CODE_SYSTEM")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("ADMINISTRATIVE_SEX_CODE","ADMINISTRATIVE_SEX _CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("ADMINISTRATIVE_SEX _CODE_DESCRIPTION","ADMINISTRATIVE_SEX_CODE")}
       ${adar.onlyAllowValidSexAtBirthCodeInAllRows("SEX_AT_BIRTH_CODE")}
       ${adar.onlyAllowValidSexAtBirthCodeDescriptionInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION")}
       ${adar.onlyAllowValidSexAtBirthCodeSystemInAllRows("SEX_AT_BIRTH_CODE_SYSTEM")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEX_AT_BIRTH_CODE","SEX_AT_BIRTH_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION","SEX_AT_BIRTH_CODE")}
       ${tr.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
       ${tr.onlyAllowValidDateTimeInAllRows("PAT_BIRTH_DATE")}
       ${tr.mandatoryValueInAllRows("CITY")}
@@ -663,24 +675,29 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.car.onlyAllowValidZipInAllRows("ZIP")}
       ${adar.car.onlyAllowValidIntegerAlphaNumericStringInAllRows("ADDRESS1")}
       ${adar.onlyAllowValidAddress1OrMedicaidCinInAllRows("ADDRESS1","MEDICAID_CIN")}
-      ${tr.onlyAllowedValuesInAllRows(
-        "GENDER_IDENTITY_CODE",
-        "'407377005','446141000124107','446151000124109','446131000124102','407376001','ASKU','OTH','UNK'"
-      )}
+      ${adar.onlyAllowValidGenderIdentityCodeInAllRows("GENDER_IDENTITY_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "GENDER_IDENTITY_CODE_SYSTEM_NAME",
         "'SNOMED-CT','SNOMED','http://snomed.info/sct'"
       )}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("GENDER_IDENTITY_CODE","GENDER_IDENTITY_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("GENDER_IDENTITY_CODE_DESCRIPTION","GENDER_IDENTITY_CODE")}
       ${adar.onlyAllowValidSexualOrientationCodeInAllRows("SEXUAL_ORIENTATION_CODE")}
       ${adar.onlyAllowValidSexualOrientationDescriptionInAllRows("SEXUAL_ORIENTATION_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEXUAL_ORIENTATION_CODE","SEXUAL_ORIENTATION_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEXUAL_ORIENTATION_DESCRIPTION","SEXUAL_ORIENTATION_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME",
         "'SNOMED-CT','SNOMED','http://snomed.info/sct'"
       )}
       ${adar.onlyAllowValidEthnicityCodeInAllRows("ETHNICITY_CODE")}
       ${adar.onlyAllowValidEthnicityCodeDescriptionInAllRows("ETHNICITY_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("ETHNICITY_CODE","ETHNICITY_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("ETHNICITY_CODE_DESCRIPTION","ETHNICITY_CODE")}
       ${adar.onlyAllowValidRaceCodeInAllRows("RACE_CODE")}
       ${adar.onlyAllowValidRaceCodeDescriptionInAllRows("RACE_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE","RACE_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE_DESCRIPTION","RACE_CODE")}
       ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238'")}
       ${tr.onlyAllowedValuesInAllRows(
         "ETHNICITY_CODE_SYSTEM_NAME",
