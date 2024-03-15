@@ -228,7 +228,7 @@ CREATE VIEW IF NOT EXISTS "orch_session_diagnostic_text" AS
 
 -- register the current device and session and use the identifiers for all logging
 INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'UNNIKRISHNAN-N', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.2', ('2024-03-15T11:16:59.787Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
+INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.2', ('2024-03-15T11:36:13.253Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
 
 -- Load Reference data from csvs
 
@@ -1057,11 +1057,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ADMINISTRATIVE_SEX _CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN administrative_sex_reference  ref
-  ON tbl."ADMINISTRATIVE_SEX_CODE"  = ref."ADMINISTRATIVE_SEX_CODE"
   WHERE tbl."ADMINISTRATIVE_SEX_CODE" is not null
   and tbl."ADMINISTRATIVE_SEX _CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "ADMINISTRATIVE_SEX_CODE_DESCRIPTION" FROM administrative_sex_reference WHERE tbl."ADMINISTRATIVE_SEX _CODE_DESCRIPTION" = "ADMINISTRATIVE_SEX_CODE_DESCRIPTION")
+  and NOT EXISTS ( SELECT "ADMINISTRATIVE_SEX_CODE_DESCRIPTION" FROM administrative_sex_reference WHERE tbl."ADMINISTRATIVE_SEX _CODE_DESCRIPTION" = "ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AND tbl."ADMINISTRATIVE_SEX_CODE" = "ADMINISTRATIVE_SEX_CODE")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1080,11 +1078,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ADMINISTRATIVE_SEX_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN administrative_sex_reference  ref
-  ON tbl."ADMINISTRATIVE_SEX _CODE_DESCRIPTION"  = ref."ADMINISTRATIVE_SEX_CODE_DESCRIPTION"
   WHERE tbl."ADMINISTRATIVE_SEX _CODE_DESCRIPTION" is not null
   and tbl."ADMINISTRATIVE_SEX_CODE" is not null
-  and NOT EXISTS ( SELECT "ADMINISTRATIVE_SEX_CODE" FROM administrative_sex_reference WHERE tbl."ADMINISTRATIVE_SEX_CODE" = "ADMINISTRATIVE_SEX_CODE")
+  and NOT EXISTS ( SELECT "ADMINISTRATIVE_SEX_CODE" FROM administrative_sex_reference WHERE tbl."ADMINISTRATIVE_SEX_CODE" = "ADMINISTRATIVE_SEX_CODE" AND tbl."ADMINISTRATIVE_SEX _CODE_DESCRIPTION" = "ADMINISTRATIVE_SEX_CODE_DESCRIPTION")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1166,11 +1162,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN sex_at_birth_reference  ref
-  ON tbl."SEX_AT_BIRTH_CODE"  = ref."SEX_AT_BIRTH_CODE"
   WHERE tbl."SEX_AT_BIRTH_CODE" is not null
   and tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "SEX_AT_BIRTH_CODE_DESCRIPTION" FROM sex_at_birth_reference WHERE tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" = "SEX_AT_BIRTH_CODE_DESCRIPTION")
+  and NOT EXISTS ( SELECT "SEX_AT_BIRTH_CODE_DESCRIPTION" FROM sex_at_birth_reference WHERE tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" = "SEX_AT_BIRTH_CODE_DESCRIPTION" AND tbl."SEX_AT_BIRTH_CODE" = "SEX_AT_BIRTH_CODE")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1189,11 +1183,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."SEX_AT_BIRTH_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN sex_at_birth_reference  ref
-  ON tbl."SEX_AT_BIRTH_CODE_DESCRIPTION"  = ref."SEX_AT_BIRTH_CODE_DESCRIPTION"
   WHERE tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" is not null
   and tbl."SEX_AT_BIRTH_CODE" is not null
-  and NOT EXISTS ( SELECT "SEX_AT_BIRTH_CODE" FROM sex_at_birth_reference WHERE tbl."SEX_AT_BIRTH_CODE" = "SEX_AT_BIRTH_CODE")
+  and NOT EXISTS ( SELECT "SEX_AT_BIRTH_CODE" FROM sex_at_birth_reference WHERE tbl."SEX_AT_BIRTH_CODE" = "SEX_AT_BIRTH_CODE" AND tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" = "SEX_AT_BIRTH_CODE_DESCRIPTION")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1418,11 +1410,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."GENDER_IDENTITY_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN gender_identity_reference  ref
-  ON tbl."GENDER_IDENTITY_CODE"  = ref."GENDER_IDENTITY_CODE"
   WHERE tbl."GENDER_IDENTITY_CODE" is not null
   and tbl."GENDER_IDENTITY_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "GENDER_IDENTITY_CODE_DESCRIPTION" FROM gender_identity_reference WHERE tbl."GENDER_IDENTITY_CODE_DESCRIPTION" = "GENDER_IDENTITY_CODE_DESCRIPTION")
+  and NOT EXISTS ( SELECT "GENDER_IDENTITY_CODE_DESCRIPTION" FROM gender_identity_reference WHERE tbl."GENDER_IDENTITY_CODE_DESCRIPTION" = "GENDER_IDENTITY_CODE_DESCRIPTION" AND tbl."GENDER_IDENTITY_CODE" = "GENDER_IDENTITY_CODE")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1441,11 +1431,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."GENDER_IDENTITY_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN gender_identity_reference  ref
-  ON tbl."GENDER_IDENTITY_CODE_DESCRIPTION"  = ref."GENDER_IDENTITY_CODE_DESCRIPTION"
   WHERE tbl."GENDER_IDENTITY_CODE_DESCRIPTION" is not null
   and tbl."GENDER_IDENTITY_CODE" is not null
-  and NOT EXISTS ( SELECT "GENDER_IDENTITY_CODE" FROM gender_identity_reference WHERE tbl."GENDER_IDENTITY_CODE" = "GENDER_IDENTITY_CODE")
+  and NOT EXISTS ( SELECT "GENDER_IDENTITY_CODE" FROM gender_identity_reference WHERE tbl."GENDER_IDENTITY_CODE" = "GENDER_IDENTITY_CODE" AND tbl."GENDER_IDENTITY_CODE_DESCRIPTION" = "GENDER_IDENTITY_CODE_DESCRIPTION")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1506,11 +1494,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."SEXUAL_ORIENTATION_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN sexual_orientation_reference  ref
-  ON tbl."SEXUAL_ORIENTATION_CODE"  = ref."SEXUAL_ORIENTATION_CODE"
   WHERE tbl."SEXUAL_ORIENTATION_CODE" is not null
   and tbl."SEXUAL_ORIENTATION_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "SEXUAL_ORIENTATION_CODE_DESCRIPTION" FROM sexual_orientation_reference WHERE tbl."SEXUAL_ORIENTATION_DESCRIPTION" = "SEXUAL_ORIENTATION_CODE_DESCRIPTION")
+  and NOT EXISTS ( SELECT "SEXUAL_ORIENTATION_CODE_DESCRIPTION" FROM sexual_orientation_reference WHERE tbl."SEXUAL_ORIENTATION_DESCRIPTION" = "SEXUAL_ORIENTATION_CODE_DESCRIPTION" AND tbl."SEXUAL_ORIENTATION_CODE" = "SEXUAL_ORIENTATION_CODE")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1529,11 +1515,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."SEXUAL_ORIENTATION_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN sexual_orientation_reference  ref
-  ON tbl."SEXUAL_ORIENTATION_DESCRIPTION"  = ref."SEXUAL_ORIENTATION_CODE_DESCRIPTION"
   WHERE tbl."SEXUAL_ORIENTATION_DESCRIPTION" is not null
   and tbl."SEXUAL_ORIENTATION_CODE" is not null
-  and NOT EXISTS ( SELECT "SEXUAL_ORIENTATION_CODE" FROM sexual_orientation_reference WHERE tbl."SEXUAL_ORIENTATION_CODE" = "SEXUAL_ORIENTATION_CODE")
+  and NOT EXISTS ( SELECT "SEXUAL_ORIENTATION_CODE" FROM sexual_orientation_reference WHERE tbl."SEXUAL_ORIENTATION_CODE" = "SEXUAL_ORIENTATION_CODE" AND tbl."SEXUAL_ORIENTATION_DESCRIPTION" = "SEXUAL_ORIENTATION_CODE_DESCRIPTION")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1612,11 +1596,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ETHNICITY_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN ethnicity_reference  ref
-  ON tbl."ETHNICITY_CODE"  = ref."Concept Code"
   WHERE tbl."ETHNICITY_CODE" is not null
   and tbl."ETHNICITY_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "Concept Name" FROM ethnicity_reference WHERE tbl."ETHNICITY_CODE_DESCRIPTION" = "Concept Name")
+  and NOT EXISTS ( SELECT "Concept Name" FROM ethnicity_reference WHERE tbl."ETHNICITY_CODE_DESCRIPTION" = "Concept Name" AND tbl."ETHNICITY_CODE" = "Concept Code")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1635,11 +1617,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ETHNICITY_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN ethnicity_reference  ref
-  ON tbl."ETHNICITY_CODE_DESCRIPTION"  = ref."Concept Name"
   WHERE tbl."ETHNICITY_CODE_DESCRIPTION" is not null
   and tbl."ETHNICITY_CODE" is not null
-  and NOT EXISTS ( SELECT "Concept Code" FROM ethnicity_reference WHERE tbl."ETHNICITY_CODE" = "Concept Code")
+  and NOT EXISTS ( SELECT "Concept Code" FROM ethnicity_reference WHERE tbl."ETHNICITY_CODE" = "Concept Code" AND tbl."ETHNICITY_CODE_DESCRIPTION" = "Concept Name")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1700,11 +1680,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."RACE_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN race_reference  ref
-  ON tbl."RACE_CODE"  = ref."Concept Code"
   WHERE tbl."RACE_CODE" is not null
   and tbl."RACE_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "Concept Name" FROM race_reference WHERE tbl."RACE_CODE_DESCRIPTION" = "Concept Name")
+  and NOT EXISTS ( SELECT "Concept Name" FROM race_reference WHERE tbl."RACE_CODE_DESCRIPTION" = "Concept Name" AND tbl."RACE_CODE" = "Concept Code")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -1723,11 +1701,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."RACE_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM admin_demographics_20240307  tbl
-  LEFT JOIN race_reference  ref
-  ON tbl."RACE_CODE_DESCRIPTION"  = ref."Concept Name"
   WHERE tbl."RACE_CODE_DESCRIPTION" is not null
   and tbl."RACE_CODE" is not null
-  and NOT EXISTS ( SELECT "Concept Code" FROM race_reference WHERE tbl."RACE_CODE" = "Concept Code")
+  and NOT EXISTS ( SELECT "Concept Code" FROM race_reference WHERE tbl."RACE_CODE" = "Concept Code" AND tbl."RACE_CODE_DESCRIPTION" = "Concept Name")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2443,11 +2419,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN encounter_class_reference  ref
-  ON tbl."ENCOUNTER_CLASS_CODE"  = ref."Code"
   WHERE tbl."ENCOUNTER_CLASS_CODE" is not null
   and tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "Display" FROM encounter_class_reference WHERE tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" = "Display")
+  and NOT EXISTS ( SELECT "Display" FROM encounter_class_reference WHERE tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" = "Display" AND tbl."ENCOUNTER_CLASS_CODE" = "Code")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2466,11 +2440,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_CLASS_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN encounter_class_reference  ref
-  ON tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION"  = ref."Display"
   WHERE tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" is not null
   and tbl."ENCOUNTER_CLASS_CODE" is not null
-  and NOT EXISTS ( SELECT "Code" FROM encounter_class_reference WHERE tbl."ENCOUNTER_CLASS_CODE" = "Code")
+  and NOT EXISTS ( SELECT "Code" FROM encounter_class_reference WHERE tbl."ENCOUNTER_CLASS_CODE" = "Code" AND tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" = "Display")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2611,11 +2583,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN encounter_status_code_reference  ref
-  ON tbl."ENCOUNTER_STATUS_CODE"  = ref."Code"
   WHERE tbl."ENCOUNTER_STATUS_CODE" is not null
   and tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "Display" FROM encounter_status_code_reference WHERE tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" = "Display")
+  and NOT EXISTS ( SELECT "Display" FROM encounter_status_code_reference WHERE tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" = "Display" AND tbl."ENCOUNTER_STATUS_CODE" = "Code")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2634,11 +2604,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_STATUS_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN encounter_status_code_reference  ref
-  ON tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION"  = ref."Display"
   WHERE tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" is not null
   and tbl."ENCOUNTER_STATUS_CODE" is not null
-  and NOT EXISTS ( SELECT "Code" FROM encounter_status_code_reference WHERE tbl."ENCOUNTER_STATUS_CODE" = "Code")
+  and NOT EXISTS ( SELECT "Code" FROM encounter_status_code_reference WHERE tbl."ENCOUNTER_STATUS_CODE" = "Code" AND tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" = "Display")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2757,11 +2725,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN encounter_type_code_reference  ref
-  ON tbl."ENCOUNTER_TYPE_CODE"  = ref."Code"
   WHERE tbl."ENCOUNTER_TYPE_CODE" is not null
   and tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "Display" FROM encounter_type_code_reference WHERE tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" = "Display")
+  and NOT EXISTS ( SELECT "Display" FROM encounter_type_code_reference WHERE tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" = "Display" AND tbl."ENCOUNTER_TYPE_CODE" = "Code")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2780,11 +2746,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_TYPE_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN encounter_type_code_reference  ref
-  ON tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION"  = ref."Display"
   WHERE tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" is not null
   and tbl."ENCOUNTER_TYPE_CODE" is not null
-  and NOT EXISTS ( SELECT "Code" FROM encounter_type_code_reference WHERE tbl."ENCOUNTER_TYPE_CODE" = "Code")
+  and NOT EXISTS ( SELECT "Code" FROM encounter_type_code_reference WHERE tbl."ENCOUNTER_TYPE_CODE" = "Code" AND tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" = "Display")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2864,11 +2828,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."SCREENING_STATUS_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN screening_status_code_reference  ref
-  ON tbl."SCREENING_STATUS_CODE"  = ref."Code"
   WHERE tbl."SCREENING_STATUS_CODE" is not null
   and tbl."SCREENING_STATUS_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "Display" FROM screening_status_code_reference WHERE tbl."SCREENING_STATUS_CODE_DESCRIPTION" = "Display")
+  and NOT EXISTS ( SELECT "Display" FROM screening_status_code_reference WHERE tbl."SCREENING_STATUS_CODE_DESCRIPTION" = "Display" AND tbl."SCREENING_STATUS_CODE" = "Code")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2887,11 +2849,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."SCREENING_STATUS_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN screening_status_code_reference  ref
-  ON tbl."SCREENING_STATUS_CODE_DESCRIPTION"  = ref."Display"
   WHERE tbl."SCREENING_STATUS_CODE_DESCRIPTION" is not null
   and tbl."SCREENING_STATUS_CODE" is not null
-  and NOT EXISTS ( SELECT "Code" FROM screening_status_code_reference WHERE tbl."SCREENING_STATUS_CODE" = "Code")
+  and NOT EXISTS ( SELECT "Code" FROM screening_status_code_reference WHERE tbl."SCREENING_STATUS_CODE" = "Code" AND tbl."SCREENING_STATUS_CODE_DESCRIPTION" = "Display")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -3182,11 +3142,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."QUESTION_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN ahc_cross_walk  ref
-  ON tbl."QUESTION_CODE"  = ref."QUESTION_CODE"
   WHERE tbl."QUESTION_CODE" is not null
   and tbl."QUESTION_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "QUESTION" FROM ahc_cross_walk WHERE tbl."QUESTION_CODE_DESCRIPTION" = "QUESTION")
+  and NOT EXISTS ( SELECT "QUESTION" FROM ahc_cross_walk WHERE tbl."QUESTION_CODE_DESCRIPTION" = "QUESTION" AND tbl."QUESTION_CODE" = "QUESTION_CODE")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -3205,11 +3163,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."QUESTION_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN ahc_cross_walk  ref
-  ON tbl."QUESTION_CODE_DESCRIPTION"  = ref."QUESTION"
   WHERE tbl."QUESTION_CODE_DESCRIPTION" is not null
   and tbl."QUESTION_CODE" is not null
-  and NOT EXISTS ( SELECT "QUESTION_CODE" FROM ahc_cross_walk WHERE tbl."QUESTION_CODE" = "QUESTION_CODE")
+  and NOT EXISTS ( SELECT "QUESTION_CODE" FROM ahc_cross_walk WHERE tbl."QUESTION_CODE" = "QUESTION_CODE" AND tbl."QUESTION_CODE_DESCRIPTION" = "QUESTION")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -3228,11 +3184,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ANSWER_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN ahc_cross_walk  ref
-  ON tbl."ANSWER_CODE"  = ref."ANSWER_CODE"
   WHERE tbl."ANSWER_CODE" is not null
   and tbl."ANSWER_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "ANSWER_VALUE" FROM ahc_cross_walk WHERE tbl."ANSWER_CODE_DESCRIPTION" = "ANSWER_VALUE")
+  and NOT EXISTS ( SELECT "ANSWER_VALUE" FROM ahc_cross_walk WHERE tbl."ANSWER_CODE_DESCRIPTION" = "ANSWER_VALUE" AND tbl."ANSWER_CODE" = "ANSWER_CODE")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -3251,11 +3205,9 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ANSWER_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
   FROM screening_20240307  tbl
-  LEFT JOIN ahc_cross_walk  ref
-  ON tbl."ANSWER_CODE_DESCRIPTION"  = ref."ANSWER_VALUE"
   WHERE tbl."ANSWER_CODE_DESCRIPTION" is not null
   and tbl."ANSWER_CODE" is not null
-  and NOT EXISTS ( SELECT "ANSWER_CODE" FROM ahc_cross_walk WHERE tbl."ANSWER_CODE" = "ANSWER_CODE")
+  and NOT EXISTS ( SELECT "ANSWER_CODE" FROM ahc_cross_walk WHERE tbl."ANSWER_CODE" = "ANSWER_CODE" AND tbl."ANSWER_CODE_DESCRIPTION" = "ANSWER_VALUE")
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -3590,11 +3542,11 @@ No STDERR emitted by `ensureContent`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-15T11:17:02.475Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-15T11:17:02.475Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-15T11:17:02.475Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('398104b8-02dc-509b-998a-0b66b5a912e1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-15T11:17:02.475Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('06369bd0-47ee-5066-bbce-a751235b365d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-15T11:17:02.475Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-15T11:36:16.224Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-15T11:36:16.225Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-15T11:36:16.225Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('398104b8-02dc-509b-998a-0b66b5a912e1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-15T11:36:16.225Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('06369bd0-47ee-5066-bbce-a751235b365d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-15T11:36:16.225Z'), NULL);
 
 -- removed SQLPage and execution diagnostics SQL DML from diagnostics Markdown
 
@@ -4124,7 +4076,7 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
   FROM screening scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE_DESCRIPTION, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.PAT_MRN_ID, scr.FACILITY_ID)
   SELECT json_object(
     'resourceType', 'Bundle',
-    'id', '8c40fe30-e2bd-11ee-87fa-d1fbbef3bbbe',
+    'id', '3bf11e80-e2c0-11ee-bf2b-3dd278f66812',
     'type', 'transaction',
     'meta', JSON_OBJECT(
         'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)

@@ -188,14 +188,6 @@ export class CommonAssuranceRules<
             tbl."${columnName2}" AS dependent_value,
             tbl.src_file_row_number AS issue_row
         FROM ${this.tableName}  tbl
-        LEFT JOIN ${
-      columnReference[columnName1 as keyof typeof columnReference]
-        .referenceTableName
-    }  ref
-        ON tbl."${columnName1}"  = ref."${
-      columnReference[columnName1 as keyof typeof columnReference]
-        .referenceFieldName
-    }"
         WHERE tbl."${columnName1}" is not null
         and tbl."${columnName2}" is not null
         and NOT EXISTS ( SELECT "${
@@ -206,6 +198,9 @@ export class CommonAssuranceRules<
         .referenceTableName
     } WHERE tbl."${columnName2}" = "${
       columnReference[columnName2 as keyof typeof columnReference]
+        .referenceFieldName
+    }" AND tbl."${columnName1}" = "${
+      columnReference[columnName1 as keyof typeof columnReference]
         .referenceFieldName
     }")
       )
