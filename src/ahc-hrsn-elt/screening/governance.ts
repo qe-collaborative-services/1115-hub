@@ -196,13 +196,13 @@ export class CommonAssuranceRules<
     }" FROM ${
       columnReference[columnName1 as keyof typeof columnReference]
         .referenceTableName
-    } WHERE tbl."${columnName2}" = "${
+    } WHERE UPPER(tbl."${columnName2}") = UPPER("${
       columnReference[columnName2 as keyof typeof columnReference]
         .referenceFieldName
-    }" AND tbl."${columnName1}" = "${
+    }") AND UPPER(tbl."${columnName1}") = UPPER("${
       columnReference[columnName1 as keyof typeof columnReference]
         .referenceFieldName
-    }")
+    }"))
       )
       ${
       this.insertRowValueIssueCtePartial(
@@ -577,7 +577,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterClassReferenceTable} ecr
-            ON sr.${columnName} = ecr.System
+            ON UPPER(sr.${columnName}) = UPPER(ecr.System)
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.System IS NULL
       )
@@ -607,7 +607,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterClassReferenceTable} ecr
-            ON sr.${columnName} = ecr.Display
+            ON UPPER(sr.${columnName}) = UPPER(ecr.Display)
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Display IS NULL
       )
@@ -637,7 +637,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterClassReferenceTable} ecr
-            ON sr.${columnName} = ecr.Code
+            ON UPPER(sr.${columnName}) = UPPER(ecr.Code)
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
@@ -667,12 +667,13 @@ export class ScreeningAssuranceRules<
         SELECT '${columnName2}' AS issue_column,
           scr."${columnName2}" AS invalid_value,
           scr."${columnName1}" AS invalid_question_value,
+          scr.SCREENING_CODE AS invalid_screening_value,
           scr.src_file_row_number AS issue_row
           FROM ${this.tableName} scr
           LEFT OUTER JOIN ${ahcCrossWalkReferenceTable} crw
-            ON scr.SCREENING_CODE = crw.SCREENING_CODE
-            AND scr.${columnName1} = crw.${columnName1}
-            AND scr.ANSWER_CODE = crw.ANSWER_CODE
+            ON UPPER(scr.SCREENING_CODE) = UPPER(crw.SCREENING_CODE)
+            AND UPPER(scr.${columnName1}) = UPPER(crw.${columnName1})
+            AND UPPER(scr.${columnName2}) = UPPER(crw.${columnName2})
           WHERE scr.SCREENING_CODE IS NOT NULL
             AND scr.${columnName1} IS NOT NULL
             AND scr.${columnName2} IS NOT NULL
@@ -686,8 +687,8 @@ export class ScreeningAssuranceRules<
         "issue_row",
         "issue_column",
         "invalid_value",
-        `'Invalid Answer Code "' || invalid_value || '" for Question Code "' || invalid_question_value || '" found in ' || issue_column`,
-        `'Validate Question Code and Answer Code with ahc cross walk reference data'`,
+        `'Provided Screening Code "' || invalid_screening_value || '", Question Code "' || invalid_question_value || '" and Answer Code "' || invalid_value || '" are not matching with the reference data found in ' || issue_column`,
+        `'Validate Screening Code, Question Code and Answer Code with ahc cross walk reference data'`,
       )
     }`;
   }
@@ -705,7 +706,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterStatusCodeReferenceTable} ecr
-            ON sr.${columnName} = ecr.Code
+            ON UPPER(sr.${columnName}) = UPPER(ecr.Code)
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
@@ -735,7 +736,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterStatusCodeReferenceTable} ecr
-            ON sr.${columnName} = ecr.Display
+            ON UPPER(sr.${columnName}) = UPPER(ecr.Display)
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Display IS NULL
       )
@@ -766,7 +767,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
-            ON sr.${columnName} = ecr.Code
+            ON UPPER(sr.${columnName}) = UPPER(ecr.Code)
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
@@ -797,7 +798,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
-            ON sr.${columnName} = ecr.Display
+            ON UPPER(sr.${columnName}) = UPPER(ecr.Display)
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Display IS NULL
       )
@@ -828,7 +829,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
-            ON sr.${columnName} = ecr.System
+            ON UPPER(sr.${columnName}) = UPPER(ecr.System)
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.System IS NULL
       )
@@ -859,7 +860,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${screeningStatusCodeReferenceTable} ref
-            ON sr.${columnName} = ref.Code
+            ON UPPER(sr.${columnName}) = UPPER(ref.Code)
            WHERE sr.${columnName} IS NOT NULL
             AND ref.Code IS NULL
       )
@@ -890,7 +891,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${screeningStatusCodeReferenceTable} ecr
-            ON sr.${columnName} = ecr.Display
+            ON UPPER(sr.${columnName}) = UPPER(ecr.Display)
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Display IS NULL
       )
@@ -952,31 +953,31 @@ export class ScreeningAssuranceRules<
         SELECT '${patMrnIdcolumnName}' AS issue_column, '${this.tableName}' AS issue_table_name, a.${patMrnIdcolumnName} AS invalid_pat_value, a.${facilityIdcolumnName} AS invalid_facility_value, a.src_file_row_number AS issue_row
         FROM ${this.tableName} a
         LEFT JOIN ${relatedTableNames.qeAdminDataTableName} b
-        ON a.${patMrnIdcolumnName} = b.${patMrnIdcolumnName}
-        AND a.${facilityIdcolumnName} = b.${facilityIdcolumnName}
+        ON UPPER(a.${patMrnIdcolumnName}) = UPPER(b.${patMrnIdcolumnName})
+        AND UPPER(a.${facilityIdcolumnName}) = UPPER(b.${facilityIdcolumnName})
         LEFT JOIN ${relatedTableNames.adminDemographicsTableName} c
-        ON a.${patMrnIdcolumnName} = c.${patMrnIdcolumnName}
-        AND a.${facilityIdcolumnName} = c.${facilityIdcolumnName}
+        ON UPPER(a.${patMrnIdcolumnName}) = UPPER(c.${patMrnIdcolumnName})
+        AND UPPER(a.${facilityIdcolumnName}) = UPPER(c.${facilityIdcolumnName})
         WHERE b.${patMrnIdcolumnName} IS NULL OR c.${patMrnIdcolumnName} IS NULL OR b.${facilityIdcolumnName} IS NULL OR c.${facilityIdcolumnName} IS NULL
         UNION
         SELECT '${patMrnIdcolumnName}' AS issue_column, '${relatedTableNames.qeAdminDataTableName}' AS issue_table_name, b.${patMrnIdcolumnName} AS invalid_pat_value, b.${facilityIdcolumnName} AS invalid_facility_value, b.src_file_row_number AS issue_row
         FROM ${relatedTableNames.qeAdminDataTableName} b
         LEFT JOIN ${this.tableName} a
-        ON a.${patMrnIdcolumnName} = b.${patMrnIdcolumnName}
-        AND a.${facilityIdcolumnName} = b.${facilityIdcolumnName}
+        ON UPPER(a.${patMrnIdcolumnName}) = UPPER(b.${patMrnIdcolumnName})
+        AND UPPER(a.${facilityIdcolumnName}) = UPPER(b.${facilityIdcolumnName})
         LEFT JOIN ${relatedTableNames.adminDemographicsTableName} c
-        ON b.${patMrnIdcolumnName} = c.${patMrnIdcolumnName}
-        AND b.${facilityIdcolumnName} = c.${facilityIdcolumnName}
+        ON UPPER(b.${patMrnIdcolumnName}) = UPPER(c.${patMrnIdcolumnName})
+        AND UPPER(b.${facilityIdcolumnName}) = UPPER(c.${facilityIdcolumnName})
         WHERE a.${patMrnIdcolumnName} IS NULL OR c.${patMrnIdcolumnName} IS NULL OR a.${facilityIdcolumnName} IS NULL OR c.${facilityIdcolumnName} IS NULL
         UNION
         SELECT '${patMrnIdcolumnName}' AS issue_column, '${relatedTableNames.adminDemographicsTableName}' AS issue_table_name, c.${patMrnIdcolumnName} AS invalid_pat_value, c.${facilityIdcolumnName} AS invalid_facility_value, c.src_file_row_number AS issue_row
         FROM ${relatedTableNames.adminDemographicsTableName} c
         LEFT JOIN ${this.tableName} a
-        ON a.${patMrnIdcolumnName} = c.${patMrnIdcolumnName}
-        AND a.${facilityIdcolumnName} = c.${facilityIdcolumnName}
+        ON UPPER(a.${patMrnIdcolumnName}) = UPPER(c.${patMrnIdcolumnName})
+        AND UPPER(a.${facilityIdcolumnName}) = UPPER(c.${facilityIdcolumnName})
         LEFT JOIN ${relatedTableNames.qeAdminDataTableName} b
-        ON c.${patMrnIdcolumnName} = b.${patMrnIdcolumnName}
-        AND c.${facilityIdcolumnName} = b.${facilityIdcolumnName}
+        ON UPPER(c.${patMrnIdcolumnName}) = UPPER(b.${patMrnIdcolumnName})
+        AND UPPER(c.${facilityIdcolumnName}) = UPPER(b.${facilityIdcolumnName})
         WHERE a.${patMrnIdcolumnName} IS NULL OR b.${patMrnIdcolumnName} IS NULL OR a.${facilityIdcolumnName} IS NULL OR b.${facilityIdcolumnName} IS NULL
       )
       ${
@@ -1006,7 +1007,7 @@ export class ScreeningAssuranceRules<
           scr.src_file_row_number AS issue_row
         FROM ${this.tableName} scr
         LEFT JOIN ${ahcCrossWalkReferenceTable} cw
-        ON scr.${columnName} = cw.${columnName}
+        ON UPPER(scr.${columnName}) = UPPER(cw.${columnName})
         WHERE cw.${columnName} IS NULL
         AND cw.SCREENING_CODE IS NOT NULL
       )
@@ -1034,8 +1035,8 @@ export class ScreeningAssuranceRules<
       WITH ${cteName} AS (
         SELECT DISTINCT scr.SCREENING_CODE AS issue_screening_value, scr.${columnName} AS invalid_value, '${columnName}' AS issue_column, scr.src_file_row_number AS issue_row
         FROM ${this.tableName} scr
-        LEFT JOIN ${ahcCrossWalkReferenceTable} cw ON scr.${columnName} = cw.${columnName}
-        AND scr.SCREENING_CODE = cw.SCREENING_CODE
+        LEFT JOIN ${ahcCrossWalkReferenceTable} cw ON UPPER(scr.${columnName}) = UPPER(cw.${columnName})
+        AND UPPER(scr.SCREENING_CODE) = UPPER(cw.SCREENING_CODE)
         WHERE cw.${columnName} IS NULL
         AND cw.SCREENING_CODE IS NOT NULL
       )
@@ -1157,7 +1158,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${sexualOrientationReferenceTable} ref
-            ON sr.${columnName} = ref.SEXUAL_ORIENTATION_CODE_DESCRIPTION
+            ON UPPER(sr.${columnName}) = UPPER(ref.SEXUAL_ORIENTATION_CODE_DESCRIPTION)
            WHERE sr.${columnName} IS NOT NULL
             AND ref.SEXUAL_ORIENTATION_CODE_DESCRIPTION IS NULL
       )
@@ -1188,7 +1189,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${genderIdentityReferenceTable} ref
-            ON sr.${columnName} = ref.GENDER_IDENTITY_CODE
+            ON UPPER(sr.${columnName}) = UPPER(ref.GENDER_IDENTITY_CODE)
            WHERE sr.${columnName} IS NOT NULL
             AND ref.GENDER_IDENTITY_CODE IS NULL
       )
@@ -1219,7 +1220,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${sexualOrientationReferenceTable} ref
-            ON sr.${columnName} = ref.SEXUAL_ORIENTATION_CODE
+            ON UPPER(sr.${columnName}) = UPPER(ref.SEXUAL_ORIENTATION_CODE)
            WHERE sr.${columnName} IS NOT NULL
             AND ref.SEXUAL_ORIENTATION_CODE IS NULL
       )
@@ -1250,7 +1251,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${sexualOrientationReferenceTable} ref
-            ON sr.${columnName} = ref.SEXUAL_ORIENTATION_CODE_SYSTEM_NAME
+            ON UPPER(sr.${columnName}) = UPPER(ref.SEXUAL_ORIENTATION_CODE_SYSTEM_NAME)
            WHERE sr.${columnName} IS NOT NULL
             AND ref.SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NULL
       )
@@ -1281,7 +1282,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${sexAtBirthReferenceTable} ref
-            ON sr.${columnName} = ref.SEX_AT_BIRTH_CODE
+            ON UPPER(sr.${columnName}) = UPPER(ref.SEX_AT_BIRTH_CODE)
            WHERE sr.${columnName} IS NOT NULL
             AND ref.SEX_AT_BIRTH_CODE IS NULL
       )
@@ -1312,7 +1313,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${sexAtBirthReferenceTable} ref
-            ON sr.${columnName} = ref.SEX_AT_BIRTH_CODE_DESCRIPTION
+            ON UPPER(sr.${columnName}) = UPPER(ref.SEX_AT_BIRTH_CODE_DESCRIPTION)
            WHERE sr.${columnName} IS NOT NULL
             AND ref.SEX_AT_BIRTH_CODE_DESCRIPTION IS NULL
       )
@@ -1343,7 +1344,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${sexAtBirthReferenceTable} ref
-            ON sr.${columnName} = ref.SEX_AT_BIRTH_CODE_SYSTEM
+            ON UPPER(sr.${columnName}) = UPPER(ref.SEX_AT_BIRTH_CODE_SYSTEM)
            WHERE sr.${columnName} IS NOT NULL
             AND ref.SEX_AT_BIRTH_CODE_SYSTEM IS NULL
       )
@@ -1374,7 +1375,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${administrativeSexReferenceTable} ref
-            ON sr."${columnName}" = ref.ADMINISTRATIVE_SEX_CODE
+            ON UPPER(sr."${columnName}") = UPPER(ref.ADMINISTRATIVE_SEX_CODE)
            WHERE sr."${columnName}" IS NOT NULL
             AND ref.ADMINISTRATIVE_SEX_CODE IS NULL
       )
@@ -1405,7 +1406,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${administrativeSexReferenceTable} ref
-            ON sr."${columnName}" = ref.ADMINISTRATIVE_SEX_CODE_DESCRIPTION
+            ON UPPER(sr."${columnName}") = UPPER(ref.ADMINISTRATIVE_SEX_CODE_DESCRIPTION)
            WHERE sr."${columnName}" IS NOT NULL
             AND ref.ADMINISTRATIVE_SEX_CODE_DESCRIPTION IS NULL
       )
@@ -1436,7 +1437,7 @@ export class AdminDemographicAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${administrativeSexReferenceTable} ref
-            ON sr."${columnName}" = ref.ADMINISTRATIVE_SEX_CODE_SYSTEM
+            ON UPPER(sr."${columnName}") = UPPER(ref.ADMINISTRATIVE_SEX_CODE_SYSTEM)
            WHERE sr."${columnName}" IS NOT NULL
             AND ref.ADMINISTRATIVE_SEX_CODE_SYSTEM IS NULL
       )
@@ -1467,7 +1468,7 @@ export class AdminDemographicAssuranceRules<
                  ad.src_file_row_number AS issue_row
             FROM ${this.tableName} ad
             LEFT JOIN ${ethnicityReferenceTable} ref
-            ON CAST(ad."${columnName}" AS VARCHAR) = CAST(ref."Concept Code" AS VARCHAR)
+            ON UPPER(CAST(ad."${columnName}" AS VARCHAR)) = UPPER(CAST(ref."Concept Code" AS VARCHAR))
            WHERE ad."${columnName}" IS NOT NULL
             AND ref."Concept Code" IS NULL
       )
@@ -1498,7 +1499,7 @@ export class AdminDemographicAssuranceRules<
                  ad.src_file_row_number AS issue_row
             FROM ${this.tableName} ad
             LEFT JOIN ${ethnicityReferenceTable} ref
-            ON CAST(ad."${columnName}" AS VARCHAR) = CAST(ref."Concept Name" AS VARCHAR)
+            ON UPPER(CAST(ad."${columnName}" AS VARCHAR)) = UPPER(CAST(ref."Concept Name" AS VARCHAR))
            WHERE ad."${columnName}" IS NOT NULL
             AND ref."Concept Name" IS NULL
       )
@@ -1529,7 +1530,7 @@ export class AdminDemographicAssuranceRules<
                  ad.src_file_row_number AS issue_row
             FROM ${this.tableName} ad
             LEFT JOIN ${raceReferenceTable} ref
-            ON CAST(ad."${columnName}" AS VARCHAR) = CAST(ref."Concept Code" AS VARCHAR)
+            ON UPPER(CAST(ad."${columnName}" AS VARCHAR)) = UPPER(CAST(ref."Concept Code" AS VARCHAR))
            WHERE ad."${columnName}" IS NOT NULL
             AND ref."Concept Code" IS NULL
       )
@@ -1560,7 +1561,7 @@ export class AdminDemographicAssuranceRules<
                  ad.src_file_row_number AS issue_row
             FROM ${this.tableName} ad
             LEFT JOIN ${raceReferenceTable} ref
-            ON CAST(ad."${columnName}" AS VARCHAR) = CAST(ref."Concept Name" AS VARCHAR)
+            ON UPPER(CAST(ad."${columnName}" AS VARCHAR)) = UPPER(CAST(ref."Concept Name" AS VARCHAR))
            WHERE ad."${columnName}" IS NOT NULL
             AND ref."Concept Name" IS NULL
       )

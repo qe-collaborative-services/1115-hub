@@ -291,6 +291,10 @@ export class ScreeningCsvFileIngestSource<
       ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_CLASS_CODE_DESCRIPTION","ENCOUNTER_CLASS_CODE")}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
       ${sar.onlyAllowValidEncounterClassSystemInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "ENCOUNTER_CLASS_CODE_SYSTEM",
+        "'http://terminology.hl7.org/ValueSet/v3-ActEncounterCode'"
+      )}
       ${sar.onlyAllowValidEncounterClassDiscriptionInAllRows("ENCOUNTER_CLASS_CODE_DESCRIPTION")}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_STATUS_CODE")}
       ${sar.onlyAllowValidEncounterStatusCodeInAllRows("ENCOUNTER_STATUS_CODE")}
@@ -303,7 +307,10 @@ export class ScreeningCsvFileIngestSource<
         "'http://hl7.org/fhir/encounter-status'"
       )}
       ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
-      ${sar.onlyAllowValidEncounterTypeSystemInAllRows("ENCOUNTER_TYPE_CODE_SYSTEM")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "ENCOUNTER_TYPE_CODE_SYSTEM",
+        "'SNOMED-CT',' SNOMED',  'http://snomed.info/sct' "
+      )}
       ${sar.onlyAllowValidEncounterTypeDescriptionInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION")}
       ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_TYPE_CODE","ENCOUNTER_TYPE_CODE_DESCRIPTION")}
       ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION","ENCOUNTER_TYPE_CODE")}
