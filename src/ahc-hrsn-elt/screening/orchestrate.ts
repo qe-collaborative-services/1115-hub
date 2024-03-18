@@ -16,7 +16,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.8.3";
+export const ORCHESTRATE_VERSION = "0.8.4";
 
 export type PotentialIngestSource =
   | excel.ScreeningExcelSheetIngestSource<string, o.State>
@@ -721,7 +721,15 @@ export class OrchEngine {
             isee.* EXCLUDE (session_id),
             -- Including all other columns from 'orch_session_issue'
             isi.* EXCLUDE (session_id, session_entry_id),
-            br.record_action AS disposition,
+            CASE
+              WHEN
+                  UPPER(isi.issue_type) = 'MISSING COLUMN'
+                THEN
+                  'STRUCTURAL ISSUE'
+                ELSE
+                  br.record_action
+              END
+            AS disposition,
             case when UPPER(br.resolved_by_qe_qcs) = 'YES' then 'Resolved By QE/QCS' else null end AS remediation
             FROM orch_session AS ises
             JOIN orch_session_entry AS isee ON ises.orch_session_id = isee.session_id
@@ -730,7 +738,6 @@ export class OrchEngine {
             LEFT OUTER JOIN cte_business_rule br ON br.field = isi.issue_column
             WHERE isi.orch_session_issue_id IS NOT NULL
           ;
-
 
           ATTACH '${resourceDb}' AS ${rdbSchemaName} (TYPE SQLITE);
 
