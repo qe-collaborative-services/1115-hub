@@ -247,7 +247,7 @@ export class ScreeningCsvFileIngestSource<
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
-          FROM read_csv_auto('${uri}', types={'RECORDED_TIME': 'VARCHAR'});
+          FROM read_csv_auto('${uri}', types={'RECORDED_TIME': 'VARCHAR', 'ENCOUNTER_TYPE_CODE': 'VARCHAR'});
 
       ${ssr.requiredColumnNames()}
 
@@ -290,7 +290,6 @@ export class ScreeningCsvFileIngestSource<
       ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_CLASS_CODE","ENCOUNTER_CLASS_CODE_DESCRIPTION")}
       ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_CLASS_CODE_DESCRIPTION","ENCOUNTER_CLASS_CODE")}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
-      ${sar.onlyAllowValidEncounterClassSystemInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
       ${tr.onlyAllowedValuesInAllRows(
         "ENCOUNTER_CLASS_CODE_SYSTEM",
         "'http://terminology.hl7.org/ValueSet/v3-ActEncounterCode'"
@@ -309,7 +308,7 @@ export class ScreeningCsvFileIngestSource<
       ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "ENCOUNTER_TYPE_CODE_SYSTEM",
-        "'SNOMED-CT',' SNOMED',  'http://snomed.info/sct' "
+        "'SNOMED-CT', 'SNOMED', 'http://snomed.info/sct'"
       )}
       ${sar.onlyAllowValidEncounterTypeDescriptionInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION")}
       ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_TYPE_CODE","ENCOUNTER_TYPE_CODE_DESCRIPTION")}
@@ -349,13 +348,13 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("ANSWER_CODE_DESCRIPTION")}
       ${tr.onlyAllowedValuesInAllRows(
         "QUESTION_CODE_SYSTEM_NAME",
-        "'LN','LOIN','http://loinc.org'"
+        "'LN','LOINC','http://loinc.org'"
       )}
-      ${tr.onlyAllowedValuesInAllRows("ANSWER_CODE_SYSTEM_NAME", "'LN','LOIN','http://loinc.org'")}
+      ${tr.onlyAllowedValuesInAllRows("ANSWER_CODE_SYSTEM_NAME", "'LN','LOINC','http://loinc.org'")}
       ${tr.mandatoryValueInAllRows("POTENTIAL_NEED_INDICATED")}
       ${tr.onlyAllowedValuesInAllRows(
         "POTENTIAL_NEED_INDICATED",
-        "'Yes','No','NA'"
+        "'Yes','No','NA','yes','no','na'"
       )}
 
       ${await session.entryStateDML(
