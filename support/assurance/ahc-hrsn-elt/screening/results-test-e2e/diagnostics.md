@@ -107,6 +107,11 @@ sources:
     nature: CSV
     tableName: preferred_language_reference
     ingestionIssues: 0
+  - uri: >-
+      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv
+    nature: CSV
+    tableName: sdoh_domain_reference
+    ingestionIssues: 0
 ---
 # Orchestration Diagnostics
 ## Contents
@@ -228,7 +233,7 @@ CREATE VIEW IF NOT EXISTS "orch_session_diagnostic_text" AS
 
 -- register the current device and session and use the identifiers for all logging
 INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'UNNIKRISHNAN-N', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.3', ('2024-03-18T10:13:06.259Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
+INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.5', ('2024-03-20T07:08:45.066Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
 
 -- Load Reference data from csvs
 
@@ -342,7 +347,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE screening_20240307 AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '86b4a49e-7378-5159-9f41-b005208c31bc' as session_entry_id
-    FROM read_csv_auto('support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_20240307.csv', types={'RECORDED_TIME': 'VARCHAR'});
+    FROM read_csv_auto('support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_20240307.csv', types={'RECORDED_TIME': 'VARCHAR', 'ENCOUNTER_TYPE_CODE': 'VARCHAR'});
 
 WITH required_column_names_in_src AS (
     SELECT column_name
@@ -843,6 +848,40 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('90a0010e-213e-58c3-9302-5e7310006b95', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
+-- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv (sdoh_domain_reference)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('f626602e-8be5-5e8c-824c-bdde91b22817', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv', 'sdoh_domain_reference', NULL);
+
+-- state management diagnostics
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('398104b8-02dc-509b-998a-0b66b5a912e1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'f626602e-8be5-5e8c-824c-bdde91b22817', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'SdohDomainReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+
+-- be sure to add src_file_row_number and session_id columns to each row
+-- because assurance CTEs require them
+CREATE TABLE sdoh_domain_reference AS
+  SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'f626602e-8be5-5e8c-824c-bdde91b22817' as session_entry_id
+    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv',
+      header = true
+    );
+
+WITH required_column_names_in_src AS (
+    SELECT column_name
+      FROM (VALUES ('Code'), ('Display'), ('Definition')) AS required(column_name)
+     WHERE required.column_name NOT IN (
+         SELECT column_name
+           FROM information_schema.columns
+          WHERE table_name = 'sdoh_domain_reference')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           'f626602e-8be5-5e8c-824c-bdde91b22817',
+           'Missing Column',
+           'Required column ' || column_name || ' is missing in sdoh_domain_reference.',
+           'Ensure sdoh_domain_reference contains the column "' || column_name || '"'
+      FROM required_column_names_in_src;
+
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5476830d-6cd9-5866-a105-7049aa24426d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'f626602e-8be5-5e8c-824c-bdde91b22817', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'SdohDomainReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+      
 SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '05269d28-15ae-5bd6-bd88-f949ccfa52d7'
 ```
 ### `ingest` STDOUT (status: `0`)
@@ -875,7 +914,7 @@ No STDERR emitted by `ingest`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5476830d-6cd9-5866-a105-7049aa24426d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'AdminDemographicCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0626c65d-bfe1-5eba-8a88-316343d5a123', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'AdminDemographicCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 WITH mandatory_value AS (
     SELECT 'FIRST_NAME' AS issue_column,
@@ -1903,9 +1942,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Use only allowed values ''Yes'',''No'',''Y'',''N'',''Unknown'',''UNK'' in ' || issue_column
       FROM allowed_values;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('ddd5157b-0daf-5a61-bcd3-cda46ece2d09', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AdminDemographicCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('11b19c60-a371-5444-9831-cb06a48b442e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AdminDemographicCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0a26bdb9-1499-515c-aeb4-c6d1d0a20541', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'QeAdminDataCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6ec2d7d4-0366-56b5-8763-dd9d6361dce0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'QeAdminDataCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 WITH mandatory_value AS (
     SELECT 'PAT_MRN_ID' AS issue_column,
@@ -2043,6 +2082,29 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Duplicate value "' || invalid_value || '" found in ' || issue_column,
            'Ensure each value in column6 is unique'
       FROM unique_value;
+WITH valid_unique_facility_address1_per_facility_in_all_rows AS (
+  SELECT DISTINCT 'FACILITY_ADDRESS1' AS issue_column,
+    FACILITY_ADDRESS1 AS invalid_value,
+    src_file_row_number AS issue_row
+  FROM qe_admin_data_20240307 t1
+  WHERE EXISTS (
+      SELECT 1
+      FROM qe_admin_data_20240307 t2
+      WHERE t1."FACILITY_ADDRESS1" = t2."FACILITY_ADDRESS1"
+        AND t1.FACILITY_ID != t2.FACILITY_ID
+  )
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '591191c7-f693-5957-8734-ac87151ca981',
+           'Invalid FACILITY_ADDRESS1',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per facility',
+           'FACILITY_ADDRESS1 is not unique per facility.'
+      FROM valid_unique_facility_address1_per_facility_in_all_rows;
 WITH valid_integer_alphanumeric_string_in_all_rows AS (
   SELECT 'FACILITY_ADDRESS1' AS issue_column,
     t."FACILITY_ADDRESS1" AS invalid_value,
@@ -2288,9 +2350,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Follow the pattern ^[a-zA-Z\s]+$ in ' || issue_column
       FROM pattern;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('841b1d15-81a7-5865-8dee-86f56e93ad92', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'QeAdminDataCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3e774fb3-fc39-5ce3-9b1f-aa7dbb147319', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'QeAdminDataCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('334b7ece-79ec-5ea1-b98b-bb09d0e2b234', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('63d56427-0888-5164-bea5-3f122e5805fd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 
 WITH mandatory_value AS (
@@ -2474,27 +2536,6 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
       FROM mandatory_value;
-WITH valid_encounter_class_in_all_rows AS (
-    SELECT 'ENCOUNTER_CLASS_CODE_SYSTEM' AS issue_column,
-           sr."ENCOUNTER_CLASS_CODE_SYSTEM" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM screening_20240307 sr
-      LEFT JOIN encounter_class_reference ecr
-      ON UPPER(sr.ENCOUNTER_CLASS_CODE_SYSTEM) = UPPER(ecr.System)
-     WHERE sr.ENCOUNTER_CLASS_CODE_SYSTEM IS NOT NULL
-      AND ecr.System IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '86b4a49e-7378-5159-9f41-b005208c31bc',
-           'Invalid ENCOUNTER CLASS CODE SYSTEM',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid ENCOUNTER CLASS CODE SYSTEM "' || invalid_value || '" found in ' || issue_column,
-           'Validate ENCOUNTER CLASS CODE SYSTEM with encounter class reference data'
-      FROM valid_encounter_class_in_all_rows;
 WITH allowed_values AS (
     SELECT 'ENCOUNTER_CLASS_CODE_SYSTEM' AS issue_column,
            "ENCOUNTER_CLASS_CODE_SYSTEM" AS invalid_value,
@@ -2700,7 +2741,7 @@ WITH allowed_values AS (
            "ENCOUNTER_TYPE_CODE_SYSTEM" AS invalid_value,
            src_file_row_number AS issue_row
       FROM "screening_20240307"
-     WHERE "ENCOUNTER_TYPE_CODE_SYSTEM" NOT IN ('SNOMED-CT',' SNOMED',  'http://snomed.info/sct' )
+     WHERE "ENCOUNTER_TYPE_CODE_SYSTEM" NOT IN ('SNOMED-CT', 'SNOMED', 'http://snomed.info/sct')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2710,8 +2751,8 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''SNOMED-CT'','' SNOMED'',  ''http://snomed.info/sct'' )',
-           'Use only allowed values ''SNOMED-CT'','' SNOMED'',  ''http://snomed.info/sct''  in ' || issue_column
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''SNOMED-CT'', ''SNOMED'', ''http://snomed.info/sct'')',
+           'Use only allowed values ''SNOMED-CT'', ''SNOMED'', ''http://snomed.info/sct'' in ' || issue_column
       FROM allowed_values;
 WITH valid_encounter_type_code_in_all_rows AS (
     SELECT 'ENCOUNTER_TYPE_CODE_DESCRIPTION' AS issue_column,
@@ -3215,7 +3256,6 @@ WITH valid_date_time_in_all_rows AS (
         WHERE "RECORDED_TIME" IS NOT NULL
         AND "RECORDED_TIME" NOT SIMILAR TO '([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$'
         OR TRY_CAST("RECORDED_TIME" AS TIMESTAMP) IS NULL
-        OR SUBSTR("RECORDED_TIME", 1, 4) < 2023
   )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -3311,7 +3351,7 @@ WITH allowed_values AS (
            "QUESTION_CODE_SYSTEM_NAME" AS invalid_value,
            src_file_row_number AS issue_row
       FROM "screening_20240307"
-     WHERE "QUESTION_CODE_SYSTEM_NAME" NOT IN ('LN','LOIN','http://loinc.org')
+     WHERE "QUESTION_CODE_SYSTEM_NAME" NOT IN ('LN','LOINC','http://loinc.org')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -3321,15 +3361,15 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''LN'',''LOIN'',''http://loinc.org'')',
-           'Use only allowed values ''LN'',''LOIN'',''http://loinc.org'' in ' || issue_column
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''LN'',''LOINC'',''http://loinc.org'')',
+           'Use only allowed values ''LN'',''LOINC'',''http://loinc.org'' in ' || issue_column
       FROM allowed_values;
 WITH allowed_values AS (
     SELECT 'ANSWER_CODE_SYSTEM_NAME' AS issue_column,
            "ANSWER_CODE_SYSTEM_NAME" AS invalid_value,
            src_file_row_number AS issue_row
       FROM "screening_20240307"
-     WHERE "ANSWER_CODE_SYSTEM_NAME" NOT IN ('LN','LOIN','http://loinc.org')
+     WHERE "ANSWER_CODE_SYSTEM_NAME" NOT IN ('LN','LOINC','http://loinc.org')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -3339,8 +3379,8 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''LN'',''LOIN'',''http://loinc.org'')',
-           'Use only allowed values ''LN'',''LOIN'',''http://loinc.org'' in ' || issue_column
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''LN'',''LOINC'',''http://loinc.org'')',
+           'Use only allowed values ''LN'',''LOINC'',''http://loinc.org'' in ' || issue_column
       FROM allowed_values;
 WITH mandatory_value AS (
     SELECT 'POTENTIAL_NEED_INDICATED' AS issue_column,
@@ -3366,7 +3406,7 @@ WITH allowed_values AS (
            "POTENTIAL_NEED_INDICATED" AS invalid_value,
            src_file_row_number AS issue_row
       FROM "screening_20240307"
-     WHERE "POTENTIAL_NEED_INDICATED" NOT IN ('Yes','No','NA')
+     WHERE "POTENTIAL_NEED_INDICATED" NOT IN ('Yes','No','NA','yes','no','na')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -3376,89 +3416,126 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'',''No'',''NA'')',
-           'Use only allowed values ''Yes'',''No'',''NA'' in ' || issue_column
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'',''No'',''NA'',''yes'',''no'',''na'')',
+           'Use only allowed values ''Yes'',''No'',''NA'',''yes'',''no'',''na'' in ' || issue_column
       FROM allowed_values;
-
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('ff91aafa-9001-50c0-980b-5de3eb4b68d7', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+WITH valid_screening_potential_need_indicated_question_answer_values_in_all_rows AS (
+  SELECT  'POTENTIAL_NEED_INDICATED' AS issue_column,
+          coalesce(scr."POTENTIAL_NEED_INDICATED",'NULL') AS invalid_value,
+          scr.ANSWER_CODE AS invalid_answer_value,
+          scr.QUESTION_CODE AS invalid_question_value,
+          scr.SCREENING_CODE AS invalid_screening_value,
+          scr.src_file_row_number AS issue_row
+  FROM screening_20240307 scr
+  LEFT JOIN ahc_cross_walk acw
+    ON UPPER(scr.SCREENING_CODE) = UPPER(acw.SCREENING_CODE)
+    AND UPPER(scr.QUESTION_CODE) = UPPER(acw.QUESTION_CODE)
+    AND UPPER(scr.ANSWER_CODE) = UPPER(acw.ANSWER_CODE)
+    AND UPPER(scr."POTENTIAL_NEED_INDICATED") = UPPER(acw."POTENTIAL_NEED_INDICATED")
+  WHERE acw."POTENTIAL_NEED_INDICATED" IS NULL
+  AND  UPPER(scr.QUESTION_CODE_DESCRIPTION)
+  NOT IN(
+    'TOTAL SAFETY SCORE',
+    'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+    'CALCULATED MENTAL HEALTH SCORE'
+  )
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid value in POTENTIAL_NEED_INDICATED',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Provided Potential Need Indicated "' || invalid_value || '", Screening Code "' || invalid_screening_value || '", Question Code "' || invalid_question_value || '" and Answer Code "' || invalid_answer_value || '" are not matching with the reference data found in ' || issue_column,
+           'Validate Potential Need Indicated, Screening Code, Question Code and Answer Code with ahc cross walk reference data'
+      FROM valid_screening_potential_need_indicated_question_answer_values_in_all_rows;
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4c4f9b8e-e50f-5da7-9901-3ef393fa8abe', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0626c65d-bfe1-5eba-8a88-316343d5a123', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'AhcCrossWalkCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('2d193f6b-b33f-5f8b-8281-da48e6bceaaf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'AhcCrossWalkCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3703c7d0-bd0c-5341-a7f9-8c4fa611ebf2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AhcCrossWalkCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d0b4aa83-f90e-55af-a33f-11508a4abe46', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AhcCrossWalkCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6ec2d7d4-0366-56b5-8763-dd9d6361dce0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'EncounterClassReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7d8ecb6e-190a-5c47-b730-41cbb9d35145', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'EncounterClassReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('11b19c60-a371-5444-9831-cb06a48b442e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'EncounterClassReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3110b11b-c624-5429-936e-7fde7c9d81d0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'EncounterClassReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('63d56427-0888-5164-bea5-3f122e5805fd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('effcdab8-9c23-5403-ac83-f79f6f89b302', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3e774fb3-fc39-5ce3-9b1f-aa7dbb147319', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('29a0ddf8-06dc-5eb4-986d-4cbaf262d706', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('2d193f6b-b33f-5f8b-8281-da48e6bceaaf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7210b304-8af5-537d-be03-2b8bb421337d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4c4f9b8e-e50f-5da7-9901-3ef393fa8abe', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d35451d3-0948-57b5-b76a-f702f9e67874', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7d8ecb6e-190a-5c47-b730-41cbb9d35145', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('397748ba-bd27-56b6-8272-a45f9caeaf64', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d0b4aa83-f90e-55af-a33f-11508a4abe46', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('b16b3cbe-15fc-5abd-8060-3ac63cbcdd4f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('effcdab8-9c23-5403-ac83-f79f6f89b302', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'GenderIdentityReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('485754a8-39a0-5f12-96bc-6e869590e1e9', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'GenderIdentityReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3110b11b-c624-5429-936e-7fde7c9d81d0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'GenderIdentityReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a8d1b1bd-8eb4-5138-9be5-e990a57810dd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'GenderIdentityReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7210b304-8af5-537d-be03-2b8bb421337d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('09b84d82-4502-5597-99c1-a190fb056033', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('29a0ddf8-06dc-5eb4-986d-4cbaf262d706', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0bca199b-8c63-5c2a-ab22-6bad71bd6709', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('397748ba-bd27-56b6-8272-a45f9caeaf64', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'SexAtBirthReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1a02c252-e9e3-5a86-8ec9-54e0cb66e62b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'SexAtBirthReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d35451d3-0948-57b5-b76a-f702f9e67874', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'SexAtBirthReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('e5ea573e-da81-5b03-b6cf-ed23ac97cac8', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'SexAtBirthReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('485754a8-39a0-5f12-96bc-6e869590e1e9', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'SexualOrientationReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3392e5a3-5c3e-5fbe-9dc0-08c6b4a4cc99', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'SexualOrientationReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('b16b3cbe-15fc-5abd-8060-3ac63cbcdd4f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'SexualOrientationReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4af56de7-f296-5409-bf50-dfa7e8917037', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'SexualOrientationReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('09b84d82-4502-5597-99c1-a190fb056033', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'BusinessRulesReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4b7b09fc-4ad4-5311-92d1-7c7a0550d0aa', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'BusinessRulesReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a8d1b1bd-8eb4-5138-9be5-e990a57810dd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'BusinessRulesReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('733415e1-8989-5184-84c2-15c99a45ac85', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'BusinessRulesReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1a02c252-e9e3-5a86-8ec9-54e0cb66e62b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'RaceReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('ddd5157b-0daf-5a61-bcd3-cda46ece2d09', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'RaceReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0bca199b-8c63-5c2a-ab22-6bad71bd6709', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'RaceReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('06369bd0-47ee-5066-bbce-a751235b365d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'RaceReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3392e5a3-5c3e-5fbe-9dc0-08c6b4a4cc99', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'EthnicityReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('841b1d15-81a7-5865-8dee-86f56e93ad92', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'EthnicityReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('e5ea573e-da81-5b03-b6cf-ed23ac97cac8', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'EthnicityReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8d5985ba-457f-5b4f-9541-a05f175ac801', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'EthnicityReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4b7b09fc-4ad4-5311-92d1-7c7a0550d0aa', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('ff91aafa-9001-50c0-980b-5de3eb4b68d7', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4af56de7-f296-5409-bf50-dfa7e8917037', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5c69bb0b-3196-5fa8-8a31-e4d76f77767b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+      
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3703c7d0-bd0c-5341-a7f9-8c4fa611ebf2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'f626602e-8be5-5e8c-824c-bdde91b22817', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'SdohDomainReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+
+-- add field validation
+
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5feab441-8a14-5c12-92d9-1f1ebd2d9205', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'f626602e-8be5-5e8c-824c-bdde91b22817', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'SdohDomainReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
 ```
 No STDOUT emitted by `ensureContent` (status: `0`).
@@ -3474,11 +3551,11 @@ No STDERR emitted by `ensureContent`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-18T10:13:09.012Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-18T10:13:09.012Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-18T10:13:09.012Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('398104b8-02dc-509b-998a-0b66b5a912e1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-18T10:13:09.012Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('06369bd0-47ee-5066-bbce-a751235b365d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-18T10:13:09.012Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-20T07:08:47.681Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-20T07:08:47.681Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-20T07:08:47.681Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('334b7ece-79ec-5ea1-b98b-bb09d0e2b234', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-20T07:08:47.681Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4426d5b2-0661-5a83-9e90-36f1a5666cf8', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-20T07:08:47.681Z'), NULL);
 
 -- removed SQLPage and execution diagnostics SQL DML from diagnostics Markdown
 
@@ -3507,7 +3584,15 @@ SELECT
   isee.* EXCLUDE (session_id),
   -- Including all other columns from 'orch_session_issue'
   isi.* EXCLUDE (session_id, session_entry_id),
-  br.record_action AS disposition,
+  CASE
+    WHEN
+        UPPER(isi.issue_type) = 'MISSING COLUMN'
+      THEN
+        'STRUCTURAL ISSUE'
+      ELSE
+        br.record_action
+    END
+  AS disposition,
   case when UPPER(br.resolved_by_qe_qcs) = 'YES' then 'Resolved By QE/QCS' else null end AS remediation
   FROM orch_session AS ises
   JOIN orch_session_entry AS isee ON ises.orch_session_id = isee.session_id
@@ -3516,7 +3601,6 @@ SELECT
   LEFT OUTER JOIN cte_business_rule br ON br.field = isi.issue_column
   WHERE isi.orch_session_issue_id IS NOT NULL
 ;
-
 
 ATTACH '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/resource.sqlite.db' AS resource_db (TYPE SQLITE);
 
@@ -3530,7 +3614,7 @@ CREATE TABLE resource_db.orch_session_issue AS SELECT * FROM orch_session_issue;
 CREATE TABLE resource_db.sqlpage_files AS SELECT * FROM sqlpage_files;
 
 -- export content tables from DuckDb into the attached database (nature-dependent)
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8d5985ba-457f-5b4f-9541-a05f175ac801', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ASSURED_CSV', 'EXIT(AdminDemographicCsvFileIngestSource)', NULL, 'AdminDemographicCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a5b8b3ab-b0e7-5f5c-b38b-60bca388de0b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ASSURED_CSV', 'EXIT(AdminDemographicCsvFileIngestSource)', NULL, 'AdminDemographicCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS demographic_data AS SELECT * FROM admin_demographics_20240307 WHERE 0=1;
 INSERT INTO demographic_data SELECT * FROM admin_demographics_20240307;
@@ -3542,9 +3626,9 @@ INSERT INTO resource_db.demographic_data SELECT * FROM admin_demographics_202403
 
 
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('43ac6d27-22fb-5346-b791-2490c94c583b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'AdminDemographicCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('66b21a3e-5135-5007-9061-14c2b6d33383', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'AdminDemographicCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5c69bb0b-3196-5fa8-8a31-e4d76f77767b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ASSURED_CSV', 'EXIT(QeAdminDataCsvFileIngestSource)', NULL, 'QeAdminDataCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7b50928a-200f-531a-9a0f-759de4ff1fe6', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ASSURED_CSV', 'EXIT(QeAdminDataCsvFileIngestSource)', NULL, 'QeAdminDataCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS qe_admin_data AS SELECT * FROM qe_admin_data_20240307 WHERE 0=1;
 INSERT INTO qe_admin_data SELECT * FROM qe_admin_data_20240307;
@@ -3554,9 +3638,9 @@ CREATE TABLE resource_db.qe_admin_data_20240307 AS SELECT * FROM qe_admin_data_2
 CREATE TABLE IF NOT EXISTS resource_db.qe_admin_data AS SELECT * FROM qe_admin_data_20240307 WHERE 0=1;
 INSERT INTO resource_db.qe_admin_data SELECT * FROM qe_admin_data_20240307;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1f1b0f3a-1f20-5bea-ab3d-b9c3198f7caf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'QeAdminDataCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('87e8ac07-4d2f-55b3-9656-983edb280b85', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'QeAdminDataCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5feab441-8a14-5c12-92d9-1f1ebd2d9205', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ASSURED_CSV', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8e71e5ae-3d3f-53e4-bb52-332047079934', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ASSURED_CSV', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS screening AS SELECT * FROM screening_20240307 WHERE 0=1;
 INSERT INTO screening SELECT * FROM screening_20240307;
@@ -3675,98 +3759,105 @@ CREATE VIEW IF NOT EXISTS resource_db.screening_fhir_questionnaire AS
   FROM screening_20240307 as tab_screening LEFT JOIN admin_demographics_20240307 as tab_demograph
   ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('959f85d1-98fa-5db2-b027-2e3591331d25', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f96d2ad2-011f-583d-a66c-912a24a3ba02', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6786f56c-37b1-561b-9af7-2d8694e91100', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ASSURED_CSV', 'EXIT(AhcCrossWalkCsvFileIngestSource)', NULL, 'AhcCrossWalkCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('911da40d-2914-515a-a1af-bc271400a941', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ASSURED_CSV', 'EXIT(AhcCrossWalkCsvFileIngestSource)', NULL, 'AhcCrossWalkCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.ahc_cross_walk AS SELECT * FROM ahc_cross_walk WHERE 0=1;
 INSERT INTO resource_db.ahc_cross_walk SELECT * FROM ahc_cross_walk;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f2efd09b-b028-540e-92db-e62e3dea8c0c', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_CSV_EXPORT', 'EXIT(AhcCrossWalkCsvFileIngestSource)', NULL, 'AhcCrossWalkCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d1c6a09a-1860-5a69-a8a5-f60b9da20bfb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_CSV_EXPORT', 'EXIT(AhcCrossWalkCsvFileIngestSource)', NULL, 'AhcCrossWalkCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4426d5b2-0661-5a83-9e90-36f1a5666cf8', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ASSURED_CSV', 'EXIT(EncounterClassReferenceCsvFileIngestSource)', NULL, 'EncounterClassReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('97be58f2-3e10-5998-ba7e-0b32a6a275f1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ASSURED_CSV', 'EXIT(EncounterClassReferenceCsvFileIngestSource)', NULL, 'EncounterClassReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.encounter_class_reference AS SELECT * FROM encounter_class_reference WHERE 0=1;
 INSERT INTO resource_db.encounter_class_reference SELECT * FROM encounter_class_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('2a88176d-f8d1-5fdc-a744-78ba817ba6b0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ATTEMPT_CSV_EXPORT', 'EXIT(EncounterClassReferenceCsvFileIngestSource)', NULL, 'EncounterClassReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('38538c24-a1dc-5765-9f34-4a90edd2e761', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ATTEMPT_CSV_EXPORT', 'EXIT(EncounterClassReferenceCsvFileIngestSource)', NULL, 'EncounterClassReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a5b8b3ab-b0e7-5f5c-b38b-60bca388de0b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ASSURED_CSV', 'EXIT(EncounterStatusCodeReferenceCsvFileIngestSource)', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('60584314-a117-562c-91cc-06c86d72dab4', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ASSURED_CSV', 'EXIT(EncounterStatusCodeReferenceCsvFileIngestSource)', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.encounter_status_code_reference AS SELECT * FROM encounter_status_code_reference WHERE 0=1;
 INSERT INTO resource_db.encounter_status_code_reference SELECT * FROM encounter_status_code_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d4edbc9c-c336-5cbe-92de-c92dd609d36b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ATTEMPT_CSV_EXPORT', 'EXIT(EncounterStatusCodeReferenceCsvFileIngestSource)', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('71a4b830-f2be-5d34-a391-86464458ca19', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ATTEMPT_CSV_EXPORT', 'EXIT(EncounterStatusCodeReferenceCsvFileIngestSource)', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7b50928a-200f-531a-9a0f-759de4ff1fe6', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ASSURED_CSV', 'EXIT(EncounterTypeCodeReferenceCsvFileIngestSource)', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7a584364-ca4c-5ced-b0a0-8f71991d5f28', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ASSURED_CSV', 'EXIT(EncounterTypeCodeReferenceCsvFileIngestSource)', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.encounter_type_code_reference AS SELECT * FROM encounter_type_code_reference WHERE 0=1;
 INSERT INTO resource_db.encounter_type_code_reference SELECT * FROM encounter_type_code_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('66b21a3e-5135-5007-9061-14c2b6d33383', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ATTEMPT_CSV_EXPORT', 'EXIT(EncounterTypeCodeReferenceCsvFileIngestSource)', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6f50dd74-790c-567a-a2fb-5e16efa6aae9', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ATTEMPT_CSV_EXPORT', 'EXIT(EncounterTypeCodeReferenceCsvFileIngestSource)', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8e71e5ae-3d3f-53e4-bb52-332047079934', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ASSURED_CSV', 'EXIT(ScreeningStatusCodeReferenceCsvFileIngestSource)', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('dd442cc8-5a36-58e3-82ed-67dcbab0750b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ASSURED_CSV', 'EXIT(ScreeningStatusCodeReferenceCsvFileIngestSource)', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.screening_status_code_reference AS SELECT * FROM screening_status_code_reference WHERE 0=1;
 INSERT INTO resource_db.screening_status_code_reference SELECT * FROM screening_status_code_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('87e8ac07-4d2f-55b3-9656-983edb280b85', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningStatusCodeReferenceCsvFileIngestSource)', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('b7a3625c-4dca-5044-96a7-febbf5f5262b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningStatusCodeReferenceCsvFileIngestSource)', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('911da40d-2914-515a-a1af-bc271400a941', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ASSURED_CSV', 'EXIT(GenderIdentityReferenceCsvFileIngestSource)', NULL, 'GenderIdentityReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f01ab940-7bfd-57f3-841d-605f8fdc5d35', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ASSURED_CSV', 'EXIT(GenderIdentityReferenceCsvFileIngestSource)', NULL, 'GenderIdentityReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.gender_identity_reference AS SELECT * FROM gender_identity_reference WHERE 0=1;
 INSERT INTO resource_db.gender_identity_reference SELECT * FROM gender_identity_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f96d2ad2-011f-583d-a66c-912a24a3ba02', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ATTEMPT_CSV_EXPORT', 'EXIT(GenderIdentityReferenceCsvFileIngestSource)', NULL, 'GenderIdentityReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('41a7cb10-5653-5519-9830-830f6f4d1c00', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ATTEMPT_CSV_EXPORT', 'EXIT(GenderIdentityReferenceCsvFileIngestSource)', NULL, 'GenderIdentityReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('97be58f2-3e10-5998-ba7e-0b32a6a275f1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ASSURED_CSV', 'EXIT(AdministrativeSexReferenceCsvFileIngestSource)', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('03c779cd-4dbf-5bc3-809c-0ffd0acd335e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ASSURED_CSV', 'EXIT(AdministrativeSexReferenceCsvFileIngestSource)', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.administrative_sex_reference AS SELECT * FROM administrative_sex_reference WHERE 0=1;
 INSERT INTO resource_db.administrative_sex_reference SELECT * FROM administrative_sex_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d1c6a09a-1860-5a69-a8a5-f60b9da20bfb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ATTEMPT_CSV_EXPORT', 'EXIT(AdministrativeSexReferenceCsvFileIngestSource)', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5b4ded31-916d-55fb-9445-337490d4c899', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ATTEMPT_CSV_EXPORT', 'EXIT(AdministrativeSexReferenceCsvFileIngestSource)', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('60584314-a117-562c-91cc-06c86d72dab4', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ASSURED_CSV', 'EXIT(SexAtBirthReferenceCsvFileIngestSource)', NULL, 'SexAtBirthReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f5d36456-24b6-5f5d-b2ea-34b45b25daff', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ASSURED_CSV', 'EXIT(SexAtBirthReferenceCsvFileIngestSource)', NULL, 'SexAtBirthReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.sex_at_birth_reference AS SELECT * FROM sex_at_birth_reference WHERE 0=1;
 INSERT INTO resource_db.sex_at_birth_reference SELECT * FROM sex_at_birth_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('38538c24-a1dc-5765-9f34-4a90edd2e761', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ATTEMPT_CSV_EXPORT', 'EXIT(SexAtBirthReferenceCsvFileIngestSource)', NULL, 'SexAtBirthReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('b2e62a65-826d-543d-924e-408abed17024', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ATTEMPT_CSV_EXPORT', 'EXIT(SexAtBirthReferenceCsvFileIngestSource)', NULL, 'SexAtBirthReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7a584364-ca4c-5ced-b0a0-8f71991d5f28', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ASSURED_CSV', 'EXIT(SexualOrientationReferenceCsvFileIngestSource)', NULL, 'SexualOrientationReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('43ac6d27-22fb-5346-b791-2490c94c583b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ASSURED_CSV', 'EXIT(SexualOrientationReferenceCsvFileIngestSource)', NULL, 'SexualOrientationReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.sexual_orientation_reference AS SELECT * FROM sexual_orientation_reference WHERE 0=1;
 INSERT INTO resource_db.sexual_orientation_reference SELECT * FROM sexual_orientation_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('71a4b830-f2be-5d34-a391-86464458ca19', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ATTEMPT_CSV_EXPORT', 'EXIT(SexualOrientationReferenceCsvFileIngestSource)', NULL, 'SexualOrientationReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('9339cfc5-6d28-5af3-b24d-ce65468217f0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ATTEMPT_CSV_EXPORT', 'EXIT(SexualOrientationReferenceCsvFileIngestSource)', NULL, 'SexualOrientationReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('dd442cc8-5a36-58e3-82ed-67dcbab0750b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ASSURED_CSV', 'EXIT(BusinessRulesReferenceCsvFileIngestSource)', NULL, 'BusinessRulesReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1f1b0f3a-1f20-5bea-ab3d-b9c3198f7caf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ASSURED_CSV', 'EXIT(BusinessRulesReferenceCsvFileIngestSource)', NULL, 'BusinessRulesReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.business_rules AS SELECT * FROM business_rules WHERE 0=1;
 INSERT INTO resource_db.business_rules SELECT * FROM business_rules;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6f50dd74-790c-567a-a2fb-5e16efa6aae9', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ATTEMPT_CSV_EXPORT', 'EXIT(BusinessRulesReferenceCsvFileIngestSource)', NULL, 'BusinessRulesReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('692ae517-84a0-5673-8bc9-23513d5dd5c3', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ATTEMPT_CSV_EXPORT', 'EXIT(BusinessRulesReferenceCsvFileIngestSource)', NULL, 'BusinessRulesReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f01ab940-7bfd-57f3-841d-605f8fdc5d35', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ASSURED_CSV', 'EXIT(RaceReferenceCsvFileIngestSource)', NULL, 'RaceReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('959f85d1-98fa-5db2-b027-2e3591331d25', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ASSURED_CSV', 'EXIT(RaceReferenceCsvFileIngestSource)', NULL, 'RaceReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.race_reference AS SELECT * FROM race_reference WHERE 0=1;
 INSERT INTO resource_db.race_reference SELECT * FROM race_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('b7a3625c-4dca-5044-96a7-febbf5f5262b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ATTEMPT_CSV_EXPORT', 'EXIT(RaceReferenceCsvFileIngestSource)', NULL, 'RaceReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('b6f5c4dc-436c-5670-82a5-a8c4ce994aab', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ATTEMPT_CSV_EXPORT', 'EXIT(RaceReferenceCsvFileIngestSource)', NULL, 'RaceReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('03c779cd-4dbf-5bc3-809c-0ffd0acd335e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ASSURED_CSV', 'EXIT(EthnicityReferenceCsvFileIngestSource)', NULL, 'EthnicityReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f2efd09b-b028-540e-92db-e62e3dea8c0c', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ASSURED_CSV', 'EXIT(EthnicityReferenceCsvFileIngestSource)', NULL, 'EthnicityReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.ethnicity_reference AS SELECT * FROM ethnicity_reference WHERE 0=1;
 INSERT INTO resource_db.ethnicity_reference SELECT * FROM ethnicity_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('41a7cb10-5653-5519-9830-830f6f4d1c00', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ATTEMPT_CSV_EXPORT', 'EXIT(EthnicityReferenceCsvFileIngestSource)', NULL, 'EthnicityReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('74f20f37-133a-5885-b2ed-9bce4f22c4cc', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ATTEMPT_CSV_EXPORT', 'EXIT(EthnicityReferenceCsvFileIngestSource)', NULL, 'EthnicityReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f5d36456-24b6-5f5d-b2ea-34b45b25daff', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ASSURED_CSV', 'EXIT(PreferredLanguageReferenceCsvFileIngestSource)', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('2a88176d-f8d1-5fdc-a744-78ba817ba6b0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ASSURED_CSV', 'EXIT(PreferredLanguageReferenceCsvFileIngestSource)', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
 CREATE TABLE IF NOT EXISTS resource_db.preferred_language_reference AS SELECT * FROM preferred_language_reference WHERE 0=1;
 INSERT INTO resource_db.preferred_language_reference SELECT * FROM preferred_language_reference;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5b4ded31-916d-55fb-9445-337490d4c899', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ATTEMPT_CSV_EXPORT', 'EXIT(PreferredLanguageReferenceCsvFileIngestSource)', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3c6edc83-eefd-5ed1-91e1-cd964a533db1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ATTEMPT_CSV_EXPORT', 'EXIT(PreferredLanguageReferenceCsvFileIngestSource)', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d4edbc9c-c336-5cbe-92de-c92dd609d36b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'f626602e-8be5-5e8c-824c-bdde91b22817', 'ASSURED_CSV', 'EXIT(SdohDomainReferenceCsvFileIngestSource)', NULL, 'SdohDomainReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+
+CREATE TABLE IF NOT EXISTS resource_db.sdoh_domain_reference AS SELECT * FROM sdoh_domain_reference WHERE 0=1;
+INSERT INTO resource_db.sdoh_domain_reference SELECT * FROM sdoh_domain_reference;
+
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1afa1d65-e5f0-544a-af1f-57d0b944c3b3', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'f626602e-8be5-5e8c-824c-bdde91b22817', 'ATTEMPT_CSV_EXPORT', 'EXIT(SdohDomainReferenceCsvFileIngestSource)', NULL, 'SdohDomainReferenceCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   ;
 
 
@@ -3845,7 +3936,7 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
                                 ),
                                 'system', adt.FACILITY_ID,
                                 'value', qat.PAT_MRN_ID,
-                                'assigner', json_object('reference', 'Organization/' || LOWER(REPLACE(qat.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qat.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qat.FACILITY_ID, ' ', '-')))
+                                'assigner', json_object('reference', 'Organization/' || qat.FACILITY_ID)
                             ),
                             CASE
                                 WHEN MEDICAID_CIN != '' THEN
@@ -3880,8 +3971,8 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
             'birthDate', PAT_BIRTH_DATE,
             'address', json_array(
                 json_object(
-                  'text', CONCAT(ADDRESS1, ' ', ADDRESS2 ),
-                  'line', json_array(ADDRESS1,ADDRESS2),
+                  'text', CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' THEN CONCAT(ADDRESS1, ' ', ADDRESS2) ELSE ADDRESS1 END,
+                  'line', CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' THEN json_array(ADDRESS1, ADDRESS2) ELSE json_array(ADDRESS1) END,
                   'city', CITY,
                   'state', STATE,
                   'postalCode', CAST(ZIP AS TEXT)
@@ -3890,7 +3981,9 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
             'communication', json_array(
               json_object('language', json_object(
                 'coding', json_array(
-                  'code', PREFERRED_LANGUAGE_CODE
+                  json_object(
+                    'code', PREFERRED_LANGUAGE_CODE
+                  )
                 )
               ),
                 'preferred', true
@@ -3909,6 +4002,7 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
               'profile', json_array('http://shinny.org/StructureDefinition/shin-ny-organization')
             ),
             'status','active',
+            'scope', json_object('coding',json_array(json_object('code','treatment')),'text','treatment'),
             'category', json_object(
               'coding',json_array(
                 json_object('system', 'http://terminology.hl7.org/CodeSystem/v3-ActCode',
@@ -3919,21 +4013,20 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
               'reference', CONCAT('Patient/',adt.PAT_MRN_ID)
             ),
             'datetime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
-            'organization', json_object('reference', 'Organization/' || LOWER(REPLACE(qat.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qat.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qat.FACILITY_ID, ' ', '-')))
+            'organization', json_object('reference', 'Organization/' || qat.FACILITY_ID)
 
 
       )
     ) AS FHIR_Consent
   FROM demographic_data adt LEFT JOIN qe_admin_data qat
-  ON adt.PAT_MRN_ID = qat.PAT_MRN_ID  WHERE
-  LOWER(adt.consent) = 'yes'
+  ON adt.PAT_MRN_ID = qat.PAT_MRN_ID
   ),
   cte_fhir_org AS (
     SELECT qed.PAT_MRN_ID, JSON_OBJECT(
       'fullUrl', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
       'resource', JSON_OBJECT(
           'resourceType', 'Organization',
-          'id', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
+          'id', qed.FACILITY_ID,
           'meta', JSON_OBJECT(
               'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),
               'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-organization')
@@ -3989,7 +4082,7 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
             'valueCodeableConcept',json_object('coding',json_array(json_object('system','http://loinc.org','code',ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION)))
         )
   ) AS FHIR_Observation
-  FROM screening scr),
+  FROM screening scr WHERE ANSWER_CODE!=''),
   cte_fhir_encounter AS (
     SELECT scr.ENCOUNTER_ID, JSON_OBJECT(
       'resource', JSON_OBJECT(
@@ -3999,21 +4092,21 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
             'lastUpdated', RECORDED_TIME,
             'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
         ),
-        'status', ENCOUNTER_STATUS_CODE_DESCRIPTION,
-        'class', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,'code',ENCOUNTER_CLASS_CODE)))),
+        'status', ENCOUNTER_STATUS_CODE,
+        'class', json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,'code',ENCOUNTER_CLASS_CODE),
         'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,'code',  CAST(ENCOUNTER_TYPE_CODE AS TEXT) )))),
         'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
       )
   ) AS FHIR_Encounter
-  FROM screening scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE_DESCRIPTION, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.PAT_MRN_ID, scr.FACILITY_ID)
+  FROM screening scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.PAT_MRN_ID, scr.FACILITY_ID)
   SELECT json_object(
     'resourceType', 'Bundle',
-    'id', '1e9235c0-e510-11ee-b1a0-d11fe5b69f95',
+    'id', 'b2548b90-e688-11ee-a7f7-d77dbb1e1d26',
     'type', 'transaction',
     'meta', JSON_OBJECT(
         'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
     ),
-    'timestamp', CURRENT_TIMESTAMP,
+    'timestamp', '2024-03-20T07:08:47.689Z',
     'entry', json(json_group_array(json_data))
     ) AS FHIR_Bundle
     FROM (
