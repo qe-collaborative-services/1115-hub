@@ -267,6 +267,28 @@ export class PreferredLanguageReferenceAssuranceRules<
   }
 }
 
+export class SdohDomainReferenceAssuranceRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  readonly car: CommonAssuranceRules<TableName, ColumnName>;
+
+  constructor(
+    readonly tableName: TableName,
+    readonly sessionID: string,
+    readonly sessionEntryID: string,
+    readonly govn: ddbo.DuckDbOrchGovernance,
+  ) {
+    super(tableName, sessionID, sessionEntryID, govn);
+    this.car = new CommonAssuranceRules<TableName, ColumnName>(
+      tableName,
+      sessionID,
+      sessionEntryID,
+      govn,
+    );
+  }
+}
+
 export class EncounterClassReferenceAssuranceRules<
   TableName extends string,
   ColumnName extends string,
@@ -910,7 +932,6 @@ export class ScreeningAssuranceRules<
 
   onlyAllowValidRecordedTimeInAllRows(
     columnName: ColumnName,
-    minYear = 2023,
   ) {
     // Construct the SQL query using tagged template literals
     const cteName = "valid_date_time_in_all_rows";
@@ -925,7 +946,6 @@ export class ScreeningAssuranceRules<
               WHERE "${columnName}" IS NOT NULL
               AND "${columnName}" NOT SIMILAR TO '([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$'
               OR TRY_CAST("${columnName}" AS TIMESTAMP) IS NULL
-              OR SUBSTR("${columnName}", 1, 4) < ${minYear}
         )
       ${this.insertRowValueIssueCtePartial(
         cteName,
@@ -1087,6 +1107,49 @@ export class ScreeningAssuranceRules<
         "invalid_value",
         `'Mandatory field "' || issue_column || '" is empty'`,
         `'The required field value ${columnName} is missing'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidScreeningPotentialNeedIndicatedQuestionAnswerValuesInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName =
+      "valid_screening_potential_need_indicated_question_answer_values_in_all_rows";
+    // Construct the name of the question reference table based on the provided parameter 'baseName'
+    const ahcCrossWalkReferenceTable = "ahc_cross_walk";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        SELECT  '${columnName}' AS issue_column,
+                coalesce(scr."${columnName}",'NULL') AS invalid_value,
+                scr.ANSWER_CODE AS invalid_answer_value,
+                scr.QUESTION_CODE AS invalid_question_value,
+                scr.SCREENING_CODE AS invalid_screening_value,
+                scr.src_file_row_number AS issue_row
+        FROM ${this.tableName} scr
+        LEFT JOIN ${ahcCrossWalkReferenceTable} acw
+          ON UPPER(scr.SCREENING_CODE) = UPPER(acw.SCREENING_CODE)
+          AND UPPER(scr.QUESTION_CODE) = UPPER(acw.QUESTION_CODE)
+          AND UPPER(scr.ANSWER_CODE) = UPPER(acw.ANSWER_CODE)
+          AND UPPER(scr."${columnName}") = UPPER(acw."${columnName}")
+        WHERE acw."${columnName}" IS NULL
+        AND  UPPER(scr.QUESTION_CODE_DESCRIPTION)
+        NOT IN(
+          'TOTAL SAFETY SCORE',
+          'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+          'CALCULATED MENTAL HEALTH SCORE'
+        )
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid value in ${columnName}`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Provided Potential Need Indicated "' || invalid_value || '", Screening Code "' || invalid_screening_value || '", Question Code "' || invalid_question_value || '" and Answer Code "' || invalid_answer_value || '" are not matching with the reference data found in ' || issue_column`,
+        `'Validate Potential Need Indicated, Screening Code, Question Code and Answer Code with ahc cross walk reference data'`,
       )
     }`;
   }
@@ -1633,6 +1696,36 @@ export class QeAdminDataAssuranceRules<
   }
 
   // if there are any admin-demographic-specific business logic rules put them here;
+  onlyAllowValidUniqueFacilityAddress1PerFacilityInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_unique_facility_address1_per_facility_in_all_rows";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        SELECT DISTINCT '${columnName}' AS issue_column,
+          ${columnName} AS invalid_value,
+          src_file_row_number AS issue_row
+        FROM ${this.tableName} t1
+        WHERE EXISTS (
+            SELECT 1
+            FROM ${this.tableName} t2
+            WHERE t1."${columnName}" = t2."${columnName}"
+              AND t1.FACILITY_ID != t2.FACILITY_ID
+        )
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ${columnName}`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per facility'`,
+        `'${columnName} is not unique per facility.'`,
+      )
+    }`;
+  }
 }
 
 /**

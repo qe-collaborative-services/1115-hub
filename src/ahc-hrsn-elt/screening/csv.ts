@@ -356,7 +356,7 @@ export class ScreeningCsvFileIngestSource<
         "POTENTIAL_NEED_INDICATED",
         "'Yes','No','NA','yes','no','na'"
       )}
-
+      ${sar.onlyAllowValidScreeningPotentialNeedIndicatedQuestionAnswerValuesInAllRows("POTENTIAL_NEED_INDICATED")}
       ${await session.entryStateDML(
         sessionEntryID,
         "ATTEMPT_CSV_ASSURANCE",
@@ -913,6 +913,7 @@ export class QeAdminDataCsvFileIngestSource<
       )}
       ${tr.mandatoryValueInAllRows("FACILITY_ADDRESS1")}
       ${tr.uniqueValueInAllRows("FACILITY_ADDRESS1")}
+      ${qedar.onlyAllowValidUniqueFacilityAddress1PerFacilityInAllRows("FACILITY_ADDRESS1")}
       ${qedar.car.onlyAllowValidIntegerAlphaNumericStringInAllRows("FACILITY_ADDRESS1")}
       ${tr.uniqueValueInAllRows("FACILITY_ADDRESS2")}
       ${tr.mandatoryValueInAllRows("FACILITY_STATE")}

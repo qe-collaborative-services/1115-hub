@@ -16,7 +16,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.8.4";
+export const ORCHESTRATE_VERSION = "0.8.5";
 
 export type PotentialIngestSource =
   | excel.ScreeningExcelSheetIngestSource<string, o.State>
@@ -74,6 +74,10 @@ export type PotentialIngestSource =
   >
   | ref.PreferredLanguageReferenceCsvFileIngestSource<
     "preferred_language_reference",
+    o.State
+  >
+  | ref.SdohDomainReferenceCsvFileIngestSource<
+    "sdoh_domain_reference",
     o.State
   >
   | csv.QeAdminDataCsvFileIngestSource<string, o.State>
@@ -529,6 +533,10 @@ export class OrchEngine {
         govn,
       ),
       new ref.PreferredLanguageReferenceCsvFileIngestSource(
+        referenceDataHome,
+        govn,
+      ),
+      new ref.SdohDomainReferenceCsvFileIngestSource(
         referenceDataHome,
         govn,
       ),
