@@ -981,7 +981,7 @@ export class OrchEngine {
                       'effectiveDateTime', RECORDED_TIME,
                       'issued', RECORDED_TIME,
                       'valueCodeableConcept',json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))),
-                      'interpretation',json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive')))
+                      'interpretation',json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive'))))
                   )
             ) AS FHIR_Observation
             FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO FROM ahc_cross_walk) acw ON acw.QUESTION_CODE = scr.QUESTION_CODE WHERE scr.ANSWER_CODE!='' ORDER BY acw.QUESTION_SLNO),
