@@ -4,10 +4,13 @@ import * as sg from "./governance.ts";
 const ahcCrossWalkCsvColumnNames = [
   "SCREENING_CODE",
   "SCREENING_CODE_DESCRIPTION",
+  "QUESTION_SLNO",
   "QUESTION",
   "QUESTION_CODE",
+  "Score Reference",
   "ANSWER_VALUE",
   "ANSWER_CODE",
+  "calculatedfield",
   "SCORE",
   "UCUM Units",
   "SDOH_DOMAIN",
