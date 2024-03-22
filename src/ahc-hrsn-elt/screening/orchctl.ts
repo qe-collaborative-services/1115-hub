@@ -86,7 +86,11 @@ async function ingressWorkflow(
       : undefined,
     referenceDataHome: referenceDataHome,
     publishFhirURL: fhirEndpointUrl,
-    publishFhirResult: {},
+    publishFhirResult: [] as {
+      response: string;
+      fhirJsonStructValid: boolean;
+      fhirFileName: string;
+    }[],
   };
 
   const archiveHome = workflowPaths.ingressArchive?.home;
@@ -110,21 +114,47 @@ async function ingressWorkflow(
     }
   }
   if (fhirEndpointUrl) {
-    const fhirFilePath = workflowPaths.egress.resolvedPath("fhir.json");
-    const fhirContent = await Deno.readTextFile(fhirFilePath);
-    const response = await fetch(fhirEndpointUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: fhirContent,
-    });
-    const result = await response.json();
-    const fhirResultPath = workflowPaths.egress.resolvedPath(
-      "fhir-result.json",
-    );
-    await Deno.writeTextFile(fhirResultPath, JSON.stringify(result, null, 2));
-    sessionEnd.publishFhirResult = result;
+    // const fhirFilePath = workflowPaths.egress.resolvedPath("fhir.json");
+    // const fhirContent = await Deno.readTextFile(fhirFilePath);
+    const directoryPath = workflowPaths.egress.resolvedPath(".");
+    console.log(directoryPath);
+    for await (const entry of Deno.readDir(directoryPath)) {
+      if (entry.isFile && entry.name.startsWith("fhir_")) {
+        const fhirFilePath = `${directoryPath}/${entry.name}`;
+        const fhirContent = await Deno.readTextFile(fhirFilePath);
+        try {
+          // parse the json just to make sure that a valid json is passed
+          const _content = JSON.parse(fhirContent);
+          const response = await fetch(fhirEndpointUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: fhirContent,
+          });
+          const result = await response.json();
+          const fhirResultPath = workflowPaths.egress.resolvedPath(
+            "fhir-result.json",
+          );
+          await Deno.writeTextFile(
+            fhirResultPath,
+            JSON.stringify(result, null, 2),
+          );
+          sessionEnd.publishFhirResult.push({
+            "response": JSON.stringify(result),
+            "fhirJsonStructValid": true,
+            "fhirFileName": entry.name,
+          });
+        } catch (error) {
+          Deno.writeTextFile(fhirFilePath, error);
+          sessionEnd.publishFhirResult.push({
+            "response": JSON.stringify(error),
+            "fhirJsonStructValid": false,
+            "fhirFileName": entry.name,
+          });
+        }
+      }
+    }
   }
 
   Deno.writeTextFile(

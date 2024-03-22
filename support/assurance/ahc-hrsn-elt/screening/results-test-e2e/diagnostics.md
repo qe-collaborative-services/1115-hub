@@ -2,14 +2,14 @@
 workflowPaths:
   inProcess:
     home: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e
   egress:
     home: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e
 walkRootPaths:
   - support/assurance/ahc-hrsn-elt/screening/synthetic-content
 referenceDataHome: >-
-  /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data
+  /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data
 sources:
   - uri: >-
       support/assurance/ahc-hrsn-elt/screening/synthetic-content/DEMOGRAPHIC_DATA_20240307.csv
@@ -43,72 +43,72 @@ sources:
     tableName: ERROR
     ingestionIssues: 1
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv
     nature: CSV
     tableName: ahc_cross_walk
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv
     nature: CSV
     tableName: encounter_class_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv
     nature: CSV
     tableName: encounter_status_code_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv
     nature: CSV
     tableName: encounter_type_code_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv
     nature: CSV
     tableName: screening_status_code_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv
     nature: CSV
     tableName: gender_identity_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv
     nature: CSV
     tableName: administrative_sex_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv
     nature: CSV
     tableName: sex_at_birth_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv
     nature: CSV
     tableName: sexual_orientation_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv
     nature: CSV
     tableName: business_rules
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv
     nature: CSV
     tableName: race_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv
     nature: CSV
     tableName: ethnicity_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv
     nature: CSV
     tableName: preferred_language_reference
     ingestionIssues: 0
   - uri: >-
-      /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv
+      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv
     nature: CSV
     tableName: sdoh_domain_reference
     ingestionIssues: 0
@@ -122,7 +122,8 @@ sources:
 - [ensureContent](#ensurecontent)
 - [emitResources](#emitresources)
 - [emitDiagnostics](#emitdiagnostics)
-- [execute_5](#execute-5)
+- [jsonResult_5](#jsonresult-5)
+  - [`jsonResult_5` STDOUT (status: `0`)](#jsonresult-5-stdout-status-0-)
 
 
 ## init
@@ -232,8 +233,8 @@ CREATE VIEW IF NOT EXISTS "orch_session_diagnostic_text" AS
     LEFT JOIN orch_session_issue AS isi ON isee.orch_session_entry_id = isi.session_entry_id;
 
 -- register the current device and session and use the identifiers for all logging
-INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'UNNIKRISHNAN-N', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.5', ('2024-03-20T07:08:45.066Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
+INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'ALAN-FRANCIS', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
+INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.8.5', ('2024-03-22T10:54:41.161Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
 
 -- Load Reference data from csvs
 
@@ -408,9 +409,9 @@ INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "sessio
 -- required by IngestEngine, setup the ingestion entry for logging
 INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('0adb81bc-3df2-5f86-99cc-2d20e1dd5efd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
 INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('10d0290c-b2eb-581e-b627-b5b8fcbb830f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '0adb81bc-3df2-5f86-99cc-2d20e1dd5efd', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv (ahc_cross_walk)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv (ahc_cross_walk)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e6951d0b-be59-58c3-8a04-01181208c601', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv', 'ahc_cross_walk', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e6951d0b-be59-58c3-8a04-01181208c601', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv', 'ahc_cross_walk', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('2afb3098-bcfd-5a54-8ebb-4d65d399c55e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'AhcCrossWalkCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -419,11 +420,11 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE ahc_cross_walk AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'e6951d0b-be59-58c3-8a04-01181208c601' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv', header = true);
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv', header = true);
 
 WITH required_column_names_in_src AS (
     SELECT column_name
-      FROM (VALUES ('SCREENING_CODE'), ('SCREENING_CODE_DESCRIPTION'), ('QUESTION'), ('QUESTION_CODE'), ('ANSWER_VALUE'), ('ANSWER_CODE'), ('SCORE'), ('UCUM Units'), ('SDOH_DOMAIN'), ('POTENTIAL_NEED_INDICATED')) AS required(column_name)
+      FROM (VALUES ('SCREENING_CODE'), ('SCREENING_CODE_DESCRIPTION'), ('QUESTION_SLNO'), ('QUESTION'), ('QUESTION_CODE'), ('Score Reference'), ('ANSWER_VALUE'), ('ANSWER_CODE'), ('calculatedfield'), ('SCORE'), ('UCUM Units'), ('SDOH_DOMAIN'), ('POTENTIAL_NEED_INDICATED')) AS required(column_name)
      WHERE required.column_name NOT IN (
          SELECT column_name
            FROM information_schema.columns
@@ -440,9 +441,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0e074bf2-f1fe-55d4-bd44-a88cbed79aeb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'AhcCrossWalkCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv (encounter_class_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv (encounter_class_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e8b3dab4-5058-5c79-8088-45b423119149', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv', 'encounter_class_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e8b3dab4-5058-5c79-8088-45b423119149', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv', 'encounter_class_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('9dabd022-4a26-55f2-98f4-e534e7704b23', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'EncounterClassReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -451,7 +452,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE encounter_class_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'e8b3dab4-5058-5c79-8088-45b423119149' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv',
       header = true
     );
 
@@ -474,9 +475,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('80af4eff-d697-565b-9e3f-a587e322b1da', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'EncounterClassReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv (encounter_status_code_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv (encounter_status_code_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('6fcd9df5-34cf-5c09-8fb5-e73617e28d73', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv', 'encounter_status_code_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('6fcd9df5-34cf-5c09-8fb5-e73617e28d73', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv', 'encounter_status_code_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -485,7 +486,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE encounter_status_code_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '6fcd9df5-34cf-5c09-8fb5-e73617e28d73' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv',
       header = true
     );
 
@@ -508,9 +509,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5b77d127-e62a-50a9-acee-bea63ff64dd5', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv (encounter_type_code_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv (encounter_type_code_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a92a6466-6fe4-58d7-8948-e2e09dc2fec2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv', 'encounter_type_code_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a92a6466-6fe4-58d7-8948-e2e09dc2fec2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv', 'encounter_type_code_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('34e90086-3d06-5b10-972d-7d0b40a02289', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -519,7 +520,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE encounter_type_code_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv',
       header = true
     );
 
@@ -542,9 +543,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('21d7e4ec-32e3-5e20-9029-28fdd6c5fa66', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv (screening_status_code_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv (screening_status_code_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('4f7e4436-c5f6-5ba1-9793-580ab66789fb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv', 'screening_status_code_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('4f7e4436-c5f6-5ba1-9793-580ab66789fb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv', 'screening_status_code_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('86ff3ab6-900d-5474-b63c-cbcac3c66f1a', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -553,7 +554,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE screening_status_code_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '4f7e4436-c5f6-5ba1-9793-580ab66789fb' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv',
       header = true
     );
 
@@ -576,9 +577,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f6d4aff4-4b71-5662-8f57-00ee247dc57c', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv (gender_identity_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv (gender_identity_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv', 'gender_identity_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv', 'gender_identity_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4b7537b2-9d60-59f3-8c61-fa2ff4265c02', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'GenderIdentityReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -587,7 +588,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE gender_identity_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv',
       header = true
     );
 
@@ -610,9 +611,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('657d6337-8d24-5b67-b139-87db6a228264', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'GenderIdentityReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv (administrative_sex_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv (administrative_sex_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('9f13dd7d-9ff8-509d-b716-cde856c5f0f0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv', 'administrative_sex_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('9f13dd7d-9ff8-509d-b716-cde856c5f0f0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv', 'administrative_sex_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('9c0d34d3-bf09-527a-aef5-85004a400be5', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -621,7 +622,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE administrative_sex_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '9f13dd7d-9ff8-509d-b716-cde856c5f0f0' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv',
       header = true
     );
 
@@ -644,9 +645,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('e2816d61-4406-5073-ac60-f129a107d938', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv (sex_at_birth_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv (sex_at_birth_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('413ec5cd-eee9-5c62-90a5-6670f8b9ddff', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv', 'sex_at_birth_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('413ec5cd-eee9-5c62-90a5-6670f8b9ddff', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv', 'sex_at_birth_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6c48996f-0dd4-572f-b087-e5913926cd4b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'SexAtBirthReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -655,7 +656,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE sex_at_birth_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '413ec5cd-eee9-5c62-90a5-6670f8b9ddff' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv',
       header = true
     );
 
@@ -678,9 +679,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('bebf797d-855b-5e76-93d2-2a802febd5a2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'SexAtBirthReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv (sexual_orientation_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv (sexual_orientation_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv', 'sexual_orientation_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv', 'sexual_orientation_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('c40829eb-7f91-583a-8af8-06de851777a0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'SexualOrientationReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -689,7 +690,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE sexual_orientation_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '17cedd6e-e794-5b45-9790-c4ba2483cc1e' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv',
       header = true
     );
 
@@ -712,9 +713,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a8ec8b43-9e16-5eeb-9683-bc14288971f1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'SexualOrientationReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv (business_rules)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv (business_rules)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('35c62034-5b20-5891-8d38-3e9b051dec6e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv', 'business_rules', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('35c62034-5b20-5891-8d38-3e9b051dec6e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv', 'business_rules', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('aa8b8d1a-c8cc-5a9b-b5aa-34a6fc85e11a', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'BusinessRulesReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -723,7 +724,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE business_rules AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '35c62034-5b20-5891-8d38-3e9b051dec6e' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv',
       header = true
     );
 
@@ -746,9 +747,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8278fd0f-7116-55bd-8d7a-0a30681b0d2f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'BusinessRulesReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv (race_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv (race_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('c420c3ba-ddbc-582b-9cdf-361497beb034', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv', 'race_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('c420c3ba-ddbc-582b-9cdf-361497beb034', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv', 'race_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('97c2cca2-92f5-5937-97e6-d84beeb4018e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'RaceReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -757,7 +758,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE race_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'c420c3ba-ddbc-582b-9cdf-361497beb034' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv',
       header = true
     );
 
@@ -780,9 +781,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('442b5e69-76fb-5da8-ae00-b79ea50cbedb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'RaceReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv (ethnicity_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv (ethnicity_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('5a941253-b661-5282-a5e6-97cbfe5dfb32', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv', 'ethnicity_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('5a941253-b661-5282-a5e6-97cbfe5dfb32', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv', 'ethnicity_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f58ee169-7478-59ca-9e36-aa384ddb501c', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'EthnicityReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -791,7 +792,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE ethnicity_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '5a941253-b661-5282-a5e6-97cbfe5dfb32' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv',
       header = true
     );
 
@@ -814,9 +815,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3cab2329-2aae-5475-9792-04e14e862f1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'EthnicityReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv (preferred_language_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv (preferred_language_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b63bd83d-959a-5a5f-8d60-08b84bf16c90', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv', 'preferred_language_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b63bd83d-959a-5a5f-8d60-08b84bf16c90', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv', 'preferred_language_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('47d97ff4-908a-50f7-a2e2-443e2dad7056', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -825,7 +826,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE preferred_language_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'b63bd83d-959a-5a5f-8d60-08b84bf16c90' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv',
       header = true
     );
 
@@ -848,9 +849,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('90a0010e-213e-58c3-9302-5e7310006b95', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv (sdoh_domain_reference)
+-- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv (sdoh_domain_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('f626602e-8be5-5e8c-824c-bdde91b22817', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv', 'sdoh_domain_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('f626602e-8be5-5e8c-824c-bdde91b22817', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv', 'sdoh_domain_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('398104b8-02dc-509b-998a-0b66b5a912e1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'f626602e-8be5-5e8c-824c-bdde91b22817', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'SdohDomainReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -859,7 +860,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE sdoh_domain_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'f626602e-8be5-5e8c-824c-bdde91b22817' as session_entry_id
-    FROM read_csv_auto('/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv',
+    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv',
       header = true
     );
 
@@ -3551,11 +3552,11 @@ No STDERR emitted by `ensureContent`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-20T07:08:47.681Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-20T07:08:47.681Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-20T07:08:47.681Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('334b7ece-79ec-5ea1-b98b-bb09d0e2b234', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-20T07:08:47.681Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4426d5b2-0661-5a83-9e90-36f1a5666cf8', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-20T07:08:47.681Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-03-22T10:54:44.553Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-03-22T10:54:44.553Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-03-22T10:54:44.553Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('334b7ece-79ec-5ea1-b98b-bb09d0e2b234', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-03-22T10:54:44.553Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4426d5b2-0661-5a83-9e90-36f1a5666cf8', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-03-22T10:54:44.553Z'), NULL);
 
 -- removed SQLPage and execution diagnostics SQL DML from diagnostics Markdown
 
@@ -3602,7 +3603,7 @@ SELECT
   WHERE isi.orch_session_issue_id IS NOT NULL
 ;
 
-ATTACH '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/resource.sqlite.db' AS resource_db (TYPE SQLITE);
+ATTACH '/home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/resource.sqlite.db' AS resource_db (TYPE SQLITE);
 
 -- copy relevant orchestration engine admin tables into the the attached database
 CREATE TABLE resource_db.device AS SELECT * FROM device;
@@ -3873,60 +3874,60 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
               'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
               'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
             ),
-            'language', PREFERRED_LANGUAGE_CODE,
-            'extension', json_array(
-                            json_object('extension',
-                              json_array(
-                                json_object(
-                                    'url','ombCategory',
-                                    'valueCoding',json_object(
-                                                  'system',RACE_CODE_SYSTEM_NAME,
-                                                  'code',RACE_CODE,
-                                                  'display',RACE_CODE_DESCRIPTION
-                                                  )
-                                            )
-                                        ),
-                                  'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
-                            ),
-                            json_object('extension',
-                              json_array(
-                                json_object(
-                                    'url','ombCategory',
-                                    'valueCoding',json_object(
-                                                  'system',ETHNICITY_CODE_SYSTEM_NAME,
-                                                  'code',ETHNICITY_CODE,
-                                                  'display',ETHNICITY_CODE_DESCRIPTION
-                                                  )
-                                            )
+            CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'language' ELSE NULL END, PREFERRED_LANGUAGE_CODE,
+            CASE WHEN (RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL) OR (ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL) OR (SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL) THEN 'extension' ELSE NULL END, json_array(
+                            CASE WHEN RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                                'extension', json_array(
+                                              json_object(
+                                                  'url','ombCategory',
+                                                  'valueCoding',json_object(
+                                                              'system',RACE_CODE_SYSTEM_NAME,
+                                                              'code',RACE_CODE,
+                                                              'display',RACE_CODE_DESCRIPTION
+                                                              )
+                                                          )
+                                          ),
+                                'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+                              ) END ,
+                              CASE WHEN ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                                'extension',json_array(
+                                              json_object(
+                                                  'url','ombCategory',
+                                                  'valueCoding',json_object(
+                                                                'system',ETHNICITY_CODE_SYSTEM_NAME,
+                                                                'code',ETHNICITY_CODE,
+                                                                'display',ETHNICITY_CODE_DESCRIPTION
+                                                                )
+                                                          )
                                         ),
                                   'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
-                            ),
-                            json_object('extension',
-                              json_array(
-                                json_object(
-                                    'url','ombCategory',
-                                    'valueCoding',json_object(
-                                                  'system',SEX_AT_BIRTH_CODE_SYSTEM,
-                                                  'code',SEX_AT_BIRTH_CODE,
-                                                  'display',SEX_AT_BIRTH_CODE_DESCRIPTION
-                                                  )
-                                            )
+                            ) END,
+                            CASE WHEN SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                              'extension',json_array(
+                                          json_object(
+                                              'url','ombCategory',
+                                              'valueCoding',json_object(
+                                                            'system',SEX_AT_BIRTH_CODE_SYSTEM,
+                                                            'code',SEX_AT_BIRTH_CODE,
+                                                            'display',SEX_AT_BIRTH_CODE_DESCRIPTION
+                                                            )
+                                                      )
                                         ),
-                                  'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'
-                            ),
-                            json_object('extension',
+                              'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'
+                            ) END,
+                            CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_DESCRIPTION IS NOT NULL THEN json_object('extension',
                               json_array(
-                                json_object(
-                                    'url','ombCategory',
-                                    'valueCoding',json_object(
-                                                  'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
-                                                  'code',SEXUAL_ORIENTATION_CODE,
-                                                  'display',SEXUAL_ORIENTATION_DESCRIPTION
+                                      json_object(
+                                          'url','ombCategory',
+                                          'valueCoding',json_object(
+                                                        'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
+                                                        'code',SEXUAL_ORIENTATION_CODE,
+                                                        'display',SEXUAL_ORIENTATION_DESCRIPTION
+                                                        )
                                                   )
-                                            )
                                         ),
                                   'url', 'http://shinny.org/StructureDefinition/shinny-sexual-orientation'
-                            )
+                            ) END
                           ),
             'identifier', json_array(
                             json_object(
@@ -3957,18 +3958,18 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
                                             'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'PN'))
                                         ),
                                         'system', 'http://www.acme.com/identifiers/patient',
-                                        'value', adt.MPI_ID
+                                        'value', CAST(adt.MPI_ID AS TEXT)
                                     )
                                 ELSE NULL
                             END
                         ),
-            'name', json_array(json_object(
-              'text', CONCAT(FIRST_NAME,' ', MIDDLE_NAME,' ', LAST_NAME),
-              'family', LAST_NAME,
-              'given', json_array(FIRST_NAME,MIDDLE_NAME))
+            CASE WHEN FIRST_NAME IS NOT NULL THEN 'name' ELSE NULL END, json_array(json_object(
+              CASE WHEN FIRST_NAME IS NOT NULL THEN 'text' ELSE NULL END, CONCAT(FIRST_NAME,' ', MIDDLE_NAME,' ', LAST_NAME),
+              CASE WHEN LAST_NAME IS NOT NULL THEN 'family' ELSE NULL END, LAST_NAME,
+              'given', json_array(FIRST_NAME,CASE WHEN MIDDLE_NAME IS NOT NULL THEN MIDDLE_NAME END))
             ),
-            'gender', GENDER_IDENTITY_CODE_DESCRIPTION,
-            'birthDate', PAT_BIRTH_DATE,
+            CASE WHEN GENDER_IDENTITY_CODE_DESCRIPTION IS NOT NULL THEN 'gender' ELSE NULL END, GENDER_IDENTITY_CODE_DESCRIPTION,
+            CASE WHEN PAT_BIRTH_DATE IS NOT NULL THEN 'birthDate' ELSE NULL END, PAT_BIRTH_DATE,
             'address', json_array(
                 json_object(
                   'text', CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' THEN CONCAT(ADDRESS1, ' ', ADDRESS2) ELSE ADDRESS1 END,
@@ -3978,7 +3979,7 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
                   'postalCode', CAST(ZIP AS TEXT)
               )
             ),
-            'communication', json_array(
+            CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'communication' ELSE NULL END, json_array(
               json_object('language', json_object(
                 'coding', json_array(
                   json_object(
@@ -4003,17 +4004,18 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
             ),
             'status','active',
             'scope', json_object('coding',json_array(json_object('code','treatment')),'text','treatment'),
-            'category', json_object(
+            'category', json_array(json_object(
               'coding',json_array(
-                json_object('system', 'http://terminology.hl7.org/CodeSystem/v3-ActCode',
-                'code', 'IDSCL')
+                json_object('display', 'Patient Consent',
+                'code', '59284-0',
+                'system','http://loinc.org')
               )
-            ),
+            )),
             'patient', json_object(
               'reference', CONCAT('Patient/',adt.PAT_MRN_ID)
             ),
-            'datetime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
-            'organization', json_object('reference', 'Organization/' || qat.FACILITY_ID)
+            'dateTime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+            'organization', json_array(json_object('reference', 'Organization/' || qat.FACILITY_ID))
 
 
       )
@@ -4038,7 +4040,7 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
               )
           ),
           'active', true,
-          'type', JSON_ARRAY(
+          CASE WHEN qed.ORGANIZATION_TYPE IS NOT NULL THEN 'type' ELSE NULL END, JSON_ARRAY(
               JSON_OBJECT(
                   'coding', JSON_ARRAY(
                       JSON_OBJECT(
@@ -4060,31 +4062,32 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
           )
       )
   ) AS FHIR_Organization
-  FROM qe_admin_data qed),
+  FROM qe_admin_data qed WHERE qed.FACILITY_ID!='' AND qed.FACILITY_ID iS NOT NULL ORDER BY qed.FACILITY_ID),
   cte_fhir_observation AS (
     SELECT scr.PAT_MRN_ID, JSON_OBJECT(
-      'fullUrl', CONCAT('observation',QUESTION_CODE),
+      'fullUrl', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
       'resource', JSON_OBJECT(
         'resourceType', 'Observation',
-            'id', CONCAT('observation',QUESTION_CODE),
+            'id', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
             'meta', JSON_OBJECT(
                 'lastUpdated', RECORDED_TIME,
                 'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
             ),
             'status', SCREENING_STATUS_CODE,
-            'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey')))),
-            'code', json_object(
-              'coding', json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE,'display',QUESTION_CODE_DESCRIPTION))
+            'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey'))),json_object('coding',json_array(json_object('system','http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes','code',CASE WHEN sdr.Code IS NOT NULL AND sdr.Code != '' THEN sdr.Code ELSE 'sdoh-category-unspecified' END,'display',CASE WHEN sdr.Display IS NOT NULL AND sdr.Display != '' THEN sdr.Display ELSE 'SDOH Category Unspecified' END)))),
+            CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL AND scr.QUESTION_CODE IS NOT NULL AND QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
+              'coding', json_array(json_object(CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,SCREENING_CODE_SYSTEM_NAME,CASE WHEN scr.QUESTION_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.QUESTION_CODE,CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,QUESTION_CODE_DESCRIPTION))
             ),
             'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
             'effectiveDateTime', RECORDED_TIME,
             'issued', RECORDED_TIME,
-            'valueCodeableConcept',json_object('coding',json_array(json_object('system','http://loinc.org','code',ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION)))
+            'valueCodeableConcept',json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))),
+            'interpretation',json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive')))
         )
   ) AS FHIR_Observation
-  FROM screening scr WHERE ANSWER_CODE!=''),
+  FROM screening scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO FROM ahc_cross_walk) acw ON acw.QUESTION_CODE = scr.QUESTION_CODE WHERE scr.ANSWER_CODE!='' ORDER BY acw.QUESTION_SLNO),
   cte_fhir_encounter AS (
-    SELECT scr.ENCOUNTER_ID, JSON_OBJECT(
+    SELECT scr.PAT_MRN_ID, JSON_OBJECT(
       'resource', JSON_OBJECT(
         'resourceType', 'Encounter',
         'id', scr.ENCOUNTER_ID,
@@ -4092,34 +4095,35 @@ CREATE VIEW IF NOT EXISTS fhir_bundle AS
             'lastUpdated', RECORDED_TIME,
             'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
         ),
-        'status', ENCOUNTER_STATUS_CODE,
-        'class', json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,'code',ENCOUNTER_CLASS_CODE),
-        'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,'code',  CAST(ENCOUNTER_TYPE_CODE AS TEXT) )))),
+        'status', CASE WHEN ENCOUNTER_STATUS_CODE IS NOT NULL THEN ENCOUNTER_STATUS_CODE ELSE 'unknown' END,
+        'class', json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,CASE WHEN ENCOUNTER_CLASS_CODE IS NOT NULL THEN 'code' ELSE NULL END,ENCOUNTER_CLASS_CODE),
+        'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,CASE WHEN ENCOUNTER_TYPE_CODE IS NOT NULL THEN 'code' ELSE NULL END,  CAST(ENCOUNTER_TYPE_CODE AS TEXT),'display', ENCOUNTER_TYPE_CODE_DESCRIPTION  )),'text',ENCOUNTER_TYPE_CODE_DESCRIPTION)),
         'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
       )
   ) AS FHIR_Encounter
-  FROM screening scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.PAT_MRN_ID, scr.FACILITY_ID)
-  SELECT json_object(
+  FROM screening scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID WHERE scr.ENCOUNTER_ID!='' AND scr.ENCOUNTER_ID IS NOT NULL GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.ENCOUNTER_TYPE_CODE_DESCRIPTION, scr.PAT_MRN_ID, scr.FACILITY_ID ORDER BY scr.ENCOUNTER_ID)
+  SELECT cte.PAT_MRN_ID, json_object(
     'resourceType', 'Bundle',
-    'id', 'b2548b90-e688-11ee-a7f7-d77dbb1e1d26',
+    'id', CONCAT('97aeda30-e83a-11ee-ba1c-5388af4c4989','_',PAT_MRN_ID),
     'type', 'transaction',
     'meta', JSON_OBJECT(
         'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
     ),
-    'timestamp', '2024-03-20T07:08:47.689Z',
-    'entry', json(json_group_array(json_data))
+    'timestamp', '2024-03-22T10:54:44.563Z',
+    'entry', json(json_group_array(cte.json_data))
     ) AS FHIR_Bundle
     FROM (
-      SELECT FHIR_Organization AS json_data FROM cte_fhir_org
+      SELECT PAT_MRN_ID, FHIR_Organization AS json_data FROM cte_fhir_org
       UNION ALL
-      SELECT FHIR_Patient AS json_data FROM cte_fhir_patient
+      SELECT PAT_MRN_ID, FHIR_Patient AS json_data FROM cte_fhir_patient
       UNION ALL
-      SELECT FHIR_Observation AS json_data FROM cte_fhir_observation
+      SELECT PAT_MRN_ID, FHIR_Observation AS json_data FROM cte_fhir_observation
       UNION ALL
-      SELECT FHIR_Encounter AS json_data FROM cte_fhir_encounter
+      SELECT PAT_MRN_ID, FHIR_Encounter AS json_data FROM cte_fhir_encounter
       UNION ALL
-      SELECT FHIR_Consent AS json_data FROM cte_fhir_consent
-    );
+      SELECT PAT_MRN_ID, FHIR_Consent AS json_data FROM cte_fhir_consent
+    ) AS cte
+    GROUP BY cte.PAT_MRN_ID;
 
 -- no after-finalize SQL provided
 ```
@@ -4138,7 +4142,7 @@ SET autoload_known_extensions=true;
 -- end preambleSQL
 INSTALL spatial; LOAD spatial;
 -- TODO: join with orch_session table to give all the results in one sheet
-COPY (SELECT * FROM orch_session_issue_classification) TO '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/diagnostics.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
+COPY (SELECT * FROM orch_session_issue_classification) TO '/home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/diagnostics.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
 ```
 No STDOUT emitted by `emitDiagnostics` (status: `0`).
 
@@ -4146,20 +4150,21 @@ No STDERR emitted by `emitDiagnostics`.
 
     
 
-## execute_5
+## jsonResult_5
 
 ```sql
 -- preambleSQL
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-  COPY (
-      SELECT FHIR_Bundle as FHIR FROM fhir_bundle
-) TO '/home/unnikrishnan/workspaces/github.com/UnniKrishnaPanicker/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/temp-fhir.json'
+SELECT PAT_MRN_ID, FHIR_Bundle as FHIR FROM fhir_bundle
+        
+```
+### `jsonResult_5` STDOUT (status: `0`)
+```json
+[{"PAT_MRN_ID":"healthelink-20240305-testcase3-MRN","FHIR":"{\"resourceType\":\"Bundle\",\"id\":\"97aeda30-e83a-11ee-ba1c-5388af4c4989_healthelink-20240305-testcase3-MRN\",\"type\":\"transaction\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\"},\"timestamp\":\"2024-03-22T10:54:44.563Z\",\"entry\":[{\"fullUrl\":\"consentForhealthelink-20240305-testcase3-MRN\",\"resource\":{\"resourceType\":\"Consent\",\"id\":\"consentForhealthelink-20240305-testcase3-MRN\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-organization\"]},\"status\":\"active\",\"scope\":{\"coding\":[{\"code\":\"treatment\"}],\"text\":\"treatment\"},\"category\":[{\"coding\":[{\"display\":\"Patient Consent\",\"code\":\"59284-0\",\"system\":\"http://loinc.org\"}]}],\"patient\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"dateTime\":\"03/05/94 13:08\",\"organization\":[{\"reference\":\"Organization/AMC\"}]}},{\"fullUrl\":\"albany-medical-center-hospital-amc\",\"resource\":{\"resourceType\":\"Organization\",\"id\":\"AMC\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-organization\"]},\"identifier\":[{\"system\":\"AMC\",\"value\":\"albany-medical-center-hospital-amc\"}],\"active\":true,\"type\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/organization-type\",\"code\":\"Hospital\",\"display\":\"Hospital\"}]}],\"name\":\"Albany Medical Center\",\"address\":[{\"text\":\"43 New Scotland Ave \",\"city\":\"Albany\",\"state\":\"New York\",\"postalCode\":\"12208\"}]}},{\"fullUrl\":\"AMC-healthelink-20240305-testcase3-MRN\",\"resource\":{\"resourceType\":\"Patient\",\"id\":\"AMC-healthelink-20240305-testcase3-MRN\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://shinny.org/StructureDefinition/shinny-patient\"]},\"language\":\"myv\",\"extension\":[{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"1142-9\",\"display\":\"Coquille\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-race\"},{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"2137-8\",\"display\":\"Spaniard\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity\"},{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-NullFlavor\",\"code\":\"UNK\",\"display\":\"unknown\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex\"},{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"http://snomed.info/sct\",\"code\":\"20430005\",\"display\":\"Heterosexual\"}}],\"url\":\"http://shinny.org/StructureDefinition/shinny-sexual-orientation\"}],\"identifier\":[{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MR\"}],\"text\":\"Medical Record Number\"},\"system\":\"AMC\",\"value\":\"healthelink-20240305-testcase3-MRN\",\"assigner\":{\"reference\":\"Organization/AMC\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MA\"}]},\"system\":\"http://www.medicaid.gov/\",\"value\":\"QK65113X\",\"assigner\":{\"reference\":\"Organization/2.16.840.1.113883.3.249\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"PN\"}]},\"system\":\"http://www.acme.com/identifiers/patient\",\"value\":\"healthelinkH0QF7VFUQO\"}],\"name\":[{\"text\":\"Summer Nathaniel Bautista\",\"family\":\"Bautista\",\"given\":[\"Summer\",\"Nathaniel\"]}],\"gender\":\"Male\",\"birthDate\":\"2004-06-20\",\"address\":[{\"text\":\"519 Larsen Ports Apt. 379 Suite 11\",\"line\":[\"519 Larsen Ports Apt. 379\",\"Suite 11\"],\"city\":\"North Tonawanda\",\"state\":\"NY\",\"postalCode\":\"14120\"}],\"communication\":[{\"language\":{\"coding\":[{\"code\":\"myv\"}]},\"preferred\":true}]}},{\"resource\":{\"resourceType\":\"Encounter\",\"id\":\"healthelink19VCFAQISN\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-encounter\"]},\"status\":\"entered-in-error\",\"class\":{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActCode\",\"code\":\"ACUTE\"},\"type\":[{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"32166003\",\"display\":\"History taking, self-administered, questionnaire\"}],\"text\":\"History taking, self-administered, questionnaire\"}],\"subject\":{\"reference\":\"Patient/AMC-healthelink-20240305-testcase3-MRN\"}}},{\"resource\":{\"resourceType\":\"Encounter\",\"id\":\"healthelinkGYNB8RC1AS\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-encounter\"]},\"status\":\"entered-in-error\",\"class\":{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActCode\",\"code\":\"ACUTE\"},\"type\":[{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"32166003\",\"display\":\"History taking, self-administered, questionnaire\"}],\"text\":\"History taking, self-administered, questionnaire\"}],\"subject\":{\"reference\":\"Patient/AMC-healthelink-20240305-testcase3-MRN\"}}},{\"fullUrl\":\"observationResponseQuestion_26\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_26\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"44255-8\",\"display\":\"Feeling down, depressed, or hopeless?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6569-3\",\"display\":\"Several days\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_28\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_28\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"stress\",\"display\":\"Stress\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93038-8\",\"display\":\"Stress means a situation in which a person feels tense, restless, nervous, or anxious, or is unable to sleep at night because his or her mind is troubled all the time. Do you feel this kind of stress these days?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA13902-4\",\"display\":\"Quite a bit\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_29\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_29\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"69858-9\",\"display\":\"Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA33-6\",\"display\":\"Yes\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_30\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_30\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"69861-3\",\"display\":\"Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a physician's office or shopping\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_1\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_1\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"71802-3\",\"display\":\"What is your living situation today?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31994-9\",\"display\":\"I have a place to live today, but I am worried about losing it in the future\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_2\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_2\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96778-6\",\"display\":\"Think about the place you live. Do you have problems with any of the following?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31997-2\",\"display\":\"Lead paint or pipes\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_3\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_3\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"food-insecurity\",\"display\":\"Food Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"88122-7\",\"display\":\"Within the past 12 months, you worried that your food would run out before you got money to buy more.\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6729-3\",\"display\":\"Sometimes true\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_4\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_4\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"food-insecurity\",\"display\":\"Food Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"88123-5\",\"display\":\"Within the past 12 months, the food you bought just didn't last and you didn't have money to get more.\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6729-3\",\"display\":\"Sometimes true\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_5\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_5\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"transportation-insecurity\",\"display\":\"Transportation Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93030-5\",\"display\":\"In the past 12 months, has lack of reliable transportation kept you from medical appointments, meetings, work or from getting things needed for daily living?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA33-6\",\"display\":\"Yes\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_6\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_6\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96779-4\",\"display\":\"In the past 12 months has the electric, gas, oil, or water company threatened to shut off services in your home?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32002-0\",\"display\":\"Already shut off\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_7\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_7\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95618-5\",\"display\":\"How often does anyone, including family and friends, physically hurt you?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA10066-1\",\"display\":\"Rarely\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_8\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_8\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95617-7\",\"display\":\"How often does anyone, including family and friends, insult or talk down to you?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6270-8\",\"display\":\"Never\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_9\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_9\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95616-9\",\"display\":\"How often does anyone, including family and friends, threaten you with harm?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA16644-9\",\"display\":\"Fairly often\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_10\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_10\",\"meta\":{\"lastUpdated\":\"01/27/02 15:42\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95615-1\",\"display\":\"How often does anyone, including family and friends, scream or curse at you?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"01/27/02 15:42\",\"issued\":\"01/27/02 15:42\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA10082-8\",\"display\":\"Sometimes\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_12\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_12\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"financial-insecurity\",\"display\":\"Financial Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"76513-1\",\"display\":\"How hard is it for you to pay for the very basics like food, housing, medical care, and heating? Would you say it is\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA15832-1\",\"display\":\"Very hard\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_13\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_13\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"employment-status\",\"display\":\"Employment Status\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96780-2\",\"display\":\"Do you want help finding or keeping work or a job?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31983-2\",\"display\":\"I do not need or want help\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_14\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_14\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"social-connection\",\"display\":\"Social Connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96781-0\",\"display\":\"If for any reason you need help with day-to-day activities such as bathing, preparing meals, shopping, managing finances, etc., do you get the help you need?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31979-0\",\"display\":\"I need a lot more help\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_15\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_15\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"social-connection\",\"display\":\"Social Connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93159-2\",\"display\":\"How often do you feel lonely or isolated from those around you?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA10044-8\",\"display\":\"Often\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_16\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_16\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"97027-7\",\"display\":\"Do you speak a language other than English at home?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_17\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_17\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96782-8\",\"display\":\"Do you want help with school or training? For example, starting or completing job training or getting a high school diploma, GED or equivalent.\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA33-6\",\"display\":\"Yes\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_18\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_18\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"89555-7\",\"display\":\"In the last 30 days, other than the activities you did for work, on average, how many days per week did you engage in moderate exercise (like walking fast, running, jogging, dancing, swimming, biking, or other similar activities)\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6113-0\",\"display\":\"2\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_19\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_19\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68516-4\",\"display\":\"On average, how many minutes did you usually spend exercising at this level on one of those days?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA28853-2\",\"display\":\"60\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_21\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_21\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68517-2\",\"display\":\"How many times in the past 12 months have you had 5 or more drinks in a day (males) or 4 or more drinks in a day (females)?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6270-8\",\"display\":\"Never\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_22\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_22\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96842-0\",\"display\":\"How many times in the past 12 months have you used tobacco products (like cigarettes, cigars, snuff, chew, electronic cigarettes)?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA18891-4\",\"display\":\"Weekly\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_23\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_23\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95530-2\",\"display\":\"How many times in the past year have you used prescription drugs for non-medical reasons?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA26460-8\",\"display\":\"Once or Twice\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_24\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_24\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68524-8\",\"display\":\"How many times in the past year have you used illegal drugs?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6270-8\",\"display\":\"Never\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}},{\"fullUrl\":\"observationResponseQuestion_25\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion_25\",\"meta\":{\"lastUpdated\":\"03/05/94 13:08\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"44250-9\",\"display\":\"Little interest or pleasure in doing things?\"}]},\"subject\":{\"reference\":\"Patient/healthelink-20240305-testcase3-MRN\"},\"effectiveDateTime\":\"03/05/94 13:08\",\"issued\":\"03/05/94 13:08\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6571-9\",\"display\":\"Nearly every day\"}]},\"interpretation\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}}}]}"}]
 
 ```
-No STDOUT emitted by `execute_5` (status: `0`).
-
-No STDERR emitted by `execute_5`.
+No STDERR emitted by `jsonResult_5`.
 
     

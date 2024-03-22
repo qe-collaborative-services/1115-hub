@@ -18,6 +18,11 @@ import * as excel from "./excel.ts";
 
 export const ORCHESTRATE_VERSION = "0.8.5";
 
+export interface FhirRecord {
+  PAT_MRN_ID: string;
+  FHIR: object;
+}
+
 export type PotentialIngestSource =
   | excel.ScreeningExcelSheetIngestSource<string, o.State>
   | excel.AdminDemographicExcelSheetIngestSource<string, o.State>
@@ -234,8 +239,7 @@ export interface OrchEngineWorkflowPaths {
     readonly diagsJsonSupplier?: () => string;
     readonly diagsXlsxSupplier?: () => string;
     readonly diagsMdSupplier?: () => string;
-    readonly fhirJsonSupplier?: () => string;
-    readonly fhirTempJsonSupplier?: () => string;
+    readonly fhirJsonSupplier?: (pat_mrn_id: string) => string;
     readonly fhirHttpSupplier?: () => string;
   };
 
@@ -301,8 +305,9 @@ export function orchEngineWorkflowPaths(
     diagsMdSupplier: () => egress.resolvedPath("diagnostics.md"),
     diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
-    fhirJsonSupplier: () => egress.resolvedPath("fhir.json"),
-    fhirTempJsonSupplier: () => egress.resolvedPath("temp-fhir.json"),
+    fhirJsonSupplier: (pat_mrn_id: string) => {
+      return egress.resolvedPath("fhir_" + pat_mrn_id + ".json");
+    },
     fhirHttpSupplier: () => egress.resolvedPath("fhir.http"),
   };
   const inProcess: OrchEngineWorkflowPaths["inProcess"] = {
@@ -768,60 +773,60 @@ export class OrchEngine {
                         'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
                         'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
                       ),
-                      'language', PREFERRED_LANGUAGE_CODE,
-                      'extension', json_array(
-                                      json_object('extension',
-                                        json_array(
-                                          json_object(
-                                              'url','ombCategory',
-                                              'valueCoding',json_object(
-                                                            'system',RACE_CODE_SYSTEM_NAME,
-                                                            'code',RACE_CODE,
-                                                            'display',RACE_CODE_DESCRIPTION
-                                                            )
-                                                      )
-                                                  ),
-                                            'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
-                                      ),
-                                      json_object('extension',
-                                        json_array(
-                                          json_object(
-                                              'url','ombCategory',
-                                              'valueCoding',json_object(
-                                                            'system',ETHNICITY_CODE_SYSTEM_NAME,
-                                                            'code',ETHNICITY_CODE,
-                                                            'display',ETHNICITY_CODE_DESCRIPTION
-                                                            )
-                                                      )
+                      CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'language' ELSE NULL END, PREFERRED_LANGUAGE_CODE,
+                      CASE WHEN (RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL) OR (ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL) OR (SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL) THEN 'extension' ELSE NULL END, json_array(
+                                      CASE WHEN RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                                          'extension', json_array(
+                                                        json_object(
+                                                            'url','ombCategory',
+                                                            'valueCoding',json_object(
+                                                                        'system',RACE_CODE_SYSTEM_NAME,
+                                                                        'code',RACE_CODE,
+                                                                        'display',RACE_CODE_DESCRIPTION
+                                                                        )
+                                                                    )
+                                                    ),
+                                          'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+                                        ) END ,
+                                        CASE WHEN ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                                          'extension',json_array(
+                                                        json_object(
+                                                            'url','ombCategory',
+                                                            'valueCoding',json_object(
+                                                                          'system',ETHNICITY_CODE_SYSTEM_NAME,
+                                                                          'code',ETHNICITY_CODE,
+                                                                          'display',ETHNICITY_CODE_DESCRIPTION
+                                                                          )
+                                                                    )
                                                   ),
                                             'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
-                                      ),
-                                      json_object('extension',
-                                        json_array(
-                                          json_object(
-                                              'url','ombCategory',
-                                              'valueCoding',json_object(
-                                                            'system',SEX_AT_BIRTH_CODE_SYSTEM,
-                                                            'code',SEX_AT_BIRTH_CODE,
-                                                            'display',SEX_AT_BIRTH_CODE_DESCRIPTION
-                                                            )
-                                                      )
+                                      ) END,
+                                      CASE WHEN SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                                        'extension',json_array(
+                                                    json_object(
+                                                        'url','ombCategory',
+                                                        'valueCoding',json_object(
+                                                                      'system',SEX_AT_BIRTH_CODE_SYSTEM,
+                                                                      'code',SEX_AT_BIRTH_CODE,
+                                                                      'display',SEX_AT_BIRTH_CODE_DESCRIPTION
+                                                                      )
+                                                                )
                                                   ),
-                                            'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'
-                                      ),
-                                      json_object('extension',
+                                        'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'
+                                      ) END,
+                                      CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_DESCRIPTION IS NOT NULL THEN json_object('extension',
                                         json_array(
-                                          json_object(
-                                              'url','ombCategory',
-                                              'valueCoding',json_object(
-                                                            'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
-                                                            'code',SEXUAL_ORIENTATION_CODE,
-                                                            'display',SEXUAL_ORIENTATION_DESCRIPTION
+                                                json_object(
+                                                    'url','ombCategory',
+                                                    'valueCoding',json_object(
+                                                                  'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
+                                                                  'code',SEXUAL_ORIENTATION_CODE,
+                                                                  'display',SEXUAL_ORIENTATION_DESCRIPTION
+                                                                  )
                                                             )
-                                                      )
                                                   ),
                                             'url', 'http://shinny.org/StructureDefinition/shinny-sexual-orientation'
-                                      )
+                                      ) END
                                     ),
                       'identifier', json_array(
                                       json_object(
@@ -852,18 +857,18 @@ export class OrchEngine {
                                                       'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'PN'))
                                                   ),
                                                   'system', 'http://www.acme.com/identifiers/patient',
-                                                  'value', adt.MPI_ID
+                                                  'value', CAST(adt.MPI_ID AS TEXT)
                                               )
                                           ELSE NULL
                                       END
                                   ),
-                      'name', json_array(json_object(
-                        'text', CONCAT(FIRST_NAME,' ', MIDDLE_NAME,' ', LAST_NAME),
-                        'family', LAST_NAME,
-                        'given', json_array(FIRST_NAME,MIDDLE_NAME))
+                      CASE WHEN FIRST_NAME IS NOT NULL THEN 'name' ELSE NULL END, json_array(json_object(
+                        CASE WHEN FIRST_NAME IS NOT NULL THEN 'text' ELSE NULL END, CONCAT(FIRST_NAME,' ', MIDDLE_NAME,' ', LAST_NAME),
+                        CASE WHEN LAST_NAME IS NOT NULL THEN 'family' ELSE NULL END, LAST_NAME,
+                        'given', json_array(FIRST_NAME,CASE WHEN MIDDLE_NAME IS NOT NULL THEN MIDDLE_NAME END))
                       ),
-                      'gender', GENDER_IDENTITY_CODE_DESCRIPTION,
-                      'birthDate', PAT_BIRTH_DATE,
+                      CASE WHEN GENDER_IDENTITY_CODE_DESCRIPTION IS NOT NULL THEN 'gender' ELSE NULL END, GENDER_IDENTITY_CODE_DESCRIPTION,
+                      CASE WHEN PAT_BIRTH_DATE IS NOT NULL THEN 'birthDate' ELSE NULL END, PAT_BIRTH_DATE,
                       'address', json_array(
                           json_object(
                             'text', CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' THEN CONCAT(ADDRESS1, ' ', ADDRESS2) ELSE ADDRESS1 END,
@@ -873,7 +878,7 @@ export class OrchEngine {
                             'postalCode', CAST(ZIP AS TEXT)
                         )
                       ),
-                      'communication', json_array(
+                      CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'communication' ELSE NULL END, json_array(
                         json_object('language', json_object(
                           'coding', json_array(
                             json_object(
@@ -898,17 +903,18 @@ export class OrchEngine {
                       ),
                       'status','active',
                       'scope', json_object('coding',json_array(json_object('code','treatment')),'text','treatment'),
-                      'category', json_object(
+                      'category', json_array(json_object(
                         'coding',json_array(
-                          json_object('system', 'http://terminology.hl7.org/CodeSystem/v3-ActCode',
-                          'code', 'IDSCL')
+                          json_object('display', 'Patient Consent',
+                          'code', '59284-0',
+                          'system','http://loinc.org')
                         )
-                      ),
+                      )),
                       'patient', json_object(
                         'reference', CONCAT('Patient/',adt.PAT_MRN_ID)
                       ),
-                      'datetime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
-                      'organization', json_object('reference', 'Organization/' || qat.FACILITY_ID)
+                      'dateTime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+                      'organization', json_array(json_object('reference', 'Organization/' || qat.FACILITY_ID))
 
 
                 )
@@ -933,7 +939,7 @@ export class OrchEngine {
                         )
                     ),
                     'active', true,
-                    'type', JSON_ARRAY(
+                    CASE WHEN qed.ORGANIZATION_TYPE IS NOT NULL THEN 'type' ELSE NULL END, JSON_ARRAY(
                         JSON_OBJECT(
                             'coding', JSON_ARRAY(
                                 JSON_OBJECT(
@@ -955,31 +961,32 @@ export class OrchEngine {
                     )
                 )
             ) AS FHIR_Organization
-            FROM ${csv.aggrQeAdminData} qed),
+            FROM ${csv.aggrQeAdminData} qed WHERE qed.FACILITY_ID!='' AND qed.FACILITY_ID iS NOT NULL ORDER BY qed.FACILITY_ID),
             cte_fhir_observation AS (
               SELECT scr.PAT_MRN_ID, JSON_OBJECT(
-                'fullUrl', CONCAT('observation',QUESTION_CODE),
+                'fullUrl', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
                 'resource', JSON_OBJECT(
                   'resourceType', 'Observation',
-                      'id', CONCAT('observation',QUESTION_CODE),
+                      'id', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
                       'meta', JSON_OBJECT(
                           'lastUpdated', RECORDED_TIME,
                           'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
                       ),
                       'status', SCREENING_STATUS_CODE,
-                      'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey')))),
-                      'code', json_object(
-                        'coding', json_array(json_object('system',SCREENING_CODE_SYSTEM_NAME,'code',QUESTION_CODE,'display',QUESTION_CODE_DESCRIPTION))
+                      'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey'))),json_object('coding',json_array(json_object('system','http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes','code',CASE WHEN sdr.Code IS NOT NULL AND sdr.Code != '' THEN sdr.Code ELSE 'sdoh-category-unspecified' END,'display',CASE WHEN sdr.Display IS NOT NULL AND sdr.Display != '' THEN sdr.Display ELSE 'SDOH Category Unspecified' END)))),
+                      CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL AND scr.QUESTION_CODE IS NOT NULL AND QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
+                        'coding', json_array(json_object(CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,SCREENING_CODE_SYSTEM_NAME,CASE WHEN scr.QUESTION_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.QUESTION_CODE,CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,QUESTION_CODE_DESCRIPTION))
                       ),
                       'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
                       'effectiveDateTime', RECORDED_TIME,
                       'issued', RECORDED_TIME,
-                      'valueCodeableConcept',json_object('coding',json_array(json_object('system','http://loinc.org','code',ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION)))
+                      'valueCodeableConcept',json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))),
+                      'interpretation',json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive')))
                   )
             ) AS FHIR_Observation
-            FROM ${csv.aggrScreeningTableName} scr WHERE ANSWER_CODE!=''),
+            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO FROM ahc_cross_walk) acw ON acw.QUESTION_CODE = scr.QUESTION_CODE WHERE scr.ANSWER_CODE!='' ORDER BY acw.QUESTION_SLNO),
             cte_fhir_encounter AS (
-              SELECT scr.ENCOUNTER_ID, JSON_OBJECT(
+              SELECT scr.PAT_MRN_ID, JSON_OBJECT(
                 'resource', JSON_OBJECT(
                   'resourceType', 'Encounter',
                   'id', scr.ENCOUNTER_ID,
@@ -987,34 +994,35 @@ export class OrchEngine {
                       'lastUpdated', RECORDED_TIME,
                       'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
                   ),
-                  'status', ENCOUNTER_STATUS_CODE,
-                  'class', json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,'code',ENCOUNTER_CLASS_CODE),
-                  'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,'code',  CAST(ENCOUNTER_TYPE_CODE AS TEXT) )))),
+                  'status', CASE WHEN ENCOUNTER_STATUS_CODE IS NOT NULL THEN ENCOUNTER_STATUS_CODE ELSE 'unknown' END,
+                  'class', json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,CASE WHEN ENCOUNTER_CLASS_CODE IS NOT NULL THEN 'code' ELSE NULL END,ENCOUNTER_CLASS_CODE),
+                  'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,CASE WHEN ENCOUNTER_TYPE_CODE IS NOT NULL THEN 'code' ELSE NULL END,  CAST(ENCOUNTER_TYPE_CODE AS TEXT),'display', ENCOUNTER_TYPE_CODE_DESCRIPTION  )),'text',ENCOUNTER_TYPE_CODE_DESCRIPTION)),
                   'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
                 )
             ) AS FHIR_Encounter
-            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.PAT_MRN_ID, scr.FACILITY_ID)
-            SELECT json_object(
+            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID WHERE scr.ENCOUNTER_ID!='' AND scr.ENCOUNTER_ID IS NOT NULL GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.ENCOUNTER_TYPE_CODE_DESCRIPTION, scr.PAT_MRN_ID, scr.FACILITY_ID ORDER BY scr.ENCOUNTER_ID)
+            SELECT cte.PAT_MRN_ID, json_object(
               'resourceType', 'Bundle',
-              'id', '${uuid.v1.generate()}',
+              'id', CONCAT('${uuid.v1.generate()}','_',PAT_MRN_ID),
               'type', 'transaction',
               'meta', JSON_OBJECT(
                   'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
               ),
               'timestamp', '${new Date().toISOString()}',
-              'entry', json(json_group_array(json_data))
+              'entry', json(json_group_array(cte.json_data))
               ) AS FHIR_Bundle
               FROM (
-                SELECT FHIR_Organization AS json_data FROM cte_fhir_org
+                SELECT PAT_MRN_ID, FHIR_Organization AS json_data FROM cte_fhir_org
                 UNION ALL
-                SELECT FHIR_Patient AS json_data FROM cte_fhir_patient
+                SELECT PAT_MRN_ID, FHIR_Patient AS json_data FROM cte_fhir_patient
                 UNION ALL
-                SELECT FHIR_Observation AS json_data FROM cte_fhir_observation
+                SELECT PAT_MRN_ID, FHIR_Observation AS json_data FROM cte_fhir_observation
                 UNION ALL
-                SELECT FHIR_Encounter AS json_data FROM cte_fhir_encounter
+                SELECT PAT_MRN_ID, FHIR_Encounter AS json_data FROM cte_fhir_encounter
                 UNION ALL
-                SELECT FHIR_Consent AS json_data FROM cte_fhir_consent
-              );
+                SELECT PAT_MRN_ID, FHIR_Consent AS json_data FROM cte_fhir_consent
+              ) AS cte
+              GROUP BY cte.PAT_MRN_ID;
 
           ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
           .SQL(this.govn.emitCtx),
@@ -1081,44 +1089,45 @@ export class OrchEngine {
       );
     }
 
-    if (egress.fhirJsonSupplier && egress.fhirTempJsonSupplier) {
-      const fhirJson = egress.fhirJsonSupplier();
-      const fhirTempJson = egress.fhirTempJsonSupplier();
-      try {
-        await this.duckdb.execute(
-          this.govn.SQL`
-            COPY (
-                SELECT FHIR_Bundle as FHIR FROM fhir_bundle
-          ) TO '${fhirTempJson}'
-          `.SQL(
-            this.govn.emitCtx,
-          ),
-        );
-        const tempJsonContent = await Deno.readTextFile(fhirTempJson);
-        const tempJsonData = JSON.parse(tempJsonContent);
-        const originalJsonData = tempJsonData["FHIR"];
-        await Deno.writeTextFile(
-          fhirJson,
-          JSON.stringify(originalJsonData),
-        );
-        await Deno.remove(fhirTempJson);
-      } catch (err) {
-        // TODO: store the error in a proper log
-        console.error(err);
-      }
-    }
-
-    if (egress.fhirHttpSupplier) {
-      const fhirHttp = egress.fhirHttpSupplier();
-      let fhirHttpContent = "### Submit FHIR Resource Bundle\n\n";
-      fhirHttpContent = fhirHttpContent +
-        "POST https://{{host}}/{{path}}?processingAgent=QE HTTP/1.1\n";
-      fhirHttpContent = fhirHttpContent + "content-type: application/json\n\n";
-      fhirHttpContent = fhirHttpContent + "< ./fhir.json";
-      await Deno.writeTextFile(
-        fhirHttp,
-        fhirHttpContent,
+    if (egress.fhirJsonSupplier) {
+      const results = await this.duckdb.jsonResult(
+        this.govn.SQL`
+          SELECT PAT_MRN_ID, FHIR_Bundle as FHIR FROM fhir_bundle
+        `.SQL(
+          this.govn.emitCtx,
+        ),
       );
+
+      if (results.json) {
+        try {
+          let fhirHttpContent = "";
+          for (const row of results.json as FhirRecord[]) {
+            const fhirJson = egress.fhirJsonSupplier(row.PAT_MRN_ID);
+            await Deno.writeTextFile(
+              fhirJson,
+              JSON.parse(JSON.stringify(row.FHIR)),
+            );
+            if (egress.fhirHttpSupplier) {
+              fhirHttpContent = fhirHttpContent +
+                "### Submit FHIR Resource Bundle\n\n";
+              fhirHttpContent = fhirHttpContent +
+                "POST https://{{host}}/{{path}}?processingAgent=QE HTTP/1.1\n";
+              fhirHttpContent = fhirHttpContent +
+                "content-type: application/json\n\n";
+              fhirHttpContent = fhirHttpContent + "< " + fhirJson + "\n\n";
+            }
+          }
+          if (egress.fhirHttpSupplier) {
+            const fhirHttp = egress.fhirHttpSupplier();
+            await Deno.writeTextFile(
+              fhirHttp,
+              fhirHttpContent,
+            );
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
     }
 
     const markdown = this.duckdb.diagnosticsMarkdown();
