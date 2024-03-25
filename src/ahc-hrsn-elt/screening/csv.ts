@@ -711,6 +711,7 @@ export class AdminDemographicCsvFileIngestSource<
       )}
       ${tr.mandatoryValueInAllRows("MPI_ID")}
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
+      ${adar.onlyAllowValidMpiIdPerPatMrnIdInAllRows("MPI_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
       ${adar.car.onlyAllowValidMedicaidCinFormatInAllRows("MEDICAID_CIN")}
       ${adar.onlyAllowUniqueMedicaidCinPerMrnInAllRows("MEDICAID_CIN")}
@@ -905,6 +906,7 @@ export class QeAdminDataCsvFileIngestSource<
 
       ${tr.mandatoryValueInAllRows("PAT_MRN_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_ID")}
+      ${qedar.onlyAllowValidUniqueFacilityIdPerFacilityInAllRows("FACILITY_ID")}
       ${tr.mandatoryValueInAllRows("FACILITY_LONG_NAME")}
       ${tr.mandatoryValueInAllRows("ORGANIZATION_TYPE")}
       ${tr.onlyAllowedValuesInAllRows(
@@ -912,10 +914,8 @@ export class QeAdminDataCsvFileIngestSource<
         "'Hospital', 'DTC', 'SNF', 'SCN', 'CBO', 'OMH', 'OASAS', 'Practice', 'Article 36', 'Article 40', 'MCO'"
       )}
       ${tr.mandatoryValueInAllRows("FACILITY_ADDRESS1")}
-      ${tr.uniqueValueInAllRows("FACILITY_ADDRESS1")}
       ${qedar.onlyAllowValidUniqueFacilityAddress1PerFacilityInAllRows("FACILITY_ADDRESS1")}
       ${qedar.car.onlyAllowValidIntegerAlphaNumericStringInAllRows("FACILITY_ADDRESS1")}
-      ${tr.uniqueValueInAllRows("FACILITY_ADDRESS2")}
       ${tr.mandatoryValueInAllRows("FACILITY_STATE")}
       ${tr.onlyAllowedValuesInAllRows("FACILITY_STATE", "'NY', 'New York'")}
       ${tr.mandatoryValueInAllRows("FACILITY_ZIP")}
