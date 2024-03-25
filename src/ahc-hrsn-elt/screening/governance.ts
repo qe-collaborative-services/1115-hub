@@ -1714,7 +1714,7 @@ export class AdminDemographicAssuranceRules<
       WITH ${cteName} AS (
           SELECT '${columnName}' AS issue_column,
             ${columnName} AS invalid_value,
-            src_file_row_number AS issue_row
+            min(src_file_row_number) AS issue_row
           FROM ${this.tableName}
           GROUP BY MPI_ID
           HAVING COUNT(DISTINCT PAT_MRN_ID) > 1

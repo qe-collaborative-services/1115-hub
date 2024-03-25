@@ -16,7 +16,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.9.1";
+export const ORCHESTRATE_VERSION = "0.10.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -787,7 +787,7 @@ export class OrchEngine {
                                                                     )
                                                     ),
                                           'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
-                                        ) END ,
+                                        ) END,
                                         CASE WHEN ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL THEN json_object(
                                           'extension',json_array(
                                                         json_object(
@@ -802,32 +802,19 @@ export class OrchEngine {
                                             'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
                                       ) END,
                                       CASE WHEN SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL THEN json_object(
-                                        'extension',json_array(
-                                                    json_object(
-                                                        'url','ombCategory',
-                                                        'valueCoding',json_object(
-                                                                      'system',SEX_AT_BIRTH_CODE_SYSTEM,
-                                                                      'code',SEX_AT_BIRTH_CODE,
-                                                                      'display',SEX_AT_BIRTH_CODE_DESCRIPTION
-                                                                      )
-                                                                )
-                                                  ),
-                                        'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'
-                                      ) END,
-                                      CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_DESCRIPTION IS NOT NULL THEN json_object('extension',
-                                        json_array(
-                                                json_object(
-                                                    'url','ombCategory',
-                                                    'valueCoding',json_object(
-                                                                  'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
-                                                                  'code',SEXUAL_ORIENTATION_CODE,
-                                                                  'display',SEXUAL_ORIENTATION_DESCRIPTION
-                                                                  )
-                                                            )
-                                                  ),
-                                            'url', 'http://shinny.org/StructureDefinition/shinny-sexual-orientation'
-                                      ) END
-                                    ),
+                                              'url','http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex',
+                                              'valueCode',SEX_AT_BIRTH_CODE
+
+                                    ) END,
+                                      CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_DESCRIPTION IS NOT NULL THEN json_object(
+                                              'url','http://shinny.org/StructureDefinition/shinny-sexual-orientation',
+                                              'valueCodeableConcept',json_object('coding', json_array(json_object(
+                                                            'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
+                                                            'code',SEXUAL_ORIENTATION_CODE,
+                                                            'display',SEXUAL_ORIENTATION_DESCRIPTION
+                                                            )))
+
+                                    ) END),
                       'identifier', json_array(
                                       json_object(
                                           'type', json_object(
@@ -962,6 +949,24 @@ export class OrchEngine {
                 )
             ) AS FHIR_Organization
             FROM ${csv.aggrQeAdminData} qed WHERE qed.FACILITY_ID!='' AND qed.FACILITY_ID iS NOT NULL ORDER BY qed.FACILITY_ID),
+            derived_from_cte AS (
+              SELECT
+                  parent_question_code,
+                  json_group_array(json_object('reference', derived_reference)) AS derived_from_references
+              FROM (
+                  SELECT
+                      acw.QUESTION_CODE AS parent_question_code,
+                      CONCAT('Observation/ObservationResponseQuestion_', acw_sub.QUESTION_SLNO) AS derived_reference
+                  FROM
+                      ahc_cross_walk acw
+                  INNER JOIN ahc_cross_walk acw_sub ON acw_sub."Score Reference" = acw.QUESTION_CODE
+                  GROUP BY
+                      acw.QUESTION_CODE,
+                      acw_sub.QUESTION_SLNO
+              ) AS distinct_references
+              GROUP BY
+                  parent_question_code
+            ),
             cte_fhir_observation AS (
               SELECT scr.PAT_MRN_ID, JSON_OBJECT(
                 'fullUrl', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
@@ -980,13 +985,15 @@ export class OrchEngine {
                       'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
                       'effectiveDateTime', RECORDED_TIME,
                       'issued', RECORDED_TIME,
-                      'valueCodeableConcept',json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))),
+                      'valueCodeableConcept',CASE WHEN acw.calculatedfield = 1 AND acw."UCUM UNITS"='{score}' THEN json_object('coding',json_array(json_object('system','http://unitsofmeasure.org','code',acw."UCUM UNITS",'display',ANSWER_CODE_DESCRIPTION))) ELSE json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))) END,
+                      CASE WHEN acw.calculatedfield = 1 THEN 'derivedFrom' ELSE NULL END, COALESCE(df.derived_from_references, json_array()),
                       'interpretation',json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive'))))
                   )
             ) AS FHIR_Observation
-            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO FROM ahc_cross_walk) acw ON acw.QUESTION_CODE = scr.QUESTION_CODE WHERE scr.ANSWER_CODE!='' ORDER BY acw.QUESTION_SLNO),
+            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM UNITS", calculatedfield FROM ahc_cross_walk) acw ON acw.QUESTION_CODE = scr.QUESTION_CODE LEFT JOIN derived_from_cte df ON df.parent_question_code = scr.QUESTION_CODE WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO),
             cte_fhir_encounter AS (
               SELECT scr.PAT_MRN_ID, JSON_OBJECT(
+                'fullUrl', scr.ENCOUNTER_ID,
                 'resource', JSON_OBJECT(
                   'resourceType', 'Encounter',
                   'id', scr.ENCOUNTER_ID,
