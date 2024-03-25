@@ -1,9 +1,9 @@
 {
   "resourceType": "Bundle",
-  "id": "3b756920-e842-11ee-be9b-a382b49876aa_healthelink-20240305-testcase3-MRN",
+  "id": "b11881d0-eaa9-11ee-a511-bf9e7d8449b7_healthelink-20240305-testcase3-MRN",
   "type": "transaction",
   "meta": { "lastUpdated": "03/05/94 13:08" },
-  "timestamp": "2024-03-22T11:49:25.811Z",
+  "timestamp": "2024-03-25T13:15:03.661Z",
   "entry": [
     {
       "fullUrl": "albany-medical-center-hospital-amc",
@@ -74,6 +74,68 @@
       }
     },
     {
+      "fullUrl": "healthelink19VCFAQISN",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "healthelink19VCFAQISN",
+        "meta": {
+          "lastUpdated": "03/05/94 13:08",
+          "profile": ["http://shinny.org/StructureDefinition/shin-ny-encounter"]
+        },
+        "status": "entered-in-error",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "ACUTE"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "32166003",
+                "display": "History taking, self-administered, questionnaire"
+              }
+            ],
+            "text": "History taking, self-administered, questionnaire"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/AMC-healthelink-20240305-testcase3-MRN"
+        }
+      }
+    },
+    {
+      "fullUrl": "healthelinkGYNB8RC1AS",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "healthelinkGYNB8RC1AS",
+        "meta": {
+          "lastUpdated": "01/27/02 15:42",
+          "profile": ["http://shinny.org/StructureDefinition/shin-ny-encounter"]
+        },
+        "status": "entered-in-error",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "ACUTE"
+        },
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "32166003",
+                "display": "History taking, self-administered, questionnaire"
+              }
+            ],
+            "text": "History taking, self-administered, questionnaire"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/AMC-healthelink-20240305-testcase3-MRN"
+        }
+      }
+    },
+    {
       "fullUrl": "AMC-healthelink-20240305-testcase3-MRN",
       "resource": {
         "resourceType": "Patient",
@@ -111,30 +173,20 @@
             "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
           },
           {
-            "extension": [
-              {
-                "url": "ombCategory",
-                "valueCoding": {
-                  "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
-                  "code": "UNK",
-                  "display": "unknown"
-                }
-              }
-            ],
-            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex"
+            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex",
+            "valueCode": "UNK"
           },
           {
-            "extension": [
-              {
-                "url": "ombCategory",
-                "valueCoding": {
+            "url": "http://shinny.org/StructureDefinition/shinny-sexual-orientation",
+            "valueCodeableConcept": {
+              "coding": [
+                {
                   "system": "http://snomed.info/sct",
                   "code": "20430005",
                   "display": "Heterosexual"
                 }
-              }
-            ],
-            "url": "http://shinny.org/StructureDefinition/shinny-sexual-orientation"
+              ]
+            }
           }
         ],
         "identifier": [
@@ -199,366 +251,6 @@
         "communication": [
           { "language": { "coding": [{ "code": "myv" }] }, "preferred": true }
         ]
-      }
-    },
-    {
-      "fullUrl": "observationResponseQuestion_26",
-      "resource": {
-        "resourceType": "Observation",
-        "id": "observationResponseQuestion_26",
-        "meta": {
-          "lastUpdated": "03/05/94 13:08",
-          "profile": [
-            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
-          ]
-        },
-        "status": "unknown",
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "code": "social-history",
-                "display": "Social History"
-              }
-            ]
-          },
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "code": "survey",
-                "display": "Survey"
-              }
-            ]
-          },
-          {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
-                "code": "sdoh-category-unspecified",
-                "display": "SDOH Category Unspecified"
-              }
-            ]
-          }
-        ],
-        "code": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "44255-8",
-              "display": "Feeling down, depressed, or hopeless?"
-            }
-          ]
-        },
-        "subject": {
-          "reference": "Patient/healthelink-20240305-testcase3-MRN"
-        },
-        "effectiveDateTime": "03/05/94 13:08",
-        "issued": "03/05/94 13:08",
-        "valueCodeableConcept": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "LA6569-3",
-              "display": "Several days"
-            }
-          ]
-        },
-        "interpretation": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                "code": "POS",
-                "display": "Positive"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "observationResponseQuestion_28",
-      "resource": {
-        "resourceType": "Observation",
-        "id": "observationResponseQuestion_28",
-        "meta": {
-          "lastUpdated": "03/05/94 13:08",
-          "profile": [
-            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
-          ]
-        },
-        "status": "unknown",
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "code": "social-history",
-                "display": "Social History"
-              }
-            ]
-          },
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "code": "survey",
-                "display": "Survey"
-              }
-            ]
-          },
-          {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
-                "code": "stress",
-                "display": "Stress"
-              }
-            ]
-          }
-        ],
-        "code": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "93038-8",
-              "display": "Stress means a situation in which a person feels tense, restless, nervous, or anxious, or is unable to sleep at night because his or her mind is troubled all the time. Do you feel this kind of stress these days?"
-            }
-          ]
-        },
-        "subject": {
-          "reference": "Patient/healthelink-20240305-testcase3-MRN"
-        },
-        "effectiveDateTime": "03/05/94 13:08",
-        "issued": "03/05/94 13:08",
-        "valueCodeableConcept": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "LA13902-4",
-              "display": "Quite a bit"
-            }
-          ]
-        },
-        "interpretation": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                "code": "POS",
-                "display": "Positive"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "observationResponseQuestion_29",
-      "resource": {
-        "resourceType": "Observation",
-        "id": "observationResponseQuestion_29",
-        "meta": {
-          "lastUpdated": "03/05/94 13:08",
-          "profile": [
-            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
-          ]
-        },
-        "status": "unknown",
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "code": "social-history",
-                "display": "Social History"
-              }
-            ]
-          },
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "code": "survey",
-                "display": "Survey"
-              }
-            ]
-          },
-          {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
-                "code": "sdoh-category-unspecified",
-                "display": "SDOH Category Unspecified"
-              }
-            ]
-          }
-        ],
-        "code": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "69858-9",
-              "display": "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"
-            }
-          ]
-        },
-        "subject": {
-          "reference": "Patient/healthelink-20240305-testcase3-MRN"
-        },
-        "effectiveDateTime": "03/05/94 13:08",
-        "issued": "03/05/94 13:08",
-        "valueCodeableConcept": {
-          "coding": [
-            { "system": "http://loinc.org", "code": "LA33-6", "display": "Yes" }
-          ]
-        },
-        "interpretation": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                "code": "POS",
-                "display": "Positive"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "observationResponseQuestion_30",
-      "resource": {
-        "resourceType": "Observation",
-        "id": "observationResponseQuestion_30",
-        "meta": {
-          "lastUpdated": "03/05/94 13:08",
-          "profile": [
-            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
-          ]
-        },
-        "status": "unknown",
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "code": "social-history",
-                "display": "Social History"
-              }
-            ]
-          },
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                "code": "survey",
-                "display": "Survey"
-              }
-            ]
-          },
-          {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
-                "code": "sdoh-category-unspecified",
-                "display": "SDOH Category Unspecified"
-              }
-            ]
-          }
-        ],
-        "code": {
-          "coding": [
-            {
-              "system": "http://loinc.org",
-              "code": "69861-3",
-              "display": "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a physician's office or shopping"
-            }
-          ]
-        },
-        "subject": {
-          "reference": "Patient/healthelink-20240305-testcase3-MRN"
-        },
-        "effectiveDateTime": "03/05/94 13:08",
-        "issued": "03/05/94 13:08",
-        "valueCodeableConcept": {
-          "coding": [
-            { "system": "http://loinc.org", "code": "LA32-8", "display": "No" }
-          ]
-        },
-        "interpretation": [
-          {
-            "coding": [
-              {
-                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                "code": "POS",
-                "display": "Positive"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "resource": {
-        "resourceType": "Encounter",
-        "id": "healthelink19VCFAQISN",
-        "meta": {
-          "lastUpdated": "03/05/94 13:08",
-          "profile": ["http://shinny.org/StructureDefinition/shin-ny-encounter"]
-        },
-        "status": "entered-in-error",
-        "class": {
-          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-          "code": "ACUTE"
-        },
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "http://snomed.info/sct",
-                "code": "32166003",
-                "display": "History taking, self-administered, questionnaire"
-              }
-            ],
-            "text": "History taking, self-administered, questionnaire"
-          }
-        ],
-        "subject": {
-          "reference": "Patient/AMC-healthelink-20240305-testcase3-MRN"
-        }
-      }
-    },
-    {
-      "resource": {
-        "resourceType": "Encounter",
-        "id": "healthelinkGYNB8RC1AS",
-        "meta": {
-          "lastUpdated": "01/27/02 15:42",
-          "profile": ["http://shinny.org/StructureDefinition/shin-ny-encounter"]
-        },
-        "status": "entered-in-error",
-        "class": {
-          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-          "code": "ACUTE"
-        },
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "http://snomed.info/sct",
-                "code": "32166003",
-                "display": "History taking, self-administered, questionnaire"
-              }
-            ],
-            "text": "History taking, self-administered, questionnaire"
-          }
-        ],
-        "subject": {
-          "reference": "Patient/AMC-healthelink-20240305-testcase3-MRN"
-        }
       }
     },
     {
@@ -1314,6 +1006,89 @@
             }
           ]
         },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "observationResponseQuestion_11",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observationResponseQuestion_11",
+        "meta": {
+          "lastUpdated": "01/27/02 15:42",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "unknown",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "code": "sdoh-category-unspecified",
+                "display": "SDOH Category Unspecified"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "95614-4",
+              "display": "Total Safety Score"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240305-testcase3-MRN"
+        },
+        "effectiveDateTime": "01/27/02 15:42",
+        "issued": "01/27/02 15:42",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://unitsofmeasure.org",
+              "code": "{score}",
+              "display": "10"
+            }
+          ]
+        },
+        "derivedFrom": [
+          { "reference": "Observation/ObservationResponseQuestion_9" },
+          { "reference": "Observation/ObservationResponseQuestion_8" },
+          { "reference": "Observation/ObservationResponseQuestion_7" },
+          { "reference": "Observation/ObservationResponseQuestion_10" }
+        ],
         "interpretation": [
           {
             "coding": [
@@ -2301,6 +2076,306 @@
               "code": "LA6571-9",
               "display": "Nearly every day"
             }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "observationResponseQuestion_26",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observationResponseQuestion_26",
+        "meta": {
+          "lastUpdated": "03/05/94 13:08",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "unknown",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "code": "sdoh-category-unspecified",
+                "display": "SDOH Category Unspecified"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "44255-8",
+              "display": "Feeling down, depressed, or hopeless?"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240305-testcase3-MRN"
+        },
+        "effectiveDateTime": "03/05/94 13:08",
+        "issued": "03/05/94 13:08",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "LA6569-3",
+              "display": "Several days"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "observationResponseQuestion_28",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observationResponseQuestion_28",
+        "meta": {
+          "lastUpdated": "03/05/94 13:08",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "unknown",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "code": "stress",
+                "display": "Stress"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "93038-8",
+              "display": "Stress means a situation in which a person feels tense, restless, nervous, or anxious, or is unable to sleep at night because his or her mind is troubled all the time. Do you feel this kind of stress these days?"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240305-testcase3-MRN"
+        },
+        "effectiveDateTime": "03/05/94 13:08",
+        "issued": "03/05/94 13:08",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "LA13902-4",
+              "display": "Quite a bit"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "observationResponseQuestion_29",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observationResponseQuestion_29",
+        "meta": {
+          "lastUpdated": "03/05/94 13:08",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "unknown",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "code": "sdoh-category-unspecified",
+                "display": "SDOH Category Unspecified"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "69858-9",
+              "display": "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240305-testcase3-MRN"
+        },
+        "effectiveDateTime": "03/05/94 13:08",
+        "issued": "03/05/94 13:08",
+        "valueCodeableConcept": {
+          "coding": [
+            { "system": "http://loinc.org", "code": "LA33-6", "display": "Yes" }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "observationResponseQuestion_30",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observationResponseQuestion_30",
+        "meta": {
+          "lastUpdated": "03/05/94 13:08",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "unknown",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "code": "sdoh-category-unspecified",
+                "display": "SDOH Category Unspecified"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "69861-3",
+              "display": "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a physician's office or shopping"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/healthelink-20240305-testcase3-MRN"
+        },
+        "effectiveDateTime": "03/05/94 13:08",
+        "issued": "03/05/94 13:08",
+        "valueCodeableConcept": {
+          "coding": [
+            { "system": "http://loinc.org", "code": "LA32-8", "display": "No" }
           ]
         },
         "interpretation": [
