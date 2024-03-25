@@ -1029,7 +1029,6 @@ export class ScreeningAssuranceRules<
         LEFT JOIN ${ahcCrossWalkReferenceTable} cw
         ON UPPER(scr.${columnName}) = UPPER(cw.${columnName})
         WHERE cw.${columnName} IS NULL
-        AND cw.SCREENING_CODE IS NOT NULL
       )
       ${
       this.insertRowValueIssueCtePartial(
@@ -1150,6 +1149,44 @@ export class ScreeningAssuranceRules<
         "invalid_value",
         `'Provided Potential Need Indicated "' || invalid_value || '", Screening Code "' || invalid_screening_value || '", Question Code "' || invalid_question_value || '" and Answer Code "' || invalid_answer_value || '" are not matching with the reference data found in ' || issue_column`,
         `'Validate Potential Need Indicated, Screening Code, Question Code and Answer Code with ahc cross walk reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidCalculatedAnswerValuesInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName =
+      "valid_screening_question_answer_mandatory_values_in_all_rows";
+    // Construct the name of the question reference table based on the provided parameter 'baseName'
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+            SELECT  '${columnName}' AS issue_column,
+                    "${columnName}" AS invalid_value,
+                    src_file_row_number AS issue_row
+              FROM ${this.tableName}
+              WHERE (${columnName} IS NULL OR TRIM("${columnName}") = '')
+              AND src_file_row_number
+              NOT IN(
+                Select src_file_row_number
+                  FROM ${this.tableName}
+                  Where UPPER(QUESTION_CODE_DESCRIPTION)
+                  IN ('TOTAL SAFETY SCORE',
+                  'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+                  'CALCULATED MENTAL HEALTH SCORE')
+              )
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid value in ${columnName}`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Mandatory field "' || issue_column || '" is empty'`,
+        `'The required field value ${columnName} is missing'`,
       )
     }`;
   }
@@ -1667,6 +1704,33 @@ export class AdminDemographicAssuranceRules<
       )
     }`;
   }
+
+  onlyAllowValidMpiIdPerPatMrnIdInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_mpi_id_per_pat_mrn_id_in_all_rows";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+            ${columnName} AS invalid_value,
+            src_file_row_number AS issue_row
+          FROM ${this.tableName}
+          GROUP BY MPI_ID
+          HAVING COUNT(DISTINCT PAT_MRN_ID) > 1
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ${columnName}`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per PAT MRN ID'`,
+        `'${columnName} is not unique per PAT MRN ID.'`,
+      )
+    }`;
+  }
   // if there are any admin-demographic-specific business logic rules put them here;
 }
 
@@ -1703,16 +1767,39 @@ export class QeAdminDataAssuranceRules<
     // Construct the SQL query using tagged template literals
     return this.govn.SQL`
       WITH ${cteName} AS (
-        SELECT DISTINCT '${columnName}' AS issue_column,
+        SELECT '${columnName}' AS issue_column,
           ${columnName} AS invalid_value,
-          src_file_row_number AS issue_row
-        FROM ${this.tableName} t1
-        WHERE EXISTS (
-            SELECT 1
-            FROM ${this.tableName} t2
-            WHERE t1."${columnName}" = t2."${columnName}"
-              AND t1.FACILITY_ID != t2.FACILITY_ID
-        )
+          min(src_file_row_number) AS issue_row
+        FROM ${this.tableName}
+        GROUP BY ${columnName}
+        HAVING COUNT(DISTINCT FACILITY_LONG_NAME) > 1
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ${columnName}`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per facility'`,
+        `'${columnName} is not unique per facility.'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidUniqueFacilityIdPerFacilityInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_unique_facility_id_per_facility_in_all_rows";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        SELECT '${columnName}' AS issue_column,
+          ${columnName} AS invalid_value,
+          min(src_file_row_number) AS issue_row
+        FROM ${this.tableName}
+        GROUP BY ${columnName}
+        HAVING COUNT(DISTINCT FACILITY_LONG_NAME) > 1
       )
       ${
       this.insertRowValueIssueCtePartial(
