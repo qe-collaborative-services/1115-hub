@@ -16,7 +16,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.10.0";
+export const ORCHESTRATE_VERSION = "0.10.1";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -781,7 +781,7 @@ export class OrchEngine {
                                                             'url','ombCategory',
                                                             'valueCoding',json_object(
                                                                         'system',RACE_CODE_SYSTEM_NAME,
-                                                                        'code',RACE_CODE,
+                                                                        'code',CAST(RACE_CODE AS TEXT),
                                                                         'display',RACE_CODE_DESCRIPTION
                                                                         )
                                                                     )
@@ -794,7 +794,7 @@ export class OrchEngine {
                                                             'url','ombCategory',
                                                             'valueCoding',json_object(
                                                                           'system',ETHNICITY_CODE_SYSTEM_NAME,
-                                                                          'code',ETHNICITY_CODE,
+                                                                          'code',CAST(ETHNICITY_CODE AS TEXT),
                                                                           'display',ETHNICITY_CODE_DESCRIPTION
                                                                           )
                                                                     )
@@ -803,7 +803,7 @@ export class OrchEngine {
                                       ) END,
                                       CASE WHEN SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL THEN json_object(
                                               'url','http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex',
-                                              'valueCode',SEX_AT_BIRTH_CODE
+                                              'valueCode',CAST(SEX_AT_BIRTH_CODE AS TEXT)
 
                                     ) END,
                                       CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_DESCRIPTION IS NOT NULL THEN json_object(
@@ -854,9 +854,9 @@ export class OrchEngine {
                         CASE WHEN LAST_NAME IS NOT NULL THEN 'family' ELSE NULL END, LAST_NAME,
                         'given', json_array(FIRST_NAME,CASE WHEN MIDDLE_NAME IS NOT NULL THEN MIDDLE_NAME END))
                       ),
-                      CASE WHEN GENDER_IDENTITY_CODE_DESCRIPTION IS NOT NULL THEN 'gender' ELSE NULL END, GENDER_IDENTITY_CODE_DESCRIPTION,
+                      CASE WHEN ADMINISTRATIVE_SEX_CODE IS NOT NULL THEN 'gender' ELSE NULL END, ADMINISTRATIVE_SEX_CODE,
                       CASE WHEN PAT_BIRTH_DATE IS NOT NULL THEN 'birthDate' ELSE NULL END, PAT_BIRTH_DATE,
-                      'address', json_array(
+                      CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' IS NOT NULL AND ADDRESS1 IS NOT NULL AND ADDRESS1 != '' THEN 'address' ELSE NULL END, json_array(
                           json_object(
                             'text', CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' THEN CONCAT(ADDRESS1, ' ', ADDRESS2) ELSE ADDRESS1 END,
                             'line', CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' THEN json_array(ADDRESS1, ADDRESS2) ELSE json_array(ADDRESS1) END,
@@ -993,10 +993,10 @@ export class OrchEngine {
             FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM UNITS", calculatedfield FROM ahc_cross_walk) acw ON acw.QUESTION_CODE = scr.QUESTION_CODE LEFT JOIN derived_from_cte df ON df.parent_question_code = scr.QUESTION_CODE WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO),
             cte_fhir_encounter AS (
               SELECT scr.PAT_MRN_ID, JSON_OBJECT(
-                'fullUrl', scr.ENCOUNTER_ID,
+                'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
                 'resource', JSON_OBJECT(
                   'resourceType', 'Encounter',
-                  'id', scr.ENCOUNTER_ID,
+                  'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
                   'meta', JSON_OBJECT(
                       'lastUpdated', RECORDED_TIME,
                       'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
@@ -1007,7 +1007,7 @@ export class OrchEngine {
                   'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
                 )
             ) AS FHIR_Encounter
-            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID WHERE scr.ENCOUNTER_ID!='' AND scr.ENCOUNTER_ID IS NOT NULL GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.ENCOUNTER_TYPE_CODE_DESCRIPTION, scr.PAT_MRN_ID, scr.FACILITY_ID ORDER BY scr.ENCOUNTER_ID)
+            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.ENCOUNTER_TYPE_CODE_DESCRIPTION, scr.PAT_MRN_ID, scr.FACILITY_ID ORDER BY scr.ENCOUNTER_ID)
             SELECT cte.PAT_MRN_ID, json_object(
               'resourceType', 'Bundle',
               'id', CONCAT('${uuid.v1.generate()}','_',PAT_MRN_ID),
