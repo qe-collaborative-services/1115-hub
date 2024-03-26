@@ -952,20 +952,24 @@ export class OrchEngine {
             derived_from_cte AS (
               SELECT
                   parent_question_code,
+                  parent_question_sl_no,
                   json_group_array(json_object('reference', derived_reference)) AS derived_from_references
               FROM (
                   SELECT
                       acw.QUESTION_CODE AS parent_question_code,
+                      acw.QUESTION_SLNO AS parent_question_sl_no,
                       CONCAT('Observation/ObservationResponseQuestion_', acw_sub.QUESTION_SLNO) AS derived_reference
                   FROM
                       ahc_cross_walk acw
-                  INNER JOIN ahc_cross_walk acw_sub ON acw_sub."Score Reference" = acw.QUESTION_CODE
+                  INNER JOIN ahc_cross_walk acw_sub ON acw_sub."QUESTION_SLNO_REFERENCE" = acw.QUESTION_SLNO
                   GROUP BY
                       acw.QUESTION_CODE,
+                      acw.QUESTION_SLNO,
                       acw_sub.QUESTION_SLNO
               ) AS distinct_references
               GROUP BY
-                  parent_question_code
+                  parent_question_code,
+                  parent_question_sl_no
             ),
             cte_fhir_observation AS (
               SELECT scr.PAT_MRN_ID, JSON_OBJECT(
@@ -985,14 +989,14 @@ export class OrchEngine {
                       'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
                       'effectiveDateTime', RECORDED_TIME,
                       'issued', RECORDED_TIME,
-                      'valueCodeableConcept',CASE WHEN acw.calculatedfield = 1 AND acw."UCUM UNITS"='{score}' THEN json_object('coding',json_array(json_object('system','http://unitsofmeasure.org','code',acw."UCUM UNITS",'display',ANSWER_CODE_DESCRIPTION))) ELSE json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))) END,
-                      CASE WHEN acw.calculatedfield = 1 THEN 'derivedFrom' ELSE NULL END, COALESCE(df.derived_from_references, json_array()),
+                      'valueCodeableConcept',CASE WHEN acw.CALCULATED_FIELD = 1 THEN json_object('coding',json_array(json_object('system','http://unitsofmeasure.org','code',acw."UCUM_UNITS",'display',ANSWER_CODE_DESCRIPTION))) ELSE json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))) END,
+                      CASE WHEN acw.CALCULATED_FIELD = 1 THEN 'derivedFrom' ELSE NULL END, COALESCE(df.derived_from_references, json_array()),
                       'interpretation',json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive'))))
                   )
             ) AS FHIR_Observation
-            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM UNITS", calculatedfield FROM ahc_cross_walk) acw ON acw.QUESTION_CODE = scr.QUESTION_CODE LEFT JOIN derived_from_cte df ON df.parent_question_code = scr.QUESTION_CODE WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO),
+            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO),
             cte_fhir_encounter AS (
-              SELECT scr.PAT_MRN_ID, JSON_OBJECT(
+              SELECT DISTINCT ON (scr.ENCOUNTER_ID) scr.PAT_MRN_ID, JSON_OBJECT(
                 'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
                 'resource', JSON_OBJECT(
                   'resourceType', 'Encounter',
@@ -1007,7 +1011,7 @@ export class OrchEngine {
                   'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
                 )
             ) AS FHIR_Encounter
-            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID GROUP BY scr.ENCOUNTER_ID, scr.RECORDED_TIME, scr.ENCOUNTER_STATUS_CODE, scr.ENCOUNTER_CLASS_CODE_SYSTEM, scr.ENCOUNTER_CLASS_CODE, scr.ENCOUNTER_TYPE_CODE_SYSTEM, scr.ENCOUNTER_TYPE_CODE, scr.ENCOUNTER_TYPE_CODE_DESCRIPTION, scr.PAT_MRN_ID, scr.FACILITY_ID ORDER BY scr.ENCOUNTER_ID)
+            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID ORDER BY scr.ENCOUNTER_ID, scr.RECORDED_TIME DESC)
             SELECT cte.PAT_MRN_ID, json_object(
               'resourceType', 'Bundle',
               'id', CONCAT('${uuid.v1.generate()}','_',PAT_MRN_ID),
