@@ -61,8 +61,8 @@ const adminDemographicCsvColumnNames = [
   "MIDDLE_NAME",
   "LAST_NAME",
   "ADMINISTRATIVE_SEX_CODE",
-  "ADMINISTRATIVE_SEX _CODE_DESCRIPTION",
-  "ADMINISTRATIVE_SEX _CODE_SYSTEM",
+  "ADMINISTRATIVE_SEX_CODE_DESCRIPTION",
+  "ADMINISTRATIVE_SEX_CODE_SYSTEM",
   "SEX_AT_BIRTH_CODE",
   "SEX_AT_BIRTH_CODE_DESCRIPTION",
   "SEX_AT_BIRTH_CODE_SYSTEM",
@@ -663,10 +663,10 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")}
       ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX_CODE")}
       ${adar.onlyAllowValidAdministrativeSexCodeInAllRows("ADMINISTRATIVE_SEX_CODE")}
-      ${adar.onlyAllowValidAdministrativeSexCodeDescriptionInAllRows("ADMINISTRATIVE_SEX _CODE_DESCRIPTION")}
-      ${adar.onlyAllowValidAdministrativeSexCodeSystemInAllRows("ADMINISTRATIVE_SEX _CODE_SYSTEM")}
-      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("ADMINISTRATIVE_SEX_CODE","ADMINISTRATIVE_SEX _CODE_DESCRIPTION")}
-      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("ADMINISTRATIVE_SEX _CODE_DESCRIPTION","ADMINISTRATIVE_SEX_CODE")}
+      ${adar.onlyAllowValidAdministrativeSexCodeDescriptionInAllRows("ADMINISTRATIVE_SEX_CODE_DESCRIPTION")}
+      ${adar.onlyAllowValidAdministrativeSexCodeSystemInAllRows("ADMINISTRATIVE_SEX_CODE_SYSTEM")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("ADMINISTRATIVE_SEX_CODE","ADMINISTRATIVE_SEX_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("ADMINISTRATIVE_SEX_CODE_DESCRIPTION","ADMINISTRATIVE_SEX_CODE")}
       ${adar.onlyAllowValidSexAtBirthCodeInAllRows("SEX_AT_BIRTH_CODE")}
       ${adar.onlyAllowValidSexAtBirthCodeDescriptionInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION")}
       ${adar.onlyAllowValidSexAtBirthCodeSystemInAllRows("SEX_AT_BIRTH_CODE_SYSTEM")}
