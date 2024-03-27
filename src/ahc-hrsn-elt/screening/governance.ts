@@ -135,7 +135,7 @@ export class CommonAssuranceRules<
         referenceTableName: "administrative_sex_reference",
         referenceFieldName: "ADMINISTRATIVE_SEX_CODE",
       },
-      "ADMINISTRATIVE_SEX _CODE_DESCRIPTION": {
+      "ADMINISTRATIVE_SEX_CODE_DESCRIPTION": {
         referenceTableName: "administrative_sex_reference",
         referenceFieldName: "ADMINISTRATIVE_SEX_CODE_DESCRIPTION",
       },

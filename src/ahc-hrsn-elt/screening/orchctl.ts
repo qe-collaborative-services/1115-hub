@@ -117,7 +117,6 @@ async function ingressWorkflow(
     // const fhirFilePath = workflowPaths.egress.resolvedPath("fhir.json");
     // const fhirContent = await Deno.readTextFile(fhirFilePath);
     const directoryPath = workflowPaths.egress.resolvedPath(".");
-    console.log(directoryPath);
     for await (const entry of Deno.readDir(directoryPath)) {
       if (entry.isFile && entry.name.startsWith("fhir_")) {
         const fhirFilePath = `${directoryPath}/${entry.name}`;
@@ -133,13 +132,6 @@ async function ingressWorkflow(
             body: fhirContent,
           });
           const result = await response.json();
-          const fhirResultPath = workflowPaths.egress.resolvedPath(
-            "fhir-result.json",
-          );
-          await Deno.writeTextFile(
-            fhirResultPath,
-            JSON.stringify(result, null, 2),
-          );
           sessionEnd.publishFhirResult.push({
             "response": JSON.stringify(result),
             "fhirJsonStructValid": true,

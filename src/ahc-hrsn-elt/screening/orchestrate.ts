@@ -16,7 +16,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.10.1";
+export const ORCHESTRATE_VERSION = "0.10.2";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -91,6 +91,55 @@ export type PotentialIngestSource =
     o.State,
     ddbo.DuckDbOrchEmitContext
   >;
+
+export function removeNullsFromObject(
+  obj: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  Object.entries(obj).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      const cleanedArray = removeNullsFromArray(value);
+      if (cleanedArray.length > 0) {
+        result[key] = cleanedArray;
+      }
+    } else if (value && typeof value === "object") {
+      const cleanedValue = removeNullsFromObject(
+        value as Record<string, unknown>,
+      );
+      if (Object.keys(cleanedValue).length > 0) {
+        result[key] = cleanedValue;
+      }
+    } else if (value !== null) {
+      result[key] = value;
+    }
+  });
+  return result;
+}
+
+export function removeNullsFromArray(arr: unknown[]): unknown[] {
+  return arr.map((item) => {
+    if (Array.isArray(item)) {
+      return removeNullsFromArray(item);
+    } else if (item && typeof item === "object") {
+      return removeNullsFromObject(item as Record<string, unknown>);
+    } else if (item !== null) {
+      return item;
+    }
+  }).filter((item) => item !== undefined && item !== null);
+}
+
+export function removeNulls(value: unknown): unknown {
+  if (typeof value === "string") {
+    value = JSON.parse(value);
+  }
+
+  if (Array.isArray(value)) {
+    return removeNullsFromArray(value);
+  } else if (value && typeof value === "object") {
+    return removeNullsFromObject(value as Record<string, unknown>);
+  }
+  return value;
+}
 
 export function walkFsPatternIngestSourcesSupplier(
   govn: ddbo.DuckDbOrchGovernance,
@@ -856,13 +905,13 @@ export class OrchEngine {
                       ),
                       CASE WHEN ADMINISTRATIVE_SEX_CODE IS NOT NULL THEN 'gender' ELSE NULL END, ADMINISTRATIVE_SEX_CODE,
                       CASE WHEN PAT_BIRTH_DATE IS NOT NULL THEN 'birthDate' ELSE NULL END, PAT_BIRTH_DATE,
-                      CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' IS NOT NULL AND ADDRESS1 IS NOT NULL AND ADDRESS1 != '' THEN 'address' ELSE NULL END, json_array(
+                      CASE WHEN CITY IS NOT NULL AND CITY != '' IS NOT NULL AND STATE IS NOT NULL AND STATE != '' THEN 'address' ELSE NULL END, json_array(
                           json_object(
-                            'text', CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' THEN CONCAT(ADDRESS1, ' ', ADDRESS2) ELSE ADDRESS1 END,
-                            'line', CASE WHEN ADDRESS2 IS NOT NULL AND ADDRESS2 != '' THEN json_array(ADDRESS1, ADDRESS2) ELSE json_array(ADDRESS1) END,
+                            CASE WHEN ADDRESS1 IS NOT NULL AND ADDRESS1 != '' IS NOT NULL THEN 'text' ELSE NULL END, CONCAT(ADDRESS1, ' ', ADDRESS2),
+                            CASE WHEN ADDRESS1 IS NOT NULL AND ADDRESS1 != '' IS NOT NULL THEN 'line' ELSE NULL END, json_array(ADDRESS1, ADDRESS2),
                             'city', CITY,
                             'state', STATE,
-                            'postalCode', CAST(ZIP AS TEXT)
+                            CASE WHEN ZIP IS NOT NULL AND CAST(ZIP AS TEXT) != '' IS NOT NULL THEN 'postalCode' ELSE NULL END, CAST(ZIP AS TEXT)
                         )
                       ),
                       CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'communication' ELSE NULL END, json_array(
@@ -983,8 +1032,8 @@ export class OrchEngine {
                       ),
                       'status', SCREENING_STATUS_CODE,
                       'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey'))),json_object('coding',json_array(json_object('system','http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes','code',CASE WHEN sdr.Code IS NOT NULL AND sdr.Code != '' THEN sdr.Code ELSE 'sdoh-category-unspecified' END,'display',CASE WHEN sdr.Display IS NOT NULL AND sdr.Display != '' THEN sdr.Display ELSE 'SDOH Category Unspecified' END)))),
-                      CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL AND scr.QUESTION_CODE IS NOT NULL AND QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
-                        'coding', json_array(json_object(CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,SCREENING_CODE_SYSTEM_NAME,CASE WHEN scr.QUESTION_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.QUESTION_CODE,CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,QUESTION_CODE_DESCRIPTION))
+                      CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
+                        'coding', json_array(json_object(CASE WHEN QUESTION_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,QUESTION_CODE_SYSTEM_NAME,CASE WHEN scr.QUESTION_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.QUESTION_CODE,CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,QUESTION_CODE_DESCRIPTION))
                       ),
                       'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
                       'effectiveDateTime', RECORDED_TIME,
@@ -1114,9 +1163,10 @@ export class OrchEngine {
           let fhirHttpContent = "";
           for (const row of results.json as FhirRecord[]) {
             const fhirJson = egress.fhirJsonSupplier(row.PAT_MRN_ID);
+            const refinedFhir = removeNulls(row.FHIR);
             await Deno.writeTextFile(
               fhirJson,
-              JSON.parse(JSON.stringify(row.FHIR)),
+              JSON.stringify(refinedFhir),
             );
             if (egress.fhirHttpSupplier) {
               fhirHttpContent = fhirHttpContent +
