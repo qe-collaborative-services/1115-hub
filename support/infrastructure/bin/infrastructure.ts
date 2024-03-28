@@ -1,158 +1,290 @@
-#!/usr/bin/env node
 import * as cdk from "aws-cdk-lib";
-import { Stack, StackProps } from "aws-cdk-lib";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import { Construct } from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as efs from "aws-cdk-lib/aws-efs";
+import * as ecs from "aws-cdk-lib/aws-ecs";
+import * as ecrAssets from "aws-cdk-lib/aws-ecr-assets";
+import * as ecsPatterns from "aws-cdk-lib/aws-ecs-patterns";
+import { ManagedPolicy, PolicyStatement, Effect } from "aws-cdk-lib/aws-iam";
+import { Construct } from "constructs";
+import { App } from "aws-cdk-lib";
 
-interface ComputeStackProps extends StackProps {
-  vpc: ec2.Vpc;
-  eip: ec2.CfnEIP;
-}
+export interface ComputeStackProps extends cdk.StackProps {}
 
-class ComputeStack extends Stack {
+export class ComputeStack extends cdk.Stack {
   readonly instance: ec2.Instance;
 
   constructor(scope: Construct, id: string, props: ComputeStackProps) {
     super(scope, id, props);
 
-    // Security Group for compute EC2
-    const ec2SecurityGroup = new ec2.SecurityGroup(this, "Ec2SecurityGroup", {
-      vpc: props.vpc,
-      description: "Security group for compute EC2 instance",
-      allowAllOutbound: true,
+    //
+    //
+    // Shared Services
+    //
+    //
+
+    // create the VPC
+    const vpc = new ec2.Vpc(this, "VPC", { maxAzs: 2 });
+
+    // create the ECS cluster
+    const cluster = new ecs.Cluster(this, "Cluster", {
+      vpc: vpc,
+      containerInsights: true,
     });
 
-    // Allow SCP/SFTP access on port 2222 from any IP
-    ec2SecurityGroup.addIngressRule(
-      ec2.Peer.anyIpv4(),
-      ec2.Port.tcp(2222),
-      "Allow SCP/SFTP access on port 2222 from any IP",
-    );
-
-    // Allow SSH access from a specific IP range, all for now
-    ec2SecurityGroup.addIngressRule(
-      ec2.Peer.anyIpv4(),
-      ec2.Port.tcp(22),
-      "Allow SSH access from a specific block",
-    );
-    ec2SecurityGroup.addIngressRule(
-      ec2.Peer.anyIpv4(),
-      ec2.Port.tcp(443),
-      "Allows HTTPS access from Internet",
-    );
-
-    // IAM Role for the EC2 Instance
-    const role = new iam.Role(this, "Ec2Role", {
-      assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
-      // Add necessary managed policies or inline policies here
+    // Create the EFS filesystem
+    const fileSystem = new efs.FileSystem(this, "SharedEfsFileSystem", {
+      vpc,
+      encrypted: true,
+      lifecyclePolicy: efs.LifecyclePolicy.AFTER_14_DAYS, // Adjust according to your needs
+      performanceMode: efs.PerformanceMode.GENERAL_PURPOSE,
+      throughputMode: efs.ThroughputMode.BURSTING,
     });
 
-    const userData = ec2.UserData.forLinux();
-    // run commands on the instance for initial setup
+    const accessPoint = new efs.AccessPoint(this, "AccessPoint", {
+      fileSystem: fileSystem,
+      path: "/",
+    });
 
-    // create random string, forces the instance to run the commands on every deployment
-    // less than ideal but works for now (until proper containerized deployment is implemented)
-    // avoids the need of separate stacks and cdk destroy/ deploy on instance changes
-    const randomString = Math.floor(Date.now() / 1000);
+    // Allow ECS tasks to connect to the EFS filesystem
+    fileSystem.connections.allowDefaultPortFrom(cluster.connections);
+    fileSystem.connections.allowDefaultPortTo(cluster.connections);
 
-    userData.addCommands(
-      `echo deployment: ${randomString} > /etc/deployment.txt`,
-      "apt-get update -y",
-      "apt-get install ca-certificates curl",
-      "install -m 0755 -d /etc/apt/keyrings",
-      "curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc",
-      "chmod a+r /etc/apt/keyrings/docker.asc",
-      'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null',
-      "apt-get update",
-      "apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y",
-      "curl -Ssf https://pkgx.sh | sh",
-      "install -m 755 pkgx /usr/local/bin",
-      "export PATH=$PATH:/home/admin/.local/bin",
-      "pkgx install git",
-      "export PATH=$PATH:/home/admin/.local/bin",
-      "git clone https://github.com/qe-collaborative-services/1115-hub.git",
-      "cd 1115-hub/support/infrastructure/containers",
-      "docker compose up --build",
-    );
-
-    // EC2 Instance
-    this.instance = new ec2.Instance(this, "ElevenFifteenComputeInstance", {
-      vpc: props.vpc,
-      instanceType: new ec2.InstanceType("t3.micro"),
-      machineImage: ec2.MachineImage.genericLinux({
-        "us-east-1": "ami-0133fb3dded749b65", // debian bullseye latest amd64
-        // ...add other regions if necessary
-        // view other ids here: https://wiki.debian.org/Cloud/AmazonEC2Image
-      }),
-      securityGroup: ec2SecurityGroup,
-      role: role,
-      userData: userData,
-      // keyName is a temporary solution for testing
-      // keyName: "keys",
-      // should use a key pair for production (or not include to block ssh access)
-      // keyPair: new ec2.KeyPair(this, "ComputeInstanceKeyPair", {}),
-      vpcSubnets: {
-        subnetGroupName: "compute-subnet",
+    // Define the EFS volume for ECS tasks
+    const efsVolume: ecs.Volume = {
+      name: "efsVolume",
+      efsVolumeConfiguration: {
+        fileSystemId: fileSystem.fileSystemId,
+        transitEncryption: "ENABLED",
+        authorizationConfig: {
+          accessPointId: accessPoint.accessPointId,
+        },
       },
-    });
-    // Associate the Elastic IP with the EC2 Instance
-    new ec2.CfnEIPAssociation(this, "EIPAssociation", {
-      eip: props.eip.ref, // Reference to the EIP resource
-      instanceId: this.instance.instanceId,
-    });
-  }
-}
-export interface networkStackProps extends cdk.StackProps {
-}
-class networkStack extends cdk.Stack {
-  readonly vpc: ec2.Vpc;
-  readonly eip: ec2.CfnEIP;
-  constructor(scope: Construct, id: string, props: networkStackProps) {
-    super(scope, id, props);
-    // create a vpc that we can put an ec2 and rds instance into
-    this.vpc = new ec2.Vpc(this, "VPC", {
-      maxAzs: 3, // Default is all AZs in region
-      subnetConfiguration: [
-        // we should also create a management subnet eventually
-        {
-          cidrMask: 24,
-          name: "compute-subnet",
-          // when management infra is created, this can be PRIVATE_ISOLATED instead
-          subnetType: ec2.SubnetType.PUBLIC,
-        },
-        {
-          cidrMask: 24,
-          name: "data-subnet",
-          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
-        },
+    };
+
+    // efs access policy that we can add to our ECS task roles
+    const efsAccessPolicy = new ManagedPolicy(this, "efsAccessPolicy", {
+      statements: [
+        new PolicyStatement({
+          effect: Effect.ALLOW,
+          actions: ["elasticfilesystem:*"],
+          resources: [fileSystem.fileSystemArn],
+        }),
       ],
     });
 
-    // Allocate an Elastic IP
-    this.eip = new ec2.CfnEIP(this, "EIP");
+    //
+    //
+    // Workflow Service
+    //
+    //
 
-    // create export for the EIP
-    new cdk.CfnOutput(this, "instanceIP", {
-      value: this.eip.ref,
-      description: "The Elastic IP for the compute instance",
+    // create a role for workflow tasks to access the EFS filesystem
+    const workflowTaskRole = new iam.Role(this, "workflowTaskRole", {
+      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+      managedPolicies: [efsAccessPolicy],
+    });
+
+    // create a security group for the workflow service
+    const workflowSg = new ec2.SecurityGroup(
+      this,
+      "workflowServiceSecurityGroup",
+      {
+        vpc,
+        allowAllOutbound: true,
+      }
+    );
+    // allow inbound traffic to the workflow service from the EFS filesystem
+    workflowSg.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(efs.FileSystem.DEFAULT_PORT),
+      "Allow inbound traffic to the workflow service from the EFS filesystem"
+    );
+
+    // Define a Docker image asset for the workflow container
+    const workflowDockerImage = new ecrAssets.DockerImageAsset(
+      this,
+      "workflowImage",
+      {
+        directory: "./containers/workflow/", // Adjust this to the path of your Docker context
+        file: "Dockerfile", // Specify the Dockerfile name
+        buildArgs: {
+          REPO_URL: "https://github.com/qe-collaborative-services/1115-hub.git",
+        },
+        platform: ecrAssets.Platform.LINUX_AMD64,
+      }
+    );
+
+    // Create a load-balanced Fargate service and make it public
+    const workflowService =
+      new ecsPatterns.ApplicationLoadBalancedFargateService(
+        this,
+        "workflowService",
+        {
+          cluster,
+          desiredCount: 2,
+          cpu: 256,
+          memoryLimitMiB: 512,
+          taskImageOptions: {
+            image: ecs.ContainerImage.fromDockerImageAsset(workflowDockerImage),
+            enableLogging: true,
+            containerPort: 8082,
+            taskRole: workflowTaskRole,
+          },
+          publicLoadBalancer: false,
+          listenerPort: 8082,
+          healthCheckGracePeriod: cdk.Duration.seconds(300),
+          securityGroups: [workflowSg],
+          enableExecuteCommand: true,
+        }
+      );
+
+    // allow inbound & outbound traffic between the workflow service & file system
+    workflowService.service.connections.allowFrom(
+      fileSystem,
+      ec2.Port.tcp(efs.FileSystem.DEFAULT_PORT)
+    );
+    workflowService.service.connections.allowTo(
+      fileSystem,
+      ec2.Port.tcp(efs.FileSystem.DEFAULT_PORT)
+    );
+    fileSystem.connections.allowDefaultPortFrom(workflowService.service);
+    fileSystem.connections.allowDefaultPortTo(workflowService.service);
+
+    // add the EFS volume to the workflow service task definition
+    workflowService.taskDefinition.addVolume({
+      name: "efsVolume",
+      efsVolumeConfiguration: {
+        fileSystemId: fileSystem.fileSystemId,
+        transitEncryption: "ENABLED",
+        authorizationConfig: {
+          accessPointId: accessPoint.accessPointId,
+          iam: "ENABLED",
+        },
+      },
+    });
+    // add the mount point to the container definition
+    workflowService.taskDefinition.defaultContainer!.addMountPoints({
+      containerPath: "/SFTP",
+      sourceVolume: "efsVolume",
+      readOnly: false,
+    });
+
+    // Setup AutoScaling policy
+    const workflowServiceScaling = workflowService.service.autoScaleTaskCount({
+      maxCapacity: 2,
+    });
+    workflowServiceScaling.scaleOnCpuUtilization("CpuScaling", {
+      targetUtilizationPercent: 50,
+      scaleInCooldown: cdk.Duration.seconds(60),
+      scaleOutCooldown: cdk.Duration.seconds(60),
+    });
+
+    //
+    //
+    // SFTP Service
+    //
+    //
+    // create a role for sftp tasks to access the EFS filesystem
+    const sftpTaskRole = new iam.Role(this, "sftpTaskRole", {
+      assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+      managedPolicies: [efsAccessPolicy],
+    });
+
+    // create a security group for the sftp service
+    const sftpSg = new ec2.SecurityGroup(this, "sftpServiceSecurityGroup", {
+      vpc,
+      allowAllOutbound: true,
+    });
+
+    // allow inbound traffic to the sftp service from the EFS filesystem
+    sftpSg.addIngressRule(
+      ec2.Peer.anyIpv4(),
+      ec2.Port.tcp(efs.FileSystem.DEFAULT_PORT),
+      "Allow inbound traffic to the sftp service from the EFS filesystem"
+    );
+
+    // create a load-balanced Fargate service for the sftp container
+    const sftpDockerImage = new ecrAssets.DockerImageAsset(this, "sftpImage", {
+      directory: "./containers/sftp/", // Adjust this to the path of your Docker context
+      file: "Dockerfile", // Specify the Dockerfile name
+      platform: ecrAssets.Platform.LINUX_AMD64,
+    });
+
+    const sftpService = new ecsPatterns.NetworkLoadBalancedFargateService(
+      this,
+      "sftpService",
+      {
+        cluster,
+        desiredCount: 2,
+        cpu: 256,
+        memoryLimitMiB: 512,
+        taskImageOptions: {
+          image: ecs.ContainerImage.fromDockerImageAsset(sftpDockerImage),
+          enableLogging: true,
+          containerPort: 22,
+          taskRole: sftpTaskRole,
+        },
+        publicLoadBalancer: true,
+        healthCheckGracePeriod: cdk.Duration.seconds(300),
+        listenerPort: 22,
+      }
+    );
+
+    // allow inbound & outbound traffic between the workflow service & file system
+    sftpService.service.connections.allowFrom(
+      fileSystem,
+      ec2.Port.tcp(efs.FileSystem.DEFAULT_PORT)
+    );
+    sftpService.service.connections.allowTo(
+      fileSystem,
+      ec2.Port.tcp(efs.FileSystem.DEFAULT_PORT)
+    );
+    fileSystem.connections.allowDefaultPortFrom(sftpService.service);
+    fileSystem.connections.allowDefaultPortTo(sftpService.service);
+
+    // allow inbound traffic to the sftp service
+    sftpService.service.connections.allowFromAnyIpv4(ec2.Port.tcp(22));
+    // allow inbound traffic to the load balancer
+    sftpService.loadBalancer.connections.allowFromAnyIpv4(ec2.Port.tcp(22));
+
+    // add the EFS volume to the workflow service task definition
+    sftpService.taskDefinition.addVolume({
+      name: "efsVolume",
+      efsVolumeConfiguration: {
+        fileSystemId: fileSystem.fileSystemId,
+        transitEncryption: "ENABLED",
+        authorizationConfig: {
+          accessPointId: accessPoint.accessPointId,
+          iam: "ENABLED",
+        },
+      },
+    });
+    // add the mount point to the container definition
+    sftpService.taskDefinition.defaultContainer!.addMountPoints({
+      containerPath: "/home",
+      sourceVolume: "efsVolume",
+      readOnly: false,
+    });
+
+    // setup AutoScaling policy
+    const sftpServiceScaling = sftpService.service.autoScaleTaskCount({
+      maxCapacity: 2,
+    });
+    sftpServiceScaling.scaleOnCpuUtilization("CpuScaling", {
+      targetUtilizationPercent: 50,
+      scaleInCooldown: cdk.Duration.seconds(60),
+      scaleOutCooldown: cdk.Duration.seconds(60),
     });
   }
 }
 
-const app = new cdk.App();
-const network = new networkStack(
-  app,
-  `${process.env.ENV}ElevenFifteenNetwork`,
-  {},
-);
+const app = new App();
+
 const compute = new ComputeStack(
   app,
   `${process.env.ENV}ElevenFifteenCompute`,
-  {
-    vpc: network.vpc,
-    eip: network.eip,
-  },
+  {}
 );
 
 app.synth();

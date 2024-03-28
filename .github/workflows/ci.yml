@@ -1,8 +1,8 @@
 name: 1115 CI Pipeline
-on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
+on: 
+  release:
+    types: [published]
+
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages 
 permissions:
   contents: read
@@ -36,7 +36,7 @@ jobs:
         uses: actions/deploy-pages@v4
   InfrastructureDeployment:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name }}
+    environment: main
     steps:
       - uses: actions/checkout@v3
 
@@ -49,7 +49,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          ENV: ${{ github.ref_name }}
+          ENV: main
 
       - name: check changes to infrastructure
         run: |
@@ -60,19 +60,18 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
-          ENV: ${{ github.ref_name }}
+          ENV: main
       
       - name: deploy infrastructure
         run: |
           cd support/infrastructure
           npm install
-          cdk destroy ${{github.ref_name}}ElevenFifteenCompute --force
           cdk deploy --all --outputs-file output.json --require-approval never
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
-          ENV: ${{ github.ref_name }}
+          ENV: main
 
       - name: Upload cdk output artifact
         uses: actions/upload-artifact@v3

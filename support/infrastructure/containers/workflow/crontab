@@ -1,0 +1,8 @@
+PATH=/usr/local/bin:/usr/bin:/bin
+* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe bronx --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id BRONX >> /SFTP/observe/log/bronx.log 2>&1
+* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe healtheconn --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id HEALTHECONN >> /SFTP/observe/log/healtheconn.log 2>&1
+* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe grrhio --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id GRRHIO >> /SFTP/observe/log/grrhio.log 2>&1
+* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe healthix --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id HEALTHIX >> /SFTP/observe/log/healthix.log 2>&1
+* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe healthelink --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id HEALTHELINK >> /SFTP/observe/log/healthelink.log 2>&1
+* * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe hixny --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id HIXNY >> /SFTP/observe/log/hixny.log 2>&1
+9 9 * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./support/bin/doctor.ts >> /doctor_log.txt 2>&1

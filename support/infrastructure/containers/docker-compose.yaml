@@ -2,29 +2,51 @@ version: "3.8"
 
 services:
   sftp:
-    image: atmoz/sftp
+    build:
+      context: ./sftp/
+      dockerfile: Dockerfile
     volumes:
-      - sftp_data:/home
+      - ${MNT_DIR}/sftp-data:/home
     ports:
-      - "2222:22"
-    command: >
-      bronx:pass:::ingress/
-      healtheconn:pass:::ingress/
-      grrhio:pass:::ingress/
-      healthix:pass:::ingress/
-      healthelink:pass:::ingress/
-      hixny:pass:::ingress/
-      observe:pass:::log/
+      - "22:22"
+      - "8081:8081"
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: qe
+      POSTGRES_PASSWORD: qe
+      POSTGRES_DB: qe
+    volumes:
+      - ${MNT_DIR}/pg-data/:/var/lib/postgresql/data
   workflow:
     build:
-      context: .
-      dockerfile: Dockerfile.workflow
+      context: ./workflow/
+      dockerfile: Dockerfile
       args:
-        - REPO_URL=https://github.com/qe-collaborative-services/1115-hub.git
+        - REPO_URL=${REPO_URL}
     volumes:
-      - sftp_data:/SFTP
+      - ${MNT_DIR}/sftp-data:/SFTP
+    ports:
+      - "8082:8082"
     depends_on:
       - sftp
-
-volumes:
-  sftp_data:
+      - postgres
+  pg-sqlpage:
+    image: lovasoa/sqlpage
+    ports:
+      - "8083:8083"
+    environment:
+      - database_url=postgresql://qe:qe@postgres:5432/qe
+    depends_on:
+      - postgres
+  qe-sqlpage:
+    image: lovasoa/sqlpage
+    volumes:
+      - ${MNT_DIR}/sftp-data/:/SFTP
+    ports:
+      - "8084:8084"
+    environment:
+      - database_url=sqlite://SFTP/${SQL_PAGE_QE}/egress/content.sqlite.db?mode=rwc
+    depends_on:
+      - sftp
+      - workflow
