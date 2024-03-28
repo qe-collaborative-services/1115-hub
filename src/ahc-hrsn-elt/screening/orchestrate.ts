@@ -16,7 +16,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.10.2";
+export const ORCHESTRATE_VERSION = "0.10.3";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1045,7 +1045,7 @@ export class OrchEngine {
             ) AS FHIR_Observation
             FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO),
             cte_fhir_encounter AS (
-              SELECT DISTINCT ON (scr.ENCOUNTER_ID) scr.PAT_MRN_ID, JSON_OBJECT(
+              SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) scr.PAT_MRN_ID, JSON_OBJECT(
                 'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
                 'resource', JSON_OBJECT(
                   'resourceType', 'Encounter',
