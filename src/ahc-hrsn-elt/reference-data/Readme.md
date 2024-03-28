@@ -29,7 +29,7 @@
 
 ## **encounter-class-reference.csv**
 
-**Source:** [https://fhir-ru.github.io/v3/ActEncounterCode/vs.html](https://fhir-ru.github.io/v3/ActEncounterCode/vs.html)
+**Source:** [http://terminology.hl7.org/CodeSystem/v3-ActCode](http://terminology.hl7.org/CodeSystem/v3-ActCode)
 
 **Purpose Of file:**  To categorize patient-provider interactions for billing and reimbursement purposes
 
