@@ -717,7 +717,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.onlyAllowUniqueMedicaidCinPerMrnInAllRows("MEDICAID_CIN")}
       ${adar.onlyAllowValidAddress1OrMedicaidCinInAllRows("MEDICAID_CIN","ADDRESS1")}
       ${tr.mandatoryValueInAllRows("CONSENT")}
-      ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes','No','Y','N','Unknown','UNK', 'Unk', 'unk'")}
+      ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes', 'YES', 'yes', 'Y', 'y', 'No', 'NO', 'no','N', 'n','Unknown', 'UNKNOWN', 'unknown','UNK', 'Unk', 'unk'")}
 
       ${await session.entryStateDML(
         sessionEntryID,
