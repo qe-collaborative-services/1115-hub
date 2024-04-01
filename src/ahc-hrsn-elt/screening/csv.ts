@@ -292,7 +292,7 @@ export class ScreeningCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("ENCOUNTER_CLASS_CODE_SYSTEM")}
       ${tr.onlyAllowedValuesInAllRows(
         "ENCOUNTER_CLASS_CODE_SYSTEM",
-        "'http://terminology.hl7.org/ValueSet/v3-ActEncounterCode'"
+        "'http://terminology.hl7.org/CodeSystem/v3-ActCode'"
       )}
       ${sar.onlyAllowValidEncounterClassDiscriptionInAllRows("ENCOUNTER_CLASS_CODE_DESCRIPTION")}
       ${tr.mandatoryValueInAllRows("ENCOUNTER_STATUS_CODE")}
@@ -717,7 +717,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.onlyAllowUniqueMedicaidCinPerMrnInAllRows("MEDICAID_CIN")}
       ${adar.onlyAllowValidAddress1OrMedicaidCinInAllRows("MEDICAID_CIN","ADDRESS1")}
       ${tr.mandatoryValueInAllRows("CONSENT")}
-      ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes','No','Y','N','Unknown','UNK'")}
+      ${tr.onlyAllowedValuesInAllRows("CONSENT", "'Yes', 'YES', 'yes', 'Y', 'y', 'No', 'NO', 'no','N', 'n','Unknown', 'UNKNOWN', 'unknown','UNK', 'Unk', 'unk'")}
 
       ${await session.entryStateDML(
         sessionEntryID,
