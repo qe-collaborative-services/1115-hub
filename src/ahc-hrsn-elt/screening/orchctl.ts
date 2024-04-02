@@ -132,6 +132,13 @@ async function ingressWorkflow(
             body: fhirContent,
           });
           const result = await response.json();
+          const fhirJson = "fhir-result-" +
+            entry.name.substring(0, entry.name.lastIndexOf(".")) + ".json";
+          const fhirResultFilePath = `${directoryPath}/${fhirJson}`;
+          await Deno.writeTextFile(
+            fhirResultFilePath,
+            JSON.stringify(result),
+          );
           sessionEnd.publishFhirResult.push({
             "response": JSON.stringify(result),
             "fhirJsonStructValid": true,
