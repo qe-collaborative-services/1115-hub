@@ -16,7 +16,7 @@ import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 
-export const ORCHESTRATE_VERSION = "0.10.4";
+export const ORCHESTRATE_VERSION = "0.11.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1044,6 +1044,76 @@ export class OrchEngine {
                   )
             ) AS FHIR_Observation
             FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO),
+            cte_fhir_observation_grouper AS (
+              SELECT scr.PAT_MRN_ID, JSON_OBJECT(
+                'fullUrl', (SELECT CONCAT('ObservationResponseQuestion_', slNo, '_grouper')
+                              FROM (SELECT MAX(QUESTION_SLNO) as slNo
+                                    FROM
+                                      ${csv.aggrScreeningTableName} ssub
+                                    LEFT JOIN
+                                      (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
+                                    ON acw.QUESTION_SLNO = ssub.src_file_row_number
+                                    WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
+                                  ) AS sub1),
+                'resource', JSON_OBJECT(
+                  'resourceType', 'Observation',
+                      'id', (SELECT CONCAT('ObservationResponseQuestion_', slNo, '_grouper')
+                              FROM (SELECT MAX(QUESTION_SLNO) as slNo
+                                    FROM
+                                      ${csv.aggrScreeningTableName} ssub
+                                    LEFT JOIN
+                                      (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
+                                    ON acw.QUESTION_SLNO = ssub.src_file_row_number
+                                    WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
+                                  ) AS sub1),
+                      'meta', JSON_OBJECT(
+                          'lastUpdated', MAX(RECORDED_TIME),
+                          'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
+                      ),
+                      'status', SCREENING_STATUS_CODE,
+                      'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey'))),json_object('coding',(SELECT json_group_array(JSON_OBJECT(
+                                    'system', 'http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes',
+                                    'display', sub.display,
+                                    'code', sub.code
+                                )) FROM (
+                                    SELECT DISTINCT
+                                        CASE WHEN sdr.Display IS NOT NULL AND sdr.Display != '' THEN sdr.Display ELSE 'SDOH Category Unspecified' END AS display,
+                                        CASE WHEN sdr.Code IS NOT NULL AND sdr.Code != '' THEN sdr.Code ELSE 'sdoh-category-unspecified' END AS code
+                                    FROM
+                                      ${csv.aggrScreeningTableName} sub
+                                    LEFT JOIN
+                                        sdoh_domain_reference sdr
+                                    ON
+                                        sub.SDOH_DOMAIN = sdr.Display
+                                    WHERE
+                                        sub.SCREENING_CODE=scr.SCREENING_CODE
+                                ) AS sub ))
+                      ),
+                      CASE WHEN SCREENING_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
+                        'coding', json_array(json_object(CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,SCREENING_CODE_SYSTEM_NAME,CASE WHEN scr.SCREENING_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.SCREENING_CODE,CASE WHEN SCREENING_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,SCREENING_CODE_DESCRIPTION))
+                      ),
+                      'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
+                      CASE WHEN ENCOUNTER_ID IS NOT NULL THEN 'encounter' ELSE NULL END, json_object('reference',CONCAT('Encounter/',ENCOUNTER_ID)),
+                      'effectiveDateTime', MAX(RECORDED_TIME),
+                      'issued', MAX(RECORDED_TIME),
+                      'hasMember', (SELECT json_group_array(JSON_OBJECT(
+                                      'reference', CONCAT('observationResponseQuestion_',sub1.QUESTION_SLNO)
+                                  ))
+                                  FROM (
+                                  SELECT DISTINCT
+                                      QUESTION_SLNO
+                                  FROM
+                                  ${csv.aggrScreeningTableName} ssub
+                                  LEFT JOIN
+                                    (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
+                                  ON acw.QUESTION_SLNO = ssub.src_file_row_number
+                                  WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL GROUP BY acw.QUESTION_SLNO
+                                  ORDER BY acw.QUESTION_SLNO
+                              ) AS sub1
+                                  )
+                  )
+            ) AS FHIR_Observation_Grouper
+            FROM ${csv.aggrScreeningTableName} scr GROUP BY SCREENING_CODE, FACILITY_ID, PAT_MRN_ID, SCREENING_CODE_DESCRIPTION,SCREENING_STATUS_CODE, SCREENING_CODE_SYSTEM_NAME,ENCOUNTER_ID),
             cte_fhir_encounter AS (
               SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) scr.PAT_MRN_ID, JSON_OBJECT(
                 'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
@@ -1077,6 +1147,8 @@ export class OrchEngine {
                 SELECT PAT_MRN_ID, FHIR_Patient AS json_data FROM cte_fhir_patient
                 UNION ALL
                 SELECT PAT_MRN_ID, FHIR_Observation AS json_data FROM cte_fhir_observation
+                UNION ALL
+                SELECT PAT_MRN_ID, FHIR_Observation_Grouper AS json_data FROM cte_fhir_observation_grouper
                 UNION ALL
                 SELECT PAT_MRN_ID, FHIR_Encounter AS json_data FROM cte_fhir_encounter
                 UNION ALL
