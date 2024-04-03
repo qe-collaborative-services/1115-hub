@@ -156,6 +156,7 @@ const TERMINAL_STATE = "EXIT(ScreeningCsvFileIngestSource)" as const;
 export class ScreeningCsvFileIngestSource<
   TableName extends string,
   InitState extends o.State,
+  GroupName extends string,
 > implements
   o.CsvFileIngestSource<
     TableName,
@@ -168,6 +169,7 @@ export class ScreeningCsvFileIngestSource<
   constructor(
     readonly uri: string,
     readonly tableName: TableName,
+    readonly groupName: GroupName,
     readonly relatedTableNames: {
       readonly adminDemographicsTableName: string;
       readonly qeAdminDataTableName: string;
@@ -525,6 +527,7 @@ const ADMIN_DEMO_CSV_TERMINAL_STATE =
 export class AdminDemographicCsvFileIngestSource<
   TableName extends string,
   InitState extends o.State,
+  GroupName extends string,
 > implements
   o.CsvFileIngestSource<
     TableName,
@@ -537,6 +540,7 @@ export class AdminDemographicCsvFileIngestSource<
   constructor(
     readonly uri: string,
     readonly tableName: TableName,
+    readonly groupName: GroupName,
     readonly relatedTableNames: {
       readonly screeningTableName: string;
       readonly qeAdminDataTableName: string;
@@ -779,6 +783,7 @@ const QE_ADMIN_DATA_SHEET_TERMINAL_STATE =
 export class QeAdminDataCsvFileIngestSource<
   TableName extends string,
   InitState extends o.State,
+  GroupName extends string,
 > implements
   o.CsvFileIngestSource<
     TableName,
@@ -791,6 +796,7 @@ export class QeAdminDataCsvFileIngestSource<
   constructor(
     readonly uri: string,
     readonly tableName: TableName,
+    readonly groupName: GroupName,
     readonly relatedTableNames: {
       readonly adminDemographicsTableName: string;
       readonly screeningTableName: string;
@@ -983,9 +989,9 @@ export class QeAdminDataCsvFileIngestSource<
 export function ingestCsvFilesSourcesSupplier(
   govn: ddbo.DuckDbOrchGovernance,
 ): o.IngestFsPatternSourcesSupplier<
-  | ScreeningCsvFileIngestSource<string, o.State>
-  | AdminDemographicCsvFileIngestSource<string, o.State>
-  | QeAdminDataCsvFileIngestSource<string, o.State>
+  | ScreeningCsvFileIngestSource<string, o.State, string>
+  | AdminDemographicCsvFileIngestSource<string, o.State, string>
+  | QeAdminDataCsvFileIngestSource<string, o.State, string>
   | o.ErrorIngestSource<
     ddbo.DuckDbOrchGovernance,
     o.State,
@@ -1000,9 +1006,9 @@ export function ingestCsvFilesSourcesSupplier(
     sources: (entry) => {
       const filePath = String(entry.path);
       const sources: (
-        | ScreeningCsvFileIngestSource<string, o.State>
-        | AdminDemographicCsvFileIngestSource<string, o.State>
-        | QeAdminDataCsvFileIngestSource<string, o.State>
+        | ScreeningCsvFileIngestSource<string, o.State, string>
+        | AdminDemographicCsvFileIngestSource<string, o.State, string>
+        | QeAdminDataCsvFileIngestSource<string, o.State, string>
         | o.ErrorIngestSource<
           ddbo.DuckDbOrchGovernance,
           o.State,
@@ -1029,14 +1035,15 @@ export function ingestCsvFilesSourcesSupplier(
         const csvExpected: Record<
           CsvFileName,
           () =>
-            | ScreeningCsvFileIngestSource<string, o.State>
-            | AdminDemographicCsvFileIngestSource<string, o.State>
-            | QeAdminDataCsvFileIngestSource<string, o.State>
+            | ScreeningCsvFileIngestSource<string, o.State, string>
+            | AdminDemographicCsvFileIngestSource<string, o.State, string>
+            | QeAdminDataCsvFileIngestSource<string, o.State, string>
         > = {
           SCREENING: () =>
             new ScreeningCsvFileIngestSource(
               String(entry.path),
               screeningTableName,
+              suffix,
               {
                 adminDemographicsTableName,
                 qeAdminDataTableName,
@@ -1047,6 +1054,7 @@ export function ingestCsvFilesSourcesSupplier(
             new QeAdminDataCsvFileIngestSource(
               String(entry.path),
               qeAdminDataTableName,
+              suffix,
               {
                 adminDemographicsTableName,
                 screeningTableName,
@@ -1057,6 +1065,7 @@ export function ingestCsvFilesSourcesSupplier(
             new AdminDemographicCsvFileIngestSource(
               String(entry.path),
               adminDemographicsTableName,
+              suffix,
               {
                 qeAdminDataTableName,
                 screeningTableName,

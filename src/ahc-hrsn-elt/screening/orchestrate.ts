@@ -15,6 +15,7 @@ import * as sp from "./sqlpage.ts";
 import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
+import * as gov from "./governance.ts";
 
 export const ORCHESTRATE_VERSION = "0.11.0";
 
@@ -30,8 +31,9 @@ export type PotentialIngestSource =
   | excel.QuestionReferenceExcelSheetIngestSource<string, o.State>
   | excel.AnswerReferenceExcelSheetIngestSource<string, o.State>
   | excel.ExcelSheetTodoIngestSource<string, o.State>
-  | csv.ScreeningCsvFileIngestSource<string, o.State>
-  | csv.AdminDemographicCsvFileIngestSource<string, o.State>
+  | csv.ScreeningCsvFileIngestSource<string, o.State, string>
+  | csv.AdminDemographicCsvFileIngestSource<string, o.State, string>
+  | csv.QeAdminDataCsvFileIngestSource<string, o.State, string>
   | ref.AhcCrossWalkCsvFileIngestSource<"ahc_cross_walk", o.State>
   | ref.EncounterTypeCodeReferenceCsvFileIngestSource<
     "encounter_type_code_reference",
@@ -85,7 +87,6 @@ export type PotentialIngestSource =
     "sdoh_domain_reference",
     o.State
   >
-  | csv.QeAdminDataCsvFileIngestSource<string, o.State>
   | o.ErrorIngestSource<
     ddbo.DuckDbOrchGovernance,
     o.State,
@@ -534,7 +535,7 @@ export class OrchEngine {
       },
     } = this;
     const { sessionID } = session;
-
+    const tableGroupCheckSql: string[] = [];
     let psIndex = 0;
     this.potentialSources = Array.from(
       await this.iss.sources(this.args.walkRootPaths),
@@ -599,9 +600,12 @@ export class OrchEngine {
     this.potentialSources.push(...referenceIngestSources);
 
     this.ingestables = [];
+    const uniqueGroups = new Set<string>();
     for (const ps of this.potentialSources) {
       const { uri, tableName } = ps;
-
+      if ("groupName" in ps) {
+        uniqueGroups.add(ps.groupName);
+      }
       const sessionEntryID = await govn.emitCtx.newUUID(govn.deterministicPKs);
       const workflow = await ps.workflow(session, sessionEntryID);
       const checkStruct = await workflow.ingestSQL({
@@ -628,6 +632,19 @@ export class OrchEngine {
         },
       });
 
+      uniqueGroups.forEach((value) => {
+        const gCsvStr = new gov.GroupCsvStructureRules(
+          "information_schema.tables",
+          sessionID,
+          sessionEntryID,
+          govn,
+        );
+        tableGroupCheckSql.push(
+          gCsvStr.checkAllTablesAreIngestedInAGroup(value)
+            .SQL(ctx) + ";",
+        );
+      });
+
       this.ingestables.push({
         psIndex,
         sessionEntryID,
@@ -643,7 +660,10 @@ export class OrchEngine {
     // run the SQL and then emit the errors to STDOUT in JSON
     const ingestSQL = this.ingestables.map((ic) => ic.sql);
     ingestSQL.push(
-      `SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '${sessionID}'`,
+      tableGroupCheckSql.join("\n"),
+    );
+    ingestSQL.push(
+      `SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '${sessionID}';`,
     );
     const ingestResult = await this.duckdb.jsonResult<
       (typeof this.ingestables)[number]["issues"][number]
