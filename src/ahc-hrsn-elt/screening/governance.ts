@@ -14,11 +14,11 @@ export class GroupCsvStructureRules<
             UNION ALL
             SELECT '${
       this.govn.toSnakeCase("admin_demographics" + groupName)
-    }' AS table_name, 'QE_ADMIN_DATA' AS table_name_suffix
+    }' AS table_name, 'DEMOGRAPHIC_DATA' AS table_name_suffix
             UNION ALL
             SELECT '${
       this.govn.toSnakeCase("qe_admin_data" + groupName)
-    }' AS table_name, 'DEMOGRAPHIC_DATA' AS table_name_suffix
+    }' AS table_name, 'QE_ADMIN_DATA' AS table_name_suffix
         )
         SELECT rt.table_name as table_name, rt.table_name_suffix as table_name_suffix
         FROM required_tables rt
