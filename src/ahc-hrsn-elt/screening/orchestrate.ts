@@ -640,7 +640,7 @@ export class OrchEngine {
           govn,
         );
         tableGroupCheckSql.push(
-          gCsvStr.checkAllTablesAreIngestedInAGroup(value)
+          gCsvStr.checkAllTablesAreIngestedInAGroup(value, tableName)
             .SQL(ctx) + ";",
         );
       });
@@ -663,7 +663,7 @@ export class OrchEngine {
       tableGroupCheckSql.join("\n"),
     );
     ingestSQL.push(
-      `SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '${sessionID}';`,
+      `SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '${sessionID}'`,
     );
     const ingestResult = await this.duckdb.jsonResult<
       (typeof this.ingestables)[number]["issues"][number]
