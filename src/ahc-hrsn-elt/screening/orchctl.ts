@@ -118,7 +118,7 @@ async function ingressWorkflow(
     // const fhirContent = await Deno.readTextFile(fhirFilePath);
     const directoryPath = workflowPaths.egress.resolvedPath(".");
     for await (const entry of Deno.readDir(directoryPath)) {
-      if (entry.isFile && entry.name.startsWith("fhir_")) {
+      if (entry.isFile && entry.name.startsWith("fhir-")) {
         const fhirFilePath = `${directoryPath}/${entry.name}`;
         const fhirContent = await Deno.readTextFile(fhirFilePath);
         try {
