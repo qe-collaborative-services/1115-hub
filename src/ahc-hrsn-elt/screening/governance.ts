@@ -1,5 +1,49 @@
 import { SQLa_orch_duckdb as ddbo } from "./deps.ts";
 
+export class GroupCsvStructureRules<
+  TableName extends string,
+  ColumnName extends string,
+> extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
+  checkAllTablesAreIngestedInAGroup(groupName: string, tableName: string) {
+    return this.govn.SQL`
+      WITH check_all_tables_are_ingested_in_a_group AS (
+        WITH required_tables AS (
+            SELECT '${this.govn.toSnakeCase("screening" + groupName)}'
+              AS table_name,
+              'SCREENING' AS table_name_suffix
+            UNION ALL
+            SELECT '${this.govn.toSnakeCase("admin_demographics" + groupName)}'
+              AS table_name,
+              'DEMOGRAPHIC_DATA' AS table_name_suffix
+            UNION ALL
+            SELECT '${this.govn.toSnakeCase("qe_admin_data" + groupName)}'
+              AS table_name,
+              'QE_ADMIN_DATA' AS table_name_suffix
+        )
+        SELECT rt.table_name as table_name, rt.table_name_suffix as table_name_suffix
+        FROM required_tables rt
+        LEFT JOIN ${this.tableName} ist ON rt.table_name = ist.table_name
+        WHERE
+          '${tableName}' IN (
+            '${this.govn.toSnakeCase("screening" + groupName)}',
+            '${this.govn.toSnakeCase("admin_demographics" + groupName)}',
+            '${this.govn.toSnakeCase("qe_admin_data" + groupName)}'
+            )
+        AND ist.table_name IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        "check_all_tables_are_ingested_in_a_group",
+        `CSV File Missing`,
+        `NULL`,
+        `NULL`,
+        "table_name",
+        `'CSV file ' || table_name_suffix || '${groupName} not found under the group (${groupName})'`,
+      )
+    }
+    `;
+  }
+}
 /**
  * CommonAssuranceRules class provides common assurance rules applicable for all classes.
  * It extends DuckDbOrchTableAssuranceRules for additional functionality.

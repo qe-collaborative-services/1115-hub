@@ -15,13 +15,19 @@ import * as sp from "./sqlpage.ts";
 import * as ref from "./reference.ts";
 import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
+import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.11.0";
+export const ORCHESTRATE_VERSION = "0.12.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
+  ENCOUNTER_ID: string;
   FHIR: object;
 }
+export interface TableCountRecord {
+  table_count: number;
+}
+export let fhirGeneratorCheck = false;
 
 export type PotentialIngestSource =
   | excel.ScreeningExcelSheetIngestSource<string, o.State>
@@ -30,8 +36,9 @@ export type PotentialIngestSource =
   | excel.QuestionReferenceExcelSheetIngestSource<string, o.State>
   | excel.AnswerReferenceExcelSheetIngestSource<string, o.State>
   | excel.ExcelSheetTodoIngestSource<string, o.State>
-  | csv.ScreeningCsvFileIngestSource<string, o.State>
-  | csv.AdminDemographicCsvFileIngestSource<string, o.State>
+  | csv.ScreeningCsvFileIngestSource<string, o.State, string>
+  | csv.AdminDemographicCsvFileIngestSource<string, o.State, string>
+  | csv.QeAdminDataCsvFileIngestSource<string, o.State, string>
   | ref.AhcCrossWalkCsvFileIngestSource<"ahc_cross_walk", o.State>
   | ref.EncounterTypeCodeReferenceCsvFileIngestSource<
     "encounter_type_code_reference",
@@ -85,7 +92,6 @@ export type PotentialIngestSource =
     "sdoh_domain_reference",
     o.State
   >
-  | csv.QeAdminDataCsvFileIngestSource<string, o.State>
   | o.ErrorIngestSource<
     ddbo.DuckDbOrchGovernance,
     o.State,
@@ -354,8 +360,8 @@ export function orchEngineWorkflowPaths(
     diagsMdSupplier: () => egress.resolvedPath("diagnostics.md"),
     diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
-    fhirJsonSupplier: (pat_mrn_id: string) => {
-      return egress.resolvedPath("fhir_" + pat_mrn_id + ".json");
+    fhirJsonSupplier: (id: string) => {
+      return egress.resolvedPath("fhir-" + id + ".json");
     },
     fhirHttpSupplier: () => egress.resolvedPath("fhir.http"),
   };
@@ -534,7 +540,7 @@ export class OrchEngine {
       },
     } = this;
     const { sessionID } = session;
-
+    const tableGroupCheckSql: string[] = [];
     let psIndex = 0;
     this.potentialSources = Array.from(
       await this.iss.sources(this.args.walkRootPaths),
@@ -599,9 +605,12 @@ export class OrchEngine {
     this.potentialSources.push(...referenceIngestSources);
 
     this.ingestables = [];
+    const uniqueGroups = new Set<string>();
     for (const ps of this.potentialSources) {
       const { uri, tableName } = ps;
-
+      if ("groupName" in ps) {
+        uniqueGroups.add(ps.groupName);
+      }
       const sessionEntryID = await govn.emitCtx.newUUID(govn.deterministicPKs);
       const workflow = await ps.workflow(session, sessionEntryID);
       const checkStruct = await workflow.ingestSQL({
@@ -628,6 +637,19 @@ export class OrchEngine {
         },
       });
 
+      uniqueGroups.forEach((value) => {
+        const gCsvStr = new gov.GroupCsvStructureRules(
+          "information_schema.tables",
+          sessionID,
+          sessionEntryID,
+          govn,
+        );
+        tableGroupCheckSql.push(
+          gCsvStr.checkAllTablesAreIngestedInAGroup(value, tableName)
+            .SQL(ctx) + ";",
+        );
+      });
+
       this.ingestables.push({
         psIndex,
         sessionEntryID,
@@ -642,6 +664,9 @@ export class OrchEngine {
 
     // run the SQL and then emit the errors to STDOUT in JSON
     const ingestSQL = this.ingestables.map((ic) => ic.sql);
+    ingestSQL.push(
+      tableGroupCheckSql.join("\n"),
+    );
     ingestSQL.push(
       `SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, invalid_value FROM orch_session_issue WHERE session_id = '${sessionID}'`,
     );
@@ -812,355 +837,424 @@ export class OrchEngine {
 
           DETACH DATABASE ${rdbSchemaName};
 
-          CREATE VIEW IF NOT EXISTS fhir_bundle AS
-            WITH cte_fhir_patient AS (
-              SELECT adt.pat_mrn_id,json_object('fullUrl', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
-                'resource', json_object(
-                      'resourceType', 'Patient',
-                      'id', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
-                      'meta', json_object(
-                        'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
-                        'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
-                      ),
-                      CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'language' ELSE NULL END, PREFERRED_LANGUAGE_CODE,
-                      CASE WHEN (RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL) OR (ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL) OR (SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL) THEN 'extension' ELSE NULL END, json_array(
-                                      CASE WHEN RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL THEN json_object(
-                                          'extension', json_array(
-                                                        json_object(
-                                                            'url','ombCategory',
-                                                            'valueCoding',json_object(
-                                                                        'system',RACE_CODE_SYSTEM_NAME,
-                                                                        'code',CAST(RACE_CODE AS TEXT),
-                                                                        'display',RACE_CODE_DESCRIPTION
-                                                                        )
-                                                                    )
-                                                    ),
-                                          'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
-                                        ) END,
-                                        CASE WHEN ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL THEN json_object(
-                                          'extension',json_array(
-                                                        json_object(
-                                                            'url','ombCategory',
-                                                            'valueCoding',json_object(
-                                                                          'system',ETHNICITY_CODE_SYSTEM_NAME,
-                                                                          'code',CAST(ETHNICITY_CODE AS TEXT),
-                                                                          'display',ETHNICITY_CODE_DESCRIPTION
-                                                                          )
-                                                                    )
-                                                  ),
-                                            'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
-                                      ) END,
-                                      CASE WHEN SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL THEN json_object(
-                                              'url','http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex',
-                                              'valueCode',CAST(SEX_AT_BIRTH_CODE AS TEXT)
+          ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
+          .SQL(this.govn.emitCtx),
+        isc.current.nbCellID,
+      );
+      const fhirViewMainQuery = this.createFhirViewQuery();
+      const tableCount = await this.checkRequiredTables();
+      if (tableCount === 3) {
+        await this.duckdb.execute(fhirViewMainQuery);
+        fhirGeneratorCheck = true;
+      }
+    }
+  }
 
-                                    ) END,
-                                      CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_DESCRIPTION IS NOT NULL THEN json_object(
-                                              'url','http://shinny.org/StructureDefinition/shinny-sexual-orientation',
-                                              'valueCodeableConcept',json_object('coding', json_array(json_object(
-                                                            'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
-                                                            'code',SEXUAL_ORIENTATION_CODE,
-                                                            'display',SEXUAL_ORIENTATION_DESCRIPTION
-                                                            )))
+  async checkRequiredTables(): Promise<number> {
+    const resultsCheck = await this.duckdb.jsonResult(
+      this.govn.SQL`
+        SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_name IN ('${csv.aggrScreeningTableName}', '${csv.aggrPatientDemogrTableName}', '${csv.aggrQeAdminData}');
+      `.SQL(this.govn.emitCtx),
+    );
 
-                                    ) END),
-                      'identifier', json_array(
-                                      json_object(
-                                          'type', json_object(
-                                              'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
-                                              'text', 'Medical Record Number'
-                                          ),
-                                          'system', adt.FACILITY_ID,
-                                          'value', qat.PAT_MRN_ID,
-                                          'assigner', json_object('reference', 'Organization/' || qat.FACILITY_ID)
-                                      ),
-                                      CASE
-                                          WHEN MEDICAID_CIN != '' THEN
-                                              json_object(
-                                                  'type', json_object(
-                                                      'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MA'))
-                                                  ),
-                                                  'system', 'http://www.medicaid.gov/',
-                                                  'value', MEDICAID_CIN,
-                                                  'assigner', json_object('reference', 'Organization/2.16.840.1.113883.3.249')
-                                              )
-                                          ELSE NULL
-                                      END,
-                                      CASE
-                                          WHEN adt.MPI_ID IS NOT NULL THEN
-                                              json_object(
-                                                  'type', json_object(
-                                                      'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'PN'))
-                                                  ),
-                                                  'system', 'http://www.acme.com/identifiers/patient',
-                                                  'value', CAST(adt.MPI_ID AS TEXT)
-                                              )
-                                          ELSE NULL
-                                      END
-                                  ),
-                      CASE WHEN FIRST_NAME IS NOT NULL THEN 'name' ELSE NULL END, json_array(json_object(
-                        CASE WHEN FIRST_NAME IS NOT NULL THEN 'text' ELSE NULL END, CONCAT(FIRST_NAME,' ', MIDDLE_NAME,' ', LAST_NAME),
-                        CASE WHEN LAST_NAME IS NOT NULL THEN 'family' ELSE NULL END, LAST_NAME,
-                        'given', json_array(FIRST_NAME,CASE WHEN MIDDLE_NAME IS NOT NULL THEN MIDDLE_NAME END))
-                      ),
-                      CASE WHEN ADMINISTRATIVE_SEX_CODE IS NOT NULL THEN 'gender' ELSE NULL END, ADMINISTRATIVE_SEX_CODE,
-                      CASE WHEN PAT_BIRTH_DATE IS NOT NULL THEN 'birthDate' ELSE NULL END, PAT_BIRTH_DATE,
-                      CASE WHEN CITY IS NOT NULL AND CITY != '' IS NOT NULL AND STATE IS NOT NULL AND STATE != '' THEN 'address' ELSE NULL END, json_array(
-                          json_object(
-                            CASE WHEN ADDRESS1 IS NOT NULL AND ADDRESS1 != '' IS NOT NULL THEN 'text' ELSE NULL END, CONCAT(ADDRESS1, ' ', ADDRESS2),
-                            CASE WHEN ADDRESS1 IS NOT NULL AND ADDRESS1 != '' IS NOT NULL THEN 'line' ELSE NULL END, json_array(ADDRESS1, ADDRESS2),
-                            'city', CITY,
-                            'state', STATE,
-                            CASE WHEN ZIP IS NOT NULL AND CAST(ZIP AS TEXT) != '' IS NOT NULL THEN 'postalCode' ELSE NULL END, CAST(ZIP AS TEXT)
-                        )
-                      ),
-                      CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'communication' ELSE NULL END, json_array(
-                        json_object('language', json_object(
-                          'coding', json_array(
-                            json_object(
-                              'code', PREFERRED_LANGUAGE_CODE
-                            )
-                          )
-                        ),
-                          'preferred', true
-                      ))
-                )) AS FHIR_Patient
-            FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrQeAdminData} qat
-            ON adt.PAT_MRN_ID = qat.PAT_MRN_ID
-            ),
-            cte_fhir_consent AS (
-              SELECT adt.pat_mrn_id,json_object('fullUrl', CONCAT('consentFor',adt.PAT_MRN_ID),
-                'resource', json_object(
-                      'resourceType', 'Consent',
-                      'id', CONCAT('consentFor',adt.PAT_MRN_ID),
-                      'meta', json_object(
-                        'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
-                        'profile', json_array('http://shinny.org/StructureDefinition/shin-ny-organization')
-                      ),
-                      'status','active',
-                      'scope', json_object('coding',json_array(json_object('code','treatment')),'text','treatment'),
-                      'category', json_array(json_object(
-                        'coding',json_array(
-                          json_object('display', 'Patient Consent',
-                          'code', '59284-0',
-                          'system','http://loinc.org')
-                        )
-                      )),
-                      'patient', json_object(
-                        'reference', CONCAT('Patient/',adt.PAT_MRN_ID)
-                      ),
-                      'dateTime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
-                      'organization', json_array(json_object('reference', 'Organization/' || qat.FACILITY_ID))
+    if (resultsCheck.json) {
+      for (const row of resultsCheck.json as TableCountRecord[]) {
+        return row.table_count;
+      }
+    }
+    return 0;
+  }
 
+  createFhirViewQuery(): string {
+    const cteFhirPatient = this.createCteFhirPatient();
+    const cteFhirConsent = this.createCteFhirConsent();
+    const cteFhirOrg = this.createCteFhirOrg();
+    const derivedFromCte = this.createDerivedFromCte();
+    const cteFhirObservation = this.createCteFhirObservation();
+    const cteFhirObservationGrouper = this.createCteFhirObservationGrouper();
+    const cteFhirEncounter = this.createCteFhirEncounter();
 
-                )
-              ) AS FHIR_Consent
-            FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrQeAdminData} qat
-            ON adt.PAT_MRN_ID = qat.PAT_MRN_ID
-            ),
-            cte_fhir_org AS (
-              SELECT qed.PAT_MRN_ID, JSON_OBJECT(
-                'fullUrl', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
-                'resource', JSON_OBJECT(
-                    'resourceType', 'Organization',
-                    'id', qed.FACILITY_ID,
-                    'meta', JSON_OBJECT(
-                        'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),
-                        'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-organization')
-                    ),
-                    'identifier', JSON_ARRAY(
-                        JSON_OBJECT(
-                            'system', qed.FACILITY_ID,
-                            'value', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-'))
-                        )
-                    ),
-                    'active', true,
-                    CASE WHEN qed.ORGANIZATION_TYPE IS NOT NULL THEN 'type' ELSE NULL END, JSON_ARRAY(
-                        JSON_OBJECT(
-                            'coding', JSON_ARRAY(
-                                JSON_OBJECT(
-                                    'system', 'http://terminology.hl7.org/CodeSystem/organization-type',
-                                    'code', qed.ORGANIZATION_TYPE,
-                                    'display', qed.ORGANIZATION_TYPE
-                                )
-                            )
-                        )
-                    ),
-                    'name', qed.FACILITY_LONG_NAME,
-                    'address', JSON_ARRAY(
-                        JSON_OBJECT(
-                            'text', CONCAT(qed.FACILITY_ADDRESS1,' ', qed.FACILITY_ADDRESS2),
-                            'city', qed.FACILITY_CITY,
-                            'state', qed.FACILITY_STATE,
-                            'postalCode', CAST(qed.FACILITY_ZIP AS TEXT)
-                        )
-                    )
-                )
-            ) AS FHIR_Organization
-            FROM ${csv.aggrQeAdminData} qed WHERE qed.FACILITY_ID!='' AND qed.FACILITY_ID iS NOT NULL ORDER BY qed.FACILITY_ID),
-            derived_from_cte AS (
-              SELECT
-                  parent_question_code,
-                  parent_question_sl_no,
-                  json_group_array(json_object('reference', derived_reference)) AS derived_from_references
-              FROM (
-                  SELECT
-                      acw.QUESTION_CODE AS parent_question_code,
-                      acw.QUESTION_SLNO AS parent_question_sl_no,
-                      CONCAT('Observation/ObservationResponseQuestion_', acw_sub.QUESTION_SLNO) AS derived_reference
-                  FROM
-                      ahc_cross_walk acw
-                  INNER JOIN ahc_cross_walk acw_sub ON acw_sub."QUESTION_SLNO_REFERENCE" = acw.QUESTION_SLNO
-                  GROUP BY
-                      acw.QUESTION_CODE,
-                      acw.QUESTION_SLNO,
-                      acw_sub.QUESTION_SLNO
-              ) AS distinct_references
-              GROUP BY
-                  parent_question_code,
-                  parent_question_sl_no
-            ),
-            cte_fhir_observation AS (
-              SELECT scr.PAT_MRN_ID, JSON_OBJECT(
-                'fullUrl', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
-                'resource', JSON_OBJECT(
-                  'resourceType', 'Observation',
-                      'id', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
-                      'meta', JSON_OBJECT(
-                          'lastUpdated', RECORDED_TIME,
-                          'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
-                      ),
-                      'status', SCREENING_STATUS_CODE,
-                      'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey'))),json_object('coding',json_array(json_object('system','http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes','code',CASE WHEN sdr.Code IS NOT NULL AND sdr.Code != '' THEN sdr.Code ELSE 'sdoh-category-unspecified' END,'display',CASE WHEN sdr.Display IS NOT NULL AND sdr.Display != '' THEN sdr.Display ELSE 'SDOH Category Unspecified' END)))),
-                      CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
-                        'coding', json_array(json_object(CASE WHEN QUESTION_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,QUESTION_CODE_SYSTEM_NAME,CASE WHEN scr.QUESTION_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.QUESTION_CODE,CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,QUESTION_CODE_DESCRIPTION))
-                      ),
-                      'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
-                      'effectiveDateTime', RECORDED_TIME,
-                      'issued', RECORDED_TIME,
-                      'valueCodeableConcept',CASE WHEN acw.CALCULATED_FIELD = 1 THEN json_object('coding',json_array(json_object('system','http://unitsofmeasure.org','code',acw."UCUM_UNITS",'display',ANSWER_CODE_DESCRIPTION))) ELSE json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))) END,
-                      CASE WHEN acw.CALCULATED_FIELD = 1 THEN 'derivedFrom' ELSE NULL END, COALESCE(df.derived_from_references, json_array()),
-                      'interpretation',json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive'))))
-                  )
-            ) AS FHIR_Observation
-            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO),
-            cte_fhir_observation_grouper AS (
-              SELECT scr.PAT_MRN_ID, JSON_OBJECT(
-                'fullUrl', (SELECT CONCAT('ObservationResponseQuestion_', slNo, '_grouper')
-                              FROM (SELECT MAX(QUESTION_SLNO) as slNo
-                                    FROM
-                                      ${csv.aggrScreeningTableName} ssub
-                                    LEFT JOIN
-                                      (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
-                                    ON acw.QUESTION_SLNO = ssub.src_file_row_number
-                                    WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
-                                  ) AS sub1),
-                'resource', JSON_OBJECT(
-                  'resourceType', 'Observation',
-                      'id', (SELECT CONCAT('ObservationResponseQuestion_', slNo, '_grouper')
-                              FROM (SELECT MAX(QUESTION_SLNO) as slNo
-                                    FROM
-                                      ${csv.aggrScreeningTableName} ssub
-                                    LEFT JOIN
-                                      (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
-                                    ON acw.QUESTION_SLNO = ssub.src_file_row_number
-                                    WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
-                                  ) AS sub1),
-                      'meta', JSON_OBJECT(
-                          'lastUpdated', MAX(RECORDED_TIME),
-                          'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
-                      ),
-                      'status', SCREENING_STATUS_CODE,
-                      'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey'))),json_object('coding',(SELECT json_group_array(JSON_OBJECT(
-                                    'system', 'http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes',
-                                    'display', sub.display,
-                                    'code', sub.code
-                                )) FROM (
-                                    SELECT DISTINCT
-                                        CASE WHEN sdr.Display IS NOT NULL AND sdr.Display != '' THEN sdr.Display ELSE 'SDOH Category Unspecified' END AS display,
-                                        CASE WHEN sdr.Code IS NOT NULL AND sdr.Code != '' THEN sdr.Code ELSE 'sdoh-category-unspecified' END AS code
-                                    FROM
-                                      ${csv.aggrScreeningTableName} sub
-                                    LEFT JOIN
-                                        sdoh_domain_reference sdr
-                                    ON
-                                        sub.SDOH_DOMAIN = sdr.Display
-                                    WHERE
-                                        sub.SCREENING_CODE=scr.SCREENING_CODE
-                                ) AS sub ))
-                      ),
-                      CASE WHEN SCREENING_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
-                        'coding', json_array(json_object(CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,SCREENING_CODE_SYSTEM_NAME,CASE WHEN scr.SCREENING_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.SCREENING_CODE,CASE WHEN SCREENING_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,SCREENING_CODE_DESCRIPTION))
-                      ),
-                      'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
-                      CASE WHEN ENCOUNTER_ID IS NOT NULL THEN 'encounter' ELSE NULL END, json_object('reference',CONCAT('Encounter/',ENCOUNTER_ID)),
-                      'effectiveDateTime', MAX(RECORDED_TIME),
-                      'issued', MAX(RECORDED_TIME),
-                      'hasMember', (SELECT json_group_array(JSON_OBJECT(
-                                      'reference', CONCAT('observationResponseQuestion_',sub1.QUESTION_SLNO)
-                                  ))
-                                  FROM (
-                                  SELECT DISTINCT
-                                      QUESTION_SLNO
-                                  FROM
-                                  ${csv.aggrScreeningTableName} ssub
-                                  LEFT JOIN
-                                    (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
-                                  ON acw.QUESTION_SLNO = ssub.src_file_row_number
-                                  WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL GROUP BY acw.QUESTION_SLNO
-                                  ORDER BY acw.QUESTION_SLNO
-                              ) AS sub1
-                                  )
-                  )
-            ) AS FHIR_Observation_Grouper
-            FROM ${csv.aggrScreeningTableName} scr GROUP BY SCREENING_CODE, FACILITY_ID, PAT_MRN_ID, SCREENING_CODE_DESCRIPTION,SCREENING_STATUS_CODE, SCREENING_CODE_SYSTEM_NAME,ENCOUNTER_ID),
-            cte_fhir_encounter AS (
-              SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) scr.PAT_MRN_ID, JSON_OBJECT(
-                'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
-                'resource', JSON_OBJECT(
-                  'resourceType', 'Encounter',
-                  'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
-                  'meta', JSON_OBJECT(
-                      'lastUpdated', RECORDED_TIME,
-                      'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
-                  ),
-                  'status', CASE WHEN ENCOUNTER_STATUS_CODE IS NOT NULL THEN ENCOUNTER_STATUS_CODE ELSE 'unknown' END,
-                  'class', json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,CASE WHEN ENCOUNTER_CLASS_CODE IS NOT NULL THEN 'code' ELSE NULL END,ENCOUNTER_CLASS_CODE),
-                  'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,CASE WHEN ENCOUNTER_TYPE_CODE IS NOT NULL THEN 'code' ELSE NULL END,  CAST(ENCOUNTER_TYPE_CODE AS TEXT),'display', ENCOUNTER_TYPE_CODE_DESCRIPTION  )),'text',ENCOUNTER_TYPE_CODE_DESCRIPTION)),
-                  'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
-                )
-            ) AS FHIR_Encounter
-            FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID ORDER BY scr.ENCOUNTER_ID, scr.RECORDED_TIME DESC)
-            SELECT cte.PAT_MRN_ID, json_object(
-              'resourceType', 'Bundle',
-              'id', CONCAT('${uuid.v1.generate()}','_',PAT_MRN_ID),
+    return `
+      CREATE VIEW IF NOT EXISTS fhir_bundle AS
+        ${cteFhirPatient},
+        ${cteFhirConsent},
+        ${cteFhirOrg},
+        ${derivedFromCte},
+        ${cteFhirObservation},
+        ${cteFhirObservationGrouper},
+        ${cteFhirEncounter}
+        SELECT cte.ENCOUNTER_ID,cte.PAT_MRN_ID, json_object(
+          'resourceType', 'Bundle',
+              'id', CONCAT('${uuid.v1.generate()}','-',PAT_MRN_ID,'-',ENCOUNTER_ID),
               'type', 'transaction',
               'meta', JSON_OBJECT(
                   'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
               ),
               'timestamp', '${new Date().toISOString()}',
               'entry', json(json_group_array(cte.json_data))
-              ) AS FHIR_Bundle
-              FROM (
-                SELECT PAT_MRN_ID, FHIR_Organization AS json_data FROM cte_fhir_org
-                UNION ALL
-                SELECT PAT_MRN_ID, FHIR_Patient AS json_data FROM cte_fhir_patient
-                UNION ALL
-                SELECT PAT_MRN_ID, FHIR_Observation AS json_data FROM cte_fhir_observation
-                UNION ALL
-                SELECT PAT_MRN_ID, FHIR_Observation_Grouper AS json_data FROM cte_fhir_observation_grouper
-                UNION ALL
-                SELECT PAT_MRN_ID, FHIR_Encounter AS json_data FROM cte_fhir_encounter
-                UNION ALL
-                SELECT PAT_MRN_ID, FHIR_Consent AS json_data FROM cte_fhir_consent
-              ) AS cte
-              GROUP BY cte.PAT_MRN_ID;
+          ) AS FHIR_Bundle
+          FROM (
+            SELECT ENCOUNTER_ID, PAT_MRN_ID, FHIR_Organization AS json_data FROM cte_fhir_org
+            UNION ALL
+            SELECT ENCOUNTER_ID, PAT_MRN_ID, FHIR_Patient AS json_data FROM cte_fhir_patient
+            UNION ALL
+            SELECT ENCOUNTER_ID, PAT_MRN_ID, FHIR_Observation AS json_data FROM cte_fhir_observation
+            UNION ALL
+            SELECT ENCOUNTER_ID, PAT_MRN_ID, FHIR_Observation_Grouper AS json_data FROM cte_fhir_observation_grouper
+            UNION ALL
+            SELECT ENCOUNTER_ID, PAT_MRN_ID, FHIR_Encounter AS json_data FROM cte_fhir_encounter
+            UNION ALL
+            SELECT ENCOUNTER_ID, PAT_MRN_ID, FHIR_Consent AS json_data FROM cte_fhir_consent
+          ) AS cte
+          GROUP BY cte.PAT_MRN_ID, cte.ENCOUNTER_ID;
+    `;
+  }
 
-          ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
-          .SQL(this.govn.emitCtx),
-        isc.current.nbCellID,
-      );
-    }
+  createCteFhirPatient(): string {
+    // Return the SQL string for the cte_fhir_patient common table expression
+    // You can use a similar approach as in the original query
+    return `WITH cte_fhir_patient AS (
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID)END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object('fullUrl', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
+        'resource', json_object(
+              'resourceType', 'Patient',
+              'id', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
+              'meta', json_object(
+                'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+                'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
+              ),
+              CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'language' ELSE NULL END, PREFERRED_LANGUAGE_CODE,
+              CASE WHEN (RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL) OR (ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL) OR (SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL) THEN 'extension' ELSE NULL END, json_array(
+                              CASE WHEN RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                                  'extension', json_array(
+                                                json_object(
+                                                    'url','ombCategory',
+                                                    'valueCoding',json_object(
+                                                                'system',RACE_CODE_SYSTEM_NAME,
+                                                                'code',CAST(RACE_CODE AS TEXT),
+                                                                'display',RACE_CODE_DESCRIPTION
+                                                                )
+                                                            )
+                                            ),
+                                  'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+                                ) END,
+                                CASE WHEN ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                                  'extension',json_array(
+                                                json_object(
+                                                    'url','ombCategory',
+                                                    'valueCoding',json_object(
+                                                                  'system',ETHNICITY_CODE_SYSTEM_NAME,
+                                                                  'code',CAST(ETHNICITY_CODE AS TEXT),
+                                                                  'display',ETHNICITY_CODE_DESCRIPTION
+                                                                  )
+                                                            )
+                                          ),
+                                    'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
+                              ) END,
+                              CASE WHEN SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                                      'url','http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex',
+                                      'valueCode',CAST(SEX_AT_BIRTH_CODE AS TEXT)
+
+                            ) END,
+                              CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_DESCRIPTION IS NOT NULL THEN json_object(
+                                      'url','http://shinny.org/StructureDefinition/shinny-sexual-orientation',
+                                      'valueCodeableConcept',json_object('coding', json_array(json_object(
+                                                    'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
+                                                    'code',SEXUAL_ORIENTATION_CODE,
+                                                    'display',SEXUAL_ORIENTATION_DESCRIPTION
+                                                    )))
+
+                            ) END),
+              'identifier', json_array(
+                              json_object(
+                                  'type', json_object(
+                                      'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
+                                      'text', 'Medical Record Number'
+                                  ),
+                                  'system', CONCAT('/facility/',adt.FACILITY_ID),
+                                  'value', qat.PAT_MRN_ID,
+                                  'assigner', json_object('reference', 'Organization/' || qat.FACILITY_ID)
+                              ),
+                              CASE
+                                  WHEN MEDICAID_CIN != '' THEN
+                                      json_object(
+                                          'type', json_object(
+                                              'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MA'))
+                                          ),
+                                          'system', 'http://www.medicaid.gov/',
+                                          'value', MEDICAID_CIN,
+                                          'assigner', json_object('reference', 'Organization/2.16.840.1.113883.3.249')
+                                      )
+                                  ELSE NULL
+                              END,
+                              CASE
+                                  WHEN adt.MPI_ID IS NOT NULL THEN
+                                      json_object(
+                                          'type', json_object(
+                                              'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'PN'))
+                                          ),
+                                          'system', 'http://www.acme.com/identifiers/patient',
+                                          'value', CAST(adt.MPI_ID AS TEXT)
+                                      )
+                                  ELSE NULL
+                              END
+                          ),
+              CASE WHEN FIRST_NAME IS NOT NULL THEN 'name' ELSE NULL END, json_array(json_object(
+                CASE WHEN FIRST_NAME IS NOT NULL THEN 'text' ELSE NULL END, CONCAT(FIRST_NAME,' ', MIDDLE_NAME,' ', LAST_NAME),
+                CASE WHEN LAST_NAME IS NOT NULL THEN 'family' ELSE NULL END, LAST_NAME,
+                'given', json_array(FIRST_NAME,CASE WHEN MIDDLE_NAME IS NOT NULL THEN MIDDLE_NAME END))
+              ),
+              CASE WHEN ADMINISTRATIVE_SEX_CODE IS NOT NULL THEN 'gender' ELSE NULL END, ADMINISTRATIVE_SEX_CODE,
+              CASE WHEN PAT_BIRTH_DATE IS NOT NULL THEN 'birthDate' ELSE NULL END, PAT_BIRTH_DATE,
+              CASE WHEN CITY IS NOT NULL AND CITY != '' IS NOT NULL AND STATE IS NOT NULL AND STATE != '' THEN 'address' ELSE NULL END, json_array(
+                  json_object(
+                    CASE WHEN ADDRESS1 IS NOT NULL AND ADDRESS1 != '' IS NOT NULL THEN 'text' ELSE NULL END, CONCAT(ADDRESS1, ' ', ADDRESS2),
+                    CASE WHEN ADDRESS1 IS NOT NULL AND ADDRESS1 != '' IS NOT NULL THEN 'line' ELSE NULL END, json_array(ADDRESS1, ADDRESS2),
+                    'city', CITY,
+                    'state', STATE,
+                    CASE WHEN ZIP IS NOT NULL AND CAST(ZIP AS TEXT) != '' IS NOT NULL THEN 'postalCode' ELSE NULL END, CAST(ZIP AS TEXT)
+                )
+              ),
+              CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'communication' ELSE NULL END, json_array(
+                json_object('language', json_object(
+                  'coding', json_array(
+                    json_object(
+                      'code', PREFERRED_LANGUAGE_CODE
+                    )
+                  )
+                ),
+                  'preferred', true
+              ))
+        )) AS FHIR_Patient
+    FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrQeAdminData} qat
+    ON adt.PAT_MRN_ID = qat.PAT_MRN_ID LEFT JOIN ${csv.aggrScreeningTableName} scr ON scr.PAT_MRN_ID = adt.PAT_MRN_ID
+    )`;
+  }
+
+  createCteFhirConsent(): string {
+    // Return the SQL string for the cte_fhir_consent common table expression
+    return `cte_fhir_consent AS (
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object('fullUrl', CONCAT('consentFor',adt.PAT_MRN_ID),
+        'resource', json_object(
+              'resourceType', 'Consent',
+              'id', CONCAT('consentFor',adt.PAT_MRN_ID),
+              'meta', json_object(
+                'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+                'profile', json_array('http://shinny.org/StructureDefinition/shin-ny-organization')
+              ),
+              'status','active',
+              'scope', json_object('coding',json_array(json_object('code','treatment')),'text','treatment'),
+              'category', json_array(json_object(
+                'coding',json_array(
+                  json_object('display', 'Patient Consent',
+                  'code', '59284-0',
+                  'system','http://loinc.org')
+                )
+              )),
+              'patient', json_object(
+                'reference', CONCAT('Patient/',adt.PAT_MRN_ID)
+              ),
+              'dateTime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+              'organization', json_array(json_object('reference', 'Organization/' || qat.FACILITY_ID))
+
+
+        )
+      ) AS FHIR_Consent
+    FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrQeAdminData} qat
+    ON adt.PAT_MRN_ID = qat.PAT_MRN_ID LEFT JOIN ${csv.aggrScreeningTableName} scr ON scr.PAT_MRN_ID = adt.PAT_MRN_ID
+    )`;
+  }
+
+  createCteFhirOrg(): string {
+    // Return the SQL string for the cte_fhir_org common table expression
+    return `cte_fhir_org AS (
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,qed.PAT_MRN_ID, JSON_OBJECT(
+        'fullUrl', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
+        'resource', JSON_OBJECT(
+            'resourceType', 'Organization',
+            'id', qed.FACILITY_ID,
+            'meta', JSON_OBJECT(
+                'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),
+                'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-organization')
+            ),
+            'identifier', JSON_ARRAY(
+                JSON_OBJECT(
+                    'system', qed.FACILITY_ID,
+                    'value', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-'))
+                )
+            ),
+            'active', true,
+            CASE WHEN qed.ORGANIZATION_TYPE IS NOT NULL THEN 'type' ELSE NULL END, JSON_ARRAY(
+                JSON_OBJECT(
+                    'coding', JSON_ARRAY(
+                        JSON_OBJECT(
+                            'system', 'http://terminology.hl7.org/CodeSystem/organization-type',
+                            'code', qed.ORGANIZATION_TYPE,
+                            'display', qed.ORGANIZATION_TYPE
+                        )
+                    )
+                )
+            ),
+            'name', qed.FACILITY_LONG_NAME,
+            'address', JSON_ARRAY(
+                JSON_OBJECT(
+                    'text', CONCAT(qed.FACILITY_ADDRESS1,' ', qed.FACILITY_ADDRESS2),
+                    'city', qed.FACILITY_CITY,
+                    'state', qed.FACILITY_STATE,
+                    'postalCode', CAST(qed.FACILITY_ZIP AS TEXT)
+                )
+            )
+        )
+    ) AS FHIR_Organization
+    FROM ${csv.aggrQeAdminData} qed LEFT JOIN ${csv.aggrScreeningTableName} scr ON qed.PAT_MRN_ID=scr.PAT_MRN_ID WHERE qed.FACILITY_ID!='' AND qed.FACILITY_ID iS NOT NULL ORDER BY qed.FACILITY_ID)`;
+  }
+
+  createDerivedFromCte(): string {
+    // Return the SQL string for the derived_from_cte common table expression
+    return `derived_from_cte AS (
+      SELECT
+          parent_question_code,
+          parent_question_sl_no,
+          json_group_array(json_object('reference', derived_reference)) AS derived_from_references
+      FROM (
+          SELECT
+              acw.QUESTION_CODE AS parent_question_code,
+              acw.QUESTION_SLNO AS parent_question_sl_no,
+              CONCAT('Observation/ObservationResponseQuestion_', acw_sub.QUESTION_SLNO) AS derived_reference
+          FROM
+              ahc_cross_walk acw
+          INNER JOIN ahc_cross_walk acw_sub ON acw_sub."QUESTION_SLNO_REFERENCE" = acw.QUESTION_SLNO
+          GROUP BY
+              acw.QUESTION_CODE,
+              acw.QUESTION_SLNO,
+              acw_sub.QUESTION_SLNO
+      ) AS distinct_references
+      GROUP BY
+          parent_question_code,
+          parent_question_sl_no
+    )`;
+  }
+
+  createCteFhirObservation(): string {
+    // Return the SQL string for the cte_fhir_observation common table expression
+    return `cte_fhir_observation AS (
+      SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
+        'fullUrl', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
+        'resource', JSON_OBJECT(
+          'resourceType', 'Observation',
+              'id', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
+              'meta', JSON_OBJECT(
+                  'lastUpdated', RECORDED_TIME,
+                  'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
+              ),
+              'status', SCREENING_STATUS_CODE,
+              'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey'))),json_object('coding',json_array(json_object('system','http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes','code',CASE WHEN sdr.Code IS NOT NULL AND sdr.Code != '' THEN sdr.Code ELSE 'sdoh-category-unspecified' END,'display',CASE WHEN sdr.Display IS NOT NULL AND sdr.Display != '' THEN sdr.Display ELSE 'SDOH Category Unspecified' END)))),
+              CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
+                'coding', json_array(json_object(CASE WHEN QUESTION_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,QUESTION_CODE_SYSTEM_NAME,CASE WHEN scr.QUESTION_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.QUESTION_CODE,CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,QUESTION_CODE_DESCRIPTION))
+              ),
+              'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
+              'effectiveDateTime', RECORDED_TIME,
+              'issued', RECORDED_TIME,
+              'valueCodeableConcept',CASE WHEN acw.CALCULATED_FIELD = 1 THEN json_object('coding',json_array(json_object('system','http://unitsofmeasure.org','code',acw."UCUM_UNITS",'display',ANSWER_CODE_DESCRIPTION))) ELSE json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))) END,
+              CASE WHEN acw.CALCULATED_FIELD = 1 THEN 'derivedFrom' ELSE NULL END, COALESCE(df.derived_from_references, json_array()),
+              'interpretation',json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive'))))
+          )
+      ) AS FHIR_Observation
+      FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
+  }
+
+  createCteFhirObservationGrouper(): string {
+    // Return the SQL string for the cte_fhir_observation_grouper common table expression
+    return `cte_fhir_observation_grouper AS (
+      SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
+        'fullUrl', (SELECT CONCAT('ObservationResponseQuestion_', slNo, '_grouper')
+                      FROM (SELECT MAX(QUESTION_SLNO) as slNo
+                            FROM
+                              ${csv.aggrScreeningTableName} ssub
+                            LEFT JOIN
+                              (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
+                            ON acw.QUESTION_SLNO = ssub.src_file_row_number
+                            WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
+                          ) AS sub1),
+        'resource', JSON_OBJECT(
+          'resourceType', 'Observation',
+              'id', (SELECT CONCAT('ObservationResponseQuestion_', slNo, '_grouper')
+                      FROM (SELECT MAX(QUESTION_SLNO) as slNo
+                            FROM
+                              ${csv.aggrScreeningTableName} ssub
+                            LEFT JOIN
+                              (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
+                            ON acw.QUESTION_SLNO = ssub.src_file_row_number
+                            WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
+                          ) AS sub1),
+              'meta', JSON_OBJECT(
+                  'lastUpdated', MAX(RECORDED_TIME),
+                  'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
+              ),
+              'status', SCREENING_STATUS_CODE,
+              'category', json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','social-history','display','Social History'))),json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/observation-category','code','survey','display','Survey'))),json_object('coding',(SELECT json_group_array(JSON_OBJECT(
+                            'system', 'http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes',
+                            'display', sub.display,
+                            'code', sub.code
+                        )) FROM (
+                            SELECT DISTINCT
+                                CASE WHEN sdr.Display IS NOT NULL AND sdr.Display != '' THEN sdr.Display ELSE 'SDOH Category Unspecified' END AS display,
+                                CASE WHEN sdr.Code IS NOT NULL AND sdr.Code != '' THEN sdr.Code ELSE 'sdoh-category-unspecified' END AS code
+                            FROM
+                              ${csv.aggrScreeningTableName} sub
+                            LEFT JOIN
+                                sdoh_domain_reference sdr
+                            ON
+                                sub.SDOH_DOMAIN = sdr.Display
+                            WHERE
+                                sub.SCREENING_CODE=scr.SCREENING_CODE
+                        ) AS sub ))
+              ),
+              CASE WHEN SCREENING_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
+                'coding', json_array(json_object(CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,SCREENING_CODE_SYSTEM_NAME,CASE WHEN scr.SCREENING_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.SCREENING_CODE,CASE WHEN SCREENING_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,SCREENING_CODE_DESCRIPTION))
+              ),
+              'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
+              CASE WHEN ENCOUNTER_ID IS NOT NULL THEN 'encounter' ELSE NULL END, json_object('reference',CONCAT('Encounter/',ENCOUNTER_ID)),
+              'effectiveDateTime', MAX(RECORDED_TIME),
+              'issued', MAX(RECORDED_TIME),
+              'hasMember', (SELECT json_group_array(JSON_OBJECT(
+                              'reference', CONCAT('observationResponseQuestion_',sub1.QUESTION_SLNO)
+                          ))
+                          FROM (
+                          SELECT DISTINCT
+                              QUESTION_SLNO
+                          FROM
+                          ${csv.aggrScreeningTableName} ssub
+                          LEFT JOIN
+                            (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
+                          ON acw.QUESTION_SLNO = ssub.src_file_row_number
+                          WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL GROUP BY acw.QUESTION_SLNO
+                          ORDER BY acw.QUESTION_SLNO
+                      ) AS sub1
+                          )
+          )
+      ) AS FHIR_Observation_Grouper
+      FROM ${csv.aggrScreeningTableName} scr GROUP BY SCREENING_CODE, FACILITY_ID, PAT_MRN_ID, SCREENING_CODE_DESCRIPTION,SCREENING_STATUS_CODE, SCREENING_CODE_SYSTEM_NAME,ENCOUNTER_ID)`;
+  }
+
+  createCteFhirEncounter(): string {
+    // Return the SQL string for the cte_fhir_encounter common table expression
+    return `cte_fhir_encounter AS (
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) scr.PAT_MRN_ID, CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID, JSON_OBJECT(
+        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
+        'resource', JSON_OBJECT(
+          'resourceType', 'Encounter',
+          'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
+          'meta', JSON_OBJECT(
+              'lastUpdated', RECORDED_TIME,
+              'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
+          ),
+          'status', CASE WHEN ENCOUNTER_STATUS_CODE IS NOT NULL THEN ENCOUNTER_STATUS_CODE ELSE 'unknown' END,
+          'class', json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,CASE WHEN ENCOUNTER_CLASS_CODE IS NOT NULL THEN 'code' ELSE NULL END,ENCOUNTER_CLASS_CODE),
+          'type', json_array(json_object('coding',json_array(json_object('system',ENCOUNTER_TYPE_CODE_SYSTEM,CASE WHEN ENCOUNTER_TYPE_CODE IS NOT NULL THEN 'code' ELSE NULL END,  CAST(ENCOUNTER_TYPE_CODE AS TEXT),'display', ENCOUNTER_TYPE_CODE_DESCRIPTION  )),'text',ENCOUNTER_TYPE_CODE_DESCRIPTION)),
+          'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
+        )
+    ) AS FHIR_Encounter
+    FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID ORDER BY scr.ENCOUNTER_ID, scr.RECORDED_TIME DESC)`;
   }
 
   // `finalize` means always run this even if errors abort the above methods
@@ -1221,10 +1315,10 @@ export class OrchEngine {
       );
     }
 
-    if (egress.fhirJsonSupplier) {
+    if (egress.fhirJsonSupplier && fhirGeneratorCheck) {
       const results = await this.duckdb.jsonResult(
         this.govn.SQL`
-          SELECT PAT_MRN_ID, FHIR_Bundle as FHIR FROM fhir_bundle
+          SELECT PAT_MRN_ID, ENCOUNTER_ID, FHIR_Bundle as FHIR FROM fhir_bundle
         `.SQL(
           this.govn.emitCtx,
         ),
@@ -1234,7 +1328,9 @@ export class OrchEngine {
         try {
           let fhirHttpContent = "";
           for (const row of results.json as FhirRecord[]) {
-            const fhirJson = egress.fhirJsonSupplier(row.PAT_MRN_ID);
+            const fhirJson = egress.fhirJsonSupplier(
+              row.PAT_MRN_ID + "-" + row.ENCOUNTER_ID,
+            );
             const refinedFhir = removeNulls(row.FHIR);
             await Deno.writeTextFile(
               fhirJson,
