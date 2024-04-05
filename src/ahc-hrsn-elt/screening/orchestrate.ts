@@ -885,7 +885,7 @@ export class OrchEngine {
         ${cteFhirEncounter}
         SELECT cte.ENCOUNTER_ID,cte.PAT_MRN_ID, json_object(
           'resourceType', 'Bundle',
-              'id', CONCAT('${uuid.v1.generate()}','_',PAT_MRN_ID),
+              'id', CONCAT('${uuid.v1.generate()}','-',PAT_MRN_ID,'-',ENCOUNTER_ID),
               'type', 'transaction',
               'meta', JSON_OBJECT(
                   'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
@@ -970,7 +970,7 @@ export class OrchEngine {
                                       'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
                                       'text', 'Medical Record Number'
                                   ),
-                                  'system', adt.FACILITY_ID,
+                                  'system', CONCAT('/facility/',adt.FACILITY_ID),
                                   'value', qat.PAT_MRN_ID,
                                   'assigner', json_object('reference', 'Organization/' || qat.FACILITY_ID)
                               ),
