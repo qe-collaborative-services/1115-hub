@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.12.0";
+export const ORCHESTRATE_VERSION = "0.12.1";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1334,7 +1334,7 @@ export class OrchEngine {
             const refinedFhir = removeNulls(row.FHIR);
             await Deno.writeTextFile(
               fhirJson,
-              JSON.stringify(refinedFhir),
+              JSON.stringify(refinedFhir, null, 2),
             );
             if (egress.fhirHttpSupplier) {
               fhirHttpContent = fhirHttpContent +
