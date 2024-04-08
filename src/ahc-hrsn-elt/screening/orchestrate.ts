@@ -1334,7 +1334,7 @@ export class OrchEngine {
             const refinedFhir = removeNulls(row.FHIR);
             await Deno.writeTextFile(
               fhirJson,
-              JSON.stringify(refinedFhir),
+              JSON.stringify(refinedFhir, null, 2),
             );
             if (egress.fhirHttpSupplier) {
               fhirHttpContent = fhirHttpContent +
