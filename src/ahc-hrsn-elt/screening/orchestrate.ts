@@ -1127,7 +1127,7 @@ export class OrchEngine {
           FROM
               ahc_cross_walk acw
           INNER JOIN ahc_cross_walk acw_sub ON acw_sub."QUESTION_SLNO_REFERENCE" = acw.QUESTION_SLNO
-          INNER JOIN ${csv.aggrScreeningTableName} scr ON scr."QUESTION_CODE" = acw.QUESTION_CODE
+          INNER JOIN ${csv.aggrScreeningTableName} scr ON (scr."QUESTION_CODE" = acw.QUESTION_CODE OR scr."QUESTION_CODE" IS NULL)
           GROUP BY
               acw.QUESTION_CODE,
               acw.QUESTION_SLNO,
