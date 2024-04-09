@@ -79,7 +79,7 @@ class ComputeStack extends Stack {
     // EC2 Instance
     this.instance = new ec2.Instance(this, "ElevenFifteenComputeInstance", {
       vpc: props.vpc,
-      instanceType: new ec2.InstanceType("t3.micro"),
+      instanceType: new ec2.InstanceType("t3.medium"),
       machineImage: ec2.MachineImage.genericLinux({
         "us-east-1": "ami-0133fb3dded749b65", // debian bullseye latest amd64
         // ...add other regions if necessary
