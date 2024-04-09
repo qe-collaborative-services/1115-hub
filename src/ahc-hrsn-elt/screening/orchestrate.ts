@@ -1144,7 +1144,7 @@ export class OrchEngine {
         'fullUrl', CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',acw.QUESTION_SLNO),
         'resource', JSON_OBJECT(
           'resourceType', 'Observation',
-              'id', CONCAT('observationResponseQuestion_',acw.QUESTION_SLNO),
+              'id', CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',acw.QUESTION_SLNO),
               'meta', JSON_OBJECT(
                   'lastUpdated', RECORDED_TIME,
                   'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
@@ -1169,25 +1169,27 @@ export class OrchEngine {
     // Return the SQL string for the cte_fhir_observation_grouper common table expression
     return `cte_fhir_observation_grouper AS (
       SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
-        'fullUrl', (SELECT CONCAT('ObservationResponseQuestion_', slNo, '_grouper')
-                      FROM (SELECT MAX(QUESTION_SLNO) as slNo
+        'fullUrl', (SELECT CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',slNo,'-grouper'),
+                      FROM (SELECT MAX(QUESTION_SLNO) as slNo, PAT_MRN_ID, FACILITY_ID
                             FROM
                               ${csv.aggrScreeningTableName} ssub
                             LEFT JOIN
                               (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
                             ON acw.QUESTION_SLNO = ssub.src_file_row_number
                             WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
+                            GROUP BY PAT_MRN_ID,FACILITY_ID
                           ) AS sub1),
         'resource', JSON_OBJECT(
           'resourceType', 'Observation',
-              'id', (SELECT CONCAT('ObservationResponseQuestion_', slNo, '_grouper')
-                      FROM (SELECT MAX(QUESTION_SLNO) as slNo
+              'id', (SELECT CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',slNo,'-grouper')
+                      FROM (SELECT MAX(QUESTION_SLNO) as slNo, PAT_MRN_ID, FACILITY_ID
                             FROM
                               ${csv.aggrScreeningTableName} ssub
                             LEFT JOIN
                               (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
                             ON acw.QUESTION_SLNO = ssub.src_file_row_number
                             WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
+                            GROUP BY PAT_MRN_ID,FACILITY_ID
                           ) AS sub1),
               'meta', JSON_OBJECT(
                   'lastUpdated', MAX(RECORDED_TIME),
