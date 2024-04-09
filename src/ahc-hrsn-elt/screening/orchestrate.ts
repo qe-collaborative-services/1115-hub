@@ -1114,11 +1114,15 @@ export class OrchEngine {
       SELECT
           parent_question_code,
           parent_question_sl_no,
+          facility_id,
+          pat_mrn_id,
           json_group_array(json_object('reference', derived_reference)) AS derived_from_references
       FROM (
           SELECT
               acw.QUESTION_CODE AS parent_question_code,
               acw.QUESTION_SLNO AS parent_question_sl_no,
+              scr.PAT_MRN_ID AS pat_mrn_id,
+              scr.FACILITY_ID AS facility_id,
               CONCAT('Observation/observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',acw_sub.QUESTION_SLNO)  AS derived_reference
           FROM
               ahc_cross_walk acw
@@ -1133,7 +1137,9 @@ export class OrchEngine {
       ) AS distinct_references
       GROUP BY
           parent_question_code,
-          parent_question_sl_no
+          parent_question_sl_no,
+          facility_id,
+          pat_mrn_id
     )`;
   }
 
@@ -1154,7 +1160,7 @@ export class OrchEngine {
               CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
                 'coding', json_array(json_object(CASE WHEN QUESTION_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,QUESTION_CODE_SYSTEM_NAME,CASE WHEN scr.QUESTION_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.QUESTION_CODE,CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,QUESTION_CODE_DESCRIPTION))
               ),
-              'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
+              'subject', json_object('reference',CONCAT('Patient/',scr.PAT_MRN_ID)),
               'effectiveDateTime', RECORDED_TIME,
               'issued', RECORDED_TIME,
               'valueCodeableConcept',CASE WHEN acw.CALCULATED_FIELD = 1 THEN json_object('coding',json_array(json_object('system','http://unitsofmeasure.org','code',acw."UCUM_UNITS",'display',ANSWER_CODE_DESCRIPTION))) ELSE json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))) END,
@@ -1385,18 +1391,19 @@ export class OrchEngine {
       } = this.govn;
       const { sessionID } = this.args.session;
       const resourceDb = egress.resourceDbSupplier();
+      /*
+      Removed the update of the diagnostics.md and diagnostics.json content
+      to the orch_session table due to performance issue.
+      TODO: Investigate how to optimize the update query with
+      both the diagnostics fields mentioned above.
+      */
+
       await dax.$`sqlite3 ${resourceDb}`.stdinText(
         `UPDATE ${sessTbl.tableName} SET
             ${c.orch_finished_at} = CURRENT_TIMESTAMP,
             ${c.args_json} = ${
           steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
-        },
-            ${c.diagnostics_json} = ${
-          steo.quotedLiteral(
-            JSON.stringify(this.duckdb.diagnostics, null, "  "),
-          )[1]
-        },
-            ${c.diagnostics_md} = ${steo.quotedLiteral(markdown)[1]}
+        }
           WHERE ${c.orch_session_id} = '${sessionID}'`,
       );
     }
