@@ -1232,7 +1232,7 @@ export class OrchEngine {
                           LEFT JOIN
                             (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
                           ON acw.QUESTION_SLNO = ssub.src_file_row_number
-                          WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL GROUP BY acw.QUESTION_SLNO, PAT_MRN_ID, FACILITY_ID
+                          WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND ssub.PAT_MRN_ID=scr.PAT_MRN_ID AND ssub.FACILITY_ID=scr.FACILITY_ID AND acw.QUESTION_SLNO IS NOT NULL GROUP BY acw.QUESTION_SLNO, PAT_MRN_ID, FACILITY_ID
                           ORDER BY acw.QUESTION_SLNO
                       ) AS sub1
                           )
