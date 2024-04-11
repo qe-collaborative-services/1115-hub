@@ -1122,6 +1122,7 @@ export class OrchEngine {
           parent_question_sl_no,
           facility_id,
           pat_mrn_id,
+          encounter_id,
           json_group_array(json_object('reference', derived_reference)) AS derived_from_references
       FROM (
           SELECT
@@ -1129,7 +1130,8 @@ export class OrchEngine {
               acw.QUESTION_SLNO AS parent_question_sl_no,
               scr.PAT_MRN_ID AS pat_mrn_id,
               scr.FACILITY_ID AS facility_id,
-              CONCAT('Observation/observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',acw_sub.QUESTION_SLNO)  AS derived_reference
+              scr.ENCOUNTER_ID AS encounter_id,
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) END  AS derived_reference
           FROM
               ahc_cross_walk acw
           INNER JOIN ahc_cross_walk acw_sub ON acw_sub."QUESTION_SLNO_REFERENCE" = acw.QUESTION_SLNO
@@ -1139,13 +1141,16 @@ export class OrchEngine {
               acw.QUESTION_SLNO,
               acw_sub.QUESTION_SLNO,
               scr.PAT_MRN_ID,
-              scr.FACILITY_ID
+              scr.FACILITY_ID,
+              scr.ENCOUNTER_ID,
+              scr.RECORDED_TIME
       ) AS distinct_references
       GROUP BY
           parent_question_code,
           parent_question_sl_no,
           facility_id,
-          pat_mrn_id
+          pat_mrn_id,
+          encounter_id
     )`;
   }
 
@@ -1174,7 +1179,7 @@ export class OrchEngine {
               'interpretation',json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive'))))
           )
       ) AS FHIR_Observation
-      FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number AND df.pat_mrn_id=scr.PAT_MRN_ID WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
+      FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number AND df.pat_mrn_id=scr.PAT_MRN_ID AND df.encounter_id = scr.ENCOUNTER_ID WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
   }
 
   createCteFhirObservationGrouper(): string {
