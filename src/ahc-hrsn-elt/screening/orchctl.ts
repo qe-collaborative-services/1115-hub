@@ -10,17 +10,20 @@ import * as mod from "./mod.ts";
 
 async function prepareIngressTxFiles(
   srcDir: string,
-  destDir: string,
+  workflowPaths: mod.OrchEngineWorkflowPaths,
 ): Promise<void> {
   // Read the source directory contents
   let count = 0;
   for await (const dirEntry of Deno.readDir(srcDir)) {
     if (dirEntry.isFile) {
-      // Ensure the destination directory `${rootPath}/ingress-tx/XYZ_TEMP` exists
-      await fs.ensureDir(destDir);
+      if (count == 0) {
+        await workflowPaths.initializePaths?.();
+        // Ensure the destination directory `${rootPath}/ingress-tx/XYZ_TEMP` exists
+        await fs.ensureDir(workflowPaths.ingressTx.home);
+      }
       // Construct the source and destination paths
       const srcPath = `${srcDir}/${dirEntry.name}`;
-      const destPath = `${destDir}/${dirEntry.name}`;
+      const destPath = `${workflowPaths.ingressTx.home}/${dirEntry.name}`;
 
       // Move the file ingress file to the ingress tx directory
       await fs.move(srcPath, destPath);
@@ -29,7 +32,7 @@ async function prepareIngressTxFiles(
   }
 
   console.log(
-    `Prepared ${count} files from ${srcDir} for ingress in ${destDir}`,
+    `Prepared ${count} files from ${srcDir} for ingress in ${workflowPaths.ingressTx.home}`,
   );
 }
 
@@ -220,7 +223,6 @@ await new Command()
         rootPath,
         sessionID,
       );
-      await workflowPaths.initializePaths?.();
 
       const ingressTxPaths = mod.orchEngineIngressPaths(
         workflowPaths.ingressTx.home,
@@ -228,7 +230,7 @@ await new Command()
 
       await prepareIngressTxFiles(
         ingressPath,
-        workflowPaths.ingressTx.home,
+        workflowPaths,
       );
 
       console.dir(ingressPath, workflowPaths.ingressTx.home);
