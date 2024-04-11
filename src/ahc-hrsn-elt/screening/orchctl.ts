@@ -12,13 +12,12 @@ async function prepareIngressTxFiles(
   srcDir: string,
   destDir: string,
 ): Promise<void> {
-  // Ensure the destination directory `${rootPath}/ingress-tx/XYZ_TEMP` exists
-  await fs.ensureDir(destDir);
-
   // Read the source directory contents
   let count = 0;
   for await (const dirEntry of Deno.readDir(srcDir)) {
     if (dirEntry.isFile) {
+      // Ensure the destination directory `${rootPath}/ingress-tx/XYZ_TEMP` exists
+      await fs.ensureDir(destDir);
       // Construct the source and destination paths
       const srcPath = `${srcDir}/${dirEntry.name}`;
       const destPath = `${destDir}/${dirEntry.name}`;
