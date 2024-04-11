@@ -1,24 +1,51 @@
 import { Command } from "https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts";
 import {
   colors as c,
+  fs,
   path,
   SQLa_orch as o,
   SQLa_orch_duckdb as ddbo,
 } from "./deps.ts";
 import * as mod from "./mod.ts";
 
+async function prepareIngressTxFiles(
+  srcDir: string,
+  destDir: string,
+): Promise<void> {
+  // Ensure the destination directory `${rootPath}/ingress-tx/XYZ_TEMP` exists
+  await fs.ensureDir(destDir);
+
+  // Read the source directory contents
+  let count = 0;
+  for await (const dirEntry of Deno.readDir(srcDir)) {
+    if (dirEntry.isFile) {
+      // Construct the source and destination paths
+      const srcPath = `${srcDir}/${dirEntry.name}`;
+      const destPath = `${destDir}/${dirEntry.name}`;
+
+      // Move the file ingress file to the ingress tx directory
+      await fs.move(srcPath, destPath);
+      count++;
+    }
+  }
+
+  console.log(
+    `Prepared ${count} files from ${srcDir} for ingress in ${destDir}`,
+  );
+}
+
 async function ingressWorkflow(
+  sessionID: string,
   govn: ddbo.DuckDbOrchGovernance,
   ip: mod.OrchEngineIngressPaths,
   src:
     | mod.ScreeningIngressGroup
     | o.IngressEntry<string, string>
     | o.IngressEntry<string, string>[],
-  workflowRootPath: string,
+  workflowPaths: mod.OrchEngineWorkflowPaths,
   referenceDataHome: string,
   fhirEndpointUrl?: string,
 ) {
-  const sessionID = await govn.emitCtx.newUUID(false);
   const sessionStart = {
     ingressPaths: ip,
     initAt: new Date(),
@@ -26,12 +53,6 @@ async function ingressWorkflow(
     src,
     version: mod.ORCHESTRATE_VERSION,
   };
-
-  const workflowPaths = mod.orchEngineWorkflowPaths(
-    workflowRootPath,
-    sessionID,
-  );
-  await workflowPaths.initializePaths?.();
 
   const sessionLogFsPath = workflowPaths.egress.resolvedPath("session.json");
   Deno.writeTextFile(
@@ -184,14 +205,34 @@ await new Command()
     async (
       { qe, sftpRoot, referenceDataHome, publishFhir, publishFhirQeId },
     ) => {
-      const rootPath = `${sftpRoot}/${qe}`;
-      const ingressPaths = mod.orchEngineIngressPaths(`${rootPath}/ingress`);
-      console.dir(ingressPaths);
+      // const rootPath = `${sftpRoot}/${qe}`;
+      // const ingressPaths = mod.orchEngineIngressPaths(`${rootPath}/ingress`);
+      // console.dir(ingressPaths);
 
       const govn = new ddbo.DuckDbOrchGovernance(
         true,
         new ddbo.DuckDbOrchEmitContext(),
       );
+      const sessionID = await govn.emitCtx.newUUID(false);
+
+      const rootPath = `${sftpRoot}/${qe}`;
+      const ingressPath = `${rootPath}/ingress`;
+      const workflowPaths = mod.orchEngineWorkflowPaths(
+        rootPath,
+        sessionID,
+      );
+      await workflowPaths.initializePaths?.();
+
+      const ingressTxPaths = mod.orchEngineIngressPaths(
+        workflowPaths.ingressTx.home,
+      );
+
+      await prepareIngressTxFiles(
+        ingressPath,
+        workflowPaths.ingressTx.home,
+      );
+
+      console.dir(ingressPath, workflowPaths.ingressTx.home);
 
       const fhirEndpointUrl = publishFhir
         ? `https://${publishFhir}?processingAgent=${publishFhirQeId}`
@@ -199,10 +240,11 @@ await new Command()
 
       const screeningGroups = new mod.ScreeningIngressGroups(async (group) => {
         await ingressWorkflow(
+          sessionID,
           govn,
-          ingressPaths,
+          ingressTxPaths,
           group,
-          rootPath,
+          workflowPaths,
           referenceDataHome,
           fhirEndpointUrl,
         );
@@ -210,17 +252,18 @@ await new Command()
 
       const watchPaths: o.WatchFsPath<string, string>[] = [{
         pathID: "ingress",
-        rootPath: ingressPaths.ingress.home,
+        rootPath: ingressTxPaths.ingress.home,
         // note: onIngress we just return promises (not awaited) so that we can
         // allow each async workflow to work independently (better performance)
         onIngress: (entry) => {
           const group = screeningGroups.potential(entry);
           try {
             ingressWorkflow(
+              sessionID,
               govn,
-              ingressPaths,
+              ingressTxPaths,
               group ?? entry,
-              rootPath,
+              workflowPaths,
               referenceDataHome,
               fhirEndpointUrl,
             );
@@ -232,17 +275,18 @@ await new Command()
         },
       }];
 
-      console.log(`Processing files in ${ingressPaths.ingress.home}`);
+      console.log(`Processing files in ${ingressTxPaths.ingress.home}`);
       await o.ingestWatchedFs({
         drain: (entries) => {
           // note: drain just return promise (not awaited) so that we can allow each
           // async workflow to work independently (better performance).
           if (entries.length) {
             ingressWorkflow(
+              sessionID,
               govn,
-              ingressPaths,
+              ingressTxPaths,
               entries,
-              rootPath,
+              workflowPaths,
               referenceDataHome,
               fhirEndpointUrl,
             );
