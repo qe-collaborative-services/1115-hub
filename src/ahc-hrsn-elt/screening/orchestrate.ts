@@ -1123,6 +1123,7 @@ export class OrchEngine {
           facility_id,
           pat_mrn_id,
           encounter_id,
+          recorded_time,
           json_group_array(json_object('reference', derived_reference)) AS derived_from_references
       FROM (
           SELECT
@@ -1130,6 +1131,7 @@ export class OrchEngine {
               acw.QUESTION_SLNO AS parent_question_sl_no,
               scr.PAT_MRN_ID AS pat_mrn_id,
               scr.FACILITY_ID AS facility_id,
+              scr.RECORDED_TIME AS recorded_time,
               CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID)	END AS encounter_id,
               CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) END  AS derived_reference
           FROM
@@ -1150,7 +1152,8 @@ export class OrchEngine {
           parent_question_sl_no,
           facility_id,
           pat_mrn_id,
-          encounter_id
+          encounter_id,
+          recorded_time
     )`;
   }
 
@@ -1158,12 +1161,12 @@ export class OrchEngine {
     // Return the SQL string for the cte_fhir_observation common table expression
     return `cte_fhir_observation AS (
       SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
-        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
+        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
         'resource', JSON_OBJECT(
           'resourceType', 'Observation',
-              'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
+              'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
               'meta', JSON_OBJECT(
-                  'lastUpdated', RECORDED_TIME,
+                  'lastUpdated', scr.RECORDED_TIME,
                   'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
               ),
               'status', SCREENING_STATUS_CODE,
@@ -1172,15 +1175,15 @@ export class OrchEngine {
                 'coding', json_array(json_object(CASE WHEN QUESTION_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,QUESTION_CODE_SYSTEM_NAME,CASE WHEN scr.QUESTION_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.QUESTION_CODE,CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,QUESTION_CODE_DESCRIPTION))
               ),
               'subject', json_object('reference',CONCAT('Patient/',scr.PAT_MRN_ID)),
-              'effectiveDateTime', RECORDED_TIME,
-              'issued', RECORDED_TIME,
+              'effectiveDateTime', scr.RECORDED_TIME,
+              'issued', scr.RECORDED_TIME,
               'valueCodeableConcept',CASE WHEN acw.CALCULATED_FIELD = 1 THEN json_object('coding',json_array(json_object('system','http://unitsofmeasure.org','code',acw."UCUM_UNITS",'display',ANSWER_CODE_DESCRIPTION))) ELSE json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))) END,
               CASE WHEN acw.CALCULATED_FIELD = 1 THEN 'derivedFrom' ELSE NULL END, COALESCE(df.derived_from_references, json_array()),
               'interpretation',json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive'))))
           )
       ) AS FHIR_Observation
       FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number AND df.pat_mrn_id=scr.PAT_MRN_ID AND df.encounter_id = (CASE
-      WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END) WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
+      WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END) AND md5(df.recorded_time) = md5(scr.RECORDED_TIME) WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
   }
 
   createCteFhirObservationGrouper(): string {
