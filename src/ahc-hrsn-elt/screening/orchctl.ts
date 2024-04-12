@@ -11,16 +11,18 @@ import * as mod from "./mod.ts";
 async function prepareIngressTxFiles(
   srcDir: string,
   workflowPaths: mod.OrchEngineWorkflowPaths,
-): Promise<void> {
+): Promise<boolean> {
+  let checkIngestionFiles = false;
   // Read the source directory contents
   let count = 0;
   for await (const dirEntry of Deno.readDir(srcDir)) {
     if (dirEntry.isFile) {
+      checkIngestionFiles = true;
       if (count == 0) {
         await workflowPaths.initializePaths?.();
-        // Ensure the destination directory `${rootPath}/ingress-tx/XYZ_TEMP` exists
-        await fs.ensureDir(workflowPaths.ingressTx.home);
       }
+      // Ensure the destination directory `${rootPath}/ingress-tx/XYZ_TEMP` exists
+      await fs.ensureDir(workflowPaths.ingressTx.home);
       // Construct the source and destination paths
       const srcPath = `${srcDir}/${dirEntry.name}`;
       const destPath = `${workflowPaths.ingressTx.home}/${dirEntry.name}`;
@@ -30,10 +32,12 @@ async function prepareIngressTxFiles(
       count++;
     }
   }
-
-  console.log(
-    `Prepared ${count} files from ${srcDir} for ingress in ${workflowPaths.ingressTx.home}`,
-  );
+  if (count > 0) {
+    console.log(
+      `Prepared ${count} files from ${srcDir} for ingress in ${workflowPaths.ingressTx.home}`,
+    );
+  }
+  return checkIngestionFiles;
 }
 
 async function ingressWorkflow(
@@ -228,74 +232,78 @@ await new Command()
         workflowPaths.ingressTx.home,
       );
 
-      await prepareIngressTxFiles(
+      const checkIngestionFiles = await prepareIngressTxFiles(
         ingressPath,
         workflowPaths,
       );
+      if (checkIngestionFiles) {
+        console.dir(ingressPath, workflowPaths.ingressTx.home);
 
-      console.dir(ingressPath, workflowPaths.ingressTx.home);
+        const fhirEndpointUrl = publishFhir
+          ? `https://${publishFhir}?processingAgent=${publishFhirQeId}`
+          : undefined;
 
-      const fhirEndpointUrl = publishFhir
-        ? `https://${publishFhir}?processingAgent=${publishFhirQeId}`
-        : undefined;
-
-      const screeningGroups = new mod.ScreeningIngressGroups(async (group) => {
-        await ingressWorkflow(
-          sessionID,
-          govn,
-          ingressTxPaths,
-          group,
-          workflowPaths,
-          referenceDataHome,
-          fhirEndpointUrl,
+        const screeningGroups = new mod.ScreeningIngressGroups(
+          async (group) => {
+            await ingressWorkflow(
+              sessionID,
+              govn,
+              ingressTxPaths,
+              group,
+              workflowPaths,
+              referenceDataHome,
+              fhirEndpointUrl,
+            );
+          },
         );
-      });
 
-      const watchPaths: o.WatchFsPath<string, string>[] = [{
-        pathID: "ingress",
-        rootPath: ingressTxPaths.ingress.home,
-        // note: onIngress we just return promises (not awaited) so that we can
-        // allow each async workflow to work independently (better performance)
-        onIngress: (entry) => {
-          const group = screeningGroups.potential(entry);
-          try {
-            ingressWorkflow(
-              sessionID,
-              govn,
-              ingressTxPaths,
-              group ?? entry,
-              workflowPaths,
-              referenceDataHome,
-              fhirEndpointUrl,
-            );
-          } catch (err) {
-            // TODO: store the error in a proper log
-            console.dir(entry);
-            console.error(err);
-          }
-        },
-      }];
+        const watchPaths: o.WatchFsPath<string, string>[] = [{
+          pathID: "ingress",
+          rootPath: ingressTxPaths.ingress.home,
+          // note: onIngress we just return promises (not awaited) so that we can
+          // allow each async workflow to work independently (better performance)
+          onIngress: (entry) => {
+            const group = screeningGroups.potential(entry);
+            try {
+              ingressWorkflow(
+                sessionID,
+                govn,
+                ingressTxPaths,
+                group ?? entry,
+                workflowPaths,
+                referenceDataHome,
+                fhirEndpointUrl,
+              );
+            } catch (err) {
+              // TODO: store the error in a proper log
+              console.dir(entry);
+              console.error(err);
+            }
+          },
+        }];
 
-      console.log(`Processing files in ${ingressTxPaths.ingress.home}`);
-      await o.ingestWatchedFs({
-        drain: (entries) => {
-          // note: drain just return promise (not awaited) so that we can allow each
-          // async workflow to work independently (better performance).
-          if (entries.length) {
-            ingressWorkflow(
-              sessionID,
-              govn,
-              ingressTxPaths,
-              entries,
-              workflowPaths,
-              referenceDataHome,
-              fhirEndpointUrl,
-            );
-          }
-        },
-        watch: false,
-        watchPaths,
-      });
+        console.log(`Processing files in ${ingressTxPaths.ingress.home}`);
+
+        await o.ingestWatchedFs({
+          drain: (entries) => {
+            // note: drain just return promise (not awaited) so that we can allow each
+            // async workflow to work independently (better performance).
+            if (entries.length) {
+              ingressWorkflow(
+                sessionID,
+                govn,
+                ingressTxPaths,
+                entries,
+                workflowPaths,
+                referenceDataHome,
+                fhirEndpointUrl,
+              );
+            }
+          },
+          watch: false,
+          watchPaths,
+        });
+      }
     },
   )
   .parse();
