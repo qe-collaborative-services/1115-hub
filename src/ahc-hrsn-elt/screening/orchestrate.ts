@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.12.2";
+export const ORCHESTRATE_VERSION = "0.13.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -285,6 +285,7 @@ export interface OrchEngineIngressPaths {
 }
 
 export interface OrchEngineWorkflowPaths {
+  readonly ingressTx: OrchEngineStorablePath;
   readonly ingressArchive?: OrchEngineStorablePath;
   readonly inProcess: OrchEngineStorablePath & {
     readonly duckDbFsPathSupplier: () => string;
@@ -372,13 +373,18 @@ export function orchEngineWorkflowPaths(
   };
   const ingressArchive: OrchEngineWorkflowPaths["ingressArchive"] =
     oeStorablePath(path.join("egress", sessionID, ".consumed"));
+  const ingressTx: OrchEngineWorkflowPaths["ingressTx"] = oeStorablePath(
+    path.join("egress", sessionID, ".ingress-tx"),
+  );
 
   return {
+    ingressTx,
     ingressArchive,
     inProcess,
     egress,
 
     initializePaths: async () => {
+      await Deno.mkdir(ingressTx.home, { recursive: true });
       await Deno.mkdir(ingressArchive.home, { recursive: true });
       await Deno.mkdir(inProcess.home, { recursive: true });
       await Deno.mkdir(egress.home, { recursive: true });
@@ -1116,6 +1122,7 @@ export class OrchEngine {
           parent_question_sl_no,
           facility_id,
           pat_mrn_id,
+          encounter_id,
           json_group_array(json_object('reference', derived_reference)) AS derived_from_references
       FROM (
           SELECT
@@ -1123,7 +1130,8 @@ export class OrchEngine {
               acw.QUESTION_SLNO AS parent_question_sl_no,
               scr.PAT_MRN_ID AS pat_mrn_id,
               scr.FACILITY_ID AS facility_id,
-              CONCAT('Observation/observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',acw_sub.QUESTION_SLNO)  AS derived_reference
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID)	END AS encounter_id,
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) END  AS derived_reference
           FROM
               ahc_cross_walk acw
           INNER JOIN ahc_cross_walk acw_sub ON acw_sub."QUESTION_SLNO_REFERENCE" = acw.QUESTION_SLNO
@@ -1133,13 +1141,16 @@ export class OrchEngine {
               acw.QUESTION_SLNO,
               acw_sub.QUESTION_SLNO,
               scr.PAT_MRN_ID,
-              scr.FACILITY_ID
+              scr.FACILITY_ID,
+              scr.ENCOUNTER_ID,
+              scr.RECORDED_TIME
       ) AS distinct_references
       GROUP BY
           parent_question_code,
           parent_question_sl_no,
           facility_id,
-          pat_mrn_id
+          pat_mrn_id,
+          encounter_id
     )`;
   }
 
@@ -1147,10 +1158,10 @@ export class OrchEngine {
     // Return the SQL string for the cte_fhir_observation common table expression
     return `cte_fhir_observation AS (
       SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
-        'fullUrl', CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',acw.QUESTION_SLNO),
+        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
         'resource', JSON_OBJECT(
           'resourceType', 'Observation',
-              'id', CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',acw.QUESTION_SLNO),
+              'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
               'meta', JSON_OBJECT(
                   'lastUpdated', RECORDED_TIME,
                   'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
@@ -1168,34 +1179,37 @@ export class OrchEngine {
               'interpretation',json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive'))))
           )
       ) AS FHIR_Observation
-      FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number AND df.pat_mrn_id=scr.PAT_MRN_ID WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
+      FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number AND df.pat_mrn_id=scr.PAT_MRN_ID AND df.encounter_id = (CASE
+      WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END) WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
   }
 
   createCteFhirObservationGrouper(): string {
     // Return the SQL string for the cte_fhir_observation_grouper common table expression
     return `cte_fhir_observation_grouper AS (
       SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
-        'fullUrl', (SELECT CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',slNo,'-grouper'),
-                      FROM (SELECT MAX(QUESTION_SLNO) as slNo, PAT_MRN_ID, FACILITY_ID
+        'fullUrl', (SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') ELSE CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') END
+                      FROM (SELECT MAX(QUESTION_SLNO) as slNo, PAT_MRN_ID, FACILITY_ID, RECORDED_TIME
                             FROM
                               ${csv.aggrScreeningTableName} ssub
                             LEFT JOIN
                               (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
                             ON acw.QUESTION_SLNO = ssub.src_file_row_number
-                            WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
-                            GROUP BY PAT_MRN_ID,FACILITY_ID
+                            WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL AND ssub.PAT_MRN_ID = scr.PAT_MRN_ID
+                            GROUP BY PAT_MRN_ID,FACILITY_ID,RECORDED_TIME
+                            ORDER BY RECORDED_TIME
                           ) AS sub1),
         'resource', JSON_OBJECT(
           'resourceType', 'Observation',
-              'id', (SELECT CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',slNo,'-grouper')
-                      FROM (SELECT MAX(QUESTION_SLNO) as slNo, PAT_MRN_ID, FACILITY_ID
+              'id', (SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') ELSE CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') END
+                      FROM (SELECT MAX(QUESTION_SLNO) as slNo, PAT_MRN_ID, FACILITY_ID,RECORDED_TIME
                             FROM
                               ${csv.aggrScreeningTableName} ssub
                             LEFT JOIN
                               (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
                             ON acw.QUESTION_SLNO = ssub.src_file_row_number
-                            WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL
-                            GROUP BY PAT_MRN_ID,FACILITY_ID
+                            WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND acw.QUESTION_SLNO IS NOT NULL AND ssub.PAT_MRN_ID = scr.PAT_MRN_ID
+                            GROUP BY PAT_MRN_ID,FACILITY_ID,RECORDED_TIME
+                            ORDER BY RECORDED_TIME
                           ) AS sub1),
               'meta', JSON_OBJECT(
                   'lastUpdated', MAX(RECORDED_TIME),
@@ -1228,17 +1242,17 @@ export class OrchEngine {
               'effectiveDateTime', MAX(RECORDED_TIME),
               'issued', MAX(RECORDED_TIME),
               'hasMember', (SELECT json_group_array(JSON_OBJECT(
-                              'reference', CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',sub1.QUESTION_SLNO)
+                              'reference', CASE WHEN sub1.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',sub1.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO) END
                           ))
                           FROM (
                           SELECT DISTINCT
-                              QUESTION_SLNO, PAT_MRN_ID, FACILITY_ID
+                              QUESTION_SLNO, PAT_MRN_ID, FACILITY_ID, RECORDED_TIME, ENCOUNTER_ID
                           FROM
                           ${csv.aggrScreeningTableName} ssub
                           LEFT JOIN
                             (SELECT DISTINCT QUESTION_SLNO FROM ahc_cross_walk) acw
                           ON acw.QUESTION_SLNO = ssub.src_file_row_number
-                          WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND ssub.PAT_MRN_ID=scr.PAT_MRN_ID AND ssub.FACILITY_ID=scr.FACILITY_ID AND acw.QUESTION_SLNO IS NOT NULL GROUP BY acw.QUESTION_SLNO, PAT_MRN_ID, FACILITY_ID
+                          WHERE ssub.SCREENING_CODE=scr.SCREENING_CODE AND ssub.PAT_MRN_ID=scr.PAT_MRN_ID AND ssub.FACILITY_ID=scr.FACILITY_ID AND acw.QUESTION_SLNO IS NOT NULL GROUP BY acw.QUESTION_SLNO, PAT_MRN_ID, FACILITY_ID, RECORDED_TIME, ENCOUNTER_ID
                           ORDER BY acw.QUESTION_SLNO
                       ) AS sub1
                           )

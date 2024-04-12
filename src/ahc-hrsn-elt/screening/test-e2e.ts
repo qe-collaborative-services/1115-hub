@@ -84,6 +84,12 @@ function e2eTestWorkflowPaths(rootPath: string): mod.OrchEngineWorkflowPaths {
     duckDbFsPathSupplier: () =>
       inProcess.resolvedPath("ingestion-center.duckdb"),
   };
+
+  const ingressTx: mod.OrchEngineWorkflowPaths["ingressTx"] = {
+    ...oeStorablePath(
+      "support/assurance/ahc-hrsn-elt/screening/ingress-tx",
+    ),
+  };
   const egress: mod.OrchEngineWorkflowPaths["egress"] = {
     ...oeStorablePath(
       "support/assurance/ahc-hrsn-elt/screening/results-test-e2e",
@@ -99,6 +105,7 @@ function e2eTestWorkflowPaths(rootPath: string): mod.OrchEngineWorkflowPaths {
   };
 
   return {
+    ingressTx,
     inProcess,
     egress,
     initializePaths: async () => {
