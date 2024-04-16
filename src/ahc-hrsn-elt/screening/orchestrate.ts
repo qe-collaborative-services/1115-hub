@@ -1492,6 +1492,7 @@ export class OrchEngine {
     const { workflowPaths: { egress } } = this.args;
     if (egress.diagsXlsxSupplier) {
       const diagsXlsx = egress.diagsXlsxSupplier();
+
       // if Excel workbook already exists, GDAL xlsx driver will error
       try {
         Deno.removeSync(diagsXlsx);
@@ -1504,7 +1505,8 @@ export class OrchEngine {
         ws.unindentWhitespace(`
           INSTALL spatial; LOAD spatial;
           -- TODO: join with orch_session table to give all the results in one sheet
-          COPY (SELECT * FROM orch_session_issue_classification) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+          COPY (SELECT * FROM orch_session_issue_classification) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');
+          COPY (SELECT * FROM orch_session_fhir_emit) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
         "emitDiagnostics"
       );
     }
@@ -1624,23 +1626,6 @@ export class OrchEngine {
           steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
         }
           WHERE ${c.orch_session_id} = '${sessionID}'`,
-      );
-    }
-    if (egress.diagsFhirXlsxSupplier) {
-      const diagsFhirXlsx = egress.diagsFhirXlsxSupplier();
-      // if Excel workbook already exists, GDAL xlsx driver will error
-      try {
-        Deno.removeSync(diagsFhirXlsx);
-      } catch (_err) {
-        // ignore errors if file does not exist
-      }
-
-      // deno-fmt-ignore
-      await this.duckdb.execute(
-        ws.unindentWhitespace(`
-          INSTALL spatial; LOAD spatial;
-          COPY (SELECT * FROM orch_session_fhir_emit) TO '${diagsFhirXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
-        "emitDiagnostics"
       );
     }
 
