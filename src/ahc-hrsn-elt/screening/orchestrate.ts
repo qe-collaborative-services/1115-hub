@@ -361,7 +361,7 @@ export function orchEngineWorkflowPaths(
     diagsJsonSupplier: () => egress.resolvedPath("diagnostics.json"),
     diagsMdSupplier: () => egress.resolvedPath("diagnostics.md"),
     diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
-    diagsFhirXlsxSupplier: () => egress.resolvedPath("fhir-diagnostics.xlsx"),
+    diagsFhirXlsxSupplier: () => egress.resolvedPath("diagnostics-fhir.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
     fhirJsonSupplier: (id: string) => {
       return egress.resolvedPath("fhir-" + id + ".json");
@@ -854,8 +854,6 @@ export class OrchEngine {
 
           CREATE VIEW orch_session_fhir_emit AS
           WITH ValidEncounters AS (
-
-
               SELECT
               DISTINCT (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) AS UNIQUE_ID,
               CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID ,
@@ -881,7 +879,6 @@ export class OrchEngine {
               WHERE
               osic.DISPOSITION IN ('REJECTION', 'STRUCTURAL ISSUE')
 
-
               UNION ALL
 
               SELECT
@@ -901,12 +898,10 @@ export class OrchEngine {
               ON osic.ingest_table_name = qad.source_table
               JOIN ${csv.aggrScreeningTableName} scr
               ON qad.PAT_MRN_ID = scr.PAT_MRN_ID
-
               WHERE
               osic.DISPOSITION IN ('REJECTION', 'STRUCTURAL ISSUE')
 
               UNION ALL
-
 
               SELECT
               DISTINCT (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) AS UNIQUE_ID,
@@ -1492,10 +1487,13 @@ export class OrchEngine {
     const { workflowPaths: { egress } } = this.args;
     if (egress.diagsXlsxSupplier) {
       const diagsXlsx = egress.diagsXlsxSupplier();
+      const diagsFhirXlsx = egress.diagsFhirXlsxSupplier?.() ??
+        "diagnostics-fhir.xlsx";
 
       // if Excel workbook already exists, GDAL xlsx driver will error
       try {
         Deno.removeSync(diagsXlsx);
+        Deno.removeSync(diagsFhirXlsx);
       } catch (_err) {
         // ignore errors if file does not exist
       }
@@ -1506,7 +1504,7 @@ export class OrchEngine {
           INSTALL spatial; LOAD spatial;
           -- TODO: join with orch_session table to give all the results in one sheet
           COPY (SELECT * FROM orch_session_issue_classification) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');
-          COPY (SELECT * FROM orch_session_fhir_emit) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+          COPY (SELECT * FROM orch_session_fhir_emit) TO '${diagsFhirXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
         "emitDiagnostics"
       );
     }
