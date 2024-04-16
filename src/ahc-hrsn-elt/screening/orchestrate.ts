@@ -294,6 +294,7 @@ export interface OrchEngineWorkflowPaths {
     readonly resourceDbSupplier?: () => string;
     readonly diagsJsonSupplier?: () => string;
     readonly diagsXlsxSupplier?: () => string;
+    readonly diagsFhirXlsxSupplier?: () => string;
     readonly diagsMdSupplier?: () => string;
     readonly fhirJsonSupplier?: (pat_mrn_id: string) => string;
     readonly fhirHttpSupplier?: () => string;
@@ -360,6 +361,7 @@ export function orchEngineWorkflowPaths(
     diagsJsonSupplier: () => egress.resolvedPath("diagnostics.json"),
     diagsMdSupplier: () => egress.resolvedPath("diagnostics.md"),
     diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
+    diagsFhirXlsxSupplier: () => egress.resolvedPath("fhir-diagnostics.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
     fhirJsonSupplier: (id: string) => {
       return egress.resolvedPath("fhir-" + id + ".json");
@@ -650,10 +652,17 @@ export class OrchEngine {
           sessionEntryID,
           govn,
         );
-        tableGroupCheckSql.push(
-          gCsvStr.checkAllTablesAreIngestedInAGroup(value, tableName)
-            .SQL(ctx) + ";",
-        );
+        if (
+          tableName.includes("screening") ||
+          tableName.includes("admin_demographics") ||
+          tableName.includes("qe_admin_data")
+        ) {
+          tableGroupCheckSql.push(
+            gCsvStr.checkAllTablesAreIngestedInAGroup(value, tableName).SQL(
+              ctx,
+            ) + ";",
+          );
+        }
       });
 
       this.ingestables.push({
@@ -843,6 +852,198 @@ export class OrchEngine {
 
           DETACH DATABASE ${rdbSchemaName};
 
+          CREATE VIEW orch_session_fhir_emit AS
+          WITH ValidEncounters AS (
+
+
+              SELECT
+              DISTINCT (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) AS UNIQUE_ID,
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID ,
+              osic.orch_session_id,
+              osic.device_id,
+              osic.version,
+              osic.orch_session_entry_id,
+              scr.PAT_MRN_ID ,
+              scr.FACILITY_ID ,
+              osic.disposition,
+              CASE
+              WHEN osic.disposition = 'REJECTION'
+              OR osic.disposition = 'STRUCTURAL ISSUE' THEN 'NO'
+              ELSE 'YES'
+              END AS FHIR_EMITTABLE
+              -- Add name of the fhir json file, session id and other ways to connect this to the proper session
+              -- Later we might actually store the fhir json in the actual column as well
+              FROM
+              orch_session_issue_classification osic
+              JOIN ${csv.aggrScreeningTableName} scr
+              ON
+              osic.ingest_table_name = scr.source_table
+              WHERE
+              osic.DISPOSITION IN ('REJECTION', 'STRUCTURAL ISSUE')
+
+
+              UNION ALL
+
+              SELECT
+              DISTINCT (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) AS UNIQUE_ID,
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID ,
+              osic.orch_session_id,
+              osic.device_id,
+              osic.version,
+              osic.orch_session_entry_id,
+              qad.PAT_MRN_ID ,
+              scr.FACILITY_ID ,
+              osic.DISPOSITION,
+              CASE WHEN osic.disposition = 'REJECTION' OR osic.disposition = 'STRUCTURAL ISSUE' THEN 'NO' ELSE 'YES' END AS FHIR_EMITTABLE
+              FROM
+              orch_session_issue_classification osic
+              JOIN ${csv.aggrQeAdminData}  qad
+              ON osic.ingest_table_name = qad.source_table
+              JOIN ${csv.aggrScreeningTableName} scr
+              ON qad.PAT_MRN_ID = scr.PAT_MRN_ID
+
+              WHERE
+              osic.DISPOSITION IN ('REJECTION', 'STRUCTURAL ISSUE')
+
+              UNION ALL
+
+
+              SELECT
+              DISTINCT (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) AS UNIQUE_ID,
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID ,
+              osic.orch_session_id,
+              osic.device_id,
+              osic.version,
+              osic.orch_session_entry_id,
+              adt.PAT_MRN_ID ,
+              scr.FACILITY_ID ,
+              osic.DISPOSITION,
+              CASE
+              WHEN osic.disposition = 'REJECTION'
+              OR osic.disposition = 'STRUCTURAL ISSUE' THEN 'NO'
+              ELSE 'YES'
+              END AS FHIR_EMITTABLE
+              FROM
+              orch_session_issue_classification osic
+              JOIN ${csv.aggrPatientDemogrTableName} adt
+              ON
+              osic.ingest_table_name = adt.source_table
+              JOIN ${csv.aggrScreeningTableName} scr
+              ON
+              adt.PAT_MRN_ID = scr.PAT_MRN_ID
+              WHERE
+              osic.DISPOSITION IN ('REJECTION', 'STRUCTURAL ISSUE')
+              ),
+              InvalidEncounters AS (
+
+              SELECT
+              DISTINCT (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) AS UNIQUE_ID,
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID ,
+              osic.orch_session_id,
+              osic.device_id,
+              osic.version,
+              osic.orch_session_entry_id,
+              scr.PAT_MRN_ID ,
+              scr.FACILITY_ID ,
+              osic.disposition,
+              CASE
+              WHEN osic.disposition = 'REJECTION'
+              OR osic.disposition = 'STRUCTURAL ISSUE' THEN 'NO'
+              ELSE 'YES'
+              END AS FHIR_EMITTABLE
+              FROM
+              orch_session_issue_classification osic
+              JOIN ${csv.aggrScreeningTableName} scr
+              ON
+              osic.ingest_table_name = scr.source_table
+
+              WHERE
+              osic.DISPOSITION NOT IN ('REJECTION', 'STRUCTURAL ISSUE')
+
+
+              UNION ALL
+
+              SELECT
+              DISTINCT (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) AS UNIQUE_ID,
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID ,
+              osic.orch_session_id,
+              osic.device_id,
+              osic.version,
+              osic.orch_session_entry_id,
+              qad.PAT_MRN_ID ,
+              scr.FACILITY_ID ,
+              osic.DISPOSITION,
+              CASE WHEN osic.disposition = 'REJECTION' OR osic.disposition = 'STRUCTURAL ISSUE' THEN 'NO' ELSE 'YES' END AS FHIR_EMITTABLE
+              FROM
+              orch_session_issue_classification osic
+              JOIN ${csv.aggrQeAdminData}  qad
+              ON osic.ingest_table_name = qad.source_table
+              JOIN ${csv.aggrScreeningTableName} scr
+              ON qad.PAT_MRN_ID = scr.PAT_MRN_ID
+
+              WHERE
+              osic.DISPOSITION NOT IN ('REJECTION', 'STRUCTURAL ISSUE')
+
+              UNION ALL
+
+              SELECT
+              DISTINCT (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) AS UNIQUE_ID,
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID ,
+              osic.orch_session_id,
+              osic.device_id,
+              osic.version,
+              osic.orch_session_entry_id,
+              adt.PAT_MRN_ID ,
+              scr.FACILITY_ID ,
+              osic.DISPOSITION,
+              CASE
+              WHEN osic.disposition = 'REJECTION'
+              OR osic.disposition = 'STRUCTURAL ISSUE' THEN 'NO'
+              ELSE 'YES'
+              END AS FHIR_EMITTABLE
+              FROM
+              orch_session_issue_classification osic
+              JOIN ${csv.aggrPatientDemogrTableName} adt
+              ON
+              osic.ingest_table_name = adt.source_table
+              JOIN ${csv.aggrScreeningTableName} scr
+              ON
+              adt.PAT_MRN_ID = scr.PAT_MRN_ID
+              WHERE
+              osic.DISPOSITION NOT IN ('REJECTION', 'STRUCTURAL ISSUE')
+              )
+
+              SELECT
+              ENCOUNTER_ID,
+              orch_session_id AS ORCH_SESSION_ID,
+              device_id AS DEVICE_ID,
+              version AS VERSION,
+              orch_session_entry_id AS ORCH_SESSION_ENTRY_ID,
+              PAT_MRN_ID,
+              disposition AS DISPOSITION,
+              FHIR_EMITTABLE,
+              CONCAT('fhir-',PAT_MRN_ID,'-',ENCOUNTER_ID,'.json') AS FHIR_JSON_FILE
+              FROM
+              ValidEncounters
+
+              UNION ALL
+
+              SELECT
+              ENCOUNTER_ID,
+              orch_session_id AS ORCH_SESSION_ID,
+              device_id AS DEVICE_ID,
+              version AS VERSION,
+              orch_session_entry_id AS ORCH_SESSION_ENTRY_ID,
+              PAT_MRN_ID,
+              disposition AS DISPOSITION,
+              FHIR_EMITTABLE,
+              CONCAT('fhir-',PAT_MRN_ID,'-',ENCOUNTER_ID,'.json') AS FHIR_JSON_FILE
+              FROM
+              InvalidEncounters
+              WHERE
+              ENCOUNTER_ID NOT IN (SELECT ENCOUNTER_ID FROM ValidEncounters);
+
+
           ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
           .SQL(this.govn.emitCtx),
         isc.current.nbCellID,
@@ -920,7 +1121,7 @@ export class OrchEngine {
     // Return the SQL string for the cte_fhir_patient common table expression
     // You can use a similar approach as in the original query
     return `WITH cte_fhir_patient AS (
-      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID)END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object('fullUrl', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object('fullUrl', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
         'resource', json_object(
               'resourceType', 'Patient',
               'id', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
@@ -1039,7 +1240,7 @@ export class OrchEngine {
   createCteFhirConsent(): string {
     // Return the SQL string for the cte_fhir_consent common table expression
     return `cte_fhir_consent AS (
-      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object('fullUrl', CONCAT('consentFor',adt.PAT_MRN_ID),
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object('fullUrl', CONCAT('consentFor',adt.PAT_MRN_ID),
         'resource', json_object(
               'resourceType', 'Consent',
               'id', CONCAT('consentFor',adt.PAT_MRN_ID),
@@ -1073,7 +1274,7 @@ export class OrchEngine {
   createCteFhirOrg(): string {
     // Return the SQL string for the cte_fhir_org common table expression
     return `cte_fhir_org AS (
-      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,qed.PAT_MRN_ID, JSON_OBJECT(
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,qed.PAT_MRN_ID, JSON_OBJECT(
         'fullUrl', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
         'resource', JSON_OBJECT(
             'resourceType', 'Organization',
@@ -1132,7 +1333,7 @@ export class OrchEngine {
               scr.PAT_MRN_ID AS pat_mrn_id,
               scr.FACILITY_ID AS facility_id,
               scr.RECORDED_TIME AS recorded_time,
-              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID)	END AS encounter_id,
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)	END AS encounter_id,
               CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) END  AS derived_reference
           FROM
               ahc_cross_walk acw
@@ -1160,7 +1361,7 @@ export class OrchEngine {
   createCteFhirObservation(): string {
     // Return the SQL string for the cte_fhir_observation common table expression
     return `cte_fhir_observation AS (
-      SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
+      SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
         'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
         'resource', JSON_OBJECT(
           'resourceType', 'Observation',
@@ -1183,13 +1384,13 @@ export class OrchEngine {
           )
       ) AS FHIR_Observation
       FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number AND df.pat_mrn_id=scr.PAT_MRN_ID AND df.encounter_id = (CASE
-      WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END) AND md5(df.recorded_time) = md5(scr.RECORDED_TIME) WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
+      WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END) AND md5(df.recorded_time) = md5(scr.RECORDED_TIME) WHERE acw.QUESTION_SLNO IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
   }
 
   createCteFhirObservationGrouper(): string {
     // Return the SQL string for the cte_fhir_observation_grouper common table expression
     return `cte_fhir_observation_grouper AS (
-      SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
+      SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
         'fullUrl', (SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') ELSE CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') END
                       FROM (SELECT MAX(QUESTION_SLNO) as slNo, PAT_MRN_ID, FACILITY_ID, RECORDED_TIME
                             FROM
@@ -1267,11 +1468,11 @@ export class OrchEngine {
   createCteFhirEncounter(): string {
     // Return the SQL string for the cte_fhir_encounter common table expression
     return `cte_fhir_encounter AS (
-      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'_',scr.PAT_MRN_ID)) scr.PAT_MRN_ID, CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END AS ENCOUNTER_ID, JSON_OBJECT(
-        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) scr.PAT_MRN_ID, CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID, JSON_OBJECT(
+        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END,
         'resource', JSON_OBJECT(
           'resourceType', 'Encounter',
-          'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter_',scr.FACILITY_ID,'_',scr.PAT_MRN_ID) END,
+          'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END,
           'meta', JSON_OBJECT(
               'lastUpdated', RECORDED_TIME,
               'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
@@ -1304,6 +1505,23 @@ export class OrchEngine {
           INSTALL spatial; LOAD spatial;
           -- TODO: join with orch_session table to give all the results in one sheet
           COPY (SELECT * FROM orch_session_issue_classification) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+        "emitDiagnostics"
+      );
+    }
+    if (egress.diagsFhirXlsxSupplier) {
+      const diagsFhirXlsx = egress.diagsFhirXlsxSupplier();
+      // if Excel workbook already exists, GDAL xlsx driver will error
+      try {
+        Deno.removeSync(diagsFhirXlsx);
+      } catch (_err) {
+        // ignore errors if file does not exist
+      }
+
+      // deno-fmt-ignore
+      await this.duckdb.execute(
+        ws.unindentWhitespace(`
+          INSTALL spatial; LOAD spatial;
+          COPY (SELECT * FROM orch_session_fhir_emit) TO '${diagsFhirXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
         "emitDiagnostics"
       );
     }
@@ -1346,7 +1564,8 @@ export class OrchEngine {
     if (egress.fhirJsonSupplier && fhirGeneratorCheck) {
       const results = await this.duckdb.jsonResult(
         this.govn.SQL`
-          SELECT PAT_MRN_ID, ENCOUNTER_ID, FHIR_Bundle as FHIR FROM fhir_bundle
+          SELECT fb.PAT_MRN_ID, fb.ENCOUNTER_ID, FHIR_Bundle as FHIR FROM fhir_bundle fb LEFT JOIN orch_session_fhir_emit fe ON fb.ENCOUNTER_ID=fe.ENCOUNTER_ID
+          WHERE fe.FHIR_EMITTABLE!='NO' OR fe.FHIR_EMITTABLE IS NULL;
         `.SQL(
           this.govn.emitCtx,
         ),
