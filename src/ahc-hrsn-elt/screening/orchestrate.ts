@@ -1508,23 +1508,6 @@ export class OrchEngine {
         "emitDiagnostics"
       );
     }
-    if (egress.diagsFhirXlsxSupplier) {
-      const diagsFhirXlsx = egress.diagsFhirXlsxSupplier();
-      // if Excel workbook already exists, GDAL xlsx driver will error
-      try {
-        Deno.removeSync(diagsFhirXlsx);
-      } catch (_err) {
-        // ignore errors if file does not exist
-      }
-
-      // deno-fmt-ignore
-      await this.duckdb.execute(
-        ws.unindentWhitespace(`
-          INSTALL spatial; LOAD spatial;
-          COPY (SELECT * FROM orch_session_fhir_emit) TO '${diagsFhirXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
-        "emitDiagnostics"
-      );
-    }
 
     const stringifiableArgs = JSON.parse(
       JSON.stringify(
@@ -1641,6 +1624,23 @@ export class OrchEngine {
           steo.quotedLiteral(JSON.stringify(stringifiableArgs, null, "  "))[1]
         }
           WHERE ${c.orch_session_id} = '${sessionID}'`,
+      );
+    }
+    if (egress.diagsFhirXlsxSupplier) {
+      const diagsFhirXlsx = egress.diagsFhirXlsxSupplier();
+      // if Excel workbook already exists, GDAL xlsx driver will error
+      try {
+        Deno.removeSync(diagsFhirXlsx);
+      } catch (_err) {
+        // ignore errors if file does not exist
+      }
+
+      // deno-fmt-ignore
+      await this.duckdb.execute(
+        ws.unindentWhitespace(`
+          INSTALL spatial; LOAD spatial;
+          COPY (SELECT * FROM orch_session_fhir_emit) TO '${diagsFhirXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+        "emitDiagnostics"
       );
     }
 
