@@ -1548,7 +1548,7 @@ export class OrchEngine {
       const results = await this.duckdb.jsonResult(
         this.govn.SQL`
           SELECT fb.PAT_MRN_ID, fb.ENCOUNTER_ID, FHIR_Bundle as FHIR FROM fhir_bundle fb LEFT JOIN orch_session_fhir_emit fe ON fb.ENCOUNTER_ID=fe.ENCOUNTER_ID
-          WHERE fe.FHIR_EMITTABLE!='NO' OR fe.FHIR_EMITTABLE IS NULL;
+          WHERE (fe.FHIR_EMITTABLE!='NO' OR fe.FHIR_EMITTABLE IS NULL) AND (fe.PAT_MRN_ID IS NOT NULL);
         `.SQL(
           this.govn.emitCtx,
         ),
