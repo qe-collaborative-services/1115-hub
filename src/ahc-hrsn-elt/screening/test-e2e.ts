@@ -97,6 +97,7 @@ function e2eTestWorkflowPaths(rootPath: string): mod.OrchEngineWorkflowPaths {
     diagsJsonSupplier: () => egress.resolvedPath("diagnostics.json"),
     diagsMdSupplier: () => egress.resolvedPath("diagnostics.md"),
     diagsXlsxSupplier: () => egress.resolvedPath("diagnostics.xlsx"),
+    diagsFhirXlsxSupplier: () => egress.resolvedPath("fhir-diagnostics.xlsx"),
     resourceDbSupplier: () => egress.resolvedPath("resource.sqlite.db"),
     fhirJsonSupplier: (id: string) => {
       return egress.resolvedPath("fhir-" + id + ".json");

@@ -393,13 +393,13 @@ export class ScreeningCsvFileIngestSource<
         this.govn.emitCtx.sqlEngineNow
       )}
 
-      CREATE TABLE IF NOT EXISTS ${aggrScreeningTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
-      INSERT INTO ${aggrScreeningTableName} SELECT * FROM ${tableName};
+      CREATE TABLE IF NOT EXISTS ${aggrScreeningTableName} AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${aggrScreeningTableName} SELECT *, '${tableName}' AS source_table FROM ${tableName};
 
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
 
-      CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrScreeningTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
-      INSERT INTO ${targetSchema}.${aggrScreeningTableName} SELECT * FROM ${tableName};
+      CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrScreeningTableName} AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${targetSchema}.${aggrScreeningTableName} SELECT *, '${tableName}' AS source_table FROM ${tableName};
 
       -- try sqltofhir Visual Studio Code extension for writing FHIR resources with SQL.
       -- see https://marketplace.visualstudio.com/items?itemName=arkhn.sqltofhir-vscode
@@ -756,13 +756,13 @@ export class AdminDemographicCsvFileIngestSource<
         this.govn.emitCtx.sqlEngineNow
       )}
 
-      CREATE TABLE IF NOT EXISTS ${aggrPatientDemogrTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
-      INSERT INTO ${aggrPatientDemogrTableName} SELECT * FROM ${tableName};
+      CREATE TABLE IF NOT EXISTS ${aggrPatientDemogrTableName} AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${aggrPatientDemogrTableName} SELECT *, '${tableName}' AS source_table FROM ${tableName};
 
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
 
-      CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrPatientDemogrTableName} AS SELECT * FROM ${tableName} WHERE 0=1;
-      INSERT INTO ${targetSchema}.${aggrPatientDemogrTableName} SELECT * FROM ${tableName};
+      CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrPatientDemogrTableName} AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${targetSchema}.${aggrPatientDemogrTableName} SELECT *, '${tableName}' AS source_table FROM ${tableName};
 
 
 
@@ -967,13 +967,13 @@ export class QeAdminDataCsvFileIngestSource<
         this.govn.emitCtx.sqlEngineNow
       )}
 
-      CREATE TABLE IF NOT EXISTS ${aggrQeAdminData} AS SELECT * FROM ${tableName} WHERE 0=1;
-      INSERT INTO ${aggrQeAdminData} SELECT * FROM ${tableName};
+      CREATE TABLE IF NOT EXISTS ${aggrQeAdminData} AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${aggrQeAdminData} SELECT *, '${tableName}' AS source_table FROM ${tableName};
 
       CREATE TABLE ${targetSchema}.${tableName} AS SELECT * FROM ${tableName};
 
-      CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrQeAdminData} AS SELECT * FROM ${tableName} WHERE 0=1;
-      INSERT INTO ${targetSchema}.${aggrQeAdminData} SELECT * FROM ${tableName};
+      CREATE TABLE IF NOT EXISTS ${targetSchema}.${aggrQeAdminData} AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM ${tableName} WHERE 0=1;
+      INSERT INTO ${targetSchema}.${aggrQeAdminData} SELECT *, '${tableName}' AS source_table FROM ${tableName};
 
         ${await session.entryStateDML(
           sessionEntryID,
