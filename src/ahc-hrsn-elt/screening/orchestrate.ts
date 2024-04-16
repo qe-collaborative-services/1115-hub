@@ -1032,7 +1032,7 @@ export class OrchEngine {
               PAT_MRN_ID,
               disposition AS DISPOSITION,
               FHIR_EMITTABLE,
-              CONCAT('fhir-',PAT_MRN_ID,'-',ENCOUNTER_ID,'.json') AS FHIR_JSON_FILE
+              CASE WHEN FHIR_EMITTABLE='YES' THEN CONCAT('fhir-',PAT_MRN_ID,'-',ENCOUNTER_ID,'.json') ELSE '' END AS FHIR_JSON_FILE
               FROM
               InvalidEncounters
               WHERE
@@ -1548,7 +1548,7 @@ export class OrchEngine {
       const results = await this.duckdb.jsonResult(
         this.govn.SQL`
           SELECT fb.PAT_MRN_ID, fb.ENCOUNTER_ID, FHIR_Bundle as FHIR FROM fhir_bundle fb LEFT JOIN orch_session_fhir_emit fe ON fb.ENCOUNTER_ID=fe.ENCOUNTER_ID
-          WHERE (fe.FHIR_EMITTABLE!='NO' OR fe.FHIR_EMITTABLE IS NULL) AND (fe.PAT_MRN_ID IS NOT NULL);
+          WHERE (fe.FHIR_EMITTABLE!='NO' OR fe.FHIR_EMITTABLE IS NULL);
         `.SQL(
           this.govn.emitCtx,
         ),
