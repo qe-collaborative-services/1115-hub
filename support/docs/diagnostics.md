@@ -14,6 +14,7 @@ available inside each package:
 - `fhir.http` file.
 - `diagnostics.md` file.
 - `diagnostics.xlsx` file.
+- `diagnostics-fhir.xlsx` file.
 - `diagnostics.json` file.
 
 # Session Data (/egress/<SESSION_ID>/session.json)
@@ -96,6 +97,34 @@ Following are the fields which are present in the file.
   rejection).
 - `remediation:1`: Additional suggested remediation steps for resolving the
   issue needed from QE/QCS side.
+
+# FHIR Diagnostics .xlsx (/egress/<SESSION_ID>/diagnostics-fhir.xlsx)
+
+This JSON file is designed to provide stakeholders with essential data regarding
+session entries, dispositions, and FHIR emittance status, aiding in
+decision-making and further data processing. Following are the fields which are
+present in the file.
+`Note that the diagnostics are not generated for those set of files which run perfectly clean without a single issue(warning/rejection/structural errors)`.
+
+## Fields
+
+- `ENCOUNTER_ID`: Unique identifier for each encounter, formulated by the system
+  based on encounter details.
+- `ORCH_SESSION_ID`: Identifier for the orchestration session in which the data
+  was processed.
+- `DEVICE_ID`: Identifier of the device used during the data capture or
+  processing.
+- `VERSION`: Version of the system or protocol used during the data processing
+  session.
+- `ORCH_SESSION_ENTRY_ID`: Unique identifier for each session entry.
+- `PAT_MRN_ID`: Medical record number of the patient associated with the data.
+- `FACILITY_ID`: Identifier of the facility where the data was recorded or
+  processed.
+- `DISPOSITION`: Describes the status of the validated FHIR, e.g., 'REJECTION'
+  or 'STRUCTURAL ISSUE'.
+- `FHIR_EMITTABLE`: Indicates whether the data is suitable for emission as FHIR
+  resources ('YES' or 'NO').
+- `FHIR_JSON_FILE`: Name of the JSON file containing FHIR-formatted data.
 
 # FHIR JSON Data (/egress/<SESSION_ID>/fhir-<pat_mrn_id>-<encounter_id>.json)
 
