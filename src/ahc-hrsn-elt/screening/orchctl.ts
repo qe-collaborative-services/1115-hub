@@ -1,4 +1,5 @@
 import { Command } from "https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts";
+import JSZip from "npm:jszip";
 import {
   colors as c,
   fs,
@@ -30,6 +31,11 @@ async function prepareIngressTxFiles(
       // Move the file ingress file to the ingress tx directory
       await fs.move(srcPath, destPath);
       count++;
+
+      // Check if the file is a zip file and process it
+      if (dirEntry.name.endsWith(".zip")) {
+        await processZipFile(destPath, workflowPaths.ingressTx.home);
+      }
     }
   }
   if (count > 0) {
@@ -38,6 +44,36 @@ async function prepareIngressTxFiles(
     );
   }
   return checkIngestionFiles;
+}
+
+async function processZipFile(zipFilePath: string, outputPath: string) {
+  const zip = await JSZip.loadAsync(await Deno.readFile(zipFilePath));
+  await Promise.all(
+    Object.entries(zip.files).map(async ([fileName, file]) => {
+      if (!file.dir) {
+        const fileContent = await file.async("uint8array");
+        let finalPath = path.join(outputPath, fileName);
+        if (fileName.match(/^SCREENING.*\.csv$/i)) {
+          finalPath = path.join(
+            outputPath,
+            `SCREENING_${path.basename(zipFilePath, ".zip")}.csv`,
+          );
+        } else if (fileName.match(/^QE_ADMIN_DATA.*\.csv$/i)) {
+          finalPath = path.join(
+            outputPath,
+            `QE_ADMIN_DATA_${path.basename(zipFilePath, ".zip")}.csv`,
+          );
+        } else if (fileName.match(/^DEMOGRAPHIC_DATA.*\.csv$/i)) {
+          finalPath = path.join(
+            outputPath,
+            `DEMOGRAPHIC_DATA_${path.basename(zipFilePath, ".zip")}.csv`,
+          );
+        }
+        await Deno.writeFile(finalPath, fileContent);
+        console.log(`Extracted and moved: ${finalPath}`);
+      }
+    }),
+  );
 }
 
 async function ingressWorkflow(
