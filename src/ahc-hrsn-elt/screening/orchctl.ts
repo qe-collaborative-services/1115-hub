@@ -56,17 +56,20 @@ async function processZipFile(zipFilePath: string, outputPath: string) {
         if (fileName.match(/^SCREENING.*\.csv$/i)) {
           finalPath = path.join(
             outputPath,
-            `SCREENING_${path.basename(zipFilePath, ".zip")}.csv`,
+            fileName.split(".csv")[0] +
+              `_${path.basename(zipFilePath, ".zip")}.csv`,
           );
         } else if (fileName.match(/^QE_ADMIN_DATA.*\.csv$/i)) {
           finalPath = path.join(
             outputPath,
-            `QE_ADMIN_DATA_${path.basename(zipFilePath, ".zip")}.csv`,
+            fileName.split(".csv")[0] +
+              `_${path.basename(zipFilePath, ".zip")}.csv`,
           );
         } else if (fileName.match(/^DEMOGRAPHIC_DATA.*\.csv$/i)) {
           finalPath = path.join(
             outputPath,
-            `DEMOGRAPHIC_DATA_${path.basename(zipFilePath, ".zip")}.csv`,
+            fileName.split(".csv")[0] +
+              `_${path.basename(zipFilePath, ".zip")}.csv`,
           );
         }
         await Deno.writeFile(finalPath, fileContent);
