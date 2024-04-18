@@ -1254,7 +1254,7 @@ export class OrchEngine {
                 )
               )),
               'patient', json_object(
-                'reference', CONCAT('Patient/',adt.PAT_MRN_ID)
+                'reference', CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)
               ),
               'dateTime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
               'organization', json_array(json_object('reference', 'Organization/' || qat.FACILITY_ID))
@@ -1373,7 +1373,7 @@ export class OrchEngine {
               CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
                 'coding', json_array(json_object(CASE WHEN QUESTION_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,QUESTION_CODE_SYSTEM_NAME,CASE WHEN scr.QUESTION_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.QUESTION_CODE,CASE WHEN QUESTION_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,QUESTION_CODE_DESCRIPTION))
               ),
-              'subject', json_object('reference',CONCAT('Patient/',scr.PAT_MRN_ID)),
+              'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)),
               'effectiveDateTime', scr.RECORDED_TIME,
               'issued', scr.RECORDED_TIME,
               'valueCodeableConcept',CASE WHEN acw.CALCULATED_FIELD = 1 THEN json_object('coding',json_array(json_object('system','http://unitsofmeasure.org','code',acw."UCUM_UNITS",'display',ANSWER_CODE_DESCRIPTION))) ELSE json_object('coding',json_array(json_object('system','http://loinc.org','code',scr.ANSWER_CODE,'display',ANSWER_CODE_DESCRIPTION))) END,
@@ -1439,7 +1439,7 @@ export class OrchEngine {
               CASE WHEN SCREENING_CODE_DESCRIPTION IS NOT NULL THEN 'code' ELSE NULL END, json_object(
                 'coding', json_array(json_object(CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,SCREENING_CODE_SYSTEM_NAME,CASE WHEN scr.SCREENING_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.SCREENING_CODE,CASE WHEN SCREENING_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,SCREENING_CODE_DESCRIPTION))
               ),
-              'subject', json_object('reference',CONCAT('Patient/',PAT_MRN_ID)),
+              'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)),
               CASE WHEN ENCOUNTER_ID IS NOT NULL THEN 'encounter' ELSE NULL END, json_object('reference',CONCAT('Encounter/',ENCOUNTER_ID)),
               'effectiveDateTime', MAX(RECORDED_TIME),
               'issued', MAX(RECORDED_TIME),
