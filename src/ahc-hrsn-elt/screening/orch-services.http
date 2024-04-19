@@ -1,0 +1,22 @@
+### Submit Zipped Ingestable file
+
+@contentType = multipart/form-data; boundary=form-boundary
+@hostName = {{$dotenv HOST}}
+@port = {{$dotenv PORT}}
+@zipFilePath = {{$dotenv ZIPFILEPATH}}
+
+POST http://{{hostName}}:{{port}}/orchestrate.zip HTTP/1.1
+Content-Type: {{contentType}}
+
+
+--form-boundary
+Content-Disposition: form-data; name="qe"; 
+
+healthelink
+--form-boundary
+Content-Disposition: form-data; name="file"; filename="healthelink-testcase1.zip"
+Content-Type: application/zip
+
+< {{zipFilePath}}healthelink-testcase1.zip
+--form-boundary--
+
