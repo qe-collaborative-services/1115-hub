@@ -30,7 +30,7 @@ Screening,ANSWER_CODE,Yes,Only LOINC codes,,Yes,Yes
 Screening,ANSWER_CODE_SYSTEM_NAME,Yes,LN or LOINC,,Yes,Yes
 Screening,PARENT_QUESTION_CODE,No,Should be blank for  AHC HRSN,No,, Confirm no data in parent question code
 Screening,SDOH_DOMAIN,Yes,See CrossWalk,,Yes,Yes
-Screening,POTENTIAL_NEED_INDICATED,Yes,"Yes/No/NA, Is only Yes if this is an underlined answer in AHC HRSN. Please see crosswalk.",Yes,,
+Screening,POTENTIAL_NEED_INDICATED,Yes,"Yes/No/NA, Is only Yes if this is an underlined answer in AHC HRSN. Please see crosswalk.",No,,
 Screening,ASSISTANCE_REQUESTED,No,Yes/No,Yes,,
 Admin_Demographic,MPI_ID,Yes,unique per patient.,No,,Yes
 Admin_Demographic,PAT_MRN_ID,Yes,Has a unique value per patient per facility. ,Yes,,
@@ -39,7 +39,7 @@ Admin_Demographic,CONSENT ,Yes,Yes/No/Y/N/Unknown/Unk,Yes- If Unk/Unknown QE nee
 Admin_Demographic,FIRST_NAME,Yes, Alphabetical name,Yes,,
 Admin_Demographic,MIDDLE_NAME,No,"If available-non-numeric, alphabetical name",No,,
 Admin_Demographic,LAST_NAME,Yes, alphabetical name,Yes,,
-Admin_Demographic,ADMINISTRATIVE_SEX_CODE,Yes,"M, F, X (UN), UNK, OTH, ASKU",Threshold of completely empty administrative sex across all patients for the file.,Yes,Yes
+Admin_Demographic,ADMINISTRATIVE_SEX_CODE,Yes,"M, F, X (UN), UNK, OTH, ASKU",Yes,,Yes
 Admin_Demographic,ADMINISTRATIVE_SEX_CODE_DESCRIPTION,No,"Male, Female, Asked but Unknown, Other, Unknown",No,,Yes
 Admin_Demographic,ADMINISTRATIVE_SEX_CODE_SYSTEM,Yes,See ADMINISTRATIVE_SEX,,,Yes
 Admin_Demographic,SEX_AT_BIRTH_CODE,No,"M, F, ASKU, OTH, UNK",No,,
@@ -48,8 +48,8 @@ Admin_Demographic,SEX_AT_BIRTH_CODE_SYSTEM,No,See SEX_AT_BIRTH,No,,
 Admin_Demographic,PAT_BIRTH_DATE,Yes,Valid date Format: YYYY-MM-DD,Yes,,
 Admin_Demographic,ADDRESS1,Required if Medicaid CIN not available,Is not a string of numbers,Threshold of completely blank address across all patients for the file or if Medicaid CIN is not available. ,Could be an issue if the patient has an address- provide feedback,
 Admin_Demographic,ADDRESS2,No,Is not a string of numbers,,Could be an issue if the patient has an address- provide feedback,
-Admin_Demographic,CITY,Yes,Is a city in New York State.,Threshold of completely empty state across all patients for the file.,Could be an issue if the patient has an address- provide feedback,
-Admin_Demographic,STATE,Yes,New York or NY,Threshold of completely empty city across all patients for the file.,,
+Admin_Demographic,CITY,Yes,Is a city in New York State.,Yes,Could be an issue if the patient has an address- provide feedback,
+Admin_Demographic,STATE,Yes,New York or NY,Yes,,
 Admin_Demographic,ZIP,Yes,All numeric: 5 or 9 digits,Yes,,
 Admin_Demographic,GENDER_IDENTITY_CODE_SYSTEM_NAME,No,SNOMED-CT or SNOMED,No,,"If code is available, yes"
 Admin_Demographic,GENDER_IDENTITY_CODE,No,See GENDER_IDENTITY tab,No,,
