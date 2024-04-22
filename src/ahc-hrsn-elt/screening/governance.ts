@@ -223,6 +223,14 @@ export class CommonAssuranceRules<
         referenceTableName: "gender_identity_reference",
         referenceFieldName: "GENDER_IDENTITY_CODE_DESCRIPTION",
       },
+      "PREFERRED_LANGUAGE_CODE": {
+        referenceTableName: "preferred_language_reference",
+        referenceFieldName: "ISO 639-2 Code",
+      },
+      "PREFERRED_LANGUAGE_DESCRIPTION": {
+        referenceTableName: "preferred_language_reference",
+        referenceFieldName: "English name of Language",
+      },
     };
     // Construct the SQL query using tagged template literals
     return this.govn.SQL`
@@ -1656,6 +1664,68 @@ export class AdminDemographicAssuranceRules<
         "invalid_value",
         `'Invalid ETHNICITY CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
         `'Validate ETHNICITY CODE DESCRIPTION with ethnicity reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidPreferredLanguageCodeInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_preferred_language_code_in_all_rows";
+    const preferredLanguageReferenceTable = "preferred_language_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 ad."${columnName}" AS invalid_value,
+                 ad.src_file_row_number AS issue_row
+            FROM ${this.tableName} ad
+            LEFT JOIN ${preferredLanguageReferenceTable} ref
+            ON UPPER(CAST(ad."${columnName}" AS VARCHAR)) = UPPER(CAST(ref."ISO 639-2 Code" AS VARCHAR))
+           WHERE ad."${columnName}" IS NOT NULL
+            AND ref."ISO 639-2 Code" IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid PREFERRED LANGUAGE CODE`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid PREFERRED LANGUAGE CODE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate PREFERRED LANGUAGE CODE with preferred language reference data'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidPreferredLanguageCodeDescriptionInAllRows(
+    columnName: ColumnName,
+  ) {
+    const cteName = "valid_preferred_language_code_description_in_all_rows";
+    const preferredLanguageReferenceTable = "preferred_language_reference";
+
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 ad."${columnName}" AS invalid_value,
+                 ad.src_file_row_number AS issue_row
+            FROM ${this.tableName} ad
+            LEFT JOIN ${preferredLanguageReferenceTable} ref
+            ON UPPER(CAST(ad."${columnName}" AS VARCHAR)) = UPPER(CAST(ref."English name of Language" AS VARCHAR))
+           WHERE ad."${columnName}" IS NOT NULL
+            AND ref."English name of Language" IS NULL
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid PREFERRED LANGUAGE CODE DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid PREFERRED LANGUAGE CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate PREFERRED LANGUAGE CODE DESCRIPTION with preferred language reference data'`,
       )
     }`;
   }
