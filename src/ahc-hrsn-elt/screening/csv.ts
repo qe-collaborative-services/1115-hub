@@ -706,7 +706,10 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("ETHNICITY_CODE_DESCRIPTION","ETHNICITY_CODE")}
       ${adar.onlyAllowValidRaceCodeInAllRows("RACE_CODE")}
       ${adar.onlyAllowValidRaceCodeDescriptionInAllRows("RACE_CODE_DESCRIPTION")}
+      ${adar.onlyAllowValidPreferredLanguageCodeInAllRows("PREFERRED_LANGUAGE_CODE")}
+      ${adar.onlyAllowValidPreferredLanguageCodeDescriptionInAllRows("PREFERRED_LANGUAGE_DESCRIPTION")}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE","RACE_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("PREFERRED_LANGUAGE_CODE","PREFERRED_LANGUAGE_DESCRIPTION")}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE_DESCRIPTION","RACE_CODE")}
       ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238'")}
       ${tr.onlyAllowedValuesInAllRows(
