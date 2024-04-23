@@ -623,7 +623,7 @@ export class AdminDemographicCsvFileIngestSource<
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
-          FROM read_csv_auto('${uri}', types={'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR', 'SEXUAL_ORIENTATION_CODE': 'VARCHAR', 'GENDER_IDENTITY_CODE': 'VARCHAR'});
+          FROM read_csv_auto('${uri}', types={'MPI_ID': 'VARCHAR', 'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR', 'SEXUAL_ORIENTATION_CODE': 'VARCHAR', 'GENDER_IDENTITY_CODE': 'VARCHAR'});
 
       ${ssr.requiredColumnNames()}
 
@@ -708,6 +708,10 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.onlyAllowValidRaceCodeDescriptionInAllRows("RACE_CODE_DESCRIPTION")}
       ${adar.onlyAllowValidPreferredLanguageCodeInAllRows("PREFERRED_LANGUAGE_CODE")}
       ${adar.onlyAllowValidPreferredLanguageCodeDescriptionInAllRows("PREFERRED_LANGUAGE_DESCRIPTION")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "PREFERRED_LANGUAGE_CODE_SYSTEM_NAME",
+        "'ISO','ISO 639-2','http://hl7.org/fhir/us/core/ValueSet/simple-language'"
+      )}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE","RACE_CODE_DESCRIPTION")}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("PREFERRED_LANGUAGE_CODE","PREFERRED_LANGUAGE_DESCRIPTION")}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE_DESCRIPTION","RACE_CODE")}
