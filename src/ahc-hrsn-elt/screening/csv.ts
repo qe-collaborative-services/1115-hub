@@ -708,6 +708,10 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.onlyAllowValidRaceCodeDescriptionInAllRows("RACE_CODE_DESCRIPTION")}
       ${adar.onlyAllowValidPreferredLanguageCodeInAllRows("PREFERRED_LANGUAGE_CODE")}
       ${adar.onlyAllowValidPreferredLanguageCodeDescriptionInAllRows("PREFERRED_LANGUAGE_DESCRIPTION")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "PREFERRED_LANGUAGE_CODE_SYSTEM_NAME",
+        "'ISO','ISO 639-2','http://hl7.org/fhir/us/core/ValueSet/simple-language'"
+      )}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE","RACE_CODE_DESCRIPTION")}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("PREFERRED_LANGUAGE_CODE","PREFERRED_LANGUAGE_DESCRIPTION")}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE_DESCRIPTION","RACE_CODE")}
