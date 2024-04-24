@@ -1537,10 +1537,21 @@ export class OrchEngine {
 
     if (egress.diagsJsonSupplier) {
       const diagsJson = egress.diagsJsonSupplier();
+      const fhirDiags = await this.duckdb.jsonResult(
+        this.govn.SQL`
+          SELECT * FROM orch_session_fhir_emit;
+        `.SQL(
+          this.govn.emitCtx,
+        ),
+      );
       await Deno.writeTextFile(
         diagsJson,
         JSON.stringify(
-          { args: stringifiableArgs, diags: this.duckdb.diagnostics },
+          {
+            args: stringifiableArgs,
+            diags: this.duckdb.diagnostics,
+            fhirDiags: fhirDiags.json,
+          },
           null,
           "  ",
         ),
