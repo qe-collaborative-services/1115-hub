@@ -1,18 +1,33 @@
-### Submit Zipped Ingestable file
+# Submit Zipped Ingestable file
+
+# The below Deno command will get the HTTP orch server up and running 
+# deno run -A ./src/ahc-hrsn-elt/screening/orch-http-service.ts --port 8088 --host 0.0.0.0 --shinny-fhir-url "https://40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev/processingAgent=QE" --session-artifacts-home /HTTP
+
+###
 
 @contentType = multipart/form-data; boundary=form-boundary
 @hostName = {{$dotenv HOST}}
 @port = {{$dotenv PORT}}
 @zipFilePath = {{$dotenv ZIPFILEPATH}}
+@zipResultPath = {{$dotenv ZIPRESULTPATH}}
 
 POST http://{{hostName}}:{{port}}/orchestrate.zip HTTP/1.1
 Content-Type: {{contentType}}
-
+{{
+  const { equal } = require('assert');
+  test('status code 200', () => {
+    equal(response.statusCode, 200);
+  });
+}}
 
 --form-boundary
 Content-Disposition: form-data; name="qe"; 
 
 healthelink
+--form-boundary
+Content-Disposition: form-data; name="submit-shin-ny"; 
+
+yes
 --form-boundary
 Content-Disposition: form-data; name="file"; filename="healthelink-testcase1.zip"
 Content-Type: application/zip
@@ -20,3 +35,4 @@ Content-Type: application/zip
 < {{zipFilePath}}healthelink-testcase1.zip
 --form-boundary--
 
+>>! {{zipResultPath}}egress-tx.zip

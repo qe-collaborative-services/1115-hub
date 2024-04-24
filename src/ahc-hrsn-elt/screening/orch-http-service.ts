@@ -42,6 +42,7 @@ async function orchestrateFiles(
     | o.IngressEntry<string, string>[],
   workflowPaths: mod.OrchEngineWorkflowPaths,
   referenceDataHome: string,
+  submitShinNy: string,
   fhirEndpointUrl?: string,
 ) {
   const sessionStart = {
@@ -132,7 +133,7 @@ async function orchestrateFiles(
       await consumeIngressed(src.fsPath);
     }
   }
-  if (fhirEndpointUrl) {
+  if (fhirEndpointUrl && submitShinNy == "yes") {
     // const fhirFilePath = workflowPaths.egress.resolvedPath("fhir.json");
     // const fhirContent = await Deno.readTextFile(fhirFilePath);
     const directoryPath = workflowPaths.egress.resolvedPath(".");
@@ -206,122 +207,141 @@ const runServer = async (
       context.response.body = "No QE found in the request.";
       return;
     }
-    //TODO: Loop through individual files uploaded apart from
-    // zip file and orchestrate them as in SFTP
-    const zipFile = formData.files ? formData.files[0] : "";
+    let submitShinNY = "yes";
+    if (formData.fields["submit-shin-ny"]) {
+      submitShinNY = formData.fields["submit-shin-ny"].toLowerCase();
+    }
+    const formDataFiles = formData.files ? formData.files : [];
+    if (formDataFiles.length == 0) {
+      context.response.status = 400;
+      context.response.body = "No files found in the request.";
+      return;
+    }
     const qe = formData.fields.qe;
-    if (zipFile && zipFile.filename) {
-      const zip = new JSZip();
-      // Read the file from the filename path
-      const zipData = await Deno.readFile(zipFile.filename);
-      const unzippedData = await zip.loadAsync(zipData);
-      const govn = new ddbo.DuckDbOrchGovernance(
-        true,
-        new ddbo.DuckDbOrchEmitContext(),
-      );
-      const sessionID = await govn.emitCtx.newUUID(false);
-      const basePath = `${rootPath}/${qe}`;
-      const ingressPath = `${basePath}/ingress`;
-      await Deno.mkdir(ingressPath, { recursive: true });
-      const egressPath = `${rootPath}/${qe}/egress`;
-      const ingressTxPath = `${egressPath}/${sessionID}/.ingress-tx`;
-      const egressSessionPath = `${egressPath}/${sessionID}`;
-      const workflowPaths = mod.orchEngineWorkflowPaths(
-        basePath,
-        sessionID,
-      );
+    const govn = new ddbo.DuckDbOrchGovernance(
+      true,
+      new ddbo.DuckDbOrchEmitContext(),
+    );
+    const sessionID = await govn.emitCtx.newUUID(false);
+    const basePath = `${rootPath}/${qe}`;
+    const egressPath = `${rootPath}/${qe}/egress`;
+    const ingressTxPath = `${egressPath}/${sessionID}/.ingress-tx`;
+    const egressSessionPath = `${egressPath}/${sessionID}`;
+    const workflowPaths = mod.orchEngineWorkflowPaths(
+      basePath,
+      sessionID,
+    );
 
-      const ingressTxPaths = mod.orchEngineIngressPaths(
-        workflowPaths.ingressTx.home,
-      );
-      await workflowPaths.initializePaths?.();
-      console.log(ingressTxPath);
-      await Promise.all(
-        Object.keys(unzippedData.files).map(async (fileName) => {
-          const file = unzippedData.files[fileName];
-          if (!file.dir) {
-            const content = await file.async("uint8array");
-            const filePath = path.join(ingressTxPath, fileName);
-            await Deno.writeFile(filePath, content);
-          }
-        }),
-      );
+    const ingressTxPaths = mod.orchEngineIngressPaths(
+      workflowPaths.ingressTx.home,
+    );
+    await workflowPaths.initializePaths?.();
+    console.log(ingressTxPath);
+    for (const files of formDataFiles) {
+      if (files.contentType == "application/zip" && files.filename) {
+        const zip = new JSZip();
+        // Read the file from the filename path
+        const zipData = await Deno.readFile(files.filename);
+        const unzippedData = await zip.loadAsync(zipData);
 
-      const screeningGroups = new mod.ScreeningIngressGroups(
-        async (group) => {
+        await Promise.all(
+          Object.keys(unzippedData.files).map(async (fileName) => {
+            const file = unzippedData.files[fileName];
+            if (!file.dir) {
+              const content = await file.async("uint8array");
+              const filePath = path.join(ingressTxPath, fileName);
+              await Deno.writeFile(filePath, content);
+            }
+          }),
+        );
+      } else {
+        if (files.filename) {
+          const filePath = path.join(ingressTxPath, files.originalName);
+          await Deno.writeFile(filePath, await Deno.readFile(files.filename));
+        }
+      }
+    }
+    const screeningGroups = new mod.ScreeningIngressGroups(
+      async (group) => {
+        await orchestrateFiles(
+          sessionID,
+          govn,
+          ingressTxPaths,
+          group,
+          workflowPaths,
+          referenceDataHome,
+          submitShinNY,
+          shinnyFhirUrl,
+        );
+      },
+    );
+    const watchPaths: o.WatchFsPath<string, string>[] = [{
+      pathID: "ingress",
+      rootPath: ingressTxPaths.ingress.home,
+      onIngress: (entry) => {
+        const group = screeningGroups.potential(entry);
+        try {
+          orchestrateFiles(
+            sessionID,
+            govn,
+            ingressTxPaths,
+            group ?? entry,
+            workflowPaths,
+            referenceDataHome,
+            submitShinNY,
+            shinnyFhirUrl,
+          );
+        } catch (err) {
+          // TODO: store the error in a proper log
+          console.dir(entry);
+          console.error(err);
+        }
+      },
+    }];
+
+    console.log(`Processing files in ${ingressTxPaths.ingress.home}`);
+
+    await o.ingestWatchedFs({
+      drain: async (entries) => {
+        if (entries.length) {
           await orchestrateFiles(
             sessionID,
             govn,
             ingressTxPaths,
-            group,
+            entries,
             workflowPaths,
             referenceDataHome,
+            submitShinNY,
+            shinnyFhirUrl,
           );
-        },
-      );
-      const watchPaths: o.WatchFsPath<string, string>[] = [{
-        pathID: "ingress",
-        rootPath: ingressTxPaths.ingress.home,
-        // note: onIngress we just return promises (not awaited) so that we can
-        // allow each async workflow to work independently (better performance)
-        onIngress: (entry) => {
-          const group = screeningGroups.potential(entry);
-          try {
-            orchestrateFiles(
-              sessionID,
-              govn,
-              ingressTxPaths,
-              group ?? entry,
-              workflowPaths,
-              referenceDataHome,
-            );
-          } catch (err) {
-            // TODO: store the error in a proper log
-            console.dir(entry);
-            console.error(err);
-          }
-        },
-      }];
+          const zip = new JSZip();
+          await addFolderToZip(zip, egressSessionPath);
+          const zipContent = await zip.generateAsync({
+            type: "uint8array",
+          });
+          // Specify the final ZIP file path
+          const finalZipPath = path.join(
+            egressPath,
+            sessionID,
+            "egress-tx.zip",
+          );
+          await Deno.writeFile(finalZipPath, zipContent);
+          console.log(
+            `Completed processing files in ${ingressTxPaths.ingress.home}`,
+          );
+          // context.response.body = "ZIP file processed and saved successfully.";
+          // Use below code to emit the zip file
+          context.response.body = zipContent;
+          context.response.type = "application/zip";
+        }
+      },
+      watch: false,
+      watchPaths,
+    });
+  });
 
-      console.log(`Processing files in ${ingressTxPaths.ingress.home}`);
-
-      await o.ingestWatchedFs({
-        drain: async (entries) => {
-          if (entries.length) {
-            await orchestrateFiles(
-              sessionID,
-              govn,
-              ingressTxPaths,
-              entries,
-              workflowPaths,
-              referenceDataHome,
-            );
-            const zip = new JSZip();
-            await addFolderToZip(zip, egressSessionPath);
-            const zipContent = await zip.generateAsync({ type: "uint8array" });
-            // Specify the final ZIP file path
-            const finalZipPath = path.join(
-              egressPath,
-              sessionID,
-              sessionID,
-            );
-            await Deno.writeFile(finalZipPath, zipContent);
-            console.log(
-              `Completed processing files in ${ingressTxPaths.ingress.home}`,
-            );
-            // context.response.body = "ZIP file processed and saved successfully.";
-            // Use below code to emit the zip file
-            context.response.body = zipContent;
-            context.response.type = "application/zip";
-          }
-        },
-        watch: false,
-        watchPaths,
-      });
-    } else {
-      context.response.status = 400;
-      context.response.body = "No ZIP file found in the request";
-    }
+  //TODO: orchestrate.json
+  router.post("/orchestrate.json", async (_context: Context) => {
   });
 
   app.use(router.routes());
@@ -344,11 +364,11 @@ await new Command()
       return parsedPort;
     },
   })
-  .option("-H, --host <host:string>", "Host for the HTTP server.", {
+  .option("-H, --host <host:string>", "Host for the HTTP server", {
     default: "127.0.0.1",
   })
-  .option("--session-artifacts-home <path>", "Root path.", { default: "/HTTP" })
-  .option("--reference-data-home <path>", "Reference data path.", {
+  .option("--session-artifacts-home <path>", "Root path", { default: "/HTTP" })
+  .option("--reference-data-home <path>", "Reference data path", {
     default: path.join(Deno.cwd(), "src/ahc-hrsn-elt/reference-data"),
   })
   .option("--shinny-fhir-url <url:string>", "SHIN-NY FHIR endpoint URL.", {
