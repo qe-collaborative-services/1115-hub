@@ -307,6 +307,8 @@ export class ScreeningCsvFileIngestSource<
         "ENCOUNTER_STATUS_CODE_SYSTEM",
         "'http://hl7.org/fhir/encounter-status'"
       )}
+      ${tr.mandatoryValueInAllRows("ENCOUNTER_TYPE_CODE")}
+      ${tr.mandatoryValueInAllRows("ENCOUNTER_TYPE_CODE_SYSTEM")}
       ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "ENCOUNTER_TYPE_CODE_SYSTEM",
@@ -330,6 +332,10 @@ export class ScreeningCsvFileIngestSource<
       ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("QUESTION_CODE")}
       ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("QUESTION_CODE_SYSTEM_NAME")}
       ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE_DESCRIPTION")}
+      ${tr.onlyAllowedValuesInAllRows(
+        "SCREENING_CODE_DESCRIPTION",
+        "'Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions','Accountable health communities (AHC) health-related social needs screening (HRSN) tool'"
+      )}
       ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE_SYSTEM_NAME")}
       ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_DESCRIPTION")}
@@ -666,6 +672,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("LAST_NAME")}
       ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")}
       ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX_CODE")}
+      ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX_CODE_SYSTEM")}
       ${adar.onlyAllowValidAdministrativeSexCodeInAllRows("ADMINISTRATIVE_SEX_CODE")}
       ${adar.onlyAllowValidAdministrativeSexCodeDescriptionInAllRows("ADMINISTRATIVE_SEX_CODE_DESCRIPTION")}
       ${adar.onlyAllowValidAdministrativeSexCodeSystemInAllRows("ADMINISTRATIVE_SEX_CODE_SYSTEM")}
