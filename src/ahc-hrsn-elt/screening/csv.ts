@@ -340,6 +340,9 @@ export class ScreeningCsvFileIngestSource<
       ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE")}
       ${tr.mandatoryValueInAllRows("QUESTION_CODE_DESCRIPTION")}
       ${sar.onlyAllowValidAnswerCodeForQuestionCodeInAllRows("QUESTION_CODE","ANSWER_CODE")}
+      ${sar.onlyAllowValidTotalSafetyScoreInAllRows()}
+      ${sar.onlyAllowValidCalculatedMentalHealthScoreInAllRows()}
+      ${sar.onlyAllowValidCalculatedWeeklyPhysicalActivityScoreInAllRows()}
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_CODE",
         "'96777-8', '97023-6'"
