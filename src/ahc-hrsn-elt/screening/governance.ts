@@ -805,7 +805,7 @@ export class ScreeningAssuranceRules<
           (SELECT src_file_row_number FROM ${this.tableName} WHERE UPPER(TRIM(QUESTION_CODE_DESCRIPTION)) LIKE '%TOTAL SAFETY SCORE%') AS issue_row,
         'ANSWER_CODE_DESCRIPTION' AS issue_column
       FROM cte_score
-      WHERE screening_score < cross_walk_Score
+      WHERE screening_score <> cross_walk_Score
       )
       ${
       this.insertRowValueIssueCtePartial(
@@ -882,7 +882,8 @@ export class ScreeningAssuranceRules<
             scr.ANSWER_CODE_DESCRIPTION,
             ROW_NUMBER() OVER (
             ORDER BY scr.SCREENING_CODE) AS sequence_number
-          FROM ${this.tableName} scr
+          FROM
+            ${this.tableName} scr
           INNER JOIN (
             SELECT
               acw.SCREENING_CODE,
@@ -893,52 +894,58 @@ export class ScreeningAssuranceRules<
                 WHEN TRY_CAST(acw.ANSWER_VALUE AS INTEGER) IS NOT NULL THEN CAST(acw.ANSWER_VALUE AS INTEGER)
                 ELSE 0
               END AS ANSWER_VALUE
-            FROM ${ahcCrossWalkReferenceTable} acw
+            FROM
+              ${ahcCrossWalkReferenceTable} acw
             Where
               QUESTION_SLNO_REFERENCE In(
-                SELECT
-                  QUESTION_SLNO
-                FROM ${ahcCrossWalkReferenceTable}
-                WHERE
-                  UPPER(QUESTION) LIKE '%CALCULATED PHYSICAL ACTIVITY SCORE%'
-              )
+              SELECT
+                QUESTION_SLNO
+              FROM
+                ${ahcCrossWalkReferenceTable}
+              WHERE
+                UPPER(QUESTION) LIKE '%CALCULATED PHYSICAL ACTIVITY SCORE%'
+                      )
               AND acw.QUESTION_CODE = scr.QUESTION_CODE
               AND acw.ANSWER_CODE = scr.ANSWER_CODE
-          ) AS crw ON
+              ) AS crw ON
             crw.SCREENING_CODE = scr.SCREENING_CODE
           )
-          Select
-            ANSWER_CODE_DESCRIPTION AS issue_column,
-            SCREENING_CALCULATED_VALUE AS invalid_value,
-            SRC_FILE_ROW_NUMBER AS issue_row
+          Select 	ANSWER_CODE_DESCRIPTION AS issue_column,
+              CROSSWALK_ANSWER_VALUE AS CROSSWALK_ANSWER_VALUE,
+              SCREENING_CALCULATED_VALUE AS invalid_value,
+              SRC_FILE_ROW_NUMBER AS issue_row
           FROM
             (
             Select
               t1.ANSWER_VALUE * t2.ANSWER_VALUE As CROSSWALK_ANSWER_VALUE,
               CASE
-                WHEN TRY_CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL AND TRY_CAST(t2.ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN
-                CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) * CAST(t2.ANSWER_CODE_DESCRIPTION AS INTEGER)
-                ELSE 0
+                WHEN TRY_CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL
+                  AND TRY_CAST(t2.ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN
+              CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) * CAST(t2.ANSWER_CODE_DESCRIPTION AS INTEGER)
+                  ELSE 0
                 END AS SCREENING_ANSWER_VALUE,
                 Scrn_Phycical_Act_Score.SCRN_PHYSICAL_ACTIVITY_VALUE AS SCREENING_CALCULATED_VALUE,
                 (SELECT src_file_row_number FROM ${this.tableName} WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS SRC_FILE_ROW_NUMBER,
                 'ANSWER_CODE_DESCRIPTION' AS ANSWER_CODE_DESCRIPTION
-            from
-              cte_physical_activity t1
-            Inner Join cte_physical_activity t2
-            On
-              t1.sequence_number = 1
-              and t2.sequence_number = 2
-            Left Outer Join (
-              Select
-                CASE
-                  WHEN TRY_CAST(ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN CAST(ANSWER_CODE_DESCRIPTION AS INTEGER)
-                  ELSE 0
-                END SCRN_PHYSICAL_ACTIVITY_VALUE
-              From screening_20240307 scr
-              Where
-                UPPER(scr.QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS Scrn_Phycical_Act_Score
-                On 1 = 1
+
+              from
+                cte_physical_activity t1
+              Inner Join cte_physical_activity t2
+          On
+                t1.sequence_number = 1
+                and t2.sequence_number = 2
+              Left Outer Join (
+                Select
+                  CASE
+                    WHEN TRY_CAST(ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN CAST(ANSWER_CODE_DESCRIPTION AS INTEGER)
+                    ELSE 0
+                  END SCRN_PHYSICAL_ACTIVITY_VALUE
+                From
+                ${this.tableName} scr
+                Where
+                  UPPER(scr.QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS Scrn_Phycical_Act_Score
+                      On
+                1 = 1
           ) As calc_fld
           Where
             (calc_fld.CROSSWALK_ANSWER_VALUE <> calc_fld.SCREENING_ANSWER_VALUE)
