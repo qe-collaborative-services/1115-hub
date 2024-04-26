@@ -248,13 +248,13 @@ export class CommonAssuranceRules<
     }" FROM ${
       columnReference[columnName1 as keyof typeof columnReference]
         .referenceTableName
-    } WHERE UPPER(tbl."${columnName2}") = UPPER("${
+    } WHERE UPPER(CAST(tbl."${columnName2}" AS VARCHAR)) = UPPER(CAST("${
       columnReference[columnName2 as keyof typeof columnReference]
         .referenceFieldName
-    }") AND UPPER(tbl."${columnName1}") = UPPER("${
+    }" AS VARCHAR)) AND UPPER(CAST(tbl."${columnName1}" AS VARCHAR)) = UPPER(CAST("${
       columnReference[columnName1 as keyof typeof columnReference]
         .referenceFieldName
-    }"))
+    }" AS VARCHAR)))
       )
       ${
       this.insertRowValueIssueCtePartial(
@@ -1039,7 +1039,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
-            ON UPPER(sr.${columnName}) = UPPER(ecr.Code)
+            ON UPPER(CAST(sr.${columnName} AS VARCHAR)) = UPPER(CAST(ecr.Code AS VARCHAR))
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
@@ -1070,7 +1070,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
-            ON UPPER(sr.${columnName}) = UPPER(ecr.Display)
+            ON UPPER(CAST(sr.${columnName} AS VARCHAR)) = UPPER(CAST(ecr.Display AS VARCHAR))
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Display IS NULL
       )

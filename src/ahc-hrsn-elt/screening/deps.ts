@@ -12,12 +12,12 @@ export * as safeText from "npm:string-ts";
 // local: ../../../../../netspective-labs/sql-aide
 // remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/x0.13.13
 
-export * as array from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.15/lib/universal/array.ts";
-export * as chainNB from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.15/lib/notebook/chain-of-responsibility.ts";
-export * as safety from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.15/lib/universal/safety.ts";
-export * as ws from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.15/lib/universal/whitespace.ts";
+export * as array from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/lib/universal/array.ts";
+export * as chainNB from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/lib/notebook/chain-of-responsibility.ts";
+export * as safety from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/lib/universal/safety.ts";
+export * as ws from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/lib/universal/whitespace.ts";
 
-export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.15/render/mod.ts";
-export * as SQLa_orch from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.15/pattern/orchestration/mod.ts";
-export * as SQLa_orch_duckdb from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.15/pattern/orchestration/duckdb/mod.ts";
-export * as SQLa_sqlpage from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.15/pattern/sqlpage/mod.ts";
+export * as SQLa from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/render/mod.ts";
+export * as SQLa_orch from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/pattern/orchestration/mod.ts";
+export * as SQLa_orch_duckdb from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/pattern/orchestration/duckdb/mod.ts";
+export * as SQLa_sqlpage from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/pattern/sqlpage/mod.ts";
