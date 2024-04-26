@@ -12,16 +12,6 @@ export * as safeText from "npm:string-ts";
 // local: ../../../../../netspective-labs/sql-aide
 // remote: https://raw.githubusercontent.com/netspective-labs/sql-aide/x0.13.13
 
-// export * as array from "../../../../../netspective-labs/sql-aide/lib/universal/array.ts";
-// export * as chainNB from "../../../../../netspective-labs/sql-aide/lib/notebook/chain-of-responsibility.ts";
-// export * as safety from "../../../../../netspective-labs/sql-aide/lib/universal/safety.ts";
-// export * as ws from "../../../../../netspective-labs/sql-aide/lib/universal/whitespace.ts";
-
-// export * as SQLa from "../../../../../netspective-labs/sql-aide/render/mod.ts";
-// export * as SQLa_orch from "../../../../../netspective-labs/sql-aide/pattern/orchestration/mod.ts";
-// export * as SQLa_orch_duckdb from "../../../../../netspective-labs/sql-aide/pattern/orchestration/duckdb/mod.ts";
-// export * as SQLa_sqlpage from "../../../../../netspective-labs/sql-aide/pattern/sqlpage/mod.ts";
-
 export * as array from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/lib/universal/array.ts";
 export * as chainNB from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/lib/notebook/chain-of-responsibility.ts";
 export * as safety from "https://raw.githubusercontent.com/netspective-labs/sql-aide/v0.13.20/lib/universal/safety.ts";
