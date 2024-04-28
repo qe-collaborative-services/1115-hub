@@ -37,21 +37,20 @@ jobs:
         uses: actions/deploy-pages@v4
   synthetic-sftp-qualified-entity-deployment:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v3
 
       - name: configure github user
         run: |
-          gh auth login
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # get token from secrets, write to a file
+          echo ${{ secrets.DVERTOLA_GITHUB_TOKEN }} > token.txt
+          gh auth login --with-token < token.txt
 
       - name: pull infrastructure repo, update the env file and push
         run: |
           git clone https://github.com/tech-by-design/infrastructure-prime.git
           cd infrastructure-prime
-          # update TAGin aws/synthetic.sftp.qualifiedentity.org/.env
+          # update TAG in aws/synthetic.sftp.qualifiedentity.org/.env
           sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.sftp.qualifiedentity.org/.env
           git add aws/synthetic.sftp.qualifiedentity.org/.env
           git commit -m "${{ github.ref_name }} deployment"
