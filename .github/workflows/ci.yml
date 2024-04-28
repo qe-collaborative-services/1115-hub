@@ -42,6 +42,7 @@ jobs:
 
       - name: Configure Git
         run: |
+          gh auth login --with-token <<< "${{ secrets.DVERTOLA_GITHUB_TOKEN }}"
           git config --global user.email "mdvertola@gmail.com"
           git config --global user.name "mdvertola"
           git config --global credential.helper store
