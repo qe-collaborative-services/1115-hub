@@ -42,28 +42,24 @@ jobs:
 
       - name: Configure Git
         run: |
-          gh auth login --with-token <<< "${{ secrets.DVERTOLA_GITHUB_TOKEN }}"
+          echo "${{ secrets.DVERTOLA_GITHUB_TOKEN }}" | gh auth login --with-token
           git config --global user.email "mdvertola@gmail.com"
           git config --global user.name "mdvertola"
-          git config --global credential.helper store
-          git config --global credential.username "mdvertola"
-          git config --global credential.helper '!f() { echo "password=${{ secrets.DVERTOLA_GITHUB_TOKEN }}"; }; f'
 
       - name: Clone infrastructure repository
         run: |
-          git clone https://github.com/tech-by-design/infrastructure-prime.git
-       
+          git clone https://$DVERTOLA_GITHUB_TOKEN@github.com/tech-by-design/infrastructure-prime.git
+
       - name: Update environment file
         run: |
           cd infrastructure-prime
           sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.sftp.qualifiedentity.org/.env
-      
+
       - name: Commit and push changes
         run: |
           cd infrastructure-prime
           git add aws/synthetic.sftp.qualifiedentity.org/.env
           git commit -m "${{ github.ref_name }} deployment"
           git push
-        
 
        
