@@ -48,7 +48,7 @@ jobs:
 
       - name: Clone infrastructure repository
         run: |
-          git clone https://$DVERTOLA_GITHUB_TOKEN@github.com/tech-by-design/infrastructure-prime.git
+          git clone https://${{secrets.DVERTOLA_GITHUB_TOKEN}}@github.com/tech-by-design/infrastructure-prime.git
 
       - name: Update environment file
         run: |
