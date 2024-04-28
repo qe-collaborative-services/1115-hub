@@ -17,6 +17,7 @@ jobs:
   docs-deploy:
     needs: 
       - synthetic-sftp-qualified-entity-deployment
+      - synthetic-sftp-techbd-staging
     environment:
       # i think we should adjust the environment name to match the branch name
       name: "github-pages"
