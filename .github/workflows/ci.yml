@@ -40,23 +40,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: configure github user
+      - name: Configure Git
         run: |
-          # get token from secrets, write to a file
-          echo ${{ secrets.DVERTOLA_GITHUB_TOKEN }} > token.txt
-          gh auth login --with-token < token.txt
-          rm token.txt
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
+          git config --global user.email "mdvertola@gmail.com"
+          git config --global user.name "mdvertola"
+          git config --global credential.helper store
+          git config --global credential.username "mdvertola"
+          git config --global credential.helper '!f() { echo "password=${{ secrets.DVERTOLA_GITHUB_TOKEN }}"; }; f'
 
-      - name: pull infrastructure repo, update the env file and push
+      - name: Clone infrastructure repository
         run: |
           git clone https://github.com/tech-by-design/infrastructure-prime.git
+       
+      - name: Update environment file
+        run: |
           cd infrastructure-prime
-          # update TAG in aws/synthetic.sftp.qualifiedentity.org/.env
           sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.sftp.qualifiedentity.org/.env
+      
+      - name: Commit and push changes
+        run: |
+          cd infrastructure-prime
           git add aws/synthetic.sftp.qualifiedentity.org/.env
           git commit -m "${{ github.ref_name }} deployment"
           git push
+        
 
        
