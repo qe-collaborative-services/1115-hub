@@ -60,7 +60,7 @@ jobs:
         run: |
           cd infrastructure-prime
           git add aws/synthetic.sftp.qualifiedentity.org/.env
-          git commit -m "${{ github.ref_name }} deployment"
+          git commit -m "Update synthetic.sftp.qualifiedentity.org for ${{ github.ref_name }} deployment"
           git push
 
   synthetic-sftp-techbd-staging:
@@ -92,10 +92,10 @@ jobs:
         run: |
           cd infrastructure-prime
           git add aws/synthetic.sftp.techbd.org/.env
-          git commit -m "Update environment for ${{ github.ref_name }}"
+          git commit -m "Update synthetic.sftp.techbd.org for ${{ github.ref_name }}"
           git push --set-upstream origin synthetic-sftp-techbd-${{ github.ref_name}}
 
       - name: Create Pull Request
         run: |
           cd infrastructure-prime
-          gh pr create --base main --head synthetic-sftp-techbd-${{ github.ref_name}} --title "synthetic.sftp.techbd.org ${{ github.ref_name }} deployment" --body "Automated environment update for ${{ github.ref_name }}"
+          gh pr create --base main --head synthetic-sftp-techbd-${{ github.ref_name}} --title "synthetic.sftp.techbd.org ${{ github.ref_name }} update" --body "Automated synthetic.sftp.techbd.org deployment for ${{ github.ref_name }}"
