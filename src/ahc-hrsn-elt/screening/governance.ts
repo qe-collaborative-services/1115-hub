@@ -892,7 +892,7 @@ export class ScreeningAssuranceRules<
               acw.QUESTION_SLNO,
               CASE
                 WHEN TRY_CAST(acw.ANSWER_VALUE AS INTEGER) IS NOT NULL THEN CAST(acw.ANSWER_VALUE AS INTEGER)
-                ELSE 0
+                ELSE CASE WHEN acw.ANSWER_CODE='LA32060-8' THEN 150 ELSE 0 END
               END AS ANSWER_VALUE
             FROM
               ${ahcCrossWalkReferenceTable} acw
@@ -922,7 +922,7 @@ export class ScreeningAssuranceRules<
                 WHEN TRY_CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL
                   AND TRY_CAST(t2.ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN
               CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) * CAST(t2.ANSWER_CODE_DESCRIPTION AS INTEGER)
-                  ELSE 0
+                ELSE CASE WHEN t2.ANSWER_CODE='LA32060-8' THEN 150 * CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) ELSE 0 END
                 END AS SCREENING_ANSWER_VALUE,
                 Scrn_Phycical_Act_Score.SCRN_PHYSICAL_ACTIVITY_VALUE AS SCREENING_CALCULATED_VALUE,
                 (SELECT src_file_row_number FROM ${this.tableName} WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS SRC_FILE_ROW_NUMBER,
