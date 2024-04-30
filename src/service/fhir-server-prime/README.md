@@ -87,15 +87,35 @@ Let's break down each part of the command:
 
 # Test the endpoints
 
+To test your server endpoints using http yac, follow these steps:
+
+1. Ensure you have the `vscode-httpyac` Visual Studio Code extension installed.
+
+2. Open the `fhir-service.test.http` file located in the root directory of your
+   Java project.
+
+3. Update the URL placeholders in the file with the actual endpoints you want to
+   test. The placeholders might be represented as `{{$dotenv HOST}}` and
+   `{{$dotenv PORT}}`. By default it is localhost and 8080.
+
+4. Run the tests using the `vscode-httpyac` extension in Visual Studio Code.
+   This extension will execute the HTTP requests defined in
+   `fhir-service.test.http` and display the results of the tests.
+
+5. Verify that the tests pass for both success and failure scenarios.
+
+By following these steps, you can easily test your server endpoints and verify
+their behavior using http yac.
+
 - Test that your server is running by fetching its CapabilityStatement:
 
   http://localhost:8080/metadata
 
-- Try validating a Bunlde resource from your server using the following URL:
+- Validating a Bunlde resource from your server using the following URL:
 
   http://localhost:8080/Bundle/$validate
 
-- Try submitting a Bunlde resource from your server using the following URL:
+- Submitting a Bunlde resource from your server using the following URL:
 
   http://localhost:8080/Bundle/?x=y
 
