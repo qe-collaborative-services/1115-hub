@@ -2,9 +2,9 @@
 import { Command } from "https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts";
 import {
   Application,
-  Context,
   Router,
-} from "https://deno.land/x/oak@v12.6.2/mod.ts";
+  RouterContext,
+} from "https://deno.land/x/oak@v15.0.0/mod.ts";
 import JSZip from "npm:jszip";
 import {
   colors as c,
@@ -197,299 +197,265 @@ const runServer = async (
   const app = new Application();
   const router = new Router();
 
-  router.post("/orchestrate.zip", async (context: Context) => {
-    if (!context.request.hasBody) {
-      context.response.status = 400;
-      context.response.body = "No data submitted";
-      return;
-    }
-
-    const bodyResult = context.request.body({ type: "form-data" });
-    const formData = await bodyResult.value.read();
-    if (!formData.fields.qe) {
-      context.response.status = 400;
-      context.response.body = "No QE found in the request.";
-      return;
-    }
-    let submitShinNY = "yes";
-    if (formData.fields["submit-shin-ny"]) {
-      submitShinNY = formData.fields["submit-shin-ny"].toLowerCase();
-    }
-    let persistDiagnostics = "no";
-    if (formData.fields["persist-diagnostics"]) {
-      persistDiagnostics = formData.fields["persist-diagnostics"].toLowerCase();
-    }
-    const formDataFiles = formData.files ? formData.files : [];
-    if (formDataFiles.length == 0) {
-      context.response.status = 400;
-      context.response.body = "No files found in the request.";
-      return;
-    }
-    const qe = formData.fields.qe;
-    const govn = new ddbo.DuckDbOrchGovernance(
-      true,
-      new ddbo.DuckDbOrchEmitContext(),
-    );
-    const sessionID = await govn.emitCtx.newUUID(false);
-    const basePath = `${rootPath}/${qe}`;
-    const egressPath = `${rootPath}/${qe}/egress`;
-    const ingressTxPath = `${egressPath}/${sessionID}/.ingress-tx`;
-    const egressSessionPath = `${egressPath}/${sessionID}`;
-    const workflowPaths = mod.orchEngineWorkflowPaths(
-      basePath,
-      sessionID,
-    );
-
-    const ingressTxPaths = mod.orchEngineIngressPaths(
-      workflowPaths.ingressTx.home,
-    );
-    await workflowPaths.initializePaths?.();
-    for (const files of formDataFiles) {
-      if (files.contentType == "application/zip" && files.filename) {
-        const zip = new JSZip();
-        // Read the file from the filename path
-        const zipData = await Deno.readFile(files.filename);
-        const unzippedData = await zip.loadAsync(zipData);
-
-        await Promise.all(
-          Object.keys(unzippedData.files).map(async (fileName) => {
-            const file = unzippedData.files[fileName];
-            if (!file.dir) {
-              const content = await file.async("uint8array");
-              const filePath = path.join(ingressTxPath, fileName);
-              await Deno.writeFile(filePath, content);
-            }
-          }),
-        );
-      } else {
-        if (files.filename) {
-          const filePath = path.join(ingressTxPath, files.originalName);
-          await Deno.writeFile(filePath, await Deno.readFile(files.filename));
-        }
+  router.post(
+    "/orchestrate.zip",
+    async (context: RouterContext<"/orchestrate.zip">) => {
+      if (!context.request.hasBody) {
+        context.response.status = 400;
+        context.response.body = "No data submitted";
+        return;
       }
-    }
-    const screeningGroups = new mod.ScreeningIngressGroups(
-      async (group) => {
-        await orchestrateFiles(
-          sessionID,
-          govn,
-          ingressTxPaths,
-          group,
-          workflowPaths,
-          referenceDataHome,
-          submitShinNY,
-          shinnyFhirUrl,
-        );
-      },
-    );
-    const watchPaths: o.WatchFsPath<string, string>[] = [{
-      pathID: "ingress",
-      rootPath: ingressTxPaths.ingress.home,
-      onIngress: (entry) => {
-        const group = screeningGroups.potential(entry);
-        try {
-          orchestrateFiles(
-            sessionID,
-            govn,
-            ingressTxPaths,
-            group ?? entry,
-            workflowPaths,
-            referenceDataHome,
-            submitShinNY,
-            shinnyFhirUrl,
-          );
-        } catch (err) {
-          // TODO: store the error in a proper log
-          console.dir(entry);
-          console.error(err);
-        }
-      },
-    }];
 
-    console.log(`Processing files in ${ingressTxPaths.ingress.home}`);
+      const bodyResult = context.request.body;
+      const formData = await bodyResult.formData();
 
-    await o.ingestWatchedFs({
-      drain: async (entries) => {
-        if (entries.length) {
-          await orchestrateFiles(
-            sessionID,
-            govn,
-            ingressTxPaths,
-            entries,
-            workflowPaths,
-            referenceDataHome,
-            submitShinNY,
-            shinnyFhirUrl,
-          );
-          const zip = new JSZip();
-          await addFolderToZip(zip, egressSessionPath, persistDiagnostics);
-          const zipContent = await zip.generateAsync({
-            type: "uint8array",
-          });
-          // Specify the final ZIP file path
-          const finalZipPath = path.join(
-            egressPath,
-            sessionID,
-            "egress-tx.zip",
-          );
-          await Deno.writeFile(finalZipPath, zipContent);
-          console.log(
-            `Completed processing files in ${ingressTxPaths.ingress.home}`,
-          );
-          // context.response.body = "ZIP file processed and saved successfully.";
-          // Use below code to emit the zip file
-          context.response.body = zipContent;
-          context.response.type = "application/zip";
-        }
-      },
-      watch: false,
-      watchPaths,
-    });
-  });
-
-  router.post("/orchestrate.json", async (context: Context) => {
-    if (!context.request.hasBody) {
-      context.response.status = 400;
-      context.response.body = "No data submitted";
-      return;
-    }
-
-    const bodyResult = context.request.body({ type: "form-data" });
-    const formData = await bodyResult.value.read();
-    if (!formData.fields.qe) {
-      context.response.status = 400;
-      context.response.body = "No QE found in the request.";
-      return;
-    }
-    let submitShinNY = "yes";
-    if (formData.fields["submit-shin-ny"]) {
-      submitShinNY = formData.fields["submit-shin-ny"].toLowerCase();
-    }
-    const formDataFiles = formData.files ? formData.files : [];
-    if (formDataFiles.length == 0) {
-      context.response.status = 400;
-      context.response.body = "No files found in the request.";
-      return;
-    }
-    const qe = formData.fields.qe;
-    const govn = new ddbo.DuckDbOrchGovernance(
-      true,
-      new ddbo.DuckDbOrchEmitContext(),
-    );
-    const sessionID = await govn.emitCtx.newUUID(false);
-    const basePath = `${rootPath}/${qe}`;
-    const egressPath = `${rootPath}/${qe}/egress`;
-    const ingressTxPath = `${egressPath}/${sessionID}/.ingress-tx`;
-    const egressSessionPath = `${egressPath}/${sessionID}`;
-    const workflowPaths = mod.orchEngineWorkflowPaths(
-      basePath,
-      sessionID,
-    );
-
-    const ingressTxPaths = mod.orchEngineIngressPaths(
-      workflowPaths.ingressTx.home,
-    );
-    await workflowPaths.initializePaths?.();
-    for (const files of formDataFiles) {
-      if (files.contentType == "application/zip" && files.filename) {
-        const zip = new JSZip();
-        // Read the file from the filename path
-        const zipData = await Deno.readFile(files.filename);
-        const unzippedData = await zip.loadAsync(zipData);
-
-        await Promise.all(
-          Object.keys(unzippedData.files).map(async (fileName) => {
-            const file = unzippedData.files[fileName];
-            if (!file.dir) {
-              const content = await file.async("uint8array");
-              const filePath = path.join(ingressTxPath, fileName);
-              await Deno.writeFile(filePath, content);
-            }
-          }),
-        );
-      } else {
-        if (files.filename) {
-          const filePath = path.join(ingressTxPath, files.originalName);
-          await Deno.writeFile(filePath, await Deno.readFile(files.filename));
-        }
+      // console.log(formData);
+      if (!formData.has("qe")) {
+        context.response.status = 400;
+        context.response.body = "No QE found in the request.";
+        return;
       }
-    }
-    const screeningGroups = new mod.ScreeningIngressGroups(
-      async (group) => {
-        await orchestrateFiles(
-          sessionID,
-          govn,
-          ingressTxPaths,
-          group,
-          workflowPaths,
-          referenceDataHome,
-          submitShinNY,
-          shinnyFhirUrl,
-        );
-      },
-    );
-    const watchPaths: o.WatchFsPath<string, string>[] = [{
-      pathID: "ingress",
-      rootPath: ingressTxPaths.ingress.home,
-      onIngress: (entry) => {
-        const group = screeningGroups.potential(entry);
-        try {
-          orchestrateFiles(
-            sessionID,
-            govn,
-            ingressTxPaths,
-            group ?? entry,
-            workflowPaths,
-            referenceDataHome,
-            submitShinNY,
-            shinnyFhirUrl,
-          );
-        } catch (err) {
-          // TODO: store the error in a proper log
-          console.dir(entry);
-          console.error(err);
-        }
-      },
-    }];
-
-    console.log(`Processing files in ${ingressTxPaths.ingress.home}`);
-
-    await o.ingestWatchedFs({
-      drain: async (entries) => {
-        if (entries.length) {
-          await orchestrateFiles(
-            sessionID,
-            govn,
-            ingressTxPaths,
-            entries,
-            workflowPaths,
-            referenceDataHome,
-            submitShinNY,
-            shinnyFhirUrl,
-          );
-          const combinedJson = {};
-          for await (const entry of Deno.readDir(egressSessionPath)) {
-            const filePath = path.join(egressSessionPath, entry.name);
-            if (
-              entry.isFile &&
-              (entry.name == "session.json" || entry.name == "diagnostics.json")
-            ) {
-              const jsonData = await Deno.readTextFile(filePath);
-              const json = JSON.parse(jsonData);
-              Object.assign(combinedJson, json);
-            }
+      let submitShinNY = "yes";
+      let persistDiagnostics = "no";
+      const formDataFiles = [];
+      for (const [key, value] of formData) {
+        if (typeof value == "object") {
+          formDataFiles.push(value);
+        } else {
+          if (key == "submit-shin-ny") {
+            submitShinNY = value;
+          } else if (key == "persist-diagnostics") {
+            persistDiagnostics = value;
           }
-          console.log(
-            `Completed processing files in ${ingressTxPaths.ingress.home}`,
-          );
-          context.response.body = combinedJson;
-          context.response.type = "application/json";
         }
-      },
-      watch: false,
-      watchPaths,
-    });
-  });
+      }
+      if (formDataFiles.length == 0) {
+        context.response.status = 400;
+        context.response.body = "No files found in the request.";
+        return;
+      }
+      console.log(
+        "Submitted " + formDataFiles.length +
+          (formDataFiles.length > 1 ? " files." : " file."),
+      );
+      const qe = formData.get("qe")?.toString();
+      const govn = new ddbo.DuckDbOrchGovernance(
+        true,
+        new ddbo.DuckDbOrchEmitContext(),
+      );
+      const sessionID = await govn.emitCtx.newUUID(false);
+      const basePath = `${rootPath}/${qe}`;
+      const egressPath = `${rootPath}/${qe}/egress`;
+      const ingressTxPath = `${egressPath}/${sessionID}/.ingress-tx`;
+      const egressSessionPath = `${egressPath}/${sessionID}`;
+      const workflowPaths = mod.orchEngineWorkflowPaths(
+        basePath,
+        sessionID,
+      );
+
+      const ingressTxPaths = mod.orchEngineIngressPaths(
+        workflowPaths.ingressTx.home,
+      );
+      await workflowPaths.initializePaths?.();
+      for (const files of formDataFiles) {
+        if (files.type == "application/zip" && files.name) {
+          const zip = new JSZip();
+          // Read the file from the filename path
+          const zipData = await files.arrayBuffer();
+          const unzippedData = await zip.loadAsync(zipData);
+
+          await Promise.all(
+            Object.keys(unzippedData.files).map(async (fileName) => {
+              const file = unzippedData.files[fileName];
+              if (!file.dir) {
+                const content = await file.async("uint8array");
+                const filePath = path.join(ingressTxPath, fileName);
+                await Deno.writeFile(filePath, content);
+              }
+            }),
+          );
+        } else {
+          if (files.name) {
+            const filePath = path.join(ingressTxPath, files.name);
+            await Deno.writeFile(filePath, files.stream());
+          }
+        }
+      }
+
+      const watchPaths: o.WatchFsPath<string, string>[] = [{
+        pathID: "ingress",
+        rootPath: ingressTxPaths.ingress.home,
+        onIngress: () => {},
+      }];
+
+      console.log(`Processing files in ${ingressTxPaths.ingress.home}`);
+
+      await o.ingestWatchedFs({
+        drain: async (entries) => {
+          if (entries.length) {
+            await orchestrateFiles(
+              sessionID,
+              govn,
+              ingressTxPaths,
+              entries,
+              workflowPaths,
+              referenceDataHome,
+              submitShinNY,
+              shinnyFhirUrl,
+            );
+            const zip = new JSZip();
+            await addFolderToZip(zip, egressSessionPath, persistDiagnostics);
+            const zipContent = await zip.generateAsync({
+              type: "uint8array",
+            });
+            // Specify the final ZIP file path
+            const finalZipPath = path.join(
+              egressPath,
+              sessionID,
+              "egress-tx.zip",
+            );
+            await Deno.writeFile(finalZipPath, zipContent);
+            console.log(
+              `Completed processing files in ${ingressTxPaths.ingress.home}`,
+            );
+            context.response.body = zipContent;
+            context.response.type = "application/zip";
+          }
+        },
+        watch: false,
+        watchPaths,
+      });
+    },
+  );
+
+  router.post(
+    "/orchestrate.json",
+    async (context: RouterContext<"/orchestrate.json">) => {
+      if (!context.request.hasBody) {
+        context.response.status = 400;
+        context.response.body = "No data submitted";
+        return;
+      }
+
+      const bodyResult = context.request.body;
+      const formData = await bodyResult.formData();
+
+      // console.log(formData);
+      if (!formData.has("qe")) {
+        context.response.status = 400;
+        context.response.body = "No QE found in the request.";
+        return;
+      }
+      let submitShinNY = "yes";
+      const formDataFiles = [];
+      for (const [key, value] of formData) {
+        if (typeof value == "object") {
+          formDataFiles.push(value);
+        } else {
+          if (key == "submit-shin-ny") {
+            submitShinNY = value;
+          }
+        }
+      }
+      if (formDataFiles.length == 0) {
+        context.response.status = 400;
+        context.response.body = "No files found in the request.";
+        return;
+      }
+      console.log(
+        "Submitted " + formDataFiles.length +
+          (formDataFiles.length > 1 ? " files." : " file."),
+      );
+      const qe = formData.get("qe")?.toString();
+      const govn = new ddbo.DuckDbOrchGovernance(
+        true,
+        new ddbo.DuckDbOrchEmitContext(),
+      );
+      const sessionID = await govn.emitCtx.newUUID(false);
+      const basePath = `${rootPath}/${qe}`;
+      const egressPath = `${rootPath}/${qe}/egress`;
+      const ingressTxPath = `${egressPath}/${sessionID}/.ingress-tx`;
+      const egressSessionPath = `${egressPath}/${sessionID}`;
+      const workflowPaths = mod.orchEngineWorkflowPaths(
+        basePath,
+        sessionID,
+      );
+
+      const ingressTxPaths = mod.orchEngineIngressPaths(
+        workflowPaths.ingressTx.home,
+      );
+      await workflowPaths.initializePaths?.();
+      for (const files of formDataFiles) {
+        if (files.type == "application/zip" && files.name) {
+          const zip = new JSZip();
+          // Read the file from the filename path
+          const zipData = await files.arrayBuffer();
+          const unzippedData = await zip.loadAsync(zipData);
+
+          await Promise.all(
+            Object.keys(unzippedData.files).map(async (fileName) => {
+              const file = unzippedData.files[fileName];
+              if (!file.dir) {
+                const content = await file.async("uint8array");
+                const filePath = path.join(ingressTxPath, fileName);
+                await Deno.writeFile(filePath, content);
+              }
+            }),
+          );
+        } else {
+          if (files.name) {
+            const filePath = path.join(ingressTxPath, files.name);
+            await Deno.writeFile(filePath, files.stream());
+          }
+        }
+      }
+
+      const watchPaths: o.WatchFsPath<string, string>[] = [{
+        pathID: "ingress",
+        rootPath: ingressTxPaths.ingress.home,
+        onIngress: () => {},
+      }];
+
+      console.log(`Processing files in ${ingressTxPaths.ingress.home}`);
+
+      await o.ingestWatchedFs({
+        drain: async (entries) => {
+          if (entries.length) {
+            await orchestrateFiles(
+              sessionID,
+              govn,
+              ingressTxPaths,
+              entries,
+              workflowPaths,
+              referenceDataHome,
+              submitShinNY,
+              shinnyFhirUrl,
+            );
+            const combinedJson = {};
+            for await (const entry of Deno.readDir(egressSessionPath)) {
+              const filePath = path.join(egressSessionPath, entry.name);
+              if (
+                entry.isFile &&
+                (entry.name == "session.json" ||
+                  entry.name == "diagnostics.json")
+              ) {
+                const jsonData = await Deno.readTextFile(filePath);
+                const json = JSON.parse(jsonData);
+                Object.assign(combinedJson, json);
+              }
+            }
+            console.log(
+              `Completed processing files in ${ingressTxPaths.ingress.home}`,
+            );
+            context.response.body = combinedJson;
+            context.response.type = "application/json";
+          }
+        },
+        watch: false,
+        watchPaths,
+      });
+    },
+  );
 
   app.use(router.routes());
   app.use(router.allowedMethods());
