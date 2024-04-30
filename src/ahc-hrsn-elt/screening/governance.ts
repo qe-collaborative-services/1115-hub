@@ -1220,35 +1220,39 @@ export class ScreeningAssuranceRules<
     // Construct the SQL query using tagged template literals
     return this.govn.SQL`
       WITH ${cteName} AS (
-        SELECT '${patMrnIdcolumnName}' AS issue_column, '${this.tableName}' AS issue_table_name, a.${patMrnIdcolumnName} AS invalid_pat_value, a.${facilityIdcolumnName} AS invalid_facility_value, a.src_file_row_number AS issue_row
-        FROM ${this.tableName} a
-        LEFT JOIN ${relatedTableNames.qeAdminDataTableName} b
-        ON UPPER(a.${patMrnIdcolumnName}) = UPPER(b.${patMrnIdcolumnName})
-        AND UPPER(a.${facilityIdcolumnName}) = UPPER(b.${facilityIdcolumnName})
-        LEFT JOIN ${relatedTableNames.adminDemographicsTableName} c
-        ON UPPER(a.${patMrnIdcolumnName}) = UPPER(c.${patMrnIdcolumnName})
-        AND UPPER(a.${facilityIdcolumnName}) = UPPER(c.${facilityIdcolumnName})
-        WHERE b.${patMrnIdcolumnName} IS NULL OR c.${patMrnIdcolumnName} IS NULL OR b.${facilityIdcolumnName} IS NULL OR c.${facilityIdcolumnName} IS NULL
+        WITH cte_qe_demographic_unmatched AS (
+            SELECT DISTINCT COALESCE(ad.PAT_MRN_ID, qe.PAT_MRN_ID) AS PAT_MRN_ID,
+                    COALESCE(ad.FACILITY_ID, qe.FACILITY_ID) AS FACILITY_ID,
+                          CASE
+                              WHEN ad.PAT_MRN_ID IS NULL THEN 'QE_ADMIN_DATA'
+                              ELSE 'ADMIN_DEMOGRAPHIC'
+                          END AS unmatched_source,
+                          COALESCE(ad.src_file_row_number, qe.src_file_row_number) AS src_file_row_number,
+            FROM  ${relatedTableNames.adminDemographicsTableName} ad
+            FULL OUTER JOIN ${relatedTableNames.qeAdminDataTableName} qe
+                ON ad.PAT_MRN_ID = qe.PAT_MRN_ID
+                AND ad.FACILITY_ID = qe.FACILITY_ID
+            WHERE ad.PAT_MRN_ID IS NULL OR qe.PAT_MRN_ID IS NULL
+        )
+        Select '${patMrnIdcolumnName}' AS issue_column, pat_mrn_id AS invalid_pat_value, FACILITY_ID AS invalid_facility_value, unmatched_source, src_file_row_number  AS issue_row,
+        case when unmatched_source = 'ADMIN_DEMOGRAPHIC' then '${relatedTableNames.adminDemographicsTableName}'
+        when unmatched_source = 'QE_ADMIN_DATA' then '${relatedTableNames.qeAdminDataTableName}'
+        Else '' End As issue_table_name
+        from cte_qe_demographic_unmatched
         UNION
-        SELECT '${patMrnIdcolumnName}' AS issue_column, '${relatedTableNames.qeAdminDataTableName}' AS issue_table_name, b.${patMrnIdcolumnName} AS invalid_pat_value, b.${facilityIdcolumnName} AS invalid_facility_value, b.src_file_row_number AS issue_row
-        FROM ${relatedTableNames.qeAdminDataTableName} b
-        LEFT JOIN ${this.tableName} a
-        ON UPPER(a.${patMrnIdcolumnName}) = UPPER(b.${patMrnIdcolumnName})
-        AND UPPER(a.${facilityIdcolumnName}) = UPPER(b.${facilityIdcolumnName})
-        LEFT JOIN ${relatedTableNames.adminDemographicsTableName} c
-        ON UPPER(b.${patMrnIdcolumnName}) = UPPER(c.${patMrnIdcolumnName})
-        AND UPPER(b.${facilityIdcolumnName}) = UPPER(c.${facilityIdcolumnName})
-        WHERE a.${patMrnIdcolumnName} IS NULL OR c.${patMrnIdcolumnName} IS NULL OR a.${facilityIdcolumnName} IS NULL OR c.${facilityIdcolumnName} IS NULL
-        UNION
-        SELECT '${patMrnIdcolumnName}' AS issue_column, '${relatedTableNames.adminDemographicsTableName}' AS issue_table_name, c.${patMrnIdcolumnName} AS invalid_pat_value, c.${facilityIdcolumnName} AS invalid_facility_value, c.src_file_row_number AS issue_row
-        FROM ${relatedTableNames.adminDemographicsTableName} c
-        LEFT JOIN ${this.tableName} a
-        ON UPPER(a.${patMrnIdcolumnName}) = UPPER(c.${patMrnIdcolumnName})
-        AND UPPER(a.${facilityIdcolumnName}) = UPPER(c.${facilityIdcolumnName})
-        LEFT JOIN ${relatedTableNames.qeAdminDataTableName} b
-        ON UPPER(c.${patMrnIdcolumnName}) = UPPER(b.${patMrnIdcolumnName})
-        AND UPPER(c.${facilityIdcolumnName}) = UPPER(b.${facilityIdcolumnName})
-        WHERE a.${patMrnIdcolumnName} IS NULL OR b.${patMrnIdcolumnName} IS NULL OR a.${facilityIdcolumnName} IS NULL OR b.${facilityIdcolumnName} IS NULL
+        Select DISTINCT '${patMrnIdcolumnName}' AS issue_column, s.PAT_MRN_ID AS invalid_pat_value,s.FACILITY_ID AS invalid_facility_value,'SCREENING' As unmatched_source, src_file_row_number  AS issue_row,
+        '${this.tableName}' as issue_table_name
+        FROM ${this.tableName} s
+          Left Outer Join (
+            SELECT  DISTINCT a.PAT_MRN_ID,a.FACILITY_ID From ${relatedTableNames.adminDemographicsTableName} a
+            Inner Join ${relatedTableNames.qeAdminDataTableName} q
+            ON a.PAT_MRN_ID = q.PAT_MRN_ID
+            AND a.FACILITY_ID = q.FACILITY_ID
+            WHERE a.PAT_MRN_ID IS NOT NULL AND q.PAT_MRN_ID IS NOT NULL
+          ) aq
+          ON s.PAT_MRN_ID = aq.PAT_MRN_ID
+        AND aq.FACILITY_ID = s.FACILITY_ID
+        Where aq.PAT_MRN_ID IS  NULL
       )
       ${
       this.insertRowValueIssueCtePartial(
