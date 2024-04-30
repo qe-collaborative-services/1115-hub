@@ -44,24 +44,15 @@ import ca.uhn.fhir.parser.LenientErrorHandler;
 import ca.uhn.fhir.parser.StrictErrorHandler;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import com.google.gson.JsonObject; // Import JsonObject from Gson library
 
 @RestController
 public class FHIRBundleValidator implements IResourceProvider {
@@ -161,7 +152,7 @@ public class FHIRBundleValidator implements IResourceProvider {
         // retVal.setOperationOutcome(successOutcome);
 
         /*
-         * // Create JSON structure for session information
+         * TODO: Create JSON structure for session information
          * JsonObject sessionJson = new JsonObject();
          * sessionJson.addProperty("sessionId", sessionId.toString());
          * sessionJson.addProperty("sessionStartTime", sessionStartTime.toString());
