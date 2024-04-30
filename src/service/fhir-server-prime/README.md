@@ -1,13 +1,80 @@
-# HAPI FHIR Plain Server Skeleton
+# HAPI FHIR Plain Server
 
-To try this project out:
+## Prerequisites (Sandbox)
+
+Before getting started, ensure you have the following prerequisites:
+
+1. **Java 17:** This project requires Java 17 (or greather than 17)to be
+   installed. You can check your Java version by running:
+
+   ```
+   java --version
+   ```
+
+   If you don't have Java 17 installed, you can download and install it from
+   [here](https://adoptopenjdk.net/?variant=openjdk17&jvmVariant=hotspot).
+
+2. **Maven:** Make sure you have Apache Maven installed. You can check your
+   Maven version by running:
+
+   ```
+   mvn --version
+   ```
+
+   If you don't have Maven installed, you can download it from
+   [here](https://maven.apache.org/download.cgi).
+
+## Cloning the Repository
+
+To clone this repository, navigate to the folder where you want to store the
+project and run:
+
+```
+git clone https://github.com/qe-collaborative-services/1115-hub.git
+```
+
+Then, navigate to the Java project folder:
+
+```
+cd 1115-hub/src/service/fhir-server-prime
+```
+
+## Running the Project
 
 - Run the following command to compile the project and start a local testing
   server that runs it:
 
 ```
-mvn jetty:run
+mvn jetty:run -Djetty.port=8080 -Djetty.host=localhost
 ```
+
+#### Command Breakdown
+
+To start the Jetty server using Maven, you use the following command:
+
+Let's break down each part of the command:
+
+1. **`mvn`**: This is the command-line interface for Apache Maven, a build
+   automation tool primarily used for Java projects. It's used to execute Maven
+   commands.
+
+2. **`jetty:run`**: This part specifies the Maven goal to execute. In this case,
+   it's the `run` goal of the Jetty Maven Plugin. The Jetty plugin integrates
+   Jetty, a lightweight Java-based web server and servlet container, with Maven,
+   allowing you to run your web application during the Maven build process.
+
+3. **`-Djetty.port=8080`**: This is a system property passed to Maven using the
+   `-D` flag. It specifies the port on which the Jetty server will listen for
+   incoming connections. In this case, it sets the port to `8080`, which is a
+   commonly used port for web servers.
+
+4. **`-Djetty.host=localhost`**: Similar to the previous argument, this is
+   another system property passed to Maven using the `-D` flag. It specifies the
+   host or IP address on which the Jetty server will bind to. In this case, it
+   sets the host to `localhost`, which means the server will only accept
+   connections originating from the same machine.
+
+# Test the endpoints
 
 - Test that your server is running by fetching its CapabilityStatement:
 
