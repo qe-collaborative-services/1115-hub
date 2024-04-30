@@ -58,7 +58,7 @@ import java.util.UUID;
 public class FHIRBundleValidator implements IResourceProvider {
 
     private static String folderPath;
-    private static String profile;
+    private static String shinnyDataLakeApiImpGuideProfileUri;
     // private static String zipFileName;
     static FhirContext context = FhirContext.forR4();
     private static Connection conn;
@@ -75,7 +75,7 @@ public class FHIRBundleValidator implements IResourceProvider {
         }
         // Load values fom application.properties
         folderPath = config.getString("folderPath");
-        profile = config.getString("profile");
+        shinnyDataLakeApiImpGuideProfileUri = config.getString("shinnyDataLakeApiImpGuideProfileUri");
         // zipFileName = config.getString("zipFileName");
         try {
             conn = DatabaseConnector.connect();
@@ -122,7 +122,8 @@ public class FHIRBundleValidator implements IResourceProvider {
         IBaseResource resource = parser.parseResource(jsonBody);
 
         // Validate the bundle before creating resources
-        MethodOutcome validationOutcome = validateBundle((Bundle) resource, ValidationModeEnum.CREATE, profile);
+        MethodOutcome validationOutcome = validateBundle((Bundle) resource, ValidationModeEnum.CREATE,
+                shinnyDataLakeApiImpGuideProfileUri);
         OperationOutcome operationOutcome = (OperationOutcome) validationOutcome.getOperationOutcome();
 
         // If validation fails, return the OperationOutcome
@@ -156,7 +157,7 @@ public class FHIRBundleValidator implements IResourceProvider {
          * JsonObject sessionJson = new JsonObject();
          * sessionJson.addProperty("sessionId", sessionId.toString());
          * sessionJson.addProperty("sessionStartTime", sessionStartTime.toString());
-         * sessionJson.addProperty("profile", profile);
+         * sessionJson.addProperty("profile", shinnyDataLakeApiImpGuideProfileUri);
          * sessionJson.addProperty("version", "4.0");
          * sessionJson.addProperty("sessionEndTime", sessionEndTime.toString());
          * System.out.println(sessionJson);
@@ -1067,7 +1068,7 @@ public class FHIRBundleValidator implements IResourceProvider {
 
         // Read and parse the StructureDefinition from a file
         ValidationModeEnum mode = ValidationModeEnum.CREATE;
-        outcome = validateBundle((Bundle) resource, mode, profile);
+        outcome = validateBundle((Bundle) resource, mode, shinnyDataLakeApiImpGuideProfileUri);
 
         // Handle the validation result
         OperationOutcome operationOutcome = (OperationOutcome) outcome.getOperationOutcome();
