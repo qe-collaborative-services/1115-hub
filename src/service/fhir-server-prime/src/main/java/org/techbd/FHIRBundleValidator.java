@@ -48,8 +48,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +55,6 @@ import java.util.UUID;
 @RestController
 public class FHIRBundleValidator implements IResourceProvider {
 
-    private static String folderPath;
     private static String shinnyDataLakeApiImpGuideProfileUri;
     // private static String zipFileName;
     static FhirContext context = FhirContext.forR4();
@@ -74,7 +71,6 @@ public class FHIRBundleValidator implements IResourceProvider {
             e.printStackTrace();
         }
         // Load values fom application.properties
-        folderPath = config.getString("folderPath");
         shinnyDataLakeApiImpGuideProfileUri = config.getString("shinnyDataLakeApiImpGuideProfileUri");
         // zipFileName = config.getString("zipFileName");
         try {
@@ -382,12 +378,6 @@ public class FHIRBundleValidator implements IResourceProvider {
             }
         }
 
-        // Write CSV data to file (or handle as needed)
-        try (FileWriter writer = new FileWriter(folderPath + "SCREENING.csv")) {
-            writer.write(csvBuilder.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void createQeAdminDataCsv(Bundle bundle) {
@@ -482,12 +472,7 @@ public class FHIRBundleValidator implements IResourceProvider {
         csvBuilder.append(visitOmhFlag).append("|");
         csvBuilder.append(visitOpwddFlag).append("|");
         csvBuilder.append("\n");
-        // Write CSV data to file (or handle as needed)
-        try (FileWriter writer = new FileWriter(folderPath + "QE_ADMIN_DATA.csv")) {
-            writer.write(csvBuilder.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private static void createDemographicDataCsv(Bundle bundle) {
@@ -749,12 +734,7 @@ public class FHIRBundleValidator implements IResourceProvider {
         csvBuilder.append(ethnicityCodeSystemName).append("|");
         csvBuilder.append(medicaidCin).append("|");
         csvBuilder.append("\n");
-        // Write CSV data to file (or handle as needed)
-        try (FileWriter writer = new FileWriter(folderPath + "DEMOGRAPHIC_DATA.csv")) {
-            writer.write(csvBuilder.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
     // JAVA STARTS
 
