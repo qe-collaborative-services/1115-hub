@@ -1,12 +1,51 @@
-# HAPI FHIR Plain Server Skeleton
+# HAPI FHIR Plain Server
 
-To try this project out:
+## Prerequisites (Sandbox)
+
+Before getting started, ensure you have the following prerequisites:
+
+1. **Java 17:** This project requires Java 17 (or greather than 17)to be
+   installed. You can check your Java version by running:
+
+   ```
+   java --version
+   ```
+
+   If you don't have Java 17 installed, you can download and install it from
+   [here](https://adoptopenjdk.net/?variant=openjdk17&jvmVariant=hotspot).
+
+2. **Maven:** Make sure you have Apache Maven installed. You can check your
+   Maven version by running:
+
+   ```
+   mvn --version
+   ```
+
+   If you don't have Maven installed, you can download it from
+   [here](https://maven.apache.org/download.cgi).
+
+## Cloning the Repository
+
+To clone this repository, navigate to the folder where you want to store the
+project and run:
+
+```
+git clone https://github.com/qe-collaborative-services/1115-hub.git
+```
+
+Then, navigate to the Java project folder:
+
+```
+cd 1115-hub/src/service/fhir-server-prime
+```
+
+## Running the Project
 
 - Run the following command to compile the project and start a local testing
   server that runs it:
 
 ```
-mvn jetty:run
+mvn jetty:run -Djetty.port=8080 -Djetty.host=localhost
 ```
 
 - Test that your server is running by fetching its CapabilityStatement:
