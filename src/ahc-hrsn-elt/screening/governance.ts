@@ -248,13 +248,13 @@ export class CommonAssuranceRules<
     }" FROM ${
       columnReference[columnName1 as keyof typeof columnReference]
         .referenceTableName
-    } WHERE UPPER(tbl."${columnName2}") = UPPER("${
+    } WHERE UPPER(CAST(tbl."${columnName2}" AS VARCHAR)) = UPPER(CAST("${
       columnReference[columnName2 as keyof typeof columnReference]
         .referenceFieldName
-    }") AND UPPER(tbl."${columnName1}") = UPPER("${
+    }" AS VARCHAR)) AND UPPER(CAST(tbl."${columnName1}" AS VARCHAR)) = UPPER(CAST("${
       columnReference[columnName1 as keyof typeof columnReference]
         .referenceFieldName
-    }"))
+    }" AS VARCHAR)))
       )
       ${
       this.insertRowValueIssueCtePartial(
@@ -767,6 +767,204 @@ export class ScreeningAssuranceRules<
     }`;
   }
 
+  onlyAllowValidTotalSafetyScoreInAllRows() {
+    const cteName = "valid_total_safety_score_in_all_rows";
+    const ahcCrossWalkReferenceTable = "ahc_cross_walk";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        WITH cte_score AS (
+          SELECT
+              SUM(crw.Score) AS cross_walk_Score,
+              SUM(
+                  CASE
+                      WHEN UPPER(TRIM(scr.QUESTION_CODE_DESCRIPTION)) LIKE '%TOTAL SAFETY SCORE%' AND TRY_CAST(scr.ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN CAST(scr.ANSWER_CODE_DESCRIPTION AS INTEGER)
+                      ELSE 0
+                  END
+              ) AS screening_score
+          FROM
+              ${this.tableName} scr
+          LEFT OUTER JOIN (
+              SELECT 	acw.SCREENING_CODE,
+                    acw.QUESTION_CODE,
+                    acw.ANSWER_CODE,
+                    acw.QUESTION_SLNO,
+                    acw.Score AS Score
+              FROM ${ahcCrossWalkReferenceTable} acw
+              Where QUESTION_SLNO_REFERENCE In(
+              SELECT QUESTION_SLNO
+                  FROM ${ahcCrossWalkReferenceTable}
+                  WHERE UPPER(TRIM(QUESTION)) LIKE '%TOTAL SAFETY SCORE%'
+                  )
+              AND acw.QUESTION_CODE = scr.QUESTION_CODE
+              AND acw.ANSWER_CODE = scr.ANSWER_CODE
+          ) AS crw ON crw.SCREENING_CODE = scr.SCREENING_CODE
+      )
+      SELECT 	cross_walk_Score,
+          screening_score AS invalid_value,
+          (SELECT src_file_row_number FROM ${this.tableName} WHERE UPPER(TRIM(QUESTION_CODE_DESCRIPTION)) LIKE '%TOTAL SAFETY SCORE%') AS issue_row,
+        'ANSWER_CODE_DESCRIPTION' AS issue_column
+      FROM cte_score
+      WHERE screening_score <> cross_walk_Score
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ANSWER_CODE_DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ANSWER_CODE_DESCRIPTION for TOTAL SAFETY SCORE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ANSWER_CODE_DESCRIPTION for TOTAL SAFETY SCORE (Calculated Score)'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidCalculatedMentalHealthScoreInAllRows() {
+    const cteName = "valid_calculated_mental_health_score_in_all_rows";
+    const ahcCrossWalkReferenceTable = "ahc_cross_walk";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        SELECT ANSWER_CODE_DESCRIPTION AS issue_column,
+        SCREENING_CALCULATED_SCORE AS invalid_value,
+        SRC_FILE_ROW_NUMBER AS issue_row
+        FROM
+        (
+        SELECT Sum(crw.score) As CROSSWALK_ANSWER_SCORE,
+            (SELECT CASE WHEN TRY_CAST(ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN CAST(ANSWER_CODE_DESCRIPTION AS INTEGER) ELSE 0 END AS SCREENING_CALC_SCORE
+              FROM ${this.tableName} scr2
+              WHERE UPPER(scr2.QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED MENTAL HEALTH SCORE%'
+          ) AS SCREENING_CALCULATED_SCORE,
+          (SELECT src_file_row_number FROM ${this.tableName} WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED MENTAL HEALTH SCORE%') AS SRC_FILE_ROW_NUMBER,
+          'ANSWER_CODE_DESCRIPTION' AS ANSWER_CODE_DESCRIPTION
+            FROM ${this.tableName} scr
+            INNER JOIN (
+                SELECT 	acw.score As SCORE
+                FROM ${ahcCrossWalkReferenceTable} acw
+                Where QUESTION_SLNO_REFERENCE In(
+                SELECT QUESTION_SLNO
+                    FROM ${ahcCrossWalkReferenceTable}
+                    WHERE UPPER(QUESTION) LIKE '%CALCULATED MENTAL HEALTH SCORE%'
+                    )
+                AND acw.QUESTION_CODE = scr.QUESTION_CODE
+                AND acw.ANSWER_CODE  = scr.ANSWER_CODE
+            ) AS crw ON 1 = 1
+        ) As calc_fld_val
+        Where calc_fld_val.CROSSWALK_ANSWER_SCORE <> calc_fld_val.SCREENING_CALCULATED_SCORE
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ANSWER_CODE_DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ANSWER_CODE_DESCRIPTION for CALCULATED MENTAL HEALTH SCORE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ANSWER_CODE_DESCRIPTION for CALCULATED MENTAL HEALTH SCORE (Calculated Score)'`,
+      )
+    }`;
+  }
+
+  onlyAllowValidCalculatedWeeklyPhysicalActivityScoreInAllRows() {
+    const cteName =
+      "valid_calculated_weekly_physical_activity_score_in_all_rows";
+    const ahcCrossWalkReferenceTable = "ahc_cross_walk";
+    // Construct the SQL query using tagged template literals
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+        WITH cte_physical_activity AS (
+          SELECT
+            scr.SCREENING_CODE,
+            scr.QUESTION_CODE,
+            scr.ANSWER_CODE,
+            crw.ANSWER_VALUE,
+            scr.ANSWER_CODE_DESCRIPTION,
+            ROW_NUMBER() OVER (
+            ORDER BY scr.SCREENING_CODE) AS sequence_number
+          FROM
+            ${this.tableName} scr
+          INNER JOIN (
+            SELECT
+              acw.SCREENING_CODE,
+              acw.QUESTION_CODE,
+              acw.ANSWER_CODE,
+              acw.QUESTION_SLNO,
+              CASE
+                WHEN TRY_CAST(acw.ANSWER_VALUE AS INTEGER) IS NOT NULL THEN CAST(acw.ANSWER_VALUE AS INTEGER)
+                ELSE CASE WHEN acw.ANSWER_CODE='LA32060-8' THEN 150 ELSE 0 END
+              END AS ANSWER_VALUE
+            FROM
+              ${ahcCrossWalkReferenceTable} acw
+            Where
+              QUESTION_SLNO_REFERENCE In(
+              SELECT
+                QUESTION_SLNO
+              FROM
+                ${ahcCrossWalkReferenceTable}
+              WHERE
+                UPPER(QUESTION) LIKE '%CALCULATED PHYSICAL ACTIVITY SCORE%'
+                      )
+              AND acw.QUESTION_CODE = scr.QUESTION_CODE
+              AND acw.ANSWER_CODE = scr.ANSWER_CODE
+              ) AS crw ON
+            crw.SCREENING_CODE = scr.SCREENING_CODE
+          )
+          Select 	ANSWER_CODE_DESCRIPTION AS issue_column,
+              CROSSWALK_ANSWER_VALUE AS CROSSWALK_ANSWER_VALUE,
+              SCREENING_CALCULATED_VALUE AS invalid_value,
+              SRC_FILE_ROW_NUMBER AS issue_row
+          FROM
+            (
+            Select
+              t1.ANSWER_VALUE * t2.ANSWER_VALUE As CROSSWALK_ANSWER_VALUE,
+              CASE
+                WHEN TRY_CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL
+                  AND TRY_CAST(t2.ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN
+              CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) * CAST(t2.ANSWER_CODE_DESCRIPTION AS INTEGER)
+                ELSE CASE WHEN t2.ANSWER_CODE='LA32060-8' THEN 150 * CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) ELSE 0 END
+                END AS SCREENING_ANSWER_VALUE,
+                Scrn_Phycical_Act_Score.SCRN_PHYSICAL_ACTIVITY_VALUE AS SCREENING_CALCULATED_VALUE,
+                (SELECT src_file_row_number FROM ${this.tableName} WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS SRC_FILE_ROW_NUMBER,
+                'ANSWER_CODE_DESCRIPTION' AS ANSWER_CODE_DESCRIPTION
+
+              from
+                cte_physical_activity t1
+              Inner Join cte_physical_activity t2
+          On
+                t1.sequence_number = 1
+                and t2.sequence_number = 2
+              Left Outer Join (
+                Select
+                  CASE
+                    WHEN TRY_CAST(ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN CAST(ANSWER_CODE_DESCRIPTION AS INTEGER)
+                    ELSE 0
+                  END SCRN_PHYSICAL_ACTIVITY_VALUE
+                From
+                ${this.tableName} scr
+                Where
+                  UPPER(scr.QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS Scrn_Phycical_Act_Score
+                      On
+                1 = 1
+          ) As calc_fld
+          Where
+            (calc_fld.CROSSWALK_ANSWER_VALUE <> calc_fld.SCREENING_ANSWER_VALUE)
+            OR (calc_fld.SCREENING_ANSWER_VALUE <> calc_fld.SCREENING_CALCULATED_VALUE)
+            OR (calc_fld.CROSSWALK_ANSWER_VALUE <> calc_fld.SCREENING_CALCULATED_VALUE)
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        `Invalid ANSWER_CODE_DESCRIPTION`,
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid ANSWER_CODE_DESCRIPTION for CALCULATED PHYSICAL ACTIVITY SCORE "' || invalid_value || '" found in ' || issue_column`,
+        `'Validate ANSWER_CODE_DESCRIPTION for CALCULATED PHYSICAL ACTIVITY SCORE (Calculated Score)'`,
+      )
+    }`;
+  }
+
   onlyAllowValidEncounterStatusCodeInAllRows(
     columnName: ColumnName,
   ) {
@@ -841,7 +1039,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
-            ON UPPER(sr.${columnName}) = UPPER(ecr.Code)
+            ON UPPER(CAST(sr.${columnName} AS VARCHAR)) = UPPER(CAST(ecr.Code AS VARCHAR))
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Code IS NULL
       )
@@ -872,7 +1070,7 @@ export class ScreeningAssuranceRules<
                  sr.src_file_row_number AS issue_row
             FROM ${this.tableName} sr
             LEFT JOIN ${encounterTypeCodeReferenceTable} ecr
-            ON UPPER(sr.${columnName}) = UPPER(ecr.Display)
+            ON UPPER(CAST(sr.${columnName} AS VARCHAR)) = UPPER(CAST(ecr.Display AS VARCHAR))
            WHERE sr.${columnName} IS NOT NULL
             AND ecr.Display IS NULL
       )

@@ -14,12 +14,12 @@ Screening,ENCOUNTER_STATUS_CODE_DESCRIPTION,No,Please see ENCOUNTER_STATUS_REFER
 Screening,ENCOUNTER_TYPE_CODE_SYSTEM,No,"SNOMED-CT or SNOMED, CPT",Yes,,
 Screening,ENCOUNTER_TYPE_CODE,No,ENCOUNTER_TYPE REFERENCE,Yes,,
 Screening,ENCOUNTER_TYPE_CODE_DESCRIPTION,No,ENCOUNTER_TYPE REFERENCE,No,,
-Screening,SCREENING_STATUS_CODE,Yes,SCREENING_STATUS_REFERENCE,No,Yes,Yes
+Screening,SCREENING_STATUS_CODE,Yes,SCREENING_STATUS_REFERENCE,Yes,,Yes
 Screening,SCREENING_STATUS_CODE_DESCRIPTION,No,SCREENING_STATUS_REFERENCE,No,,Yes
 Screening,SCREENING_STATUS_CODE_SYSTEM,Yes,SCREENING_STATUS_REFERENCE,No,,Yes
-Screening,SCREENING_CODE DESCRIPTION,Yes,Accountable health communities (AHC) health-related social needs screening (HRSN) tool (96777-8) or Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions,,Yes,Yes
-Screening,SCREENING_CODE_SYSTEM_NAME,Yes,LN or LOINC,,Yes,Yes
-Screening,SCREENING_CODE,Yes,96777-8 or 97023-6,,Yes,Yes
+Screening,SCREENING_CODE_DESCRIPTION,Yes,Accountable health communities (AHC) health-related social needs screening (HRSN) tool (96777-8) or Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions,Yes,,Yes
+Screening,SCREENING_CODE_SYSTEM_NAME,Yes,LN or LOINC,Yes,,Yes
+Screening,SCREENING_CODE,Yes,96777-8 or 97023-6,Yes,,Yes
 Screening,RECORDED_TIME,Yes,Date Time- Format: YYYYMMDD HH:MM:SS YYYY is not before 2023.,Rejection if empty,,Can normalize to this format
 Screening,QUESTION_CODE_DESCRIPTION,Yes,See CrossWalk,Yes,,
 Screening,ANSWER_CODE_DESCRIPTION,Yes,See CrossWalk,Yes,,
