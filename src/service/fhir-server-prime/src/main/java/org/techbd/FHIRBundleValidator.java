@@ -189,55 +189,6 @@ public class FHIRBundleValidator implements IResourceProvider {
         // insertScreeningData(bundle);
         insertScreeningJson(bundle, conn);
 
-        String[] fileNames = { "SCREENING.csv", "QE_ADMIN_DATA.csv", "DEMOGRAPHIC_DATA.csv" };
-
-        // Specify the name of the output zip file
-        /*
-         * String zipFilePath = folderPath + zipFileName;
-         * 
-         * // Create the zip file
-         * try (FileOutputStream fos = new FileOutputStream(zipFilePath);
-         * ZipOutputStream zos = new ZipOutputStream(fos)) {
-         * 
-         * // Iterate over the list of file names
-         * for (String fileName : fileNames) {
-         * // Create a FileInputStream to read each CSV file
-         * try (FileInputStream fis = new FileInputStream(folderPath + fileName)) {
-         * // Create a new zip entry
-         * ZipEntry zipEntry = new ZipEntry(fileName);
-         * // Add the zip entry to the zip output stream
-         * zos.putNextEntry(zipEntry);
-         * 
-         * // Write the contents of the CSV file to the zip output stream
-         * byte[] buffer = new byte[1024];
-         * int length;
-         * while ((length = fis.read(buffer)) >= 0) {
-         * zos.write(buffer, 0, length);
-         * }
-         * // Close the zip entry
-         * zos.closeEntry();
-         * }
-         * }
-         * 
-         * // Close the zip output stream
-         * zos.finish();
-         * System.out.println("Zip file created successfully!");
-         * 
-         * // If zipFlag is false, convert the zip file to base64 string
-         * if (!zipFlag) {
-         * byte[] zipFileContent = Files.readAllBytes(Paths.get(zipFilePath));
-         * String base64String = Base64.getEncoder().encodeToString(zipFileContent);
-         * System.out.println("Base64 representation of the zip file:");
-         * // System.out.println(base64String);
-         * 
-         * 
-         * }
-         * 
-         * 
-         * } catch (IOException e) {
-         * e.printStackTrace();
-         * }
-         */
     }
 
     private static void createScreeningCsv(Bundle bundle) {
