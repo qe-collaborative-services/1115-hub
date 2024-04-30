@@ -41,8 +41,19 @@ cd 1115-hub/src/service/fhir-server-prime
 
 ## Running the Project
 
-- Run the following command to compile the project and start a local testing
-  server that runs it:
+Before running the project, you need to configure the application properties in
+the `src/main/resources/application.properties` file.
+
+Here are the required properties:
+
+- `shinnyDataLakeApiImpGuideProfileUri`: This property specifies the URI of the
+  FHIR Implementation Guide profile.
+
+Ensure you provide the appropriate values for these properties in the
+`application.properties` file before running the project.
+
+Once the properties are configured, run the following command to compile the
+project and start a local testing server that runs it:
 
 ```
 mvn jetty:run -Djetty.port=8080 -Djetty.host=localhost
