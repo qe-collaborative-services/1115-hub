@@ -15,11 +15,11 @@ RUN curl -fsSL https://deno.land/x/install/install.sh | DENO_VERSION=1.41.0 sh
 ENV PATH="/root/.deno/bin:$PATH"
 
 # Install DuckDB
-RUN wget -qO- https://github.com/duckdb/duckdb/releases/download/v0.10.2/duckdb_cli-linux-amd64.zip >duckdb.zip
+RUN wget -qO- https://github.com/duckdb/duckdb/releases/download/v0.9.2/duckdb_cli-linux-amd64.zip >duckdb.zip
 RUN unzip duckdb.zip -d /usr/local/bin/
 RUN chmod +x /usr/local/bin/duckdb
 RUN export PATH=$PATH:/usr/local/bin
-RUN rm duckdb.zip   
+RUN rm duckdb.zip
 
 # Clone the specified GitHub repository
 WORKDIR /app
@@ -37,8 +37,6 @@ RUN echo "*/5 * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hr
     echo "*/5 * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe grrhio --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id GRRHIO >> /SFTP/observe/log/grrhio.log 2>&1" >> /etc/cron.d/1115-hub && \
     echo "*/5 * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe healthix --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id HEALTHIX >> /SFTP/observe/log/healthix.log 2>&1" >> /etc/cron.d/1115-hub && \
     echo "*/5 * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe healthelink --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id HEALTHELINK >> /SFTP/observe/log/healthelink.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "*/5 * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe partner1-test --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id PARTNER1-TEST >> /SFTP/observe/log/partner1-test.log 2>&1" >> /etc/cron.d/1115-hub && \
-    echo "*/5 * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe partner2-test --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id PARTNER2-TEST >> /SFTP/observe/log/partner2-test.log 2>&1" >> /etc/cron.d/1115-hub && \
     echo "*/5 * * * * cd /app/1115-hub; /root/.deno/bin/deno run -A ./src/ahc-hrsn-elt/screening/orchctl.ts --qe hixny --publish-fhir 40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev --publish-fhir-qe-id HIXNY >> /SFTP/observe/log/hixny.log 2>&1" >> /etc/cron.d/1115-hub
 
 RUN chmod 0644 /etc/cron.d/1115-hub
