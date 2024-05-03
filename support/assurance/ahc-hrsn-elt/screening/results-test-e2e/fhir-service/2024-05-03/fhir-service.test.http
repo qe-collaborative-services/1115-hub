@@ -1,0 +1,105 @@
+# this file is for testing and verifying the  FHIR service with two api end points
+# ------------------------------------------------------------------------
+# * requires the `vscode-httpyac` Visual Studio Code extension
+# * requires a `.env` file with HOST, PORT
+# * this service has 2 endpoints /Bundle/$validate & /Bundle/
+
+### Test that your server is running by fetching its CapabilityStatement:
+GET https://synthetic.fhir.api.devl.techbd.org/metadata HTTP/1.1
+Content-Type: application/json
+{{
+  const { equal } = require('assert');
+  test('status code 200', () => {
+    equal(response.statusCode, 200);
+  });
+  test('Check content-type', () => {
+    equal(response.contentType.contentType, 'application/fhir+json;charset=utf-8');
+  });
+  test.hasResponseBody();
+test('Check Resource Type', () => {
+    equal(JSON.parse(response.body).resourceType, 'CapabilityStatement');
+});
+test('Status Check', () => {
+    equal(JSON.parse(response.body).status, 'active');
+});
+test('Status Check', () => {
+    equal(JSON.parse(response.body).software.name, 'HAPI FHIR Server');
+});
+}}
+
+### Validating a Bunlde resource from your server - happy path
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/$validate HTTP/1.1
+Content-Type: application/json
+{{
+  const { equal } = require('assert');
+  test('status code 200', () => {
+    equal(response.statusCode, 200);
+  });
+  test('Check content-type', () => {
+    equal(response.contentType.contentType, 'application/fhir+json;charset=utf-8');
+  });
+  test.hasResponseBody();
+test('Check Resource Type', () => {
+    equal(JSON.parse(response.body).resourceType, 'OperationOutcome');
+});
+}}
+
+< fhir-fixture-shinny-impl-guide-sample.json
+
+###  Validating a Bunlde resource from your server - unhappy path
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/$validate HTTP/1.1
+Content-Type: application/json
+{{
+  const { equal, notEqual } = require('assert');
+  test('status code 200', () => {
+    notEqual(response.statusCode, 200); // Use equal for this specific test case
+  });
+  test('Check content-type', () => {
+    equal(response.contentType.contentType, 'application/fhir+json;charset=utf-8');
+  });
+  test.hasResponseBody();
+  test('check Result', () => {
+    notEqual(JSON.parse(response.body).issue.severity, 'error');
+  });
+}}
+
+
+< fhir-fixture-unhappy-path-01.json
+
+
+### Submitting a Bunlde resource from your server  - happy path
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/?x=y HTTP/1.1
+Content-Type: application/json
+{{
+  const { equal, notEqual } = require('assert');
+  test('status code 201', () => {
+    equal(response.statusCode, 201); // Use equal for this specific test case
+  });
+
+  test.hasResponseBody();
+}}
+< fhir-fixture-shinny-impl-guide-sample.json
+
+
+### Submitting a Bunlde resource from your server  - unhappy path
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/?x=y HTTP/1.1
+Content-Type: application/json
+{{
+  const { equal, notEqual } = require('assert');
+  test('status code 201', () => {
+    notEqual(response.statusCode, 201); // Use equal for this specific test case
+  });
+  test('Check content-type', () => {
+    equal(response.contentType.contentType, 'application/fhir+json;charset=utf-8');
+  });
+  test.hasResponseBody();
+  test('check Result', () => {
+    notEqual(JSON.parse(response.body).issue.severity, 'error');
+  });
+}}
+
+< fhir-fixture-unhappy-path-01.json

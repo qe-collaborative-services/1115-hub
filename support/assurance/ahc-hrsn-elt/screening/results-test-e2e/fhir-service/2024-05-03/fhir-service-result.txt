@@ -1,0 +1,230 @@
+=== Test that your server is running by fetching its CapabilityStatement: ===
+
+GET https://synthetic.fhir.api.devl.techbd.org/metadata
+accept: */*
+accept-encoding: gzip, deflate, br
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 200  - OK
+connection: keep-alive
+content-encoding: gzip
+content-type: application/fhir+json;charset=utf-8
+date: Fri, 03 May 2024 10:20:07 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: JdB4VkI5yrt3CiR4
+
+{
+  "resourceType": "CapabilityStatement",
+  "status": "active",
+  "date": "2024-05-03T10:19:45+00:00",
+  "publisher": "Not provided",
+  "kind": "instance",
+  "software": {
+    "name": "HAPI FHIR Server",
+    "version": "5.0.0"
+  },
+  "implementation": {
+    "description": "HAPI FHIR",
+    "url": "http://10.0.131.77:8080/"
+  },
+  "fhirVersion": "4.0.1",
+  "format": [
+    "application/fhir+xml",
+    "application/fhir+json"
+  ],
+  "rest": [
+    {
+      "mode": "server",
+      "resource": [
+        {
+          "type": "Bundle",
+          "profile": "http://hl7.org/fhir/StructureDefinition/Bundle",
+          "interaction": [
+            {
+              "code": "create"
+            },
+            {
+              "code": "search-type"
+            }
+          ],
+          "searchParam": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "OperationDefinition",
+          "profile": "http://hl7.org/fhir/StructureDefinition/OperationDefinition",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ]
+        },
+        {
+          "type": "StructureDefinition",
+          "profile": "http://hl7.org/fhir/StructureDefinition/StructureDefinition",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "search-type"
+            }
+          ]
+        }
+      ],
+      "operation": [
+        {
+          "name": "validate",
+          "definition": "http://10.0.131.77:8080/OperationDefinition/Bundle--validate"
+        }
+      ]
+    }
+  ]
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ Check Resource Type
+✓ Status Check
+✓ Status Check
+
+---------------------
+
+=== Validating a Bunlde resource from your server - happy path ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/$validate
+accept: */*
+accept-encoding: gzip, deflate, br
+content-length: 12899
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 200  - OK
+connection: keep-alive
+content-encoding: gzip
+content-type: application/fhir+json;charset=utf-8
+date: Fri, 03 May 2024 10:20:07 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: WDBv7h3AFhtff4BO
+
+{
+  "resourceType": "OperationOutcome"
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ Check Resource Type
+
+---------------------
+
+=== Validating a Bunlde resource from your server - unhappy path ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/$validate
+accept: */*
+accept-encoding: gzip, deflate, br
+content-length: 12902
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 500  - Server Error
+connection: keep-alive
+content-type: application/fhir+json;charset=utf-8
+date: Fri, 03 May 2024 10:20:08 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: Haou6joJW5oNmxaw
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Failed to call access method: ca.uhn.fhir.parser.DataFormatException: Unknown element 'idabc' found during parse"
+    }
+  ]
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ check Result
+
+---------------------
+
+=== Submitting a Bunlde resource from your server  - happy path ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/?x=y
+accept: */*
+accept-encoding: gzip, deflate, br
+content-length: 12899
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 500  - Server Error
+connection: keep-alive
+content-type: application/fhir+json;charset=utf-8
+date: Fri, 03 May 2024 10:20:10 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: tOgWh36qfjtSnUJL
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Failed to call access method: java.lang.NullPointerException: Cannot invoke \"java.sql.Connection.prepareStatement(String)\" because \"conn\" is null"
+    }
+  ]
+}
+✖ status code 201 (AssertionError [ERR_ASSERTION]: 500 == 201 - /home/alan/workspaces/github.com/alan-francis/1115-hub/src/service/fhir-server-prime/fhir-test/fhir-service.test.http:79:5)
+✓ response body exists
+
+---------------------
+
+=== Submitting a Bunlde resource from your server  - unhappy path ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/?x=y
+accept: */*
+accept-encoding: gzip, deflate, br
+content-length: 12902
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 500  - Server Error
+connection: keep-alive
+content-type: application/fhir+json;charset=utf-8
+date: Fri, 03 May 2024 10:20:11 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: sSplzhIwM91622MH
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Failed to call access method: ca.uhn.fhir.parser.DataFormatException: Unknown element 'idabc' found during parse"
+    }
+  ]
+}
+✓ status code 201
+✓ Check content-type
+✓ response body exists
+✓ check Result
+
+5 requests processed (4 succeeded, 1 failed)
