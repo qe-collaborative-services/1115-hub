@@ -1,0 +1,302 @@
+{
+  "resourceType": "Bundle",
+        "fullUrl": "urn:uuid:58e1e1fd-ac64-0f97-05bd-9bdd58fecad2",
+
+  "id": "8ef1d025-95df-35f0-6218-7b6774190dd1",
+  "type": "transaction",
+  "meta": {
+    "lastUpdated": "2024-02-023T00:00:00Z",
+    "profile": [
+      "http://shinny.org/StructureDefinition/SHINNYBundleProfile"
+    ]
+  },
+  "timestamp": "2024-02-023T00:00:00Z",
+  "entry": [
+    {
+      "fullUrl": "98065610-3da2-1442-f01f-49fc5f30afcc",
+      "resource" : {
+        "resourceType" : "Patient",
+        "id" : "98065610-3da2-1442-f01f-49fc5f30afcc",
+        "meta": {
+          "lastUpdated": "2024-02-023T00:00:00Z",
+          "profile" : ["http://shinny.org/StructureDefinition/shinny-patient"]
+        },
+        "language" : "en",
+        "extension" : [{
+          "extension" : [{
+              "url" : "ombCategory",
+              "valueCoding" : {
+              "system" : "urn:oid:2.16.840.1.113883.6.238",
+              "code" : "2106-3",
+              "display" : "White"
+            }
+            }
+          ],
+          "url" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+        },
+        {
+          "extension" : [{
+            "url" : "ombCategory",
+            "valueCoding" : {
+              "system" : "urn:oid:2.16.840.1.113883.6.238",
+              "code" : "2135-2",
+              "display" : "Hispanic or Latino"
+            }
+          }],
+          "url" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+        },
+        {
+          "url" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex",
+          "valueCode" : "F"
+        },
+        {
+          "url" : "http://shinny.org/StructureDefinition/shinny-sexual-orientation",
+          "valueCodeableConcept" : {
+            "coding" : [{
+              "system" : "http://snomed.info/sct",
+              "code" : "20430005",
+              "display" : "Heterosexual (finding)"
+            }]
+          }
+        }],
+        "identifier" : [
+        {
+          "type" : {
+            "coding" : [{
+              "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+              "code" : "MR"
+            }]
+          },
+          "system" : "http://www.scn.gov/facility/CUMC",
+          "value" : "11223344",
+          "assigner" : {
+            "reference" : "Organization/scn_coordination_platform"
+          }
+        },
+        {
+          "type" : {
+            "coding" : [{
+              "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+              "code" : "MA"
+            }]
+          },
+          "system" : "http://www.medicaid.gov/",
+          "value" : "AA12345C",
+          "assigner" : {
+            "reference" : "Organization/2.16.840.1.113883.3.249"
+          }
+        },
+        {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "SS",
+                  "display": "Social Security Number"
+                }
+              ],
+              "text": "Social Security Number"
+            },
+            "system": "http://hl7.org/fhir/sid/us-ssn",
+            "value": "999-34-2964"
+        }],
+        "name" : [{
+          "family" : "Doe",
+          "given" : ["Jon"],
+          "prefix": [
+              "Mr.", "Dr.", "PhD", "CCNA"
+          ],
+          "suffix": [
+              "Jr.", "III"
+          ]
+        }],
+        "gender" : "female",
+        "birthDate" : "1981-07-16",
+        "address" : [{
+          "text" : "115 Broadway\tApt2",
+          "line" : ["115 Broadway",
+          "Apt2"],
+          "city" : "New York",
+          "state" : "NY",
+          "postalCode" : "10032"
+        }],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "555-120-6047",
+            "use": "home"
+          }
+        ],
+        "communication" : [
+          {
+            "language" : {
+              "coding" : [{
+                "code" : "EN",
+                "system": "urn:iso:std:iso:639"
+              }]
+            },
+            "preferred" : true,
+            "extension": [
+              {
+                "url": "http://shinny.org/fhir/StructureDefinition/fluency-level",
+                "valueInteger": 7
+              },
+              {
+                "url": "http://shinny.org/fhir/StructureDefinition/writing-level",
+                "valueInteger": 7
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:9cf94822-3fe7-e598-649e-12345",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "9cf94822-3fe7-e598-649e-12345",
+        "meta": {
+          "lastUpdated": "2024-02-023T00:00:00Z",
+          "profile": [
+            "http://shinny.org/StructureDefinition/shin-ny-encounter"
+          ]
+        },
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "FLD"
+        },
+        "status": "finished",
+        "subject": {
+          "reference": "Patient/urn:uuid:98065610-3da2-1442-f01f-49fc5f30afcc"
+        }
+      }
+    },
+    {
+      "fullUrl": "32b7a1f2-47f6-4572-8082-cc7fbfbb37d8",
+      "resource": {
+        "resourceType": "Procedure",
+        "id": "32b7a1f2-47f6-4572-8082-cc7fbfbb37d8",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-Procedure"
+          ]
+        },
+        "status": "completed",
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "710925007",
+              "display": "Provision of food"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "encounter": {
+          "reference": "Encounter/urn:uuid:9cf94822-3fe7-e598-649e-12345"
+        },
+        "reasonCode": [
+           {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                  "display": "Food Insecurity",
+                  "code": "food-insecurity"
+                }
+              ]
+          }
+        ],
+        "reasonReference": [
+          {"reference": "Observation/ObservationResponseQuestion_3"},
+          {"reference": "Observation/ObservationResponseQuestion_4"}
+        ],
+        "performedPeriod": {
+          "start": "2024-11-13T19:00:01+00:00",
+          "end": "2024-11-13T19:30:01+00:00"
+        }
+      },
+      "performer": [
+        {
+          "actor": {
+            "reference": "Practitioner/care_giver_bob_kelso"
+          },
+          "onBehalfOf": {
+            "reference": "Organization/cbo"
+          },
+          "function": {
+            "coding": [
+              {
+                  "system": "http://snomed.info/sct",
+                  "code": "224597004",
+                  "display": "Trained nurse counselor"
+              }
+		    ]
+	      }
+        }
+      ]
+    },
+    {
+      "fullUrl": "care_giver_bob_kelso",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "care_giver_bob_kelso",
+        "meta" : {
+          "lastUpdated": "2024-02-023T00:00:00Z",
+          "profile" : ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner"]
+        },
+        "name": [
+          {
+            "family": "Kelso",
+            "given": [
+              "Bob"
+            ],
+            "suffix": [
+              "MD", "CDPAD"
+            ],
+            "text": "Bob Kelso MD"
+          }
+        ],
+        "identifier" : [
+        {
+          "type" : {
+            "coding" : [{
+              "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+              "code" : "NPI"
+            }]
+          },
+          "system" : "http://hl7.org/fhir/sid/us-npi",
+          "value" : "123456789",
+          "assigner" : {
+            "reference" : "Organization/cbo"
+          }
+        }]
+      }
+    },
+    {
+      "fullUrl": "cbo",
+      "resource" : {
+        "resourceType" : "Organization",
+        "id" : "cbo",
+        "meta" : {
+          "lastUpdated": "2024-02-023T00:00:00Z",
+          "profile" : ["http://shinny.org/StructureDefinition/shin-ny-organization"]
+        },
+        "identifier" : [{
+          "system" : "http://www.cbo.gov/",
+          "value" : "cbo_1"
+        }],
+        "active" : true,
+        "type" : [{
+          "coding" : [{
+            "system" : "http://terminology.hl7.org/CodeSystem/organization-type",
+            "code" : "cg",
+            "display" : "Community Group"
+          }]
+        }],
+        "name" : "CBO"
+      }
+    }
+  ]
+}

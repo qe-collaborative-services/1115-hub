@@ -43,25 +43,22 @@ import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.parser.LenientErrorHandler;
 import ca.uhn.fhir.parser.StrictErrorHandler;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.UUID;
 
 @RestController
 public class FHIRBundleValidator implements IResourceProvider {
 
-    private static String folderPath;
-    private static String profile;
-    private static String zipFileName;
+    private static String shinnyDataLakeApiImpGuideProfileUri;
+    // private static String zipFileName;
     static FhirContext context = FhirContext.forR4();
+    private static Connection conn;
 
     /**
      * Constructor
@@ -74,10 +71,13 @@ public class FHIRBundleValidator implements IResourceProvider {
             e.printStackTrace();
         }
         // Load values fom application.properties
-        folderPath = config.getString("folderPath");
-        profile = config.getString("profile");
-        zipFileName = config.getString("zipFileName");
-
+        shinnyDataLakeApiImpGuideProfileUri = config.getString("shinnyDataLakeApiImpGuideProfileUri");
+        // zipFileName = config.getString("zipFileName");
+        try {
+            conn = DatabaseConnector.connect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -91,8 +91,10 @@ public class FHIRBundleValidator implements IResourceProvider {
         return results;
     }
 
+    @SuppressWarnings("deprecation")
     @Create
-    public MethodOutcome createBundle(@ResourceParam Bundle thebundle, @IdParam(optional = true) IIdType id,
+    public MethodOutcome createBundle(@ResourceParam Bundle theBundle, @ResourceParam String jsonBody,
+            @IdParam(optional = true) IIdType id,
             @OptionalParam(name = "x") String xValue) {
 
         // Accessing x parameter from URL
@@ -100,95 +102,80 @@ public class FHIRBundleValidator implements IResourceProvider {
             // Process x parameter if needed
             System.out.println("Value of x parameter: " + xValue);
         }
-        if (thebundle.getIdentifier().getValue().isEmpty()) {
-            /*
-             * It is also possible to pass an OperationOutcome resource
-             * to the UnprocessableEntityException if you want to return
-             * a custom populated OperationOutcome. Otherwise, a simple one
-             * is created using the string supplied below.
-             */
+
+        // Initialize session variables
+        UUID sessionId = UUID.randomUUID();
+        Instant sessionStartTime = Instant.now();
+        Instant sessionEndTime = Instant.now();
+
+        // Set up FHIR parser with LenientErrorHandler
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+        parser.setParserErrorHandler(new LenientErrorHandler());
+        parser.setParserErrorHandler(new StrictErrorHandler());
+
+        // Parse the JSON text into a FHIR resource
+        IBaseResource resource = parser.parseResource(jsonBody);
+
+        // Validate the bundle before creating resources
+        MethodOutcome validationOutcome = validateBundle((Bundle) resource, ValidationModeEnum.CREATE,
+                shinnyDataLakeApiImpGuideProfileUri);
+        OperationOutcome operationOutcome = (OperationOutcome) validationOutcome.getOperationOutcome();
+
+        // If validation fails, return the OperationOutcome
+        if (operationOutcome != null && !operationOutcome.getIssue().isEmpty()) {
+            // Set session end time before throwing exception
+            sessionEndTime = Instant.now();
+            throw new UnprocessableEntityException(operationOutcome);
+        }
+
+        // If the bundle does not have an identifier, throw an exceptionyour_version
+        if (theBundle.getIdentifier().getValue().isEmpty()) {
+            // Set session end time before throwing exception
+            sessionEndTime = Instant.now();
             throw new UnprocessableEntityException(Msg.code(636) + "No identifier supplied");
         }
+
         // Pass the bundle to create CSV files
-        createAhcHrsnEltArtifacts(thebundle, false);
+        createAhcHrsnEltArtifacts(theBundle, false);
 
-        // This method returns a MethodOutcome object
+        // Set session end time
+        sessionEndTime = Instant.now();
+
+        // Prepare the MethodOutcome for the created bundle
         MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType("Bundle", thebundle.getIdentifier().getValue(), "1"));
+        OperationOutcome successOutcome = new OperationOutcome();
+        successOutcome.addIssue().setDiagnostics("Bundle creation successful");
+        // retVal.setOperationOutcome(successOutcome);
 
-        // Can also add an OperationOutcome resource to return
-        // This part is optional though:
-        OperationOutcome outcome = new OperationOutcome();
-        outcome.addIssue().setDiagnostics("One minor issue detected");
-        retVal.setOperationOutcome(outcome);
+        /*
+         * TODO: Create JSON structure for session information
+         * JsonObject sessionJson = new JsonObject();
+         * sessionJson.addProperty("sessionId", sessionId.toString());
+         * sessionJson.addProperty("sessionStartTime", sessionStartTime.toString());
+         * sessionJson.addProperty("profile", shinnyDataLakeApiImpGuideProfileUri);
+         * sessionJson.addProperty("version", "4.0");
+         * sessionJson.addProperty("sessionEndTime", sessionEndTime.toString());
+         * System.out.println(sessionJson);
+         * 
+         * // Add more child elements as needed
+         * System.out.println("successOutcome a) : " + successOutcome);
+         * // Convert sessionJson to a string and set it in the OperationOutcome
+         * successOutcome.addChild(sessionJson.toString());
+         * System.out.println("successOutcome b) : " + successOutcome);
+         * return retVal.setOperationOutcome(successOutcome);
+         */
         return retVal;
     }
 
-    // ahc-hrsn-elt
     private static void createAhcHrsnEltArtifacts(Bundle bundle, boolean zipFlag) {
         // Create CSV files for each type of data
         createScreeningCsv(bundle);
         createQeAdminDataCsv(bundle);
         createDemographicDataCsv(bundle);
 
-        String[] fileNames = { "SCREENING.csv", "QE_ADMIN_DATA.csv", "DEMOGRAPHIC_DATA.csv" };
-
-        // Specify the name of the output zip file
-        String zipFilePath = folderPath + zipFileName;
-
-        // Create the zip file
-        try (FileOutputStream fos = new FileOutputStream(zipFilePath);
-                ZipOutputStream zos = new ZipOutputStream(fos)) {
-
-            // Iterate over the list of file names
-            for (String fileName : fileNames) {
-                // Create a FileInputStream to read each CSV file
-                try (FileInputStream fis = new FileInputStream(folderPath + fileName)) {
-                    // Create a new zip entry
-                    ZipEntry zipEntry = new ZipEntry(fileName);
-                    // Add the zip entry to the zip output stream
-                    zos.putNextEntry(zipEntry);
-
-                    // Write the contents of the CSV file to the zip output stream
-                    byte[] buffer = new byte[1024];
-                    int length;
-                    while ((length = fis.read(buffer)) >= 0) {
-                        zos.write(buffer, 0, length);
-                    }
-                    // Close the zip entry
-                    zos.closeEntry();
-                }
-            }
-
-            // Close the zip output stream
-            zos.finish();
-            System.out.println("Zip file created successfully!");
-
-            // If zipFlag is false, convert the zip file to base64 string
-            if (!zipFlag) {
-                byte[] zipFileContent = Files.readAllBytes(Paths.get(zipFilePath));
-                String base64String = Base64.getEncoder().encodeToString(zipFileContent);
-                System.out.println("Base64 representation of the zip file:");
-                System.out.println(base64String);
-
-                // TODO; REMOVE THIS BLOCK ONCE CHECK WHETHER UNZIPPING WORK PROPERLY
-                /*
-                 * byte[] zipBytes = Base64.getDecoder().decode(base64String);
-                 * String zipFileName1 = "output_unzipped.zip";
-                 * String zipFilePath1 = folderPath + zipFileName1;
-                 * try (FileOutputStream fos1 = new FileOutputStream(zipFilePath1)) {
-                 * fos1.write(zipBytes); // Use fos1 here instead of fos
-                 * System.out.println("Unzipped base 64 string");
-                 * } catch (IOException e) {
-                 * e.printStackTrace();
-                 * }
-                 */
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // insertScreeningData(bundle);
+        insertScreeningJson(bundle, conn);
 
     }
 
@@ -235,7 +222,6 @@ public class FHIRBundleValidator implements IResourceProvider {
         String answerCodeSystemName = "";
         String potentialNeedIndicated = "";
 
-        // Iterate through bundle entries
         // Iterate through bundle entries
         for (BundleEntryComponent entry : bundle.getEntry()) {
             if (entry.getResource() instanceof Patient) {
@@ -332,7 +318,15 @@ public class FHIRBundleValidator implements IResourceProvider {
                     }
                 }
 
-                sdohDomain = ""; // #TODO:
+                // TODO: the code is not equaling with the URL . Need to check
+                for (Coding coding : observation.getCategoryFirstRep().getCoding()) {
+                    if (coding.getSystem().equals(
+                            "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes")) {
+                        sdohDomain = coding.getSystem();
+                        break;
+                    }
+                }
+
                 parentQuestionCode = ""; // #TODO:
 
                 // Extracting answer code, description, and system name
@@ -384,12 +378,6 @@ public class FHIRBundleValidator implements IResourceProvider {
             }
         }
 
-        // Write CSV data to file (or handle as needed)
-        try (FileWriter writer = new FileWriter(folderPath + "SCREENING.csv")) {
-            writer.write(csvBuilder.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private static void createQeAdminDataCsv(Bundle bundle) {
@@ -484,12 +472,7 @@ public class FHIRBundleValidator implements IResourceProvider {
         csvBuilder.append(visitOmhFlag).append("|");
         csvBuilder.append(visitOpwddFlag).append("|");
         csvBuilder.append("\n");
-        // Write CSV data to file (or handle as needed)
-        try (FileWriter writer = new FileWriter(folderPath + "QE_ADMIN_DATA.csv")) {
-            writer.write(csvBuilder.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private static void createDemographicDataCsv(Bundle bundle) {
@@ -603,8 +586,10 @@ public class FHIRBundleValidator implements IResourceProvider {
                             && sexAtBirthExtension.getValue() instanceof CodeType) {
                         CodeType sexAtBirthCodeType = (CodeType) sexAtBirthExtension.getValue();
                         sexAtBirthCode = sexAtBirthCodeType.getValue();
+                        sexAtBirthCodeSystem = sexAtBirthCodeType.getSystem();
+                        sexAtBirthCodeDescription = sexAtBirthCodeType.getDisplay();
 
-                        // TODO:
+                        // TODO: to verify sexAtBirthCodeSystem and sexAtBirthCodeDescription
                         /*
                          * if (!sexAtBirthCode.isEmpty()) {
                          * CodeSystem sexAtBirthCodeSystemCode =
@@ -617,9 +602,6 @@ public class FHIRBundleValidator implements IResourceProvider {
                          * }
                          */
                     }
-
-                    sexAtBirthCodeDescription = "";
-                    sexAtBirthCodeSystem = "";
 
                     patBirthDate = patient.getBirthDate().toString();
                     address1 = patient.getAddress().get(0).getLine().toString();
@@ -752,13 +734,261 @@ public class FHIRBundleValidator implements IResourceProvider {
         csvBuilder.append(ethnicityCodeSystemName).append("|");
         csvBuilder.append(medicaidCin).append("|");
         csvBuilder.append("\n");
-        // Write CSV data to file (or handle as needed)
-        try (FileWriter writer = new FileWriter(folderPath + "DEMOGRAPHIC_DATA.csv")) {
-            writer.write(csvBuilder.toString());
-        } catch (IOException e) {
+
+    }
+    // JAVA STARTS
+
+    private static void insertScreeningData(Bundle bundle) {
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("CREATE TABLE IF NOT EXISTS screeningfhir (" +
+                    "PAT_MRN_ID VARCHAR," +
+                    "FACILITY_ID VARCHAR," +
+                    "ENCOUNTER_ID VARCHAR," +
+                    "ENCOUNTER_CLASS_CODE VARCHAR," +
+                    "ENCOUNTER_CLASS_CODE_DESCRIPTION VARCHAR," +
+                    "ENCOUNTER_CLASS_CODE_SYSTEM VARCHAR," +
+                    "ENCOUNTER_STATUS_CODE VARCHAR," +
+                    "ENCOUNTER_STATUS_CODE_DESCRIPTION VARCHAR," +
+                    "ENCOUNTER_STATUS_CODE_SYSTEM VARCHAR," +
+                    "ENCOUNTER_TYPE_CODE VARCHAR," +
+                    "ENCOUNTER_TYPE_CODE_DESCRIPTION VARCHAR," +
+                    "ENCOUNTER_TYPE_CODE_SYSTEM VARCHAR," +
+                    "SCREENING_STATUS_CODE VARCHAR," +
+                    "SCREENING_STATUS_CODE_DESCRIPTION VARCHAR," +
+                    "SCREENING_STATUS_CODE_SYSTEM VARCHAR," +
+                    "SCREENING_CODE VARCHAR," +
+                    "SCREENING_CODE_DESCRIPTION VARCHAR," +
+                    "SCREENING_CODE_SYSTEM_NAME VARCHAR," +
+                    "RECORDED_TIME VARCHAR," +
+                    "QUESTION_CODE VARCHAR," +
+                    "QUESTION_CODE_DESCRIPTION VARCHAR," +
+                    "QUESTION_CODE_SYSTEM_NAME VARCHAR," +
+                    "UCUM_UNITS VARCHAR," +
+                    "SDOH_DOMAIN VARCHAR," +
+                    "PARENT_QUESTION_CODE VARCHAR," +
+                    "ANSWER_CODE VARCHAR," +
+                    "ANSWER_CODE_DESCRIPTION VARCHAR," +
+                    "ANSWER_CODE_SYSTEM_NAME VARCHAR," +
+                    "POTENTIAL_NEED_INDICATED VARCHAR)");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        String patMrnId = "";
+        String facilityId = "";
+        String encounterId = "";
+        String encounterClassCode = "";
+        String encounterClassCodeDescription = "";
+        String encounterClassCodeSystem = "";
+        String encounterStatusCode = "";
+        String encounterStatusCodeDescription = "";
+        String encounterStatusCodeSystem = "";
+        String encounterTypeCode = "";
+        String encounterTypeCodeDescription = "";
+        String encounterTypeCodeSystem = "";
+        String screeningStatusCode = "";
+        String screeningStatusCodeDescription = "";
+        String screeningStatusCodeSystem = "";
+        String screeningCode = "";
+        String screeningCodeDescription = "";
+        String screeningCodeSystemName = "";
+        String recordedTime = "";
+        String questionCode = "";
+        String questionCodeDescription = "";
+        String questionCodeSystemName = "";
+        String ucumUnits = "";
+        String sdohDomain = "";
+        String parentQuestionCode = "";
+        String answerCode = "";
+        String answerCodeDescription = "";
+        String answerCodeSystemName = "";
+        String potentialNeedIndicated = "";
+        // Iterate through bundle entries
+        for (BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource() instanceof Patient) {
+                Patient patient = (Patient) entry.getResource();
+                // Extracting patient information
+                if (patient.hasName() && !patient.getName().isEmpty()) {
+                }
+                List<Identifier> identifiers = patient.getIdentifier();
+                for (Identifier identifier : identifiers) {
+                    String system = identifier.getType().getCodingFirstRep().getCode();
+                    String value = identifier.getValue();
+
+                    if (system != null && value != null) {
+                        if (system.equals("MR")) { // PAT MRN ID
+                            patMrnId = value;
+                        }
+                    }
+                }
+
+            } else if (entry.getResource() instanceof Organization) {
+                Organization organization = (Organization) entry.getResource();
+                facilityId = organization.getId(); // Assuming id is the facility ID
+            } else if (entry.getResource() instanceof Encounter) {
+                Encounter encounter = (Encounter) entry.getResource();
+                // Extracting encounter information
+                encounterId = encounter.getId();
+                if (encounter.hasClass_()) {
+                    encounterClassCode = encounter.getClass_().getCode();
+                    encounterClassCodeDescription = encounter.getClass_().getDisplay();
+                    encounterClassCodeSystem = encounter.getClass_().getSystem();
+                }
+                if (encounter.hasStatus()) {
+                    encounterStatusCode = encounter.getStatus().toCode();
+                    encounterStatusCodeDescription = encounter.getStatus().getDisplay();
+                    encounterStatusCodeSystem = "http://hl7.org/fhir/R4/valueset-encounter-status.html"; // Assuming a
+                                                                                                         // default
+                                                                                                         // value
+                }
+                if (!encounter.getType().isEmpty()) {
+                    encounterTypeCode = encounter.getType().get(0).getCodingFirstRep().getCode();
+                    encounterTypeCodeDescription = encounter.getType().get(0).getCodingFirstRep().getDisplay();
+                    encounterTypeCodeSystem = encounter.getType().get(0).getCodingFirstRep().getSystem();
+                }
+            } else if (entry.getResource() instanceof Observation) {
+                Observation observation = (Observation) entry.getResource();
+
+                // Resetting observation-specific variables for each observation
+                screeningStatusCode = "";
+                screeningStatusCodeDescription = "";
+                screeningStatusCodeSystem = "";
+                screeningCode = "";
+                screeningCodeDescription = "";
+                screeningCodeSystemName = "";
+                recordedTime = "";
+                questionCode = "";
+                questionCodeDescription = "";
+                questionCodeSystemName = "";
+                ucumUnits = "";
+                sdohDomain = "";
+                parentQuestionCode = "";
+                answerCode = "";
+                answerCodeDescription = "";
+                answerCodeSystemName = "";
+                potentialNeedIndicated = "";
+
+                // Extracting observation-specific information
+                if (!observation.getInterpretation().isEmpty() && observation.getInterpretation().get(0).hasCoding()) {
+                    Coding screeningStatusCoding = observation.getInterpretation().get(0).getCodingFirstRep();
+                    screeningStatusCode = screeningStatusCoding.getCode();
+                    screeningStatusCodeDescription = screeningStatusCoding.getDisplay();
+                    screeningStatusCodeSystem = screeningStatusCoding.getSystem();
+                }
+                if (observation.hasCode() && observation.getCode().hasCoding()) {
+                    Coding screeningCoding = observation.getCode().getCodingFirstRep();
+                    screeningCode = screeningCoding.getCode();
+                    screeningCodeDescription = screeningCoding.getDisplay();
+                    screeningCodeSystemName = screeningCoding.getSystem();
+                }
+                if (observation.hasEffectiveDateTimeType()) {
+                    DateTimeType recordedDateTimeType = observation.getEffectiveDateTimeType();
+                    recordedTime = recordedDateTimeType.getValueAsString();
+                }
+                if (observation.hasCode() && observation.getCode().hasCoding()) {
+                    Coding questionCoding = observation.getCode().getCodingFirstRep();
+                    questionCode = questionCoding.getCode();
+                    questionCodeDescription = questionCoding.getDisplay();
+                    questionCodeSystemName = questionCoding.getSystem();
+                }
+                if (observation.hasValueCodeableConcept()) {
+                    CodeableConcept valueCodeableConcept = observation.getValueCodeableConcept();
+                    for (Coding coding : valueCodeableConcept.getCoding()) {
+                        ucumUnits = coding.getCode();
+                        break; // Assuming there's only one coding
+                    }
+                }
+
+                // TODO: the code is not equaling with the URL . Need to check
+                for (Coding coding : observation.getCategoryFirstRep().getCoding()) {
+                    if (coding.getSystem().equals(
+                            "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes")) {
+                        sdohDomain = coding.getSystem();
+                        break;
+                    }
+                }
+
+                parentQuestionCode = ""; // #TODO:
+
+                // Extracting answer code, description, and system name
+                if (observation.hasValueCodeableConcept()) {
+                    CodeableConcept valueCodeableConcept = observation.getValueCodeableConcept();
+                    for (Coding coding : valueCodeableConcept.getCoding()) {
+                        answerCode = coding.getCode();
+                        answerCodeDescription = coding.getDisplay();
+                        answerCodeSystemName = coding.getSystem();
+                        // Assuming only one coding is present
+                        break;
+                    }
+                }
+
+                // Insert observation data into the DuckDB database
+                String sql = "INSERT INTO screeningfhir VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    pstmt.setString(1, patMrnId);
+                    pstmt.setString(2, facilityId);
+                    pstmt.setString(3, encounterId);
+                    pstmt.setString(4, encounterClassCode);
+                    pstmt.setString(5, encounterClassCodeDescription);
+                    pstmt.setString(6, encounterClassCodeSystem);
+                    pstmt.setString(7, encounterStatusCode);
+                    pstmt.setString(8, encounterStatusCodeDescription);
+                    pstmt.setString(9, encounterStatusCodeSystem);
+                    pstmt.setString(10, encounterTypeCode);
+                    pstmt.setString(11, encounterTypeCodeDescription);
+                    pstmt.setString(12, encounterTypeCodeSystem);
+                    pstmt.setString(13, screeningStatusCode);
+                    pstmt.setString(14, screeningStatusCodeDescription);
+                    pstmt.setString(15, screeningStatusCodeSystem);
+                    pstmt.setString(16, screeningCode);
+                    pstmt.setString(17, screeningCodeDescription);
+                    pstmt.setString(18, screeningCodeSystemName);
+                    pstmt.setString(19, recordedTime);
+                    pstmt.setString(20, questionCode);
+                    pstmt.setString(21, questionCodeDescription);
+                    pstmt.setString(22, questionCodeSystemName);
+                    pstmt.setString(23, ucumUnits);
+                    pstmt.setString(24, sdohDomain);
+                    pstmt.setString(25, parentQuestionCode);
+                    pstmt.setString(26, answerCode);
+                    pstmt.setString(27, answerCodeDescription);
+                    pstmt.setString(28, answerCodeSystemName);
+                    pstmt.setString(29, potentialNeedIndicated);
+
+                    // Execute the insert statement
+                    pstmt.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    }
+
+    public static void insertScreeningJson(Bundle bundle, Connection conn) {
+        try {
+            // Serialize the bundle to JSON
+            String jsonText = context.newJsonParser().encodeResourceToString(bundle);
+
+            // Create the table with the primary key using SERIAL for auto-incrementing
+            try (PreparedStatement stmt = conn.prepareStatement(
+                    "CREATE TABLE IF NOT EXISTS screeningjson (" +
+                            "PK SERIAL PRIMARY KEY," +
+                            "JSON_TEXT TEXT)")) {
+                stmt.executeUpdate();
+            }
+
+            // Insert the serialized bundle JSON into the PostgreSQL database
+            String sql = "INSERT INTO screeningjson (JSON_TEXT) VALUES (?)";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, jsonText);
+                pstmt.executeUpdate();
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    // JAVA ENDS
 
     // @Validate
     public MethodOutcome validateBundle(
@@ -818,7 +1048,7 @@ public class FHIRBundleValidator implements IResourceProvider {
 
         // Read and parse the StructureDefinition from a file
         ValidationModeEnum mode = ValidationModeEnum.CREATE;
-        outcome = validateBundle((Bundle) resource, mode, profile);
+        outcome = validateBundle((Bundle) resource, mode, shinnyDataLakeApiImpGuideProfileUri);
 
         // Handle the validation result
         OperationOutcome operationOutcome = (OperationOutcome) outcome.getOperationOutcome();
