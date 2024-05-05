@@ -16,8 +16,8 @@ concurrency:
 jobs:
   docs-deploy:
     needs: 
-      - synthetic-sftp-qualified-entity-deployment
-      - synthetic-sftp-techbd-staging
+      - synthetic-techbd-devl-deployment
+      - synthetic-techbd-staging
     environment:
       # i think we should adjust the environment name to match the branch name
       name: "github-pages"
@@ -36,7 +36,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-  synthetic-sftp-qualified-entity-deployment:
+  synthetic-techbd-devl-deployment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -51,19 +51,24 @@ jobs:
         run: |
           git clone https://${{secrets.DVERTOLA_GITHUB_TOKEN}}@github.com/tech-by-design/infrastructure-prime.git
 
-      - name: Update environment file
+      - name: Update sftp environment file
         run: |
           cd infrastructure-prime
           sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.sftp.qualifiedentity.org/.env
 
+      - name: Update fhir environment file
+        run: |
+          cd infrastructure-prime
+          sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.fhir.qualifiedentity.org/.env
+
       - name: Commit and push changes
         run: |
           cd infrastructure-prime
-          git add aws/synthetic.sftp.qualifiedentity.org/.env
-          git commit -m "Update synthetic.sftp.qualifiedentity.org for ${{ github.ref_name }} deployment"
+          git add .
+          git commit -m "Update for ${{ github.ref_name }} techbd-devl deployment"
           git push
 
-  synthetic-sftp-techbd-staging:
+  synthetic-techbd-staging:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -81,21 +86,26 @@ jobs:
       - name: Create and switch to a new branch
         run: |
           cd infrastructure-prime
-          git checkout -b synthetic-sftp-techbd-${{ github.ref_name}}
+          git checkout -b synthetic-techbd-${{ github.ref_name}}-deployment
   
-      - name: Update environment file
+      - name: Update sftp environment file
         run: |
           cd infrastructure-prime
           sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.sftp.techbd.org/.env
 
+      - name: Update fhir environment file
+        run: |
+          cd infrastructure-prime
+          sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.fhir.techbd.org/.env
+
       - name: Commit and push changes
         run: |
           cd infrastructure-prime
-          git add aws/synthetic.sftp.techbd.org/.env
-          git commit -m "Update synthetic.sftp.techbd.org for ${{ github.ref_name }}"
-          git push --set-upstream origin synthetic-sftp-techbd-${{ github.ref_name}}
+          git .
+          git commit -m "Update for ${{ github.ref_name }} techbd deployment"
+          git push --set-upstream origin synthetic-techbd-${{ github.ref_name}}-deployment
 
       - name: Create Pull Request
         run: |
           cd infrastructure-prime
-          gh pr create --base main --head synthetic-sftp-techbd-${{ github.ref_name}} --title "synthetic.sftp.techbd.org ${{ github.ref_name }} update" --body "Automated synthetic.sftp.techbd.org deployment for ${{ github.ref_name }}"
+          gh pr create --base main --head synthetic-techbd-${{ github.ref_name}}-deployment --title "techbd.org ${{ github.ref_name }} update" --body "Automated techbd deployment for version ${{ github.ref_name }}"

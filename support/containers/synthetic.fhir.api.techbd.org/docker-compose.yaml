@@ -1,0 +1,11 @@
+services:
+  fhir:
+    build:
+      context: ./fhir/
+      dockerfile: Dockerfile
+      args:
+        REPO_URL: ${REPO_URL}
+        TAG: ${TAG}
+        DATE: ${DATE}
+    ports:
+      - "8080:8080"

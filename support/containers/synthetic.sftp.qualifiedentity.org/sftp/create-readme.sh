@@ -1,9 +1,9 @@
 #!/bin/bash
-echo "Debug: QE_NAMES='$QE_NAMES', TAG='$TAG', DATE='$DATE', ORCHCTL_CRON='$ORCHCTL_CRON'"
+echo "Debug: QE_NAMES='$QE_NAMES', TAG='$TAG', DATE='$DATE', ORCHCTL_CRON='$ORCHCTL_CRON', DEPLOYMENT_DOMAIN='$DEPLOYMENT_DOMAIN', SEMAPHORE='$SEMAPHORE'"
 
 # Ensure that QE_NAMES, version, date, and ORCHCTL_CRON variables are provided
-if [[ -z "$QE_NAMES" || -z "$TAG" || -z "$DATE" || -z "$ORCHCTL_CRON" ]]; then
-    echo "Environment variables QE_NAMES, TAG, DATE, and ORCHCTL_CRON must be set."
+if [[ -z "$QE_NAMES" || -z "$TAG" || -z "$DATE" || -z "$ORCHCTL_CRON" || -z "$DEPLOYMENT_DOMAIN" || -z "$SEMAPHORE" ]]; then
+    echo "Environment variables QE_NAMES, TAG, DATE, DEPLOYMENT_DOMAIN, SEMAPHORE, ORCHCTL_CRON must be set."
     exit 1
 fi
 
@@ -22,9 +22,12 @@ for qe_name in "${qe_names_array[@]}"; do
     
     # this will get recreated by sftp startup
     rm -rf "$output_dir/ingress"
-    
+
+    # remove readme to be replaced
+    rm -rf "$output_dir/README.md"
+
     # Process the template and replace variables
-    sed "s/\${QE_NAME}/$qe_name/g; s/\${TAG}/$TAG/g; s/\${DATE}/$DATE/g; s/\${ORCHCTL_CRON}/$ORCHCTL_CRON/g" /README-template.md > "$output_dir/README.md"
+    sed "s/\${SEMAPHORE}/$SEMAPHORE/g; s/\${DEPLOYMENT_DOMAIN}/$DEPLOYMENT_DOMAIN/g; s/\${QE_NAME}/$qe_name/g; s/\${TAG}/$TAG/g; s/\${DATE}/$DATE/g; s/\${ORCHCTL_CRON}/$ORCHCTL_CRON/g" /README-template.md > "$output_dir/README.md"
 done
 
 echo "README files have been created."

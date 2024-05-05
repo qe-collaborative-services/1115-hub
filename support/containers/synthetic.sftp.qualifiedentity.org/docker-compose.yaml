@@ -9,8 +9,10 @@ services:
         QE_NAMES: ${QE_NAMES}
         TAG: ${TAG}
         DATE: ${DATE}
-        INTERVAL: ${INTERVAL}
         ORCHCTL_CRON: ${ORCHCTL_CRON}
+        FHIR_ENDPOINT: ${FHIR_ENDPOINT}
+        SEMAPHORE: ${SEMAPHORE}
+        DEPLOYMENT_DOMAIN: ${DEPLOYMENT_DOMAIN}
     volumes:
       - ${MNT_DIR}/sftp-data:/home
     ports:
