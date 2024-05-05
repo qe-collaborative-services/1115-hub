@@ -47,22 +47,32 @@
     <artifactId>ph-schematron-validator</artifactId>
     <version>${hapifhir_version}</version>
 </dependency>
+
 		<dependency>
 			<groupId>com.phloc</groupId>
 			<artifactId>phloc-schematron</artifactId>
 			<version>2.7.0</version>
 		</dependency>
 
-		<dependency>
-    <groupId>org.postgresql</groupId>
-    <artifactId>postgresql</artifactId>
-    <version>42.2.24</version>
-</dependency>
+<!--		<dependency>-->
+<!--    <groupId>org.postgresql</groupId>-->
+<!--    <artifactId>postgresql</artifactId>-->
+<!--    <version>42.2.24</version>-->
+<!--</dependency>-->
 <dependency>
     <groupId>com.google.code.gson</groupId>
     <artifactId>gson</artifactId>
     <version>2.8.8</version> <!-- or the latest version -->
 </dependency>
+
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>4.12</version> <!-- or any version you prefer -->
+    <scope>test</scope>
+</dependency>
+
+
 
 		<!-- 
 		HAPI-FHIR uses Logback for logging support. The logback library is included 
@@ -145,6 +155,11 @@
 					<groupId>org.eclipse.jetty</groupId>
                <artifactId>jetty-maven-plugin</artifactId>
                <version>9.4.7.v20170914</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M5</version> <!-- Latest version -->
 				</plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>

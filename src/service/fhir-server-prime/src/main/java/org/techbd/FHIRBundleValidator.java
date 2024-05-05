@@ -7,9 +7,11 @@ import ca.uhn.fhir.rest.annotation.Validate;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
@@ -31,12 +33,20 @@ import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.IdParam;
+import ca.uhn.fhir.rest.annotation.Operation;
+import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
 import ca.uhn.fhir.rest.annotation.RequiredParam;
 import ca.uhn.fhir.rest.annotation.ResourceParam;
 import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
+
 import org.hl7.fhir.r4.model.Organization;
+
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.gson.JsonObject;
+
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.ValidationModeEnum;
 
@@ -52,13 +62,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+// TODO: create  FHIRValidationFilter class to manage filter rules for any errors or warnings that should be removed 
+
 @RestController
 public class FHIRBundleValidator implements IResourceProvider {
 
     private static String shinnyDataLakeApiImpGuideProfileUri;
-    // private static String zipFileName;
+
     static FhirContext context = FhirContext.forR4();
     private static Connection conn;
+    private static String resourceId = null;
+
+    private ArrayList<OrchestrationSession> sessions = new ArrayList<>(); // TODO: update to Map to allow easy look-up
 
     /**
      * Constructor
@@ -72,6 +87,7 @@ public class FHIRBundleValidator implements IResourceProvider {
         }
         // Load values fom application.properties
         shinnyDataLakeApiImpGuideProfileUri = config.getString("shinnyDataLakeApiImpGuideProfileUri");
+        /// diagnosticsJsonFile = config.getString("diagnosticsJsonFile");
         // zipFileName = config.getString("zipFileName");
         try {
             conn = DatabaseConnector.connect();
@@ -117,6 +133,10 @@ public class FHIRBundleValidator implements IResourceProvider {
         // Parse the JSON text into a FHIR resource
         IBaseResource resource = parser.parseResource(jsonBody);
 
+        System.out.println("CreateCreateCreateCreate");
+        resourceId = resource.getIdElement().getValue();
+        System.out.println(resourceId);
+
         // Validate the bundle before creating resources
         MethodOutcome validationOutcome = validateBundle((Bundle) resource, ValidationModeEnum.CREATE,
                 shinnyDataLakeApiImpGuideProfileUri);
@@ -133,7 +153,7 @@ public class FHIRBundleValidator implements IResourceProvider {
         if (theBundle.getIdentifier().getValue().isEmpty()) {
             // Set session end time before throwing exception
             sessionEndTime = Instant.now();
-            throw new UnprocessableEntityException(Msg.code(636) + "No identifier supplied");
+            throw new UnprocessableEntityException("No identifier supplied");// Msg.code(636)
         }
 
         // Pass the bundle to create CSV files
@@ -142,29 +162,38 @@ public class FHIRBundleValidator implements IResourceProvider {
         // Set session end time
         sessionEndTime = Instant.now();
 
-        // Prepare the MethodOutcome for the created bundle
         MethodOutcome retVal = new MethodOutcome();
-        OperationOutcome successOutcome = new OperationOutcome();
-        successOutcome.addIssue().setDiagnostics("Bundle creation successful");
-        // retVal.setOperationOutcome(successOutcome);
+        retVal.setId(new IdType("Bundle", theBundle.getIdentifier().getValue(), "4.0"));
+
+        // Can also add an OperationOutcome resource to return
+        // This part is optional though:
+        OperationOutcome outcome = new OperationOutcome();
+        // outcome.addIssue().setSeverity(IssueSeverity.WARNING).setDiagnostics("One
+        // minor issue detected");
+
+        // return retVal;
+
+        JsonObject sessionJson = new JsonObject();
+        sessionJson.addProperty("sessionStartTime", sessionStartTime.toString());
+        sessionJson.addProperty("profile", shinnyDataLakeApiImpGuideProfileUri);
+        sessionJson.addProperty("version", "4.0");
+        sessionJson.addProperty("sessionEndTime", sessionEndTime.toString());
+
+        // Serialize the JsonObject to a string
+        String sessionJsonString = sessionJson.toString();
+
+        outcome.addIssue().setSeverity(IssueSeverity.ERROR).setDiagnostics(sessionJsonString);
+        retVal.setOperationOutcome(outcome);
 
         /*
-         * TODO: Create JSON structure for session information
-         * JsonObject sessionJson = new JsonObject();
-         * sessionJson.addProperty("sessionId", sessionId.toString());
-         * sessionJson.addProperty("sessionStartTime", sessionStartTime.toString());
-         * sessionJson.addProperty("profile", shinnyDataLakeApiImpGuideProfileUri);
-         * sessionJson.addProperty("version", "4.0");
-         * sessionJson.addProperty("sessionEndTime", sessionEndTime.toString());
-         * System.out.println(sessionJson);
          * 
-         * // Add more child elements as needed
-         * System.out.println("successOutcome a) : " + successOutcome);
+         * 
          * // Convert sessionJson to a string and set it in the OperationOutcome
          * successOutcome.addChild(sessionJson.toString());
          * System.out.println("successOutcome b) : " + successOutcome);
          * return retVal.setOperationOutcome(successOutcome);
          */
+
         return retVal;
     }
 
@@ -997,6 +1026,10 @@ public class FHIRBundleValidator implements IResourceProvider {
             @Validate.Profile String theProfile) {
         System.out.println(
                 "Inside the function validateBundle......................." + theBundle.getIdentifier().getValue());
+
+        UUID sessionId = UUID.randomUUID();
+        Instant sessionStartTime = Instant.now();
+
         // Actually do our validation: The UnprocessableEntityException
         // results in an HTTP 422, which is appropriate for business rule failure
         System.out.println("Profile path  :" + theProfile);
@@ -1008,12 +1041,14 @@ public class FHIRBundleValidator implements IResourceProvider {
              * is created using the string supplied below.
              */
             System.out.println("INVALID BUNDLE.");
-            throw new UnprocessableEntityException(Msg.code(639) + "No identifier supplied");
+            throw new UnprocessableEntityException("No identifier supplied"); // Msg.code(639)
         }
         System.out.println("VALID BUNDLE.");
+        Instant sessionEndTime = Instant.now();
 
         // This method returns a MethodOutcome object
         MethodOutcome retVal = new MethodOutcome();
+        OperationOutcome outcome = new OperationOutcome();
 
         // You may also add an OperationOutcome resource to return
         /*
@@ -1023,37 +1058,59 @@ public class FHIRBundleValidator implements IResourceProvider {
          * setDiagnostics("One minor issue detected");
          * retVal.setOperationOutcome(outcome);
          */
+
+        JsonObject sessionJson = new JsonObject();
+        sessionJson.addProperty("profile", shinnyDataLakeApiImpGuideProfileUri);
+        IParser jsonParser = context.newJsonParser();
+
+        retVal.setOperationOutcome(outcome);
+
+        // Add dummy diagnostics
+
         return retVal;
     }
 
     @Validate
     public MethodOutcome validateFhirResource(@ResourceParam String jsonBody) {
-
+        // TODO: new session
+        // session.validateBundle(JSONBody, mode, shinnyDataLakeApiImpGuideProfileUri) -
+        // return most recent -
+        // return session.lastValidationOutcome
         // Parse the JSON text into a FHIR resource
-        FhirContext ctx = FhirContext.forR4();
-        IParser parser = ctx.newJsonParser();
+        System.out.println("Api Call");
+        String qeIdentifier = "";
+        String sessionId = UUID.randomUUID().toString();
+        String deviceId = "D22727GGJ";
+        String version = "0.20.0";
+        OrchestrationSession session = new OrchestrationSession(qeIdentifier, context, sessionId, deviceId, version);
+        session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri);
+
         MethodOutcome outcome = null;
-        IBaseResource resource = null;
-        // Parse with (default) lenient error handler
-        parser.setParserErrorHandler(new LenientErrorHandler());
 
-        // Parse with strict error handler
-        parser.setParserErrorHandler(new StrictErrorHandler());
-        // try{
-        resource = parser.parseResource(jsonBody);
-        // } catch (DataFormatException e) {
-        // e.printStackTrace();
-        // return outcome;
-        // }
-
-        // Read and parse the StructureDefinition from a file
-        ValidationModeEnum mode = ValidationModeEnum.CREATE;
-        outcome = validateBundle((Bundle) resource, mode, shinnyDataLakeApiImpGuideProfileUri);
-
-        // Handle the validation result
-        OperationOutcome operationOutcome = (OperationOutcome) outcome.getOperationOutcome();
-        System.out.println("operationOutcome: " + operationOutcome);
         return outcome;
 
     }
+
+    // TODO: This end point, /diagnostics get the session details using the sessio
+    // parameter
+    @Operation(name = "$diagnostics", idempotent = true)
+    public OperationOutcome diagnosticsOperation(
+            @OperationParam(name = "sessionId") String sessionId) {
+
+        OperationOutcome outcome = new OperationOutcome();
+
+        // TODO: Implement the logic for the diagnostics operation
+
+        JsonObject sessionJson = new JsonObject();
+        sessionJson.addProperty("profile", shinnyDataLakeApiImpGuideProfileUri);
+        sessionJson.addProperty("version", "4.0");
+
+        String sessionJsonString = sessionJson.toString();
+
+        // Set the JSON string as diagnostics
+        outcome.addIssue().setSeverity(IssueSeverity.ERROR).setDiagnostics(sessionJsonString);
+
+        return outcome;
+    }
+
 }
