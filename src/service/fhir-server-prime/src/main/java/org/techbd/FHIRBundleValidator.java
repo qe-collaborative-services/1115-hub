@@ -153,7 +153,7 @@ public class FHIRBundleValidator implements IResourceProvider {
         if (theBundle.getIdentifier().getValue().isEmpty()) {
             // Set session end time before throwing exception
             sessionEndTime = Instant.now();
-            throw new UnprocessableEntityException("No identifier supplied");// Msg.code(636)
+            throw new UnprocessableEntityException("No identifier supplied");
         }
 
         // Pass the bundle to create CSV files
@@ -1041,7 +1041,7 @@ public class FHIRBundleValidator implements IResourceProvider {
              * is created using the string supplied below.
              */
             System.out.println("INVALID BUNDLE.");
-            throw new UnprocessableEntityException("No identifier supplied"); // Msg.code(639)
+            throw new UnprocessableEntityException("No identifier supplied");
         }
         System.out.println("VALID BUNDLE.");
         Instant sessionEndTime = Instant.now();
