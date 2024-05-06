@@ -1,0 +1,220 @@
+
+---------------------
+
+=== Test that your server is running by fetching its CapabilityStatement: ===
+
+GET http://0.0.0.0:8080/metadata
+accept-encoding: gzip, deflate, br
+accept: */*
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 200  - OK
+content-encoding: gzip
+content-type: application/fhir+json;charset=utf-8
+date: Mon, 06 May 2024 13:13:30 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: MoEnyCtEf76VmHdz
+
+{
+  "resourceType": "CapabilityStatement",
+  "status": "active",
+  "date": "2024-05-06T13:13:08+00:00",
+  "publisher": "Not provided",
+  "kind": "instance",
+  "software": {
+    "name": "HAPI FHIR Server",
+    "version": "5.0.0"
+  },
+  "implementation": {
+    "description": "HAPI FHIR",
+    "url": "http://0.0.0.0:8080/"
+  },
+  "fhirVersion": "4.0.1",
+  "format": [
+    "application/fhir+xml",
+    "application/fhir+json"
+  ],
+  "rest": [
+    {
+      "mode": "server",
+      "resource": [
+        {
+          "type": "Bundle",
+          "profile": "http://hl7.org/fhir/StructureDefinition/Bundle",
+          "interaction": [
+            {
+              "code": "create"
+            },
+            {
+              "code": "search-type"
+            }
+          ],
+          "searchParam": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "OperationDefinition",
+          "profile": "http://hl7.org/fhir/StructureDefinition/OperationDefinition",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ]
+        },
+        {
+          "type": "StructureDefinition",
+          "profile": "http://hl7.org/fhir/StructureDefinition/StructureDefinition",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "search-type"
+            }
+          ]
+        }
+      ],
+      "operation": [
+        {
+          "name": "validate",
+          "definition": "http://0.0.0.0:8080/OperationDefinition/Bundle--validate"
+        }
+      ]
+    }
+  ]
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ Check Resource Type
+✓ Status Check
+✓ Status Check
+
+---------------------
+
+=== Validating a bundle resource from your server - happy path ===
+
+POST http://0.0.0.0:8080/Bundle/$validate
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 12899
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 200  - OK
+content-encoding: gzip
+content-type: application/fhir+json;charset=utf-8
+date: Mon, 06 May 2024 13:13:30 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: IIld32tBhzmBqpJx
+
+{
+  "resourceType": "OperationOutcome"
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ Check Resource Type
+
+---------------------
+
+=== Validating a bundle resource from your server - unhappy path ===
+
+POST http://0.0.0.0:8080/Bundle/$validate
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 12900
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 400  - Bad Request
+content-type: application/fhir+json;charset=utf-8
+date: Mon, 06 May 2024 13:13:30 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: XNuwOUWr3l8D829i
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Failed to parse request body as JSON resource. Error was: Invalid JSON content detected, missing required element: 'resourceType'"
+    }
+  ]
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ check Result
+
+---------------------
+
+=== Submitting a bundle resource from your server  - happy path ===
+
+POST http://0.0.0.0:8080/Bundle/?x=y
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 12899
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 201  - Created
+content-encoding: gzip
+content-location: http://0.0.0.0:8080/Bundle/987654321/_history/1
+date: Mon, 06 May 2024 13:13:30 GMT
+etag: W/"1"
+location: http://0.0.0.0:8080/Bundle/987654321/_history/1
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: fFxqUv5qLBwxYRz4
+✓ status code 201
+✓ response body exists
+
+---------------------
+
+=== Submitting a bundle resource from your server  - unhappy path ===
+
+POST http://0.0.0.0:8080/Bundle/?x=y&qe=healthelink
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 12900
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 400  - Bad Request
+content-type: application/fhir+json;charset=utf-8
+date: Mon, 06 May 2024 13:13:30 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: YsQelPfKqTLDrP1P
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Failed to parse request body as JSON resource. Error was: Invalid JSON content detected, missing required element: 'resourceType'"
+    }
+  ]
+}
+✓ status code 201
+✓ Check content-type
+✓ response body exists
+✓ check Result
+
+5 requests processed (5 succeeded, 0 failed)
