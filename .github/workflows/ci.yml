@@ -101,7 +101,7 @@ jobs:
       - name: Commit and push changes
         run: |
           cd infrastructure-prime
-          git .
+          git add .
           git commit -m "Update for ${{ github.ref_name }} techbd deployment"
           git push --set-upstream origin synthetic-techbd-${{ github.ref_name}}-deployment
 
