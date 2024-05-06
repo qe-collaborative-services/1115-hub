@@ -39,11 +39,6 @@ class OrchestrationSessionHelpers {
         return gson.toJson(jsonObject);
     }
 
-//    public static String jsonObjectToJsonString(JsonObject jsonObject) {
-//        Gson gson = new Gson();
-//        return gson.toJson(jsonObject);
-//    }
-
     public static String getCurrentTimestamp() {
         Instant currentTimestamp = Instant.now();
         DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
@@ -156,7 +151,8 @@ public class OrchestrationSession {
     public ArrayList<OrchestrationSessionEntryBundle> entries = new ArrayList<>();
 
     // should be completly independent of hhtp
-    public OrchestrationSession(String qeIdentifier, FhirContext ctx, String orchSessionId, String deviceId, String version) {
+    public OrchestrationSession(String qeIdentifier, FhirContext ctx, String orchSessionId, String deviceId,
+            String version) {
         this.qeIdentifier = qeIdentifier;
         this.ctx = ctx;
         this.orchSessionId = orchSessionId;
