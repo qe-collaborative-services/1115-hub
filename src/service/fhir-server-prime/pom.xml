@@ -3,7 +3,7 @@
 
 	<groupId>techbd.github.io</groupId>
 	<artifactId>fhir-server-prime</artifactId>
-	<version>5.0.0</version>
+	<version>${application.version}</version>
 	<packaging>war</packaging>
 
 	<name>HAPI FHIR Plain Server</name>
