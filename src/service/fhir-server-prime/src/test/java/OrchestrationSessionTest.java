@@ -4,6 +4,7 @@ import org.techbd.OrchestrationSession;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -13,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Objects;
 
 class OrchestrationSessionTest {
 
@@ -28,13 +30,16 @@ class OrchestrationSessionTest {
         String deviceId = "TestDeviceId";
         String version = "0.20.0";
         FhirContext ctx = FhirContext.forR4();
-        session = new OrchestrationSession(qeIdentifier,ctx, orchSessionId, deviceId, version);
+        session = new OrchestrationSession(qeIdentifier, ctx, orchSessionId, deviceId, version);
 
         // Set up the profile URI and folder path for validation
         try {
             PropertiesConfiguration config = new PropertiesConfiguration("application.properties");
             shinnyDataLakeApiImpGuideProfileUri = config.getString("shinnyDataLakeApiImpGuideProfileUri");
-            fhirJsonFolderPath = config.getString("fhirJsonFolderPath");
+            // fhirJsonFolderPath = config.getString("fhirJsonFolderPath");
+            fhirJsonFolderPath = Objects.requireNonNull(getClass().getClassLoader()
+                    .getResource(config.getString("fhirJsonFolderPath")))
+                    .getPath();
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
@@ -58,7 +63,8 @@ class OrchestrationSessionTest {
                     String jsonBody = readFileContent(file);
                     session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri);
                     System.out.println("Finished processing " + file.getName());
-                    // assertFalse(session.entries.isEmpty(), "Validation failed for file: " + file.getName());
+                    // assertFalse(session.entries.isEmpty(), "Validation failed for file: " +
+                    // file.getName());
 
                 } catch (Exception e) {
                     e.printStackTrace();
