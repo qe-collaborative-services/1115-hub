@@ -51,6 +51,7 @@ import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.parser.LenientErrorHandler;
 import ca.uhn.fhir.parser.StrictErrorHandler;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -60,6 +61,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 // TODO: create  FHIRValidationFilter class to manage filter rules for any errors or warnings that should be removed 
@@ -75,7 +77,7 @@ public class FHIRBundleValidator implements IResourceProvider {
     private static String deviceId;
     private static String version;
 
-    private Map<String, OrchestrationSession> sessions = new HashMap<>(); // TODO: update to Map to allow easy look-up
+    private Map<String, OrchestrationSession> sessions = new HashMap<>();
 
     /**
      * Constructor
@@ -90,7 +92,7 @@ public class FHIRBundleValidator implements IResourceProvider {
         // Load values fom application.properties
         shinnyDataLakeApiImpGuideProfileUri = config.getString("shinnyDataLakeApiImpGuideProfileUri");
         FHIRBundleValidator.deviceId = config.getString("deviceId");
-        FHIRBundleValidator.version = config.getString("version");
+        FHIRBundleValidator.version = getVersionFromProperties();
         try {
             conn = DatabaseConnector.connect();
         } catch (SQLException e) {
@@ -1081,4 +1083,17 @@ public class FHIRBundleValidator implements IResourceProvider {
         return null;
     }
 
+    public String getVersionFromProperties() {
+        String version = ""; // Default value if reading from properties file fails
+
+        try (InputStream input = FHIRBundleValidator.class.getClassLoader()
+                .getResourceAsStream("application.properties")) {
+            Properties prop = new Properties();
+            prop.load(input);
+            version = prop.getProperty("application.version");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return version;
+    }
 }
