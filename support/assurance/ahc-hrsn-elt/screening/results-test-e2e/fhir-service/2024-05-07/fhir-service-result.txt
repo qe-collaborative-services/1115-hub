@@ -1,0 +1,272 @@
+
+---------------------
+
+=== Test that your server is running by fetching its CapabilityStatement: ===
+
+GET https://synthetic.fhir.api.devl.techbd.org/metadata
+accept-encoding: gzip, deflate, br
+accept: */*
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 200  - OK
+connection: keep-alive
+content-encoding: gzip
+content-type: application/fhir+json;charset=utf-8
+date: Tue, 07 May 2024 14:36:12 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: yg793KJ4OfSkcjhX
+
+{
+  "resourceType": "CapabilityStatement",
+  "status": "active",
+  "date": "2024-05-07T14:35:22+00:00",
+  "publisher": "Not provided",
+  "kind": "instance",
+  "software": {
+    "name": "HAPI FHIR Server",
+    "version": "5.0.0"
+  },
+  "implementation": {
+    "description": "HAPI FHIR",
+    "url": "http://10.0.165.83:8080/"
+  },
+  "fhirVersion": "4.0.1",
+  "format": [
+    "application/fhir+xml",
+    "application/fhir+json"
+  ],
+  "rest": [
+    {
+      "mode": "server",
+      "resource": [
+        {
+          "type": "Bundle",
+          "profile": "http://hl7.org/fhir/StructureDefinition/Bundle",
+          "interaction": [
+            {
+              "code": "create"
+            },
+            {
+              "code": "search-type"
+            }
+          ],
+          "searchParam": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "OperationDefinition",
+          "profile": "http://hl7.org/fhir/StructureDefinition/OperationDefinition",
+          "interaction": [
+            {
+              "code": "read"
+            }
+          ]
+        },
+        {
+          "type": "StructureDefinition",
+          "profile": "http://hl7.org/fhir/StructureDefinition/StructureDefinition",
+          "interaction": [
+            {
+              "code": "read"
+            },
+            {
+              "code": "search-type"
+            }
+          ]
+        }
+      ],
+      "operation": [
+        {
+          "name": "validate",
+          "definition": "http://10.0.165.83:8080/OperationDefinition/Bundle--validate"
+        }
+      ]
+    }
+  ]
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ Check Resource Type
+✓ Status Check
+✓ Status Check
+
+---------------------
+
+=== Validating a bundle resource from your server - happy path ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/$validate
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 12899
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 200  - OK
+connection: keep-alive
+content-encoding: gzip
+content-type: application/fhir+json;charset=utf-8
+date: Tue, 07 May 2024 14:36:13 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: BqF6fVQZPNxnRmHl
+
+{
+  "resourceType": "OperationOutcome"
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ Check Resource Type
+
+---------------------
+
+=== Validating a bundle resource from your server - unhappy path ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/$validate
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 12900
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 400  - Bad Request
+connection: keep-alive
+content-type: application/fhir+json;charset=utf-8
+date: Tue, 07 May 2024 14:36:13 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: nyjtasaMzcF8Pgnv
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Failed to parse request body as JSON resource. Error was: Invalid JSON content detected, missing required element: 'resourceType'"
+    }
+  ]
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ check Result
+
+---------------------
+
+=== Submitting a bundle resource from your server  - unhappy path ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/?x=y&qe=healthelink
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 12900
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 400  - Bad Request
+connection: keep-alive
+content-type: application/fhir+json;charset=utf-8
+date: Tue, 07 May 2024 14:36:13 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: usy5dOFTbFf7siWb
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Failed to parse request body as JSON resource. Error was: Invalid JSON content detected, missing required element: 'resourceType'"
+    }
+  ]
+}
+✓ status code 201
+✓ Check content-type
+✓ response body exists
+✓ check Result
+
+---------------------
+
+=== Validating a bundle resource from bronx QE - unhappy path ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/$validate
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 85418
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 422  - Unprocessable Entity
+connection: keep-alive
+content-type: application/fhir+json;charset=utf-8
+date: Tue, 07 May 2024 14:36:15 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: T0I5eO333balzMcj
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Error code: 639 - No identifier supplied"
+    }
+  ]
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ check Result
+✓ check Diagnostics
+
+---------------------
+
+=== Validating a bundle resource from healtheconnections QE - unhappy path ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/$validate
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 39593
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 400  - Bad Request
+connection: keep-alive
+content-type: application/fhir+json;charset=utf-8
+date: Tue, 07 May 2024 14:36:15 GMT
+server: Jetty(9.4.7.v20170914)
+transfer-encoding: chunked
+x-powered-by: HAPI FHIR 5.0.0 REST Server (FHIR Server; FHIR 4.0.1/R4)
+x-request-id: kdb848Fpr214tAQI
+
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "processing",
+      "diagnostics": "Failed to parse request body as JSON resource. Error was: [element=\"lastUpdated\"] Invalid attribute value \"2023-10-28 10:07:42.9149210\": Invalid date/time format: \"2023-10-28 10:07:42.9149210\": Expected character 'T' at index 10 but found  "
+    }
+  ]
+}
+✓ status code 200
+✓ Check content-type
+✓ response body exists
+✓ check Result
+✓ check Diagnostics
+
+6 requests processed (6 succeeded, 0 failed)
