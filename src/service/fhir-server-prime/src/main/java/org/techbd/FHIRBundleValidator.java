@@ -1102,10 +1102,6 @@ public class FHIRBundleValidator implements IResourceProvider {
             // Found the session
             System.out.println(session.toJson());
             System.out.println(session.entries.get(0).getOperationOutcome().toString());
-            /*
-             * operationOutcome = (OperationOutcome)
-             * session.entries.get(0).getOperationOutcome();
-             */
             operationOutcome = new OperationOutcome();
             operationOutcome.addIssue().setDiagnostics(session.toJson());
             retVal.setOperationOutcome(operationOutcome);
@@ -1121,8 +1117,6 @@ public class FHIRBundleValidator implements IResourceProvider {
         System.out.println(" All diagnostic|");
 
         displayAllSessions();
-        // operationOutcome = (OperationOutcome) =
-        // sessions.entries.get(0).getOperationOutcome();
         return null;
 
     }
@@ -1130,16 +1124,13 @@ public class FHIRBundleValidator implements IResourceProvider {
     @Operation(name = "$docs_api", idempotent = true)
     public OperationOutcome docs() {
         System.out.println(" docs");
-
         return null;
-
     }
 
     // TODO:
     @Read()
     public Bundle getResourceById(@IdParam IdType theId) {
         System.out.println(theId);
-
         return null;
     }
 
