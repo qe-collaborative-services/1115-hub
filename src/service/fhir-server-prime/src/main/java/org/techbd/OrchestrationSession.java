@@ -159,7 +159,7 @@ public class OrchestrationSession {
         this.deviceId = deviceId;
         this.version = version;
         this.parser = ctx.newJsonParser(); // Updated code
-        parser.setParserErrorHandler(new StrictErrorHandler());
+        this.parser.setParserErrorHandler(new StrictErrorHandler());
     }
 
     public JsonObject toJsonObject() {
@@ -170,9 +170,11 @@ public class OrchestrationSession {
         jsonObject.addProperty("deviceId", deviceId);
         jsonObject.addProperty("version", version);
         jsonObject.addProperty("orchStartedAt", orchStartedAt.toString());
+        for (OrchestrationSessionEntryBundle entry : entries) {
+            jsonObject.addProperty("entries", entry.toJson());
+        }
         jsonObject.addProperty("orchFinishedAt", orchFinishedAt != null ? orchFinishedAt.toString() : null);
         return jsonObject;
-
     }
 
     public String toJson() {
@@ -203,7 +205,6 @@ public class OrchestrationSession {
     public void validateBundle(String payload, String profileUrl) {
         // Perform bundle validation logic
         // Create OrchestrationEntry instances for each validation outcome
-        System.out.println("validateBundle : ");
 
         // Create a validator
         FhirValidator validator = ctx.newValidator();
