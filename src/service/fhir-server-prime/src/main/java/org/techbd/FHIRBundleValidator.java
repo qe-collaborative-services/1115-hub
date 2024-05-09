@@ -1034,14 +1034,9 @@ public class FHIRBundleValidator implements IResourceProvider {
             @Validate.Profile String theProfile) {
 
         MethodOutcome retVal = new MethodOutcome();
-        OperationOutcome outcome = new OperationOutcome();
-        retVal.setOperationOutcome(outcome);
         return retVal;
     }
 
-    // public public MethodOutcome validateFhirResource(@ResourceParam String
-    // jsonBody,
-    // @RequestParam(value = "qe", required = false) String qeValue) {
     @Validate
     public MethodOutcome validateFhirResource(@ResourceParam String jsonBody) {
 
@@ -1054,25 +1049,102 @@ public class FHIRBundleValidator implements IResourceProvider {
         String qeIdentifier = "";
         String sessionId = UUID.randomUUID().toString();
 
+        //////////////////
+
+        // TODO: DELETE THESE OLD METHOD AFTER CHECKING THE ISSUE
+
+        // IParser parser = context.newJsonParser();
+        // MethodOutcome outcome = null;
+        // IBaseResource resource = null;
+        // parser.setParserErrorHandler(new StrictErrorHandler());
+        // resource = parser.parseResource(jsonBody);
+        // // ValidationModeEnum mode = ValidationModeEnum.CREATE;
+        // outcome = validateBundle((Bundle) resource, null,
+        // shinnyDataLakeApiImpGuideProfileUri);
+
+        // TODO: NEW METHOD INDEPENDENT OF PROTOCOLS
+
         OrchestrationSession session = new OrchestrationSession(qeIdentifier,
-                context, sessionId, FHIRBundleValidator.deviceId, FHIRBundleValidator.version);
+                context, sessionId, FHIRBundleValidator.deviceId,
+                FHIRBundleValidator.version);
         session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri);
         this.sessions.put(sessionId, session);
-
         OperationOutcome operationOutcome = (OperationOutcome) session.entries.get(0).getOperationOutcome();
-
         MethodOutcome outcome = new MethodOutcome();
         outcome.setOperationOutcome(operationOutcome);
+
         return outcome;
     }
 
-    // TODO: This end point, /diagnostics get the session details using the sessio
-    // parameter
+    @Operation(name = "$admin_validate", idempotent = true)
+    public OperationOutcome adminValidate(@ResourceParam String jsonBody) {
+        System.out.println(" adminValidate");
+
+        System.out.println("Api Call");
+        String qeIdentifier = "";
+        String sessionId = UUID.randomUUID().toString();
+        OrchestrationSession session = new OrchestrationSession(qeIdentifier,
+                context, sessionId, FHIRBundleValidator.deviceId,
+                FHIRBundleValidator.version);
+        session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri);
+        this.sessions.put(sessionId, session);
+        OperationOutcome operationOutcome = (OperationOutcome) session.entries.get(0).getOperationOutcome();
+        MethodOutcome outcome = new MethodOutcome();
+        outcome.setOperationOutcome(operationOutcome);
+
+        String json = session.toJson();
+        System.out.println("json : " + json);
+        // Convert JSON to HTML
+        String html = convertJsonToHtml(json);
+        // Display HTML
+        System.out.println("html : " + html);
+        return null;
+
+    }
+
+    // TODO: Change the url pattern
     @Operation(name = "$diagnostics", idempotent = true)
-    public OperationOutcome diagnosticsOperation(
+    public MethodOutcome diagnosticsOperation(
             @OperationParam(name = "sessionId") String sessionId) {
         System.out.println(sessionId);
+        MethodOutcome retVal = new MethodOutcome();
+        OperationOutcome operationOutcome;
+        OrchestrationSession session = findSessionByKey(sessionId);
+        if (session != null) {
+            // Found the session
+            System.out.println(session.toJson());
+            System.out.println(session.entries.get(0).getOperationOutcome().toString());
+            /*
+             * operationOutcome = (OperationOutcome)
+             * session.entries.get(0).getOperationOutcome();
+             */
+            operationOutcome = new OperationOutcome();
+            operationOutcome.addIssue().setDiagnostics(session.toJson());
+            retVal.setOperationOutcome(operationOutcome);
+        } else {
+            // Session not found
+        }
+        return retVal;
+
+    }
+
+    @Operation(name = "$diagnosticsall", idempotent = true)
+    public OperationOutcome diagnosticsAll() {
+        System.out.println(" All diagnostic|");
+
+        displayAllSessions();
+        // operationOutcome = (OperationOutcome) =
+        // sessions.entries.get(0).getOperationOutcome();
         return null;
+
+    }
+
+    @Operation(name = "$docs_api", idempotent = true)
+    public OperationOutcome docs() {
+        System.out.println(" docs");
+
+        return null;
+
     }
 
     // TODO:
@@ -1096,4 +1168,46 @@ public class FHIRBundleValidator implements IResourceProvider {
         }
         return version;
     }
+
+    public OrchestrationSession findSessionByKey(String key) {
+        for (Map.Entry<String, OrchestrationSession> entry : sessions.entrySet()) {
+            if (entry.getKey().equals(key)) {
+                return entry.getValue();
+            }
+        }
+        // Key not found
+        return null;
+    }
+
+    public void displayAllSessions() {
+        for (Map.Entry<String, OrchestrationSession> entry : sessions.entrySet()) {
+            System.out.println("Key: " + entry.getKey());
+            System.out.println("Value: " + entry.getValue());
+            System.out.println("Value: " + entry.getValue().toJson());
+        }
+    }
+
+    public static String convertJsonToHtml(String json) {
+        Gson gson = new Gson();
+        JsonElement jsonElement = JsonParser.parseString(json);
+        return convertJsonElementToHtml(jsonElement);
+    }
+
+    private static String convertJsonElementToHtml(JsonElement jsonElement) {
+        StringBuilder html = new StringBuilder();
+        if (jsonElement.isJsonObject()) {
+            html.append("<ul>");
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            for (String key : jsonObject.keySet()) {
+                html.append("<li><strong>").append(key).append(":</strong> ");
+                html.append(convertJsonElementToHtml(jsonObject.get(key)));
+                html.append("</li>");
+            }
+            html.append("</ul>");
+        } else {
+            html.append(jsonElement.getAsString());
+        }
+        return html.toString();
+    }
+
 }
