@@ -43,7 +43,10 @@ import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
 import org.hl7.fhir.r4.model.Organization;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.api.ValidationModeEnum;
@@ -1048,21 +1051,6 @@ public class FHIRBundleValidator implements IResourceProvider {
         System.out.println("Api Call");
         String qeIdentifier = "";
         String sessionId = UUID.randomUUID().toString();
-
-        //////////////////
-
-        // TODO: DELETE THESE OLD METHOD AFTER CHECKING THE ISSUE
-
-        // IParser parser = context.newJsonParser();
-        // MethodOutcome outcome = null;
-        // IBaseResource resource = null;
-        // parser.setParserErrorHandler(new StrictErrorHandler());
-        // resource = parser.parseResource(jsonBody);
-        // // ValidationModeEnum mode = ValidationModeEnum.CREATE;
-        // outcome = validateBundle((Bundle) resource, null,
-        // shinnyDataLakeApiImpGuideProfileUri);
-
-        // TODO: NEW METHOD INDEPENDENT OF PROTOCOLS
 
         OrchestrationSession session = new OrchestrationSession(qeIdentifier,
                 context, sessionId, FHIRBundleValidator.deviceId,
