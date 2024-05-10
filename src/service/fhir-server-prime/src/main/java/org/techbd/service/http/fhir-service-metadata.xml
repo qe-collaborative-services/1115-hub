@@ -1,0 +1,55 @@
+<CapabilityStatement xmlns="http://hl7.org/fhir">
+    <status value="active"></status>
+    <date value="2024-05-10T10:23:24+00:00"></date>
+    <publisher value="TechBD"></publisher>
+    <kind value="instance"></kind>
+    <software>
+        <name value="1115-Hub FHIR Server"></name>
+        <version value="0.21.0"></version>
+    </software>
+    <implementation>
+        <description value="115-Hub FHIR"></description>
+        <url value="https://synthetic.fhir.api.devl.techbd.org"></url>
+    </implementation>
+    <fhirVersion value="4.0.1"></fhirVersion>
+    <format value="application/fhir+xml"></format>
+    <format value="application/fhir+json"></format>
+    <rest>
+        <mode value="server"></mode>
+        <resource>
+            <type value="Bundle"></type>
+            <profile value="https://djq7jdt8kb490.cloudfront.net/1115/StructureDefinition-SHINNYBundleProfile.json"></profile>
+            <interaction>
+                <code value="create"></code>
+            </interaction>
+            <interaction>
+                <code value="search-type"></code>
+            </interaction>
+            <searchParam>
+                <name value="name"></name>
+                <type value="string"></type>
+            </searchParam>
+        </resource>
+        <resource>
+            <type value="OperationDefinition"></type>
+            <profile value="http://hl7.org/fhir/StructureDefinition/OperationDefinition"></profile>
+            <interaction>
+                <code value="read"></code>
+            </interaction>
+        </resource>
+        <resource>
+            <type value="StructureDefinition"></type>
+            <profile value="http://hl7.org/fhir/StructureDefinition/StructureDefinition"></profile>
+            <interaction>
+                <code value="read"></code>
+            </interaction>
+            <interaction>
+                <code value="search-type"></code>
+            </interaction>
+        </resource>
+        <operation>
+            <name value="validate"></name>
+            <definition value="http://10.0.165.83:8080/OperationDefinition/Bundle--validate"></definition>
+        </operation>
+    </rest>
+</CapabilityStatement>
