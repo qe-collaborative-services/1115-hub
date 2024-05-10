@@ -14,6 +14,7 @@ import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.CapabilityStatement;
 import org.hl7.fhir.r4.model.CodeType;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
@@ -31,6 +32,7 @@ import org.hl7.fhir.instance.model.api.IIdType;
 
 import ca.uhn.fhir.rest.annotation.Create;
 import ca.uhn.fhir.rest.annotation.IdParam;
+import ca.uhn.fhir.rest.annotation.Metadata;
 import ca.uhn.fhir.rest.annotation.Operation;
 import ca.uhn.fhir.rest.annotation.OperationParam;
 import ca.uhn.fhir.rest.annotation.OptionalParam;
@@ -113,6 +115,33 @@ public class FHIRBundleValidator implements IResourceProvider {
         List<Bundle> results = new ArrayList<>();
         return results;
     }
+
+    /**
+     * Provide custom metadata including the profile URL
+     */
+    // @Metadata
+    // public CapabilityStatement getServerMetadata() {
+    // CapabilityStatement metadata = new CapabilityStatement();
+    // // Set FHIR version
+    // metadata.setFhirVersion(org.hl7.fhir.r4.model.Enumerations.FHIRVersion._4_0_1);
+    // // Create a new CapabilityStatement.RestComponent
+    // CapabilityStatement.CapabilityStatementRestComponent restComponent = new
+    // CapabilityStatement.CapabilityStatementRestComponent();
+    // metadata.addRest(restComponent);
+    // // Create a new CapabilityStatement.ResourceComponent for Patient
+    // CapabilityStatement.CapabilityStatementRestResourceComponent
+    // resourceComponent = new
+    // CapabilityStatement.CapabilityStatementRestResourceComponent();
+    // resourceComponent.setType("Bundle");
+    // // Add custom profile URL for Patient
+    // org.hl7.fhir.r4.model.CanonicalType profile = new
+    // org.hl7.fhir.r4.model.CanonicalType(
+    // "https://djq7jdt8kb490.cloudfront.net/1115/StructureDefinition-SHINNYBundleProfile.json");
+    // resourceComponent.addProfile(profile);
+    // // Add the resourceComponent to restComponent
+    // restComponent.addResource(resourceComponent);
+    // return metadata;
+    // }
 
     @SuppressWarnings("deprecation")
     @Create
@@ -1059,8 +1088,20 @@ public class FHIRBundleValidator implements IResourceProvider {
         this.sessions.put(sessionId, session);
         OperationOutcome operationOutcome = (OperationOutcome) session.entries.get(0).getOperationOutcome();
         MethodOutcome outcome = new MethodOutcome();
-        outcome.setOperationOutcome(operationOutcome);
+        ////
+        JsonObject sessionJson = new JsonObject();
+        sessionJson.addProperty("sessionId", sessionId.toString());
+        sessionJson.addProperty("sessionStartTime", Instant.now().toString());
+        sessionJson.addProperty("profile", shinnyDataLakeApiImpGuideProfileUri);
+        sessionJson.addProperty("version", "4.0");
+        sessionJson.addProperty("sessionEndTime", Instant.now().toString());
 
+        // Serialize the JsonObject to a string
+        String sessionJsonString = sessionJson.toString();
+
+        operationOutcome.addIssue().setSeverity(IssueSeverity.INFORMATION).setDiagnostics(sessionJsonString);
+        outcome.setOperationOutcome(operationOutcome);
+        System.out.println(session.toJson());
         return outcome;
     }
 
@@ -1125,6 +1166,21 @@ public class FHIRBundleValidator implements IResourceProvider {
     public OperationOutcome docs() {
         System.out.println(" docs");
         return null;
+    }
+
+    @Operation(name = "$metadata2", idempotent = true)
+    public OperationOutcome metadata2() {
+        System.out.println(" mm");
+
+        return null;
+    }
+
+    @Operation(name = "$metadata1", idempotent = true)
+    public CapabilityStatement metadata() {
+        CapabilityStatement retVal = new CapabilityStatement();
+        System.out.println(" meta data");
+
+        return retVal;
     }
 
     // TODO:
