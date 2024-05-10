@@ -108,13 +108,19 @@ class OrchestrationSessionEntryBundle {
 
     // Helper method to convert OperationOutcome to JSON
     private JsonObject operationOutcomeToJson() {
+        String operaionOutcomeResult = parser.encodeResourceToString(this.operationOutcome);
         JsonObject json = new JsonObject();
-        // json.addProperty("outcome", this.operationOutcome);
+        json.addProperty("outcome", operaionOutcomeResult);
         return json;
+
     }
 
     public OperationOutcome getOperationOutcome() {
         return operationOutcome;
+    }
+
+    public ArrayList<Exception> getExceptions() {
+        return exceptions;
     }
 
     public boolean validate() {
@@ -131,7 +137,9 @@ class OrchestrationSessionEntryBundle {
             return false;
         }
 
-        this.operationOutcome = (OperationOutcome) result.toOperationOutcome();
+        operationOutcome = (OperationOutcome) result.toOperationOutcome();
+        // System.out.println("Validation failed. OperationOutcome: " +
+        // parser.encodeResourceToString(operationOutcome));
 
         return true;
     }
@@ -165,13 +173,15 @@ public class OrchestrationSession {
     public JsonObject toJsonObject() {
         // TODO: Date orchFinishedAt
         orchFinishedAt = new Date();
+        String entryJson;
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("orchSessionId", orchSessionId.toString());
         jsonObject.addProperty("deviceId", deviceId);
         jsonObject.addProperty("version", version);
         jsonObject.addProperty("orchStartedAt", orchStartedAt.toString());
         for (OrchestrationSessionEntryBundle entry : entries) {
-            jsonObject.addProperty("entries", entry.toJson());
+            entryJson = entry.toJson().replaceAll("\\\\", "");
+            jsonObject.addProperty("entries", entryJson);
         }
         jsonObject.addProperty("orchFinishedAt", orchFinishedAt != null ? orchFinishedAt.toString() : null);
         return jsonObject;
