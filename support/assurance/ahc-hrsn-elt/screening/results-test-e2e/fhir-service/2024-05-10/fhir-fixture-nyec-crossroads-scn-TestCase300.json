@@ -1,0 +1,1981 @@
+{
+    "resourceType": "Bundle",
+    "id": "0978bab8-c510-455c-8f10-f6772c0143f6_1793",
+    "meta": {
+        "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+        "profile": [
+            "http://shinny.org/StructureDefinition/shin-ny-encounter"
+        ]
+    },
+    "type": "transaction",
+    "total": 24,
+    "link": [
+        {
+            "relation": "self",
+            "url": "http://10.80.80.125:9006/r4/Observation?identifier=dd9f3a5bc72ea5a576a1a9117cd2a34d&patient=6944887_CNYSCN~bronx-20240417-testcase1-MRN&category=survey&_include=Observation:patient&_include=Observation:encounter&_include=Encounter:organization&_include=Patient:consent"
+        }
+    ],
+    "entry": [
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Patient/CNYSCN~bronx-20240417-testcase1-MRN",
+            "resource": {
+                "resourceType": "Patient",
+                "id": "CNYSCN~bronx-20240417-testcase1-MRN",
+                "meta": {
+                    "lastUpdated": "2024-04-18T13:24:18.000-04:00",
+                    "profile": [
+                        "http://shinny.org/StructureDefinition/shinny-patient"
+                    ]
+                },
+                "text": {
+                    "status": "generated",
+                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><div class=\"hapiHeaderText\">Morgan Pamela <b>REED </b></div><table class=\"hapiPropertyTable\"><tbody><tr><td>Identifier</td><td>bronx-20240417-testcase1-MRN</td></tr><tr><td>Address</td><td><span>3805 Gallegos Fork </span><br/><span>Floor 3 Apt 5 </span><br/><span>White Plains </span><span>NY </span></td></tr><tr><td>Date of birth</td><td><span>14 June 1970</span></td></tr></tbody></table></div>"
+                },
+                "extension": [
+                    {
+                        "url": "http://shinny.org/StructureDefinition/us-core-race",
+                        "extension": [
+                            {
+                                "url": "ombCategory",
+                                "valueCoding": {
+                                    "system": "urn:oid:2.16.840.1.113883.6.238",
+                                    "code": "1002-5",
+                                    "display": "AMERICAN INDIAN OR ALASKA NATIVE"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "url": "http://shinny.org/StructureDefinition/us-core-ethnicity",
+                        "extension": [
+                            {
+                                "url": "ombCategory",
+                                "valueCoding": {
+                                    "system": "urn:oid:2.16.840.1.113883.6.238",
+                                    "code": "2135-2",
+                                    "display": "HISPANIC OR LATINO"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "MR"
+                                }
+                            ],
+                            "text": "Medical record number"
+                        },
+                        "system": "https://bronx.imat.io/facility/CNYSCN",
+                        "value": "bronx-20240417-testcase1-MRN"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PN"
+                                }
+                            ],
+                            "text": "Person number"
+                        },
+                        "system": "https://bronxrhio.org/",
+                        "value": "6944887"
+                    }
+                ],
+                "name": [
+                    {
+                        "use": "usual",
+                        "family": "Reed",
+                        "given": [
+                            "Morgan",
+                            "Pamela"
+                        ]
+                    }
+                ],
+                "gender": "male",
+                "birthDate": "1970-06-14",
+                "address": [
+                    {
+                        "use": "home",
+                        "text": "3805 Gallegos Fork Floor 3 Apt 5 White Plains NY 10601",
+                        "line": [
+                            "3805 Gallegos Fork",
+                            "Floor 3 Apt 5"
+                        ],
+                        "city": "White Plains",
+                        "state": "NY",
+                        "postalCode": "10601"
+                    }
+                ],
+                "managingOrganization": {
+                    "reference": "Organization/BRONX"
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Organization/CNYSCN",
+            "resource": {
+                "resourceType": "Organization",
+                "id": "CNYSCN",
+                "meta": {
+                    "lastUpdated": "2024-04-18T17:09:52.220-04:00",
+                    "profile": [
+                        "http://shinny.org/StructureDefinition/shin-ny-organization"
+                    ]
+                },
+                "name": "CNYSCN"
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Organization/CNYSCN"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Encounter/cnyscn~bronxxbgu1so3y4",
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "cnyscn~bronxxbgu1so3y4",
+                "meta": {
+                    "lastUpdated": "2024-04-18T15:07:27.000-04:00",
+                    "profile": [
+                        "http://shinny.org/StructureDefinition/shin-ny-encounter"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "VN"
+                                }
+                            ],
+                            "text": "Visit Number"
+                        },
+                        "system": "https://bronx.imat.io/facility/CNYSCN",
+                        "value": "CNYSCN~bronxXBGU1SO3Y4"
+                    }
+                ],
+                "status": "unknown",
+                "class": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "SS",
+                    "display": "short stay"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "405672008",
+                                "display": "Direct questioning"
+                            }
+                        ],
+                        "text": "Direct questioning"
+                    }
+                ],
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "period": {
+                    "start": "2005-02-18T00:00:00-05:00",
+                    "end": "1969-12-31T19:00:00-05:00"
+                },
+                "location": [
+                    {
+                        "location": {
+                            "reference": "Location/CNYSCN"
+                        }
+                    }
+                ],
+                "serviceProvider": {
+                    "reference": "Organization/CNYSCN"
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Encounter/cnyscn~bronxxbgu1so3y4"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Consent/Consent_CNYSCN~bronx-20240417-testcase1-MRN",
+            "resource": {
+                "resourceType": "Consent",
+                "id": "Consent_CNYSCN~bronx-20240417-testcase1-MRN",
+                "meta": {
+                    "lastUpdated": "2024-04-18T13:23:47.000-04:00"
+                },
+                "status": "active",
+                "scope": {
+                    "coding": [
+                        {
+                            "code": "treatment",
+                            "display": "treatment"
+                        }
+                    ],
+                    "text": "treatment"
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "59284-0",
+                                "display": "Patient Consent"
+                            }
+                        ],
+                        "text": "Patient Consent"
+                    }
+                ],
+                "patient": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "organization": [
+                    {
+                        "reference": "Organization/CNYSCN"
+                    }
+                ],
+                "provision": {
+                    "type": "deny"
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Consent/Consent_CNYSCN~bronx-20240417-testcase1-MRN"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_1",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_1",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_1"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "financial-insecurity",
+                                "display": "Financial Insecurity"
+                            }
+                        ],
+                        "text": "financial-insecurity"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "76513-1",
+                            "display": "How hard is it for you to pay for the very basics like food, housing, medical care, and heating? Would you say it is"
+                        }
+                    ],
+                    "text": "How hard is it for you to pay for the very basics like food, housing, medical care, and heating? Would you say it is"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA22683-9",
+                            "display": "Somewhat hard"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_1"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_2",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_2",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_2"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "68516-4",
+                            "display": "On average, how many minutes did you usually spend exercising at this level on one of those days?"
+                        }
+                    ],
+                    "text": "On average, how many minutes did you usually spend exercising at this level on one of those days?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA28858-1",
+                            "display": "40"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_2"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_3",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_3",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_3"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "97027-7",
+                            "display": "Do you speak a language other than English at home?"
+                        }
+                    ],
+                    "text": "Do you speak a language other than English at home?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA33-6",
+                            "display": "Yes"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_3"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_4",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_4",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_4"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "44250-9",
+                            "display": "Little interest or pleasure in doing things?"
+                        }
+                    ],
+                    "text": "Little interest or pleasure in doing things?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA6569-3",
+                            "display": "Several days"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_4"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_5",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_5",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_5"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "social-connection",
+                                "display": "Social Connection"
+                            }
+                        ],
+                        "text": "social-connection"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "93159-2",
+                            "display": "How often do you feel lonely or isolated from those around you?"
+                        }
+                    ],
+                    "text": "How often do you feel lonely or isolated from those around you?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA10082-8",
+                            "display": "Sometimes"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_5"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_6",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_6",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_6"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "96842-0",
+                            "display": "How many times in the past 12 months have you used tobacco products (like cigarettes, cigars, snuff, chew, electronic cigarettes)?"
+                        }
+                    ],
+                    "text": "How many times in the past 12 months have you used tobacco products (like cigarettes, cigars, snuff, chew, electronic cigarettes)?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA26460-8",
+                            "display": "Once or Twice"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_6"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_7",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_7",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_7"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "69861-3",
+                            "display": "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a physician's office or shopping"
+                        }
+                    ],
+                    "text": "Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a physician's office or shopping"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA33-6",
+                            "display": "Yes"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_7"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_8",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_8",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_8"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "69858-9",
+                            "display": "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"
+                        }
+                    ],
+                    "text": "Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA33-6",
+                            "display": "Yes"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_8"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_9",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_9",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_9"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "96782-8",
+                            "display": "Do you want help with school or training? For example, starting or completing job training or getting a high school diploma, GED or equivalent."
+                        }
+                    ],
+                    "text": "Do you want help with school or training? For example, starting or completing job training or getting a high school diploma, GED or equivalent."
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA32-8",
+                            "display": "No"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_9"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_10",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_10",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_10"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "89555-7",
+                            "display": "In the last 30 days, other than the activities you did for work, on average, how many days per week did you engage in moderate exercise (like walking fast, running, jogging, dancing, swimming, biking, or other similar activities)"
+                        }
+                    ],
+                    "text": "In the last 30 days, other than the activities you did for work, on average, how many days per week did you engage in moderate exercise (like walking fast, running, jogging, dancing, swimming, biking, or other similar activities)"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA6114-8",
+                            "display": "3"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_10"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_11",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_11",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_11"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "44255-8",
+                            "display": "Feeling down, depressed, or hopeless?"
+                        }
+                    ],
+                    "text": "Feeling down, depressed, or hopeless?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA6571-9",
+                            "display": "Nearly every day"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_11"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_12",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_12",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_12"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "95530-2",
+                            "display": "How many times in the past year have you used prescription drugs for non-medical reasons?"
+                        }
+                    ],
+                    "text": "How many times in the past year have you used prescription drugs for non-medical reasons?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA18934-2",
+                            "display": "Daily or almost daily"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_12"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_13",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_13",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_13"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "employment-status",
+                                "display": "Employment Status"
+                            }
+                        ],
+                        "text": "employment-status"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "96780-2",
+                            "display": "Do you want help finding or keeping work or a job?"
+                        }
+                    ],
+                    "text": "Do you want help finding or keeping work or a job?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA31983-2",
+                            "display": "I do not need or want help"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_13"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_14",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_14",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_14"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+                            "code": "NI",
+                            "display": "No Information"
+                        }
+                    ],
+                    "text": "Calculated weekly physical activity"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "display": "120"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_14"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_15",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_15",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_15"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "68524-8",
+                            "display": "How many times in the past year have you used illegal drugs?"
+                        }
+                    ],
+                    "text": "How many times in the past year have you used illegal drugs?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA18891-4",
+                            "display": "Weekly"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_15"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_16",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_16",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_16"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "68517-2",
+                            "display": "How many times in the past 12 months have you had 5 or more drinks in a day (males) or 4 or more drinks in a day (females)?"
+                        }
+                    ],
+                    "text": "How many times in the past 12 months have you had 5 or more drinks in a day (males) or 4 or more drinks in a day (females)?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA18891-4",
+                            "display": "Weekly"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_16"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_17",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_17",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_17"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "stress",
+                                "display": "Stress"
+                            }
+                        ],
+                        "text": "stress"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "93038-8",
+                            "display": "Stress means a situation in which a person feels tense, restless, nervous, or anxious, or is unable to sleep at night because his or her mind is troubled all the time. Do you feel this kind of stress these days?"
+                        }
+                    ],
+                    "text": "Stress means a situation in which a person feels tense, restless, nervous, or anxious, or is unable to sleep at night because his or her mind is troubled all the time. Do you feel this kind of stress these days?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA13863-8",
+                            "display": "A little bit"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_17"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_18",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_18",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_18"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "social-connection",
+                                "display": "Social Connection"
+                            }
+                        ],
+                        "text": "social-connection"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "96781-0",
+                            "display": "If for any reason you need help with day-to-day activities such as bathing, preparing meals, shopping, managing finances, etc., do you get the help you need?"
+                        }
+                    ],
+                    "text": "If for any reason you need help with day-to-day activities such as bathing, preparing meals, shopping, managing finances, etc., do you get the help you need?"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA31979-0",
+                            "display": "I need a lot more help"
+                        }
+                    ]
+                }
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_18"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_19",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_19",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_19"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v3-NullFlavor",
+                            "code": "NI",
+                            "display": "No Information"
+                        }
+                    ],
+                    "text": "Calculated mental health score"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "1969-12-31T19:00:00",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "display": "4"
+                        }
+                    ]
+                },
+                "derivedFrom": [
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_4"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_11"
+                    }
+                ]
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_19"
+            }
+        },
+        {
+            "fullUrl": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_Grouper1",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_Grouper1",
+                "meta": {
+                    "lastUpdated": "2024-04-18T14:56:48.000-04:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "value": "dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_Grouper1"
+                    }
+                ],
+                "status": "registered",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "survey"
+                            }
+                        ],
+                        "text": "survey"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ],
+                        "text": "Social History"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "financial-insecurity",
+                                "display": "Financial Insecurity"
+                            }
+                        ],
+                        "text": "financial-insecurity"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ],
+                        "text": "sdoh-category-unspecified"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "social-connection",
+                                "display": "Social Connection"
+                            }
+                        ],
+                        "text": "social-connection"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "employment-status",
+                                "display": "Employment Status"
+                            }
+                        ],
+                        "text": "employment-status"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "stress",
+                                "display": "Stress"
+                            }
+                        ],
+                        "text": "stress"
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "social-connection",
+                                "display": "Social Connection"
+                            }
+                        ],
+                        "text": "social-connection"
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "97023-6",
+                            "display": "Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions"
+                        }
+                    ],
+                    "text": "Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions"
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN~bronx-20240417-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/cnyscn~bronxxbgu1so3y4"
+                },
+                "effectiveDateTime": "2005-02-18T00:00:00",
+                "hasMember": [
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_1"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_2"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_3"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_4"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_5"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_6"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_7"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_8"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_9"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_10"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_11"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_12"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_13"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_14"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_15"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_16"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_17"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_18"
+                    },
+                    {
+                        "reference": "Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_19"
+                    }
+                ]
+            },
+            "request": {
+                "method": "GET",
+                "url": "http://10.80.80.125:9006/r4/Observation/dd9f3a5bc72ea5a576a1a9117cd2a34d_obs3_Grouper1"
+            }
+        }
+    ]
+}
