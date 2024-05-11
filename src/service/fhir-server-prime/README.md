@@ -1,4 +1,4 @@
-# HAPI FHIR Plain Server
+# HAPI FHIR Server
 
 ## Prerequisites (Sandbox)
 
@@ -56,7 +56,7 @@ Once the properties are configured, run the following command to compile the
 project and start a local testing server that runs it:
 
 ```
-mvn jetty:run -Djetty.port=8080 -Djetty.host=localhost
+mvn spring-boot:run -Dserver.port=8080 -Dserver.host=localhost
 ```
 
 #### Command Breakdown
