@@ -177,16 +177,21 @@ public class OrchestrationSession {
     public JsonObject toJsonObject() {
         // TODO: Date orchFinishedAt
         orchFinishedAt = new Date();
-        String entryJson;
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("orchSessionId", orchSessionId.toString());
         jsonObject.addProperty("deviceId", deviceId);
         jsonObject.addProperty("version", version);
         jsonObject.addProperty("orchStartedAt", orchStartedAt.toString());
+        // Create a JSON array to hold the entry objects
+        JsonArray entriesArray = new JsonArray();
         for (OrchestrationSessionEntryBundle entry : entries) {
-            entryJson = entry.toJson().replaceAll("\\\\", "");
-            jsonObject.addProperty("entries", entryJson);
+            JsonObject entryJson = entry.toJsonObject();
+            entriesArray.add(entryJson);
         }
+
+        // Add the array of entry objects to the main JSON object
+        jsonObject.add("entries", entriesArray);
+
         jsonObject.addProperty("orchFinishedAt", orchFinishedAt != null ? orchFinishedAt.toString() : null);
         return jsonObject;
     }
@@ -216,7 +221,7 @@ public class OrchestrationSession {
         return orchFinishedAt;
     }
 
-     //TODO: Add enum parameter for validationEngine : HAPI (default), INFERNO, HL7 
+    // TODO: Add enum parameter for validationEngine : HAPI (default), INFERNO, HL7
     public void validateBundle(String payload, String profileUrl, ValidationEngine ve) {
         // Perform bundle validation logic
         // Create OrchestrationEntry instances for each validation outcome

@@ -16,23 +16,25 @@ public class HapiFhirService {
     public String getMetadata() {
         String metadata = null;
         try {
-            metadata = new String(Files.readAllBytes(Paths.get(getClass().getResource("fhir-service-metadata.xml").toURI())), StandardCharsets.UTF_8);
-        } catch(Exception e) {
+            metadata = new String(
+                    Files.readAllBytes(Paths.get(getClass().getResource("fhir-service-metadata.xml").toURI())),
+                    StandardCharsets.UTF_8);
+        } catch (Exception e) {
             System.out.println("Error");
             e.printStackTrace();
         }
         return metadata;
     }
 
-   public String getDiagnostics(String sessionId) {
-       return new FHIRBundleValidator().diagnosticsOperation(sessionId);
-   }
+    public String getDiagnostics(String sessionId) {
+        return FHIRBundleValidator.getInstance().diagnosticsOperation(sessionId);
+    }
 
     public String validateFhirResourceData(String jsonData, String qeIdentifier) {
-        return new FHIRBundleValidator().validateFhirResource(jsonData, qeIdentifier);
+        return FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier);
     }
 
     public String adminValidate(String jsonData, String qeIdentifier) {
-        return new FHIRBundleValidator().adminValidate(jsonData, qeIdentifier);
+        return FHIRBundleValidator.getInstance().adminValidate(jsonData, qeIdentifier);
     }
 }

@@ -38,8 +38,10 @@ import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
 
 import org.hl7.fhir.r4.model.Organization;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -69,6 +71,7 @@ import java.util.UUID;
 
 public class FHIRBundleValidator implements IResourceProvider {
 
+    private static FHIRBundleValidator instance;
     private static String shinnyDataLakeApiImpGuideProfileUri;
 
     static FhirContext context = FhirContext.forR4();
@@ -82,7 +85,7 @@ public class FHIRBundleValidator implements IResourceProvider {
     /**
      * Constructor
      */
-    @Autowired
+
     public FHIRBundleValidator() {
         PropertiesConfiguration config = new PropertiesConfiguration();
         try {
@@ -101,6 +104,14 @@ public class FHIRBundleValidator implements IResourceProvider {
          * e.printStackTrace();
          * }
          */
+    }
+
+    public static FHIRBundleValidator getInstance() {
+        // Lazy initialization: create instance only when needed
+        if (instance == null) {
+            instance = new FHIRBundleValidator();
+        }
+        return instance;
     }
 
     @Override
@@ -1048,55 +1059,21 @@ public class FHIRBundleValidator implements IResourceProvider {
     // @Validate
     // return json string
     public String validateFhirResource(/* @ResourceParam */ String jsonBody, String qeIdentifier) {
-
-        // // TODO: new session
-        // // session.validateBundle(JSONBody, mode,
-        // shinnyDataLakeApiImpGuideProfileUri) -
-        // // return most recent -
-        // // return session.lastValidationOutcome
-        // // Parse the JSON text into a FHIR resource
-        // System.out.println("Api Call");
-        // String qeIdentifier = "";
-        // String sessionId = UUID.randomUUID().toString();
-
-        // System.out.println("01. Setting up OrchestrationSession");
-        // OrchestrationSession session = new OrchestrationSession(qeIdentifier,
-        // context, sessionId, FHIRBundleValidator.deviceId,
-        // FHIRBundleValidator.version);
-        // System.out.println("02. OrchestrationSession created");
-        // System.out.println("03. Calling validate()");
-        // String profileLink =
-        // "https://djq7jdt8kb490.cloudfront.net/1115/StructureDefinition-SHINNYBundleProfile.json";
-        // session.validateBundle(jsonBody, profileLink);
-        // //session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri);
-        // System.out.println("04. Done validate()");
-        // this.sessions.put(sessionId, session);
-        // System.out.println("05. stored to session");
-
-        // System.out.println("06. Getting OperationOutcome");
-        // OperationOutcome operationOutcome = (OperationOutcome)
-        // session.entries.get(0).getOperationOutcome();
-        // if(operationOutcome != null) {
-        // System.out.println("06a. OperationOutcome not null");
-        // }
-
-        // MethodOutcome outcome = new MethodOutcome();
-        // outcome.setOperationOutcome(operationOutcome);
-        // System.out.println("07. Got OperationOutcome, and done!");
-        // return outcome;
-
-        ////////////////////////////////////////////////////
-
         String sessionId = UUID.randomUUID().toString();
-
         OrchestrationSession session = new OrchestrationSession(qeIdentifier,
                 context, sessionId, FHIRBundleValidator.deviceId,
                 FHIRBundleValidator.version);
         session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
         this.sessions.put(sessionId, session);
-        System.out.println("Session: " + session.toJson());
-
-        return session.toJson();
+        System.out.println("Session: " + session);
+        String formattedSession = null;
+        try {
+            formattedSession = prettyPrintJsonUsingDefaultPrettyPrinter(session.toJson());
+            System.out.println(formattedSession);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return formattedSession;
     }
 
     // @Operation(name = "$admin_validate", idempotent = true)
@@ -1171,12 +1148,14 @@ public class FHIRBundleValidator implements IResourceProvider {
         OrchestrationSession session = findSessionByKey(sessionId);
         if (session != null) {
             // // Found the session
-            // System.out.println(session.toJson());
-            // System.out.println(session.entries.get(0).getOperationOutcome().toString());
-            // operationOutcome = new OperationOutcome();
-            // operationOutcome.addIssue().setDiagnostics(session.toJson());
-            // retVal.setOperationOutcome(operationOutcome);
-            return session.toJson();
+            String formattedSession = null;
+            try {
+                formattedSession = prettyPrintJsonUsingDefaultPrettyPrinter(session.toJson());
+                System.out.println(formattedSession);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            return formattedSession;
         } else {
             // Session not found
             return "No matching session";
@@ -1192,4 +1171,13 @@ public class FHIRBundleValidator implements IResourceProvider {
         // Key not found
         return null;
     }
+
+    public static String prettyPrintJsonUsingDefaultPrettyPrinter(String uglyJsonString)
+            throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Object jsonObject = objectMapper.readValue(uglyJsonString, Object.class);
+        String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+        return prettyJson;
+    }
+
 }
