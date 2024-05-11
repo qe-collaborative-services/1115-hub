@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.techbd.hrsn.assurance.FHIRBundleValidator;
 
 @Service
-public class HapiFhirService {
+public class FhirService {
 
     // @Autowired
     // private FHIRBundleValidator validator;
