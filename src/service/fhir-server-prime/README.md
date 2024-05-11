@@ -1,4 +1,4 @@
-# HAPI FHIR Plain Server
+# HAPI FHIR Server
 
 ## Prerequisites (Sandbox)
 
@@ -56,12 +56,12 @@ Once the properties are configured, run the following command to compile the
 project and start a local testing server that runs it:
 
 ```
-mvn jetty:run -Djetty.port=8080 -Djetty.host=localhost
+mvn spring-boot:run -Dserver.port=8080 -Dserver.host=localhost
 ```
 
 #### Command Breakdown
 
-To start the Jetty server using Maven, you use the following command:
+To start the Spring Boot application using Maven, you use the following command:
 
 Let's break down each part of the command:
 
@@ -69,20 +69,21 @@ Let's break down each part of the command:
    automation tool primarily used for Java projects. It's used to execute Maven
    commands.
 
-2. **`jetty:run`**: This part specifies the Maven goal to execute. In this case,
-   it's the `run` goal of the Jetty Maven Plugin. The Jetty plugin integrates
-   Jetty, a lightweight Java-based web server and servlet container, with Maven,
-   allowing you to run your web application during the Maven build process.
+2. **`spring-boot:run`**: This part specifies the Maven goal to execute. In this
+   case, it's the `run` goal of the Spring Boot Maven Plugin. The Spring Boot
+   plugin integrates Spring Boot, a framework for building Java applications,
+   with Maven, allowing you to run your Spring Boot application during the Maven
+   build process.
 
-3. **`-Djetty.port=8080`**: This is a system property passed to Maven using the
-   `-D` flag. It specifies the port on which the Jetty server will listen for
-   incoming connections. In this case, it sets the port to `8080`, which is a
-   commonly used port for web servers.
+3. **`-Dserver.port=8080`**: This is a system property passed to Maven using the
+   `-D` flag. It specifies the port on which the embedded server (typically
+   Tomcat or Jetty) will listen for incoming connections. In this case, it sets
+   the port to `8080`, which is a commonly used port for web servers.
 
-4. **`-Djetty.host=localhost`**: Similar to the previous argument, this is
+4. **`-Dserver.host=localhost`**: Similar to the previous argument, this is
    another system property passed to Maven using the `-D` flag. It specifies the
-   host or IP address on which the Jetty server will bind to. In this case, it
-   sets the host to `localhost`, which means the server will only accept
+   host or IP address on which the embedded server will bind to. In this case,
+   it sets the host to `localhost`, which means the server will only accept
    connections originating from the same machine.
 
 # Test the endpoints
@@ -118,34 +119,3 @@ their behavior using http yac.
 - Submitting a Bunlde resource from your server using the following URL:
 
   http://localhost:8080/Bundle/?x=y
-
-# Project Structure
-
-This project follows the default Maven directory structure, specifically keeping
-the code under `src/main/java`. Here's why we stick to this convention:
-
-## Benefits of Default Structure
-
-**1. Standardized Layout:**
-
-- The default structure is widely adopted in Java development, making it easier
-  for others familiar with Maven to understand and navigate our project.
-
-**2. IDE Integration:**
-
-- Tools like IntelliJ IDEA seamlessly integrate with the standard Maven layout,
-  enhancing features such as auto-completion and project navigation.
-
-**3. Maintainability:**
-
-- Adhering to the standard layout facilitates onboarding of new developers, as
-  they can easily locate project components.
-
-**4. Maven Plugins:**
-
-- Many Maven plugins rely on the default directory structure. Altering it could
-  lead to build errors or require additional configuration.
-
-By maintaining the existing structure, we ensure compatibility with common
-development tools and plugins, while promoting consistency and ease of
-collaboration within our project.
