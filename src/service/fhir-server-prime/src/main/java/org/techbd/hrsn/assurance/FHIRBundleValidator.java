@@ -97,13 +97,6 @@ public class FHIRBundleValidator implements IResourceProvider {
         shinnyDataLakeApiImpGuideProfileUri = config.getString("shinnyDataLakeApiImpGuideProfileUri");
         FHIRBundleValidator.deviceId = config.getString("deviceId");
         FHIRBundleValidator.version = getVersionFromProperties();
-        /*
-         * try {
-         * // conn = DatabaseConnector.connect();
-         * } catch (SQLException e) {
-         * e.printStackTrace();
-         * }
-         */
     }
 
     public static FHIRBundleValidator getInstance() {
@@ -206,15 +199,6 @@ public class FHIRBundleValidator implements IResourceProvider {
 
         outcome.addIssue().setSeverity(IssueSeverity.ERROR).setDiagnostics(sessionJsonString);
         retVal.setOperationOutcome(outcome);
-
-        /*
-         *
-         *
-         * // Convert sessionJson to a string and set it in the OperationOutcome
-         * successOutcome.addChild(sessionJson.toString());
-         * System.out.println("successOutcome b) : " + successOutcome);
-         * return retVal.setOperationOutcome(successOutcome);
-         */
 
         return retVal;
     }
@@ -640,18 +624,7 @@ public class FHIRBundleValidator implements IResourceProvider {
                         sexAtBirthCodeSystem = sexAtBirthCodeType.getSystem();
                         sexAtBirthCodeDescription = sexAtBirthCodeType.getDisplay();
 
-                        // TODO: to verify sexAtBirthCodeSystem and sexAtBirthCodeDescription
-                        /*
-                         * if (!sexAtBirthCode.isEmpty()) {
-                         * CodeSystem sexAtBirthCodeSystemCode =
-                         * context.fetchCodeSystem(sexAtBirthCode); // Assuming context is the FHIR
-                         * context
-                         * if (sexAtBirthCodeSystemCode != null) {
-                         * sexAtBirthCodeDescription = sexAtBirthCodeSystemCode.getDescription();
-                         * sexAtBirthCodeSystem = sexAtBirthCodeSystemCode.getUrl();
-                         * }
-                         * }
-                         */
+                        // TODO: to verify sexAtBirthCodeSystem and sexAtBirthCodeDescriptio
                     }
 
                     patBirthDate = patient.getBirthDate().toString();
