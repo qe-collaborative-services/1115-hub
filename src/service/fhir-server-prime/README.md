@@ -56,7 +56,7 @@ Once the properties are configured, run the following command to compile the
 project and start a local testing server that runs it:
 
 ```
-mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8080 --server.host=localhost"
+mvn spring-boot:run
 ```
 
 ## Command Breakdown
@@ -76,15 +76,6 @@ Let's break down each part of the command:
      Spring Boot, a framework for building Java applications, with Maven,
      allowing you to run your Spring Boot application during the Maven build
      process.
-
-3. **`-Dspring-boot.run.arguments="--server.port=8080 --server.host=localhost"`**:
-   - This is a system property passed to Maven using the `-D` flag. It specifies
-     the arguments to be passed to the Spring Boot application during execution.
-     In this case, `--server.port=8080` sets the port on which the embedded
-     server will listen for incoming connections to `8080`, and
-     `--server.host=localhost` sets the host or IP address on which the embedded
-     server will bind to `localhost`, meaning it will only accept connections
-     originating from the same machine.
 
 # Test the endpoints
 
