@@ -10,9 +10,6 @@ import org.techbd.hrsn.assurance.FHIRBundleValidator;
 @Service
 public class FhirService {
 
-    // @Autowired
-    // private FHIRBundleValidator validator;
-
     public String getMetadata() {
         String version = FHIRBundleValidator.getInstance().getVersionFromProperties();
         return "<CapabilityStatement xmlns=\"http://hl7.org/fhir\">\n" + //
