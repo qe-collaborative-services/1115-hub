@@ -69,7 +69,7 @@ import java.util.UUID;
 
 //@RestController
 
-public class FHIRBundleValidator implements IResourceProvider {
+public class FHIRBundleValidator {
 
     private static FHIRBundleValidator instance;
     private static String shinnyDataLakeApiImpGuideProfileUri;
@@ -105,11 +105,6 @@ public class FHIRBundleValidator implements IResourceProvider {
             instance = new FHIRBundleValidator();
         }
         return instance;
-    }
-
-    @Override
-    public Class<? extends IBaseResource> getResourceType() {
-        return Bundle.class;
     }
 
     @Search
