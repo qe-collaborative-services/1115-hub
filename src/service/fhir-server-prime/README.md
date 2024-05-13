@@ -56,35 +56,35 @@ Once the properties are configured, run the following command to compile the
 project and start a local testing server that runs it:
 
 ```
-mvn spring-boot:run -Dserver.port=8080 -Dserver.host=localhost
+mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8080 --server.host=localhost"
 ```
 
-#### Command Breakdown
+## Command Breakdown
 
-To start the Spring Boot application using Maven, you use the following command:
+To start the Spring Boot application using Maven with specified server
+properties, you use the following command:
 
 Let's break down each part of the command:
 
-1. **`mvn`**: This is the command-line interface for Apache Maven, a build
-   automation tool primarily used for Java projects. It's used to execute Maven
-   commands.
+1. **`mvn`**:
+   - This is the command-line interface for Apache Maven, a build automation
+     tool primarily used for Java projects. It's used to execute Maven commands.
 
-2. **`spring-boot:run`**: This part specifies the Maven goal to execute. In this
-   case, it's the `run` goal of the Spring Boot Maven Plugin. The Spring Boot
-   plugin integrates Spring Boot, a framework for building Java applications,
-   with Maven, allowing you to run your Spring Boot application during the Maven
-   build process.
+2. **`spring-boot:run`**:
+   - This part specifies the Maven goal to execute. In this case, it's the `run`
+     goal of the Spring Boot Maven Plugin. The Spring Boot plugin integrates
+     Spring Boot, a framework for building Java applications, with Maven,
+     allowing you to run your Spring Boot application during the Maven build
+     process.
 
-3. **`-Dserver.port=8080`**: This is a system property passed to Maven using the
-   `-D` flag. It specifies the port on which the embedded server (typically
-   Tomcat or Jetty) will listen for incoming connections. In this case, it sets
-   the port to `8080`, which is a commonly used port for web servers.
-
-4. **`-Dserver.host=localhost`**: Similar to the previous argument, this is
-   another system property passed to Maven using the `-D` flag. It specifies the
-   host or IP address on which the embedded server will bind to. In this case,
-   it sets the host to `localhost`, which means the server will only accept
-   connections originating from the same machine.
+3. **`-Dspring-boot.run.arguments="--server.port=8080 --server.host=localhost"`**:
+   - This is a system property passed to Maven using the `-D` flag. It specifies
+     the arguments to be passed to the Spring Boot application during execution.
+     In this case, `--server.port=8080` sets the port on which the embedded
+     server will listen for incoming connections to `8080`, and
+     `--server.host=localhost` sets the host or IP address on which the embedded
+     server will bind to `localhost`, meaning it will only accept connections
+     originating from the same machine.
 
 # Test the endpoints
 
