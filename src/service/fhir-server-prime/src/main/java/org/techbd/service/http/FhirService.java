@@ -14,16 +14,6 @@ public class FhirService {
     // private FHIRBundleValidator validator;
 
     public String getMetadata() {
-        // String metadata = null;
-        // try {
-        // // metadata = new String(
-        // //
-        // Files.readAllBytes(Paths.get(getClass().getResource("fhir-service-metadata.xml").toURI())),
-        // // StandardCharsets.UTF_8);
-        // } catch (Exception e) {
-        // System.out.println("Error");
-        // e.printStackTrace();
-        // }
         String version = FHIRBundleValidator.getInstance().getVersionFromProperties();
         return "<CapabilityStatement xmlns=\"http://hl7.org/fhir\">\n" + //
                 "    <status value=\"active\"></status>\n" + //
