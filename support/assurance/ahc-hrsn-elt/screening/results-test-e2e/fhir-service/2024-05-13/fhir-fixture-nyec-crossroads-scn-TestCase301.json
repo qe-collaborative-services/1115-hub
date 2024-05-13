@@ -1,0 +1,1231 @@
+{
+    "resourceType": "Bundle",
+    "id": "daad7f90-fea0-11ee-a532-1bb5b6aa3b46-healtheconnections-20240419-testcase1-MRN-healtheconnectionsUQRACLDOFW",
+    "type": "transaction",
+    "meta": {
+        "lastUpdated": "2023-10-28 10:07:42.9149210"
+    },
+    "timestamp": "2024-04-19T23:02:11.209Z",
+    "entry": [
+        {
+            "fullUrl": "CNYSCN-healtheconnections-20240419-testcase1-MRN",
+            "resource": {
+                "resourceType": "Patient",
+                "id": "CNYSCN-healtheconnections-20240419-testcase1-MRN",
+                "meta": {
+                    "lastUpdated": "2023-10-28 10:07:42.9149210",
+                    "profile": [
+                        "http://shinny.org/StructureDefinition/shinny-patient"
+                    ]
+                },
+                "language": "glg",
+                "extension": [
+                    {
+                        "extension": [
+                            {
+                                "url": "ombCategory",
+                                "valueCoding": {
+                                    "system": "urn:oid:2.16.840.1.113883.6.238",
+                                    "code": "1123-9",
+                                    "display": "Chippewa"
+                                }
+                            }
+                        ],
+                        "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "ombCategory",
+                                "valueCoding": {
+                                    "system": "urn:oid:2.16.840.1.113883.6.238",
+                                    "code": "2161-8",
+                                    "display": "Salvadoran"
+                                }
+                            }
+                        ],
+                        "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex",
+                        "valueCode": "OTH"
+                    },
+                    {
+                        "url": "http://shinny.org/StructureDefinition/shinny-sexual-orientation",
+                        "valueCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "20430005",
+                                    "display": "Heterosexual"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "MR"
+                                }
+                            ],
+                            "text": "Medical Record Number"
+                        },
+                        "system": "/facility/CNYSCN",
+                        "value": "healtheconnections-20240419-testcase1-MRN",
+                        "assigner": {
+                            "reference": "Organization/CNYSCN"
+                        }
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "MA"
+                                }
+                            ]
+                        },
+                        "system": "http://www.medicaid.gov/",
+                        "value": "RV82289H",
+                        "assigner": {
+                            "reference": "Organization/2.16.840.1.113883.3.249"
+                        }
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PN"
+                                }
+                            ]
+                        },
+                        "system": "http://www.acme.com/identifiers/patient",
+                        "value": "13209924"
+                    }
+                ],
+                "name": [
+                    {
+                        "text": "Andrew Veronica Stevens",
+                        "family": "Stevens",
+                        "given": [
+                            "Andrew",
+                            "Veronica"
+                        ]
+                    }
+                ],
+                "gender": "UN",
+                "birthDate": "1987-05-07",
+                "address": [
+                    {
+                        "text": "7089 Brandt Summit Apt. 082 Apt 356",
+                        "line": [
+                            "7089 Brandt Summit Apt. 082",
+                            "Apt 356"
+                        ],
+                        "city": "Long Beach",
+                        "state": "NY",
+                        "postalCode": "11561"
+                    }
+                ],
+                "communication": [
+                    {
+                        "language": {
+                            "coding": [
+                                {
+                                    "code": "glg"
+                                }
+                            ]
+                        },
+                        "preferred": true
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "crossroads-ny-social-care-network-scn-cnyscn",
+            "resource": {
+                "resourceType": "Organization",
+                "id": "CNYSCN",
+                "meta": {
+                    "lastUpdated": "2023-10-28 10:07:42.9149210",
+                    "profile": [
+                        "http://shinny.org/StructureDefinition/shin-ny-organization"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "CNYSCN",
+                        "value": "crossroads-ny-social-care-network-scn-cnyscn"
+                    }
+                ],
+                "active": true,
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/organization-type",
+                                "code": "SCN",
+                                "display": "SCN"
+                            }
+                        ]
+                    }
+                ],
+                "name": "Crossroads NY Social Care Network",
+                "address": [
+                    {
+                        "text": "25 W 45th st Suite 16",
+                        "city": "New York",
+                        "state": "New York",
+                        "postalCode": "10036"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "consentForhealtheconnections-20240419-testcase1-MRN",
+            "resource": {
+                "resourceType": "Consent",
+                "id": "consentForhealtheconnections-20240419-testcase1-MRN",
+                "meta": {
+                    "lastUpdated": "2023-10-28 10:07:42.9149210",
+                    "profile": [
+                        "http://shinny.org/StructureDefinition/shin-ny-organization"
+                    ]
+                },
+                "status": "active",
+                "scope": {
+                    "coding": [
+                        {
+                            "code": "treatment"
+                        }
+                    ],
+                    "text": "treatment"
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "display": "Patient Consent",
+                                "code": "59284-0",
+                                "system": "http://loinc.org"
+                            }
+                        ]
+                    }
+                ],
+                "patient": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "dateTime": "2023-10-28 10:07:42.9149210",
+                "organization": [
+                    {
+                        "reference": "Organization/CNYSCN"
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-1",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-1",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "96778-6",
+                            "display": "Think about the place you live. Do you have problems with any of the following?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA31997-2",
+                            "display": "Lead paint or pipes"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-2",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-2",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "food-insecurity",
+                                "display": "Food Insecurity"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "88122-7",
+                            "display": "Within the past 12 months, you worried that your food would run out before you got money to buy more."
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA28397-0",
+                            "display": "Often true"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-3",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-3",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "71802-3",
+                            "display": "What is your living situation today?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA31995-6",
+                            "display": "I do not have a steady place to live (I am temporarily staying with others, in a hotel, in a shelter, living outside on the street, on a beach, in a car, abandoned building, bus or train station, or in a park)"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-4",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-4",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "food-insecurity",
+                                "display": "Food Insecurity"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "88123-5",
+                            "display": "Within the past 12 months, the food you bought just didn't last and you didn't have money to get more."
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA28397-0",
+                            "display": "Often true"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-5",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-5",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "transportation-insecurity",
+                                "display": "Transportation Insecurity"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "93030-5",
+                            "display": "In the past 12 months, has lack of reliable transportation kept you from medical appointments, meetings, work or from getting things needed for daily living?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA32-8",
+                            "display": "No"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-6",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-6",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "96779-4",
+                            "display": "In the past 12 months has the electric, gas, oil, or water company threatened to shut off services in your home?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA32002-0",
+                            "display": "Already shut off"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-7",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-7",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "95618-5",
+                            "display": "How often does anyone, including family and friends, physically hurt you?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA6270-8",
+                            "display": "Never"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-8",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-8",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "95617-7",
+                            "display": "How often does anyone, including family and friends, insult or talk down to you?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA6482-9",
+                            "display": "Frequently"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-9",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-9",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "95616-9",
+                            "display": "How often does anyone, including family and friends, threaten you with harm?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA10082-8",
+                            "display": "Sometimes"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-10",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-10",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "95615-1",
+                            "display": "How often does anyone, including family and friends, scream or curse at you?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "LA6270-8",
+                            "display": "Never"
+                        }
+                    ]
+                },
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-11",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-11",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "code": "sdoh-category-unspecified",
+                                "display": "SDOH Category Unspecified"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "95614-4",
+                            "display": "Total Safety Score"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://unitsofmeasure.org",
+                            "code": "{score}",
+                            "display": "10"
+                        }
+                    ]
+                },
+                "derivedFrom": [
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-10"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-9"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-7"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-8"
+                    }
+                ],
+                "interpretation": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "code": "POS",
+                                "display": "Positive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "fullUrl": "healtheconnectionsUQRACLDOFW",
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "healtheconnectionsUQRACLDOFW",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://shinny.org/StructureDefinition/shin-ny-encounter"
+                    ]
+                },
+                "status": "entered-in-error",
+                "class": {
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                    "code": "SS"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "23918007",
+                                "display": "History taking, self-administered, by computer terminal"
+                            }
+                        ],
+                        "text": "History taking, self-administered, by computer terminal"
+                    }
+                ],
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                }
+            }
+        },
+        {
+            "fullUrl": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-11-grouper",
+            "resource": {
+                "resourceType": "Observation",
+                "id": "observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-11-grouper",
+                "meta": {
+                    "lastUpdated": "1999-06-20 11:23:25.9430260",
+                    "profile": [
+                        "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+                    ]
+                },
+                "status": "preliminary",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "social-history",
+                                "display": "Social History"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    },
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "display": "Food Insecurity",
+                                "code": "food-insecurity"
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "display": "Transportation Insecurity",
+                                "code": "transportation-insecurity"
+                            },
+                            {
+                                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                                "display": "SDOH Category Unspecified",
+                                "code": "sdoh-category-unspecified"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "96777-8",
+                            "display": "Accountable health communities (AHC) health-related social needs screening (HRSN) tool"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/CNYSCN-healtheconnections-20240419-testcase1-MRN"
+                },
+                "encounter": {
+                    "reference": "Encounter/healtheconnectionsUQRACLDOFW"
+                },
+                "effectiveDateTime": "1999-06-20 11:23:25.9430260",
+                "issued": "1999-06-20 11:23:25.9430260",
+                "hasMember": [
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-1"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-2"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-3"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-4"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-5"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-6"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-7"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-8"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-9"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-10"
+                    },
+                    {
+                        "reference": "Observation/observationResponseQuestion-healtheconnectionsUQRACLDOFW-fce5e109f8f645925d5419c83e14ccad-11"
+                    }
+                ]
+            }
+        }
+    ]
+}
