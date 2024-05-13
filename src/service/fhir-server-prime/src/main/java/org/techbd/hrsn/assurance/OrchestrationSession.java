@@ -116,9 +116,9 @@ class OrchestrationSessionEntryBundle {
     private JsonObject operationOutcomeToJson() {
         String operaionOutcomeResult = parser.encodeResourceToString(this.operationOutcome);
         JsonObject json = new JsonObject();
-        json.addProperty("outcome", operaionOutcomeResult);
+        Gson gson = new Gson();
+        json.add("outcome", gson.fromJson(operaionOutcomeResult, JsonObject.class));
         return json;
-
     }
 
     public OperationOutcome getOperationOutcome() {
