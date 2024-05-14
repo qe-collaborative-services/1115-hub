@@ -18,14 +18,11 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class FhirService {
     private WebClient webClient;
-    // @Autowired
-    // private FHIRBundleValidator validator;
 
     @Autowired
     public FhirService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.baseUrl(FHIRBundleValidator.getInstance().getProverty("shinnyDataLakeApiUri"))
                 .build();
-        // this.webClient = webClientBuilder.baseUrl("https://gorest.co.in").build();
     }
 
     public String getMetadata() {
@@ -144,25 +141,19 @@ public class FhirService {
                 .bodyToMono(String.class)
                 .subscribe(response -> {
                     // TODO: Process the response here, and save to db.
-                    System.out.println("Ret val: " + response.toString());
                 }, (Throwable error) -> { // Explicitly specify the type Throwable
                     if (error instanceof WebClientResponseException) {
                         // TODO: Process the response here, and save to db.
                         WebClientResponseException responseException = (WebClientResponseException) error;
                         if (responseException.getStatusCode() == HttpStatus.FORBIDDEN) {
-                            // Handle 403 Forbidden error
-                            System.out.println("Caught 403 Forbidden error");
+                            // Handle 403 Forbidden err
                         } else if (responseException.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                             // Handle 403 Forbidden error
-                            System.out.println("Caught 403 Unauthorized error");
                         } else {
                             // Handle other types of WebClientResponseException
-                            System.out
-                                    .println("Caught WebClientResponseException: " + responseException.getStatusCode());
                         }
                     } else {
                         // Handle other types of exceptions
-                        System.out.println("Caught exception: " + error.getMessage());
                     }
                 });
         return "API invoked";
