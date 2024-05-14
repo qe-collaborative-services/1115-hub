@@ -35,6 +35,22 @@ public class FhirController {
 
     /**
      * @param qeValue      The JSON input
+     * @param qeIdentifier This value is from the
+     *                     TECH_BD_FHIR_SERVICE_SHINNY_DATALAKE_API_URL
+     *                     header
+     *                     This header value must be like
+     *                     https://40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev?processingAgent=
+     * @return The JSON response
+     */
+    @PostMapping("/Bundle/")
+    public String validateBundleAndSave(@RequestBody String qeValue,
+            @RequestParam("qe") String qeIdentifier,
+            @RequestHeader(name = "TECH_BD_FHIR_SERVICE_SHINNY_DATALAKE_API_URL", required = false) String apiUrl) {
+        return fhirService.validateBundleAndSave(qeValue, qeIdentifier, apiUrl);
+    }
+
+    /**
+     * @param qeValue      The JSON input
      * @param qeIdentifier This value is from the TECH_BD_FHIR_SERVICE_QE_IDENTIFIER
      *                     header
      * @return The HTML response
