@@ -1099,17 +1099,21 @@ public class FHIRBundleValidator {
     }
 
     public String getVersionFromProperties() {
-        String version = ""; // Default value if reading from properties file fails
+        return getProverty("application.version");
+    }
+
+    public String getProverty(String key) {
+        String propertyVal = ""; // Default value if reading from properties file fails
 
         try (InputStream input = FHIRBundleValidator.class.getClassLoader()
                 .getResourceAsStream("application.properties")) {
             Properties prop = new Properties();
             prop.load(input);
-            version = prop.getProperty("application.version");
+            propertyVal = prop.getProperty(key);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return version;
+        return propertyVal;
     }
 
     public String diagnosticsOperation(String sessionId) {
