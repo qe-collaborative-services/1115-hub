@@ -13,16 +13,16 @@ HTTP/1.1 200  - OK
 connection: keep-alive
 content-length: 2156
 content-type: text/plain;charset=UTF-8
-date: Wed, 15 May 2024 09:15:30 GMT
+date: Wed, 15 May 2024 14:12:17 GMT
 
 <CapabilityStatement xmlns="http://hl7.org/fhir">
     <status value="active"></status>
-    <date value=2024-05-15 09:15 UTC></date>
+    <date value=2024-05-15 14:12 UTC></date>
     <publisher value="TechBD"></publisher>
     <kind value="instance"></kind>
     <software>
         <name value="1115-Hub FHIR Server"></name>
-        <version value="0.22.0"></version>
+        <version value="0.23.0"></version>
     </software>
     <implementation>
         <description value="1115-Hub FHIR"></description>
@@ -70,7 +70,7 @@ date: Wed, 15 May 2024 09:15:30 GMT
         </operation>
     </rest>
 </CapabilityStatement>
-✓ status code 200
+✓ status code 201
 ✓ Check content-type
 ✓ response body exists
 
@@ -83,20 +83,24 @@ accept-encoding: gzip, deflate, br
 accept: application/fhir+json;charset=utf-8
 content-length: 12899
 content-type: application/json
-tech_bd_fhir_service_qe_identifier: healthelink
+tech_bd_fhir_service_qe_identifier: HEALTHELINK
 user-agent: httpyac
 
 HTTP/1.1 200  - OK
 connection: keep-alive
-content-length: 1724
+content-length: 1907
 content-type: application/fhir+json;charset=utf-8
-date: Wed, 15 May 2024 09:15:34 GMT
+date: Wed, 15 May 2024 14:12:17 GMT
 
 {
-  "orchSessionId": "59112004-dcfc-48f6-b68e-4f55785ce9c5",
+  "orchSessionId": "02333bbf-f549-4b94-8160-0d7f37b78bee",
   "deviceId": "device123",
-  "version": "0.22.0",
-  "orchStartedAt": "Wed May 15 09:15:34 UTC 2024",
+  "version": "0.23.0",
+  "orchStartedAt": "Wed May 15 14:12:17 UTC 2024",
+  "shinnyDataLakeSubmissionStatus": "NOT_SUBMITTED",
+  "shinnyDataLakeSubmissionStartTime": 0,
+  "shinnyDataLakeSubmissionEndTime": 0,
+  "shinnyDataLakeSubmissionProcessTIme": 0,
   "entries": [
     {
       "result": {
@@ -147,7 +151,7 @@ date: Wed, 15 May 2024 09:15:34 GMT
       }
     }
   ],
-  "orchFinishedAt": "Wed May 15 09:15:34 UTC 2024"
+  "orchFinishedAt": "Wed May 15 14:12:17 UTC 2024"
 }
 ✓ status code 200
 ✓ Check content-type
@@ -163,20 +167,24 @@ accept-encoding: gzip, deflate, br
 accept: application/fhir+json;charset=utf-8
 content-length: 12900
 content-type: application/json
-tech_bd_fhir_service_qe_identifier: healthelink
+tech_bd_fhir_service_qe_identifier: HEALTHELINK
 user-agent: httpyac
 
 HTTP/1.1 200  - OK
 connection: keep-alive
-content-length: 341
+content-length: 524
 content-type: application/fhir+json;charset=utf-8
-date: Wed, 15 May 2024 09:15:35 GMT
+date: Wed, 15 May 2024 14:12:18 GMT
 
 {
-  "orchSessionId": "3e1b0f63-1be7-418f-913b-b601be25cdad",
+  "orchSessionId": "babdad1e-f6b9-49ae-b8f4-63a8498f73e8",
   "deviceId": "device123",
-  "version": "0.22.0",
-  "orchStartedAt": "Wed May 15 09:15:35 UTC 2024",
+  "version": "0.23.0",
+  "orchStartedAt": "Wed May 15 14:12:18 UTC 2024",
+  "shinnyDataLakeSubmissionStatus": "NOT_SUBMITTED",
+  "shinnyDataLakeSubmissionStartTime": 0,
+  "shinnyDataLakeSubmissionEndTime": 0,
+  "shinnyDataLakeSubmissionProcessTIme": 0,
   "entries": [
     {
       "exceptions": [
@@ -184,7 +192,7 @@ date: Wed, 15 May 2024 09:15:35 GMT
       ]
     }
   ],
-  "orchFinishedAt": "Wed May 15 09:15:35 UTC 2024"
+  "orchFinishedAt": "Wed May 15 14:12:18 UTC 2024"
 }
 ✓ status code 200
 ✓ Check content-type
@@ -200,20 +208,24 @@ accept-encoding: gzip, deflate, br
 accept: application/fhir+json;charset=utf-8
 content-length: 85418
 content-type: application/json
-tech_bd_fhir_service_qe_identifier: healthelink
+tech_bd_fhir_service_qe_identifier: HEALTHELINK
 user-agent: httpyac
 
 HTTP/1.1 200  - OK
 connection: keep-alive
-content-length: 33424
+content-length: 33607
 content-type: application/fhir+json;charset=utf-8
-date: Wed, 15 May 2024 09:15:44 GMT
+date: Wed, 15 May 2024 14:12:20 GMT
 
 {
-  "orchSessionId": "4bb6e589-b1da-4186-a8f5-9536d90803c2",
+  "orchSessionId": "ce8fdc80-e344-4d0e-843b-c81aef9783ff",
   "deviceId": "device123",
-  "version": "0.22.0",
-  "orchStartedAt": "Wed May 15 09:15:43 UTC 2024",
+  "version": "0.23.0",
+  "orchStartedAt": "Wed May 15 14:12:20 UTC 2024",
+  "shinnyDataLakeSubmissionStatus": "NOT_SUBMITTED",
+  "shinnyDataLakeSubmissionStartTime": 0,
+  "shinnyDataLakeSubmissionEndTime": 0,
+  "shinnyDataLakeSubmissionProcessTIme": 0,
   "entries": [
     {
       "result": {
@@ -1020,7 +1032,7 @@ date: Wed, 15 May 2024 09:15:44 GMT
       }
     }
   ],
-  "orchFinishedAt": "Wed May 15 09:15:43 UTC 2024"
+  "orchFinishedAt": "Wed May 15 14:12:20 UTC 2024"
 }
 ✓ status code 200
 ✓ Check content-type
@@ -1037,20 +1049,24 @@ accept-encoding: gzip, deflate, br
 accept: application/fhir+json;charset=utf-8
 content-length: 39593
 content-type: application/json
-tech_bd_fhir_service_qe_identifier: healthelink
+tech_bd_fhir_service_qe_identifier: HEALTHELINK
 user-agent: httpyac
 
 HTTP/1.1 200  - OK
 connection: keep-alive
-content-length: 458
+content-length: 641
 content-type: application/fhir+json;charset=utf-8
-date: Wed, 15 May 2024 09:15:48 GMT
+date: Wed, 15 May 2024 14:12:21 GMT
 
 {
-  "orchSessionId": "568913bd-69ae-400a-849c-73d0ba63a6e5",
+  "orchSessionId": "62b3393e-4416-4c37-a6a9-7942bcf3d54f",
   "deviceId": "device123",
-  "version": "0.22.0",
-  "orchStartedAt": "Wed May 15 09:15:48 UTC 2024",
+  "version": "0.23.0",
+  "orchStartedAt": "Wed May 15 14:12:21 UTC 2024",
+  "shinnyDataLakeSubmissionStatus": "NOT_SUBMITTED",
+  "shinnyDataLakeSubmissionStartTime": 0,
+  "shinnyDataLakeSubmissionEndTime": 0,
+  "shinnyDataLakeSubmissionProcessTIme": 0,
   "entries": [
     {
       "exceptions": [
@@ -1058,7 +1074,7 @@ date: Wed, 15 May 2024 09:15:48 GMT
       ]
     }
   ],
-  "orchFinishedAt": "Wed May 15 09:15:48 UTC 2024"
+  "orchFinishedAt": "Wed May 15 14:12:21 UTC 2024"
 }
 ✓ status code 200
 ✓ Check content-type
@@ -1066,4 +1082,108 @@ date: Wed, 15 May 2024 09:15:48 GMT
 ✓ check Result
 ✓ check Diagnostics
 
-5 requests processed (5 succeeded, 0 failed)
+---------------------
+
+=== Submit a bundle to Datalake ===
+
+POST https://synthetic.fhir.api.devl.techbd.org/Bundle/?qe=HEALTHELINK
+accept-encoding: gzip, deflate, br
+accept: */*
+content-length: 12899
+content-type: application/json
+user-agent: httpyac
+
+HTTP/1.1 200  - OK
+connection: keep-alive
+content-length: 11
+content-type: text/plain;charset=UTF-8
+date: Wed, 15 May 2024 14:12:22 GMT
+
+API invoked
+✓ status code 201
+✓ Check content-type
+✓ response body exists
+✓ check Result
+
+---------------------
+
+=== Get the details of a specific session ===
+
+GET https://synthetic.fhir.api.devl.techbd.org/admin/diagnostics/b872aefe-57a8-4f2c-9115-a17fcaf75ea5
+accept-encoding: gzip, deflate, br
+accept: application/fhir+json;charset=utf-8
+content-type: application/json
+tech_bd_fhir_service_qe_identifier: HEALTHELINK
+user-agent: httpyac
+
+HTTP/1.1 200  - OK
+connection: keep-alive
+content-length: 1907
+content-type: application/fhir+json;charset=utf-8
+date: Wed, 15 May 2024 14:12:22 GMT
+
+{
+  "orchSessionId": "b872aefe-57a8-4f2c-9115-a17fcaf75ea5",
+  "deviceId": "device123",
+  "version": "0.23.0",
+  "orchStartedAt": "Wed May 15 14:02:57 UTC 2024",
+  "shinnyDataLakeSubmissionStatus": "NOT_SUBMITTED",
+  "shinnyDataLakeSubmissionStartTime": 0,
+  "shinnyDataLakeSubmissionEndTime": 0,
+  "shinnyDataLakeSubmissionProcessTIme": 0,
+  "entries": [
+    {
+      "result": {
+        "isSuccessful": false
+      },
+      "operationOutcome": {
+        "outcome": {
+          "resourceType": "OperationOutcome",
+          "issue": [
+            {
+              "severity": "error",
+              "code": "processing",
+              "diagnostics": "cvc-pattern-valid: Value 'observationResponseQuestion_1' is not facet-valid with respect to pattern '[A-Za-z0-9\\-\\.]{1,64}' for type 'id-primitive'.",
+              "location": [
+                "Line[1] Col[6147]",
+                "Line 1, Col 6147"
+              ]
+            },
+            {
+              "severity": "error",
+              "code": "processing",
+              "diagnostics": "cvc-attribute.3: The value 'observationResponseQuestion_1' of attribute 'value' on element 'id' is not valid with respect to its type, 'id-primitive'.",
+              "location": [
+                "Line[1] Col[6147]",
+                "Line 1, Col 6147"
+              ]
+            },
+            {
+              "severity": "error",
+              "code": "processing",
+              "diagnostics": "cvc-pattern-valid: Value 'observationResponseQuestion_2' is not facet-valid with respect to pattern '[A-Za-z0-9\\-\\.]{1,64}' for type 'id-primitive'.",
+              "location": [
+                "Line[1] Col[7981]",
+                "Line 1, Col 7981"
+              ]
+            },
+            {
+              "severity": "error",
+              "code": "processing",
+              "diagnostics": "cvc-attribute.3: The value 'observationResponseQuestion_2' of attribute 'value' on element 'id' is not valid with respect to its type, 'id-primitive'.",
+              "location": [
+                "Line[1] Col[7981]",
+                "Line 1, Col 7981"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "orchFinishedAt": "Wed May 15 14:12:22 UTC 2024"
+}
+✓ status code 201
+✓ Check content-type
+
+7 requests processed (7 succeeded, 0 failed)

@@ -7,11 +7,11 @@
 - After installing the httpyac, go to the folder where we need to run the test
   cases.
 
-`cd support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-service/2024-05-06/`
+`cd support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-service/2024-05-15/`
 
 - Once you are in the correct folder path run the below command
 
-`httpyac send  fhir-service.test.http --all >> fhir-service-result.txt`
+`httpyac send  fhir-service.test.http --all > fhir-service-result.txt`
 
 - Executing the above command will store all the test case result output in the
   `fhir-service-result.txt` file.
