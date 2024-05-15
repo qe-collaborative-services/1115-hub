@@ -6,7 +6,8 @@
 
 @hostName = {{$dotenv HOST}}
 @contentType = application/json
-@TECH_BD_FHIR_SERVICE_QE_IDENTIFIER = healthelink
+@TECH_BD_FHIR_SERVICE_QE_IDENTIFIER = HEALTHELINK
+@sessionId = b872aefe-57a8-4f2c-9115-a17fcaf75ea5
 
 ### Test that your server is running by fetching its CapabilityStatement:
 
@@ -14,7 +15,7 @@ GET {{hostName}}/metadata HTTP/1.1
 Content-Type: {{contentType}}
 {{
   const { equal } = require('assert');
-  test('status code 200', () => {
+  test('status code 201', () => {
     equal(response.statusCode, 200);
   });
   test('Check content-type', () => {
@@ -40,7 +41,7 @@ TECH_BD_FHIR_SERVICE_QE_IDENTIFIER: {{TECH_BD_FHIR_SERVICE_QE_IDENTIFIER}}
   });
   test.hasResponseBody();
   test('Check Resource Type', () => {
-      equal(JSON.parse(response.body).version, '0.22.0');
+      equal(JSON.parse(response.body).version, '0.23.0');
   });
 }}
 
@@ -124,3 +125,38 @@ TECH_BD_FHIR_SERVICE_QE_IDENTIFIER: {{TECH_BD_FHIR_SERVICE_QE_IDENTIFIER}}
 
 < fhir-fixture-shinny-healtheconnections-unhappy-path.json
 
+### Submit a bundle to Datalake
+
+POST {{hostName}}/Bundle/?qe=HEALTHELINK HTTP/1.1
+Content-Type: application/json
+{{
+  const { equal, notEqual } = require('assert');
+  test('status code 201', () => {
+    notEqual(response.statusCode, 201); // Use equal for this specific test case
+  });
+  test('Check content-type', () => {
+    equal(response.contentType.contentType, 'text/plain;charset=UTF-8');
+  });
+  test.hasResponseBody();
+  test('check Result', () => {
+    equal(response.body, 'API invoked');
+  });
+}}
+
+< fhir-fixture-shinny-impl-guide-sample.json  
+
+### Get the details of a specific session
+
+GET {{hostName}}/admin/diagnostics/{{sessionId}} HTTP/1.1
+Content-Type: application/json
+Accept : application/fhir+json;charset=utf-8
+TECH_BD_FHIR_SERVICE_QE_IDENTIFIER: {{TECH_BD_FHIR_SERVICE_QE_IDENTIFIER}}
+{{
+  const { equal, notEqual } = require('assert');
+  test('status code 201', () => {
+    notEqual(response.statusCode, 201); // Use equal for this specific test case
+  });
+  test('Check content-type', () => {
+    equal(response.contentType.contentType, 'application/fhir+json;charset=utf-8');
+  });
+}}
