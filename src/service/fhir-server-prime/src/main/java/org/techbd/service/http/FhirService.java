@@ -8,12 +8,14 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.techbd.hrsn.assurance.FHIRBundleValidator;
+import org.techbd.hrsn.assurance.Globals.ShinnyDataLakeSubmissionStatus;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Service
 public class FhirService {
@@ -102,7 +104,8 @@ public class FhirService {
     }
 
     public String validateFhirResourceData(String jsonData, String qeIdentifier) {
-        return FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier);
+        String sessionId = UUID.randomUUID().toString();
+        return FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier, sessionId);
     }
 
     @Async
@@ -112,7 +115,8 @@ public class FhirService {
         // Make the POST request asynchronously
 
         // Validate process
-        FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier);
+        String sessionId = UUID.randomUUID().toString();
+        FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier, sessionId);
 
         // Prepare Target API URI
         String targetApiUrl = null;
@@ -133,29 +137,41 @@ public class FhirService {
             e.printStackTrace();
         }
 
+        FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.STARTED);
+        FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionStartTime(System.currentTimeMillis());
         // Invoke the API URL
         webClient.post()
-                .uri(path + "=" + qeIdentifier)
+                .uri(path + "?processingAgent=" + qeIdentifier)
                 .body(BodyInserters.fromValue(jsonData))
                 .retrieve()
                 .bodyToMono(String.class)
                 .subscribe(response -> {
                     // TODO: Process the response here, and save to db.
+                    FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.FINISHED);
+                    FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionEndTime(System.currentTimeMillis());
                 }, (Throwable error) -> { // Explicitly specify the type Throwable
-                    if (error instanceof WebClientResponseException) {
+
+                    FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.ASYNC_FAILED);
+                    FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionEndTime(System.currentTimeMillis());
+                    if (error instanceof WebClientResponseException responseException) {
                         // TODO: Process the response here, and save to db.
-                        WebClientResponseException responseException = (WebClientResponseException) error;
                         if (responseException.getStatusCode() == HttpStatus.FORBIDDEN) {
                             // Handle 403 Forbidden err
+                            FHIRBundleValidator.getInstance().findSessionByKey(sessionId).getShinnyDataLakeSubmissionData().put(sessionId, responseException.getMessage());
                         } else if (responseException.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                             // Handle 403 Forbidden error
+                            FHIRBundleValidator.getInstance().findSessionByKey(sessionId).getShinnyDataLakeSubmissionData().put(sessionId, responseException.getMessage());
                         } else {
                             // Handle other types of WebClientResponseException
+                            FHIRBundleValidator.getInstance().findSessionByKey(sessionId).getShinnyDataLakeSubmissionData().put(sessionId, responseException.getMessage());
                         }
                     } else {
                         // Handle other types of exceptions
+                        FHIRBundleValidator.getInstance().findSessionByKey(sessionId).getShinnyDataLakeSubmissionData().put(sessionId, error.getMessage());
                     }
                 });
+
+        FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.ASYNC_IN_PROGRESS);
         return "API invoked";
     }
 
