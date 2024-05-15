@@ -15,7 +15,7 @@ GET {{hostName}}/metadata HTTP/1.1
 Content-Type: {{contentType}}
 {{
   const { equal } = require('assert');
-  test('status code 201', () => {
+  test('status code 200', () => {
     equal(response.statusCode, 200);
   });
   test('Check content-type', () => {
