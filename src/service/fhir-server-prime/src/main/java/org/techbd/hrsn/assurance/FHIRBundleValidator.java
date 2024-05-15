@@ -2,55 +2,28 @@ package org.techbd.hrsn.assurance;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
-import ca.uhn.fhir.rest.annotation.Search;
-import ca.uhn.fhir.rest.annotation.Validate;
+import ca.uhn.fhir.parser.LenientErrorHandler;
+import ca.uhn.fhir.parser.StrictErrorHandler;
+import ca.uhn.fhir.rest.annotation.*;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.api.ValidationModeEnum;
 import ca.uhn.fhir.rest.param.StringParam;
-import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
-import org.hl7.fhir.r4.model.Extension;
-import org.hl7.fhir.r4.model.Address;
-import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.r4.model.CodeType;
-import org.hl7.fhir.r4.model.CodeableConcept;
-import org.hl7.fhir.r4.model.Coding;
-import org.hl7.fhir.r4.model.Encounter;
-import org.hl7.fhir.r4.model.HumanName;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Observation;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.hl7.fhir.r4.model.Consent;
-import org.hl7.fhir.r4.model.DateTimeType;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.instance.model.api.IIdType;
-
-import ca.uhn.fhir.rest.annotation.Create;
-import ca.uhn.fhir.rest.annotation.IdParam;
-import ca.uhn.fhir.rest.annotation.OptionalParam;
-import ca.uhn.fhir.rest.annotation.Read;
-import ca.uhn.fhir.rest.annotation.RequiredParam;
-import ca.uhn.fhir.rest.annotation.ResourceParam;
-import org.hl7.fhir.r4.model.OperationOutcome;
-import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
-
-import org.hl7.fhir.r4.model.Organization;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import ca.uhn.fhir.rest.api.MethodOutcome;
-import ca.uhn.fhir.rest.api.ValidationModeEnum;
-
-import ca.uhn.fhir.parser.LenientErrorHandler;
-import ca.uhn.fhir.parser.StrictErrorHandler;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.instance.model.api.IIdType;
+import org.hl7.fhir.r4.model.*;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
+import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
+import org.techbd.hrsn.assurance.Globals.ShinnyDataLakeSubmissionStatus;
+import org.techbd.hrsn.assurance.Globals.ValidationEngine;
 
 import java.io.InputStream;
 import java.sql.Connection;
@@ -58,12 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 // TODO: create  FHIRValidationFilter class to manage filter rules for any errors or warnings that should be removed 
 
@@ -71,20 +39,15 @@ import java.util.UUID;
 
 public class FHIRBundleValidator {
 
+    static FhirContext context = FhirContext.forR4();
     private static FHIRBundleValidator instance;
     private static String shinnyDataLakeApiImpGuideProfileUri;
-
-    static FhirContext context = FhirContext.forR4();
     private static Connection conn;
     private static String resourceId = null;
     private static String deviceId;
     private static String version;
 
-    private Map<String, OrchestrationSession> sessions = new HashMap<>();
-
-    /**
-     * Constructor
-     */
+    private final Map<String, OrchestrationSession> sessions = new HashMap<>();
 
     public FHIRBundleValidator() {
         PropertiesConfiguration config = new PropertiesConfiguration();
@@ -105,97 +68,6 @@ public class FHIRBundleValidator {
             instance = new FHIRBundleValidator();
         }
         return instance;
-    }
-
-    @Search
-    public List<Bundle> searchByName(@RequiredParam(name = Patient.SP_NAME) StringParam name) {
-        List<Bundle> results = new ArrayList<>();
-        return results;
-    }
-
-    @SuppressWarnings("deprecation")
-    @Create
-    public MethodOutcome createBundle(@ResourceParam Bundle theBundle, @ResourceParam String jsonBody,
-            @IdParam(optional = true) IIdType id,
-            @OptionalParam(name = "x") String xValue,
-            @OptionalParam(name = "qe") String qeId) {
-
-        // Accessing x parameter from URL
-        if (xValue != null) {
-            // Process x parameter if needed
-            System.out.println("Value of x parameter: " + xValue);
-        }
-        if (qeId != null) {
-            // Process x parameter if needed
-            System.out.println("Value of qe parameter: " + qeId);
-        }
-
-        // Initialize session variables
-        Instant sessionStartTime = Instant.now();
-        Instant sessionEndTime = Instant.now();
-
-        // Set up FHIR parser with LenientErrorHandler
-        FhirContext ctx = FhirContext.forR4();
-        IParser parser = ctx.newJsonParser();
-        parser.setParserErrorHandler(new LenientErrorHandler());
-        parser.setParserErrorHandler(new StrictErrorHandler());
-
-        // Parse the JSON text into a FHIR resource
-        IBaseResource resource = parser.parseResource(jsonBody);
-
-        System.out.println("CreateCreateCreateCreate");
-        resourceId = resource.getIdElement().getValue();
-        System.out.println(resourceId);
-
-        // Validate the bundle before creating resources
-        MethodOutcome validationOutcome = validateBundle((Bundle) resource, ValidationModeEnum.CREATE,
-                shinnyDataLakeApiImpGuideProfileUri);
-        OperationOutcome operationOutcome = (OperationOutcome) validationOutcome.getOperationOutcome();
-
-        // If validation fails, return the OperationOutcome
-        if (operationOutcome != null && !operationOutcome.getIssue().isEmpty()) {
-            // Set session end time before throwing exception
-            sessionEndTime = Instant.now();
-            throw new UnprocessableEntityException(operationOutcome);
-        }
-
-        // If the bundle does not have an identifier, throw an exceptionyour_version
-        if (theBundle.getIdentifier().getValue().isEmpty()) {
-            // Set session end time before throwing exception
-            sessionEndTime = Instant.now();
-            throw new UnprocessableEntityException("No identifier supplied");
-        }
-
-        // Pass the bundle to create CSV files
-        createAhcHrsnEltArtifacts(theBundle, false);
-
-        // Set session end time
-        sessionEndTime = Instant.now();
-
-        MethodOutcome retVal = new MethodOutcome();
-        retVal.setId(new IdType("Bundle", theBundle.getIdentifier().getValue(), "4.0"));
-
-        // Can also add an OperationOutcome resource to return
-        // This part is optional though:
-        OperationOutcome outcome = new OperationOutcome();
-        // outcome.addIssue().setSeverity(IssueSeverity.WARNING).setDiagnostics("One
-        // minor issue detected");
-
-        // return retVal;
-
-        JsonObject sessionJson = new JsonObject();
-        sessionJson.addProperty("sessionStartTime", sessionStartTime.toString());
-        sessionJson.addProperty("profile", shinnyDataLakeApiImpGuideProfileUri);
-        sessionJson.addProperty("version", "4.0");
-        sessionJson.addProperty("sessionEndTime", sessionEndTime.toString());
-
-        // Serialize the JsonObject to a string
-        String sessionJsonString = sessionJson.toString();
-
-        outcome.addIssue().setSeverity(IssueSeverity.ERROR).setDiagnostics(sessionJsonString);
-        retVal.setOperationOutcome(outcome);
-
-        return retVal;
     }
 
     private static void createAhcHrsnEltArtifacts(Bundle bundle, boolean zipFlag) {
@@ -254,8 +126,7 @@ public class FHIRBundleValidator {
 
         // Iterate through bundle entries
         for (BundleEntryComponent entry : bundle.getEntry()) {
-            if (entry.getResource() instanceof Patient) {
-                Patient patient = (Patient) entry.getResource();
+            if (entry.getResource() instanceof Patient patient) {
                 // Extracting patient information
                 if (patient.hasName() && !patient.getName().isEmpty()) {
                 }
@@ -271,11 +142,9 @@ public class FHIRBundleValidator {
                     }
                 }
 
-            } else if (entry.getResource() instanceof Organization) {
-                Organization organization = (Organization) entry.getResource();
+            } else if (entry.getResource() instanceof Organization organization) {
                 facilityId = organization.getId(); // Assuming id is the facility ID
-            } else if (entry.getResource() instanceof Encounter) {
-                Encounter encounter = (Encounter) entry.getResource();
+            } else if (entry.getResource() instanceof Encounter encounter) {
                 // Extracting encounter information
                 encounterId = encounter.getId();
                 if (encounter.hasClass_()) {
@@ -295,8 +164,7 @@ public class FHIRBundleValidator {
                     encounterTypeCodeDescription = encounter.getType().get(0).getCodingFirstRep().getDisplay();
                     encounterTypeCodeSystem = encounter.getType().get(0).getCodingFirstRep().getSystem();
                 }
-            } else if (entry.getResource() instanceof Observation) {
-                Observation observation = (Observation) entry.getResource();
+            } else if (entry.getResource() instanceof Observation observation) {
 
                 // Resetting observation-specific variables for each observation
                 screeningStatusCode = "";
@@ -438,8 +306,7 @@ public class FHIRBundleValidator {
             // Append data to CSV builder
             // Extracting patient information
 
-            if (entry.getResource() instanceof Patient) {
-                Patient patient = (Patient) entry.getResource();
+            if (entry.getResource() instanceof Patient patient) {
                 // Extracting patient information
                 if (patient.hasName() && !patient.getName().isEmpty()) {
                 }
@@ -455,8 +322,7 @@ public class FHIRBundleValidator {
                     }
                 }
 
-            } else if (entry.getResource() instanceof Organization) {
-                Organization organization = (Organization) entry.getResource();
+            } else if (entry.getResource() instanceof Organization organization) {
                 // Extracting organization information and appending to CSV builder
                 facilityId = organization.getId(); // Assuming id is the facility ID
                 facilityLongName = organization.getName();
@@ -560,15 +426,13 @@ public class FHIRBundleValidator {
             // Extract relevant data from bundle entry for DEMOGRAPHIC_DATA.csv
             // Append data to CSV builder
             // Extracting patient information
-            if (entry.getResource() instanceof Consent) {
-                Consent consent = (Consent) entry.getResource();
+            if (entry.getResource() instanceof Consent consent) {
                 // Extracting consent information
                 if (consent.hasId() && !consent.isEmpty()) {
                     isConsent = "true";
                 }
 
-            } else if (entry.getResource() instanceof Patient) {
-                Patient patient = (Patient) entry.getResource();
+            } else if (entry.getResource() instanceof Patient patient) {
                 if (patient.hasName() && !patient.getName().isEmpty()) {
                     HumanName name = patient.getName().get(0); // Assuming there's only one name
                     // consent = name.getGiven().get(0).getValue();
@@ -598,9 +462,8 @@ public class FHIRBundleValidator {
                             .getExtensionByUrl("http://shinny.org/StructureDefinition/shinny-sexual-orientation");
 
                     if (sexualOrientationExtension != null && sexualOrientationExtension.hasValue()
-                            && sexualOrientationExtension.getValue() instanceof CodeableConcept) {
-                        CodeableConcept sexualOrientationCodeableConcept = (CodeableConcept) sexualOrientationExtension
-                                .getValue();
+                            && sexualOrientationExtension
+                                    .getValue() instanceof CodeableConcept sexualOrientationCodeableConcept) {
                         for (Coding coding : sexualOrientationCodeableConcept.getCoding()) {
                             administrativeSexCode = coding.getCode();
                             administrativeSexCodeDescription = coding.getDisplay();
@@ -613,8 +476,7 @@ public class FHIRBundleValidator {
                             .getExtensionByUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex");
 
                     if (sexAtBirthExtension != null && sexAtBirthExtension.hasValue()
-                            && sexAtBirthExtension.getValue() instanceof CodeType) {
-                        CodeType sexAtBirthCodeType = (CodeType) sexAtBirthExtension.getValue();
+                            && sexAtBirthExtension.getValue() instanceof CodeType sexAtBirthCodeType) {
                         sexAtBirthCode = sexAtBirthCodeType.getValue();
                         sexAtBirthCodeSystem = sexAtBirthCodeType.getSystem();
                         sexAtBirthCodeDescription = sexAtBirthCodeType.getDisplay();
@@ -636,9 +498,8 @@ public class FHIRBundleValidator {
                     sexualOrientationCodeSystemName = "";
 
                     if (sexualOrientationExtension != null && sexualOrientationExtension.hasValue()
-                            && sexualOrientationExtension.getValue() instanceof CodeableConcept) {
-                        CodeableConcept sexualOrientationCodeableConcept = (CodeableConcept) sexualOrientationExtension
-                                .getValue();
+                            && sexualOrientationExtension
+                                    .getValue() instanceof CodeableConcept sexualOrientationCodeableConcept) {
                         for (Coding coding : sexualOrientationCodeableConcept.getCoding()) {
                             sexualOrientationCode = coding.getCode();
                             sexualOrientationDescription = coding.getDisplay();
@@ -651,9 +512,8 @@ public class FHIRBundleValidator {
                             .getExtensionByUrl("http://shinny.org/StructureDefinition/us-core-genderIdentity");
 
                     if (genderIdentityExtension != null && genderIdentityExtension.hasValue()
-                            && genderIdentityExtension.getValue() instanceof CodeableConcept) {
-                        CodeableConcept genderIdentityCodeableConcept = (CodeableConcept) genderIdentityExtension
-                                .getValue();
+                            && genderIdentityExtension
+                                    .getValue() instanceof CodeableConcept genderIdentityCodeableConcept) {
                         for (Coding coding : genderIdentityCodeableConcept.getCoding()) {
                             genderIdentityCode = coding.getCode();
                             genderIdentityCodeDescription = coding.getDisplay();
@@ -683,8 +543,7 @@ public class FHIRBundleValidator {
                             .getExtensionByUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-race");
 
                     if (raceExtension != null && raceExtension.hasValue()
-                            && raceExtension.getValue() instanceof CodeableConcept) {
-                        CodeableConcept raceCodeableConcept = (CodeableConcept) raceExtension.getValue();
+                            && raceExtension.getValue() instanceof CodeableConcept raceCodeableConcept) {
                         for (Coding coding : raceCodeableConcept.getCoding()) {
                             raceCode = coding.getCode();
                             raceCodeDescription = coding.getDisplay();
@@ -702,8 +561,7 @@ public class FHIRBundleValidator {
                             .getExtensionByUrl("http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity");
 
                     if (ethnicityExtension != null && ethnicityExtension.hasValue()
-                            && ethnicityExtension.getValue() instanceof CodeableConcept) {
-                        CodeableConcept ethnicityCodeableConcept = (CodeableConcept) ethnicityExtension.getValue();
+                            && ethnicityExtension.getValue() instanceof CodeableConcept ethnicityCodeableConcept) {
                         for (Coding coding : ethnicityCodeableConcept.getCoding()) {
                             ethnicityCode = coding.getCode();
                             ethnicityCodeDescription = coding.getDisplay();
@@ -755,7 +613,6 @@ public class FHIRBundleValidator {
         csvBuilder.append("\n");
 
     }
-    // JAVA STARTS
 
     private static void insertScreeningData(Bundle bundle) {
         try (Statement stmt = conn.createStatement()) {
@@ -823,8 +680,7 @@ public class FHIRBundleValidator {
         String potentialNeedIndicated = "";
         // Iterate through bundle entries
         for (BundleEntryComponent entry : bundle.getEntry()) {
-            if (entry.getResource() instanceof Patient) {
-                Patient patient = (Patient) entry.getResource();
+            if (entry.getResource() instanceof Patient patient) {
                 // Extracting patient information
                 if (patient.hasName() && !patient.getName().isEmpty()) {
                 }
@@ -840,11 +696,9 @@ public class FHIRBundleValidator {
                     }
                 }
 
-            } else if (entry.getResource() instanceof Organization) {
-                Organization organization = (Organization) entry.getResource();
+            } else if (entry.getResource() instanceof Organization organization) {
                 facilityId = organization.getId(); // Assuming id is the facility ID
-            } else if (entry.getResource() instanceof Encounter) {
-                Encounter encounter = (Encounter) entry.getResource();
+            } else if (entry.getResource() instanceof Encounter encounter) {
                 // Extracting encounter information
                 encounterId = encounter.getId();
                 if (encounter.hasClass_()) {
@@ -864,8 +718,7 @@ public class FHIRBundleValidator {
                     encounterTypeCodeDescription = encounter.getType().get(0).getCodingFirstRep().getDisplay();
                     encounterTypeCodeSystem = encounter.getType().get(0).getCodingFirstRep().getSystem();
                 }
-            } else if (entry.getResource() instanceof Observation) {
-                Observation observation = (Observation) entry.getResource();
+            } else if (entry.getResource() instanceof Observation observation) {
 
                 // Resetting observation-specific variables for each observation
                 screeningStatusCode = "";
@@ -1007,7 +860,126 @@ public class FHIRBundleValidator {
         }
     }
 
-    // JAVA ENDS
+    public static String convertJsonToHtml(String json) {
+        JsonElement jsonElement = JsonParser.parseString(json);
+        return convertJsonElementToHtml(jsonElement);
+    }
+
+    private static String convertJsonElementToHtml(JsonElement jsonElement) {
+        StringBuilder html = new StringBuilder();
+        if (jsonElement.isJsonObject()) {
+            html.append("<ul>");
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            for (String key : jsonObject.keySet()) {
+                html.append("<li><strong>").append(key).append(":</strong> ");
+                html.append(convertJsonElementToHtml(jsonObject.get(key)));
+                html.append("</li>");
+            }
+            html.append("</ul>");
+        } else {
+            html.append(jsonElement.getAsString());
+        }
+        return html.toString();
+    }
+    // JAVA STARTS
+
+    public static String prettyPrintJsonUsingDefaultPrettyPrinter(String uglyJsonString)
+            throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Object jsonObject = objectMapper.readValue(uglyJsonString, Object.class);
+        String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
+        return prettyJson;
+    }
+
+    @Search
+    public List<Bundle> searchByName(@RequiredParam(name = Patient.SP_NAME) StringParam name) {
+        List<Bundle> results = new ArrayList<>();
+        return results;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Create
+    public MethodOutcome createBundle(@ResourceParam Bundle theBundle, @ResourceParam String jsonBody,
+            @IdParam(optional = true) IIdType id,
+            @OptionalParam(name = "x") String xValue,
+            @OptionalParam(name = "qe") String qeId) {
+
+        // Accessing x parameter from URL
+        if (xValue != null) {
+            // Process x parameter if needed
+            System.out.println("Value of x parameter: " + xValue);
+        }
+        if (qeId != null) {
+            // Process x parameter if needed
+            System.out.println("Value of qe parameter: " + qeId);
+        }
+
+        // Initialize session variables
+        Instant sessionStartTime = Instant.now();
+        Instant sessionEndTime = Instant.now();
+
+        // Set up FHIR parser with LenientErrorHandler
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+        parser.setParserErrorHandler(new LenientErrorHandler());
+        parser.setParserErrorHandler(new StrictErrorHandler());
+
+        // Parse the JSON text into a FHIR resource
+        IBaseResource resource = parser.parseResource(jsonBody);
+
+        resourceId = resource.getIdElement().getValue();
+        System.out.println(resourceId);
+
+        // Validate the bundle before creating resources
+        MethodOutcome validationOutcome = validateBundle((Bundle) resource, ValidationModeEnum.CREATE,
+                shinnyDataLakeApiImpGuideProfileUri);
+        OperationOutcome operationOutcome = (OperationOutcome) validationOutcome.getOperationOutcome();
+
+        // If validation fails, return the OperationOutcome
+        if (operationOutcome != null && !operationOutcome.getIssue().isEmpty()) {
+            // Set session end time before throwing exception
+            sessionEndTime = Instant.now();
+            throw new UnprocessableEntityException(operationOutcome);
+        }
+
+        // If the bundle does not have an identifier, throw an exceptionyour_version
+        if (theBundle.getIdentifier().getValue().isEmpty()) {
+            // Set session end time before throwing exception
+            sessionEndTime = Instant.now();
+            throw new UnprocessableEntityException("No identifier supplied");
+        }
+
+        // Pass the bundle to create CSV files
+        createAhcHrsnEltArtifacts(theBundle, false);
+
+        // Set session end time
+        sessionEndTime = Instant.now();
+
+        MethodOutcome retVal = new MethodOutcome();
+        retVal.setId(new IdType("Bundle", theBundle.getIdentifier().getValue(), "4.0"));
+
+        // Can also add an OperationOutcome resource to return
+        // This part is optional though:
+        OperationOutcome outcome = new OperationOutcome();
+        // outcome.addIssue().setSeverity(IssueSeverity.WARNING).setDiagnostics("One
+        // minor issue detected");
+
+        // return retVal;
+
+        JsonObject sessionJson = new JsonObject();
+        sessionJson.addProperty("sessionStartTime", sessionStartTime.toString());
+        sessionJson.addProperty("profile", shinnyDataLakeApiImpGuideProfileUri);
+        sessionJson.addProperty("version", "4.0");
+        sessionJson.addProperty("sessionEndTime", sessionEndTime.toString());
+
+        // Serialize the JsonObject to a string
+        String sessionJsonString = sessionJson.toString();
+
+        outcome.addIssue().setSeverity(IssueSeverity.ERROR).setDiagnostics(sessionJsonString);
+        retVal.setOperationOutcome(outcome);
+
+        return retVal;
+    }
 
     // @Validate
     public MethodOutcome validateBundle(
@@ -1026,11 +998,11 @@ public class FHIRBundleValidator {
     // @RequestParam(value = "qe", required = false) String qeValue) {
     // @Validate
     // return json string
-    public String validateFhirResource(/* @ResourceParam */ String jsonBody, String qeIdentifier) {
-        String sessionId = UUID.randomUUID().toString();
+    public String validateFhirResource(String jsonBody, String qeIdentifier, String sessionId) {
         OrchestrationSession session = new OrchestrationSession(qeIdentifier,
                 context, sessionId, FHIRBundleValidator.deviceId,
                 FHIRBundleValidator.version);
+        session.setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.NOT_SUBMITTED);
         session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
         this.sessions.put(sessionId, session);
         System.out.println("Session: " + session);
@@ -1054,7 +1026,7 @@ public class FHIRBundleValidator {
                 FHIRBundleValidator.version);
         session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
         this.sessions.put(sessionId, session);
-        OperationOutcome operationOutcome = (OperationOutcome) session.entries.get(0).getOperationOutcome();
+        OperationOutcome operationOutcome = session.entries.get(0).getOperationOutcome();
         MethodOutcome outcome = new MethodOutcome();
         outcome.setOperationOutcome(operationOutcome);
 
@@ -1066,28 +1038,6 @@ public class FHIRBundleValidator {
         System.out.println("html : " + html);
         return html;
 
-    }
-
-    public static String convertJsonToHtml(String json) {
-        JsonElement jsonElement = JsonParser.parseString(json);
-        return convertJsonElementToHtml(jsonElement);
-    }
-
-    private static String convertJsonElementToHtml(JsonElement jsonElement) {
-        StringBuilder html = new StringBuilder();
-        if (jsonElement.isJsonObject()) {
-            html.append("<ul>");
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
-            for (String key : jsonObject.keySet()) {
-                html.append("<li><strong>").append(key).append(":</strong> ");
-                html.append(convertJsonElementToHtml(jsonObject.get(key)));
-                html.append("</li>");
-            }
-            html.append("</ul>");
-        } else {
-            html.append(jsonElement.getAsString());
-        }
-        return html.toString();
     }
 
     // TODO:
@@ -1117,21 +1067,33 @@ public class FHIRBundleValidator {
     }
 
     public String diagnosticsOperation(String sessionId) {
-        OrchestrationSession session = findSessionByKey(sessionId);
-        if (session != null) {
-            // // Found the session
-            String formattedSession = null;
-            try {
-                formattedSession = prettyPrintJsonUsingDefaultPrettyPrinter(session.toJson());
-                System.out.println(formattedSession);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-            return formattedSession;
+        if (sessionId == null) {
+            return getAllSessionsAsJson();
         } else {
-            // Session not found
-            return "No matching session";
+            OrchestrationSession session = findSessionByKey(sessionId);
+            if (session != null) {
+                // // Found the session
+                String formattedSession = null;
+                try {
+                    formattedSession = prettyPrintJsonUsingDefaultPrettyPrinter(session.toJson());
+                    System.out.println(formattedSession);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                return formattedSession;
+            } else {
+                // Session not found
+                return "No matching session";
+            }
         }
+    }
+
+    public String getAllSessionsAsJson() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, OrchestrationSession> entry : sessions.entrySet()) {
+            sb.append(entry.getValue().toJsonMinimal());
+        }
+        return sb.toString();
     }
 
     public OrchestrationSession findSessionByKey(String key) {
@@ -1142,14 +1104,6 @@ public class FHIRBundleValidator {
         }
         // Key not found
         return null;
-    }
-
-    public static String prettyPrintJsonUsingDefaultPrettyPrinter(String uglyJsonString)
-            throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        Object jsonObject = objectMapper.readValue(uglyJsonString, Object.class);
-        String prettyJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonObject);
-        return prettyJson;
     }
 
 }

@@ -1,6 +1,5 @@
 package org.techbd.service.http;
 
-import ca.uhn.fhir.rest.api.MethodOutcome;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +16,13 @@ public class FhirController {
     @GetMapping("/admin/diagnostics/{sessionId}")
     public String getDiagnostics(@PathVariable String sessionId,
             @RequestHeader("TECH_BD_FHIR_SERVICE_QE_IDENTIFIER") String qeIdentifier) {
-        System.out.println("qeIdentifier: " + qeIdentifier);
         return fhirService.getDiagnostics(sessionId);
+    }
+
+    @GetMapping("/admin/diagnostics")
+    public String getAdminDiagnostics(
+            @RequestHeader("TECH_BD_FHIR_SERVICE_QE_IDENTIFIER") String qeIdentifier) {
+        return fhirService.getDiagnostics(null);
     }
 
     /**

@@ -1,39 +1,28 @@
 package org.techbd.hrsn.assurance;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.parser.StrictErrorHandler;
+import ca.uhn.fhir.validation.FhirValidator;
+import ca.uhn.fhir.validation.ValidationOptions;
+import ca.uhn.fhir.validation.ValidationResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import ca.uhn.fhir.context.FhirContext;
-
 import org.hl7.fhir.instance.model.api.IBaseResource;
-import ca.uhn.fhir.parser.StrictErrorHandler;
 import org.hl7.fhir.r4.model.OperationOutcome;
-import ca.uhn.fhir.validation.ValidationResult;
-import ca.uhn.fhir.validation.FhirValidator;
-import ca.uhn.fhir.validation.ValidationOptions;
+import org.techbd.hrsn.assurance.Globals.ShinnyDataLakeSubmissionStatus;
+import org.techbd.hrsn.assurance.Globals.ValidationEngine;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-
-import ca.uhn.fhir.parser.IParser;
-
-enum ValidationEngine {
-    HAPI,
-    INFERNO,
-    HL7_OFFICIAL
-}
+import java.util.HashMap;
+import java.util.Map;
 
 class OrchestrationSessionHelpers {
-    // json payload,
-    /*
-     * public JsonObject toJson() {
-     * //
-     * return null;
-     * }
-     */
+
     public static JsonObject jsonStringToJsonObject(String jsonString) {
         Gson gson = new Gson();
         return gson.fromJson(jsonString, JsonObject.class);
@@ -54,14 +43,14 @@ class OrchestrationSessionHelpers {
 
 class OrchestrationSessionEntryBundle {
 
-    private IParser parser;
+    private final IParser parser;
+    private final String payload;
+    private final FhirValidator validator;
+    private final ValidationOptions options;
+    private final ArrayList<Exception> exceptions; // TODO: store in JSON
     private IBaseResource resource;
     private ValidationResult result; // TODO : store in JSON
     private OperationOutcome operationOutcome; // TODO: store in JSON
-    private String payload;
-    private FhirValidator validator;
-    private ValidationOptions options;
-    private ArrayList<Exception> exceptions; // TODO: store in JSON
 
     public OrchestrationSessionEntryBundle(String payload, IParser parser, FhirValidator validator,
             ValidationOptions options) {
@@ -151,16 +140,28 @@ class OrchestrationSessionEntryBundle {
 }
 
 public class OrchestrationSession {
-    private String orchSessionId; // TODO : store in JSON
-    private String deviceId; // TODO : store in JSON
-    private String version; // TODO : store in JSON
-
-    private String qeIdentifier; // TODO : store in JSON
-    private Date orchStartedAt = new Date(); // TODO : store in JSON
-    private Date orchFinishedAt; // TODO : store in JSON
-    private FhirContext ctx;
-    private IParser parser; // Initialize the parser in constructor
+    private final String orchSessionId; // TODO : store in JSON
+    private final String deviceId; // TODO : store in JSON
+    private final String version; // TODO : store in JSON
+    private final String qeIdentifier; // TODO : store in JSON
+    private final Date orchStartedAt = new Date(); // TODO : store in JSON
+    private final FhirContext ctx;
+    private final IParser parser; // Initialize the parser in constructor
     public ArrayList<OrchestrationSessionEntryBundle> entries = new ArrayList<>();
+    private Date orchFinishedAt; // TODO : store in JSON
+    private ShinnyDataLakeSubmissionStatus shinnyDataLakeSubmissionStatus; // Holds the session status
+    private long shinnyDataLakeSubmissionStartTime; // Holds the async call start time in milli sec
+    private long shinnyDataLakeSubmissionEndTime; // Holds the async call end time in milli sec
+
+    private Map<String, String> shinnyDataLakeSubmissionData = new HashMap<>();
+
+    public Map<String, String> getShinnyDataLakeSubmissionData() {
+        return shinnyDataLakeSubmissionData;
+    }
+
+    public void setShinnyDataLakeSubmissionData(Map<String, String> shinnyDataLakeSubmissionData) {
+        this.shinnyDataLakeSubmissionData = shinnyDataLakeSubmissionData;
+    }
 
     // should be completly independent of hhtp
     public OrchestrationSession(String qeIdentifier, FhirContext ctx, String orchSessionId, String deviceId,
@@ -174,30 +175,71 @@ public class OrchestrationSession {
         this.parser.setParserErrorHandler(new StrictErrorHandler());
     }
 
-    public JsonObject toJsonObject() {
+    public ShinnyDataLakeSubmissionStatus getShinnyDataLakeSubmissionStatus() {
+        return shinnyDataLakeSubmissionStatus;
+    }
+
+    public void setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus sessionStatus) {
+        this.shinnyDataLakeSubmissionStatus = sessionStatus;
+    }
+
+    public long getShinnyDataLakeSubmissionStartTime() {
+        return shinnyDataLakeSubmissionStartTime;
+    }
+
+    public void setShinnyDataLakeSubmissionStartTime(long asyncStartTime) {
+        this.shinnyDataLakeSubmissionStartTime = asyncStartTime;
+    }
+
+    public long getShinnyDataLakeSubmissionEndTime() {
+        return shinnyDataLakeSubmissionEndTime;
+    }
+
+    public void setShinnyDataLakeSubmissionEndTime(long asyncEndTime) {
+        this.shinnyDataLakeSubmissionEndTime = asyncEndTime;
+    }
+
+    public JsonObject toJsonObject(boolean useFullData) {
         // TODO: Date orchFinishedAt
         orchFinishedAt = new Date();
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("orchSessionId", orchSessionId.toString());
+        jsonObject.addProperty("orchSessionId", orchSessionId);
         jsonObject.addProperty("deviceId", deviceId);
         jsonObject.addProperty("version", version);
         jsonObject.addProperty("orchStartedAt", orchStartedAt.toString());
-        // Create a JSON array to hold the entry objects
-        JsonArray entriesArray = new JsonArray();
-        for (OrchestrationSessionEntryBundle entry : entries) {
-            JsonObject entryJson = entry.toJsonObject();
-            entriesArray.add(entryJson);
+        if (shinnyDataLakeSubmissionStatus == null) {
+            jsonObject.addProperty("shinnyDataLakeSubmissionStatus", "");
+        } else {
+            jsonObject.addProperty("shinnyDataLakeSubmissionStatus", shinnyDataLakeSubmissionStatus.name());
         }
+        jsonObject.addProperty("shinnyDataLakeSubmissionStartTime", shinnyDataLakeSubmissionStartTime);
+        jsonObject.addProperty("shinnyDataLakeSubmissionEndTime", shinnyDataLakeSubmissionEndTime);
+        jsonObject.addProperty("shinnyDataLakeSubmissionProcessTIme",
+                shinnyDataLakeSubmissionEndTime - shinnyDataLakeSubmissionStartTime);
 
-        // Add the array of entry objects to the main JSON object
-        jsonObject.add("entries", entriesArray);
+        if (useFullData) {
+            // Create a JSON array to hold the entry objects
+            JsonArray entriesArray = new JsonArray();
+            for (OrchestrationSessionEntryBundle entry : entries) {
+                JsonObject entryJson = entry.toJsonObject();
+                entriesArray.add(entryJson);
+            }
+
+            // Add the array of entry objects to the main JSON object
+            jsonObject.add("entries", entriesArray);
+        }
 
         jsonObject.addProperty("orchFinishedAt", orchFinishedAt != null ? orchFinishedAt.toString() : null);
         return jsonObject;
     }
 
     public String toJson() {
-        return OrchestrationSessionHelpers.jsonObjectToJsonString(this.toJsonObject());
+        return OrchestrationSessionHelpers.jsonObjectToJsonString(this.toJsonObject(true));
+
+    }
+
+    public String toJsonMinimal() {
+        return OrchestrationSessionHelpers.jsonObjectToJsonString(this.toJsonObject(false));
 
     }
 
@@ -237,33 +279,5 @@ public class OrchestrationSession {
                 options);
         entry.validate();
         entries.add(entry);
-
-        System.out.println(entry);
-
     }
-
-    /*
-     * public void createBundle(String payload, String profileUri) {
-     * // Parse the FHIR JSON payload into a Bundle resource
-     * Bundle bundle = parser.parseResource(Bundle.class, payload);
-     * 
-     * // Optionally, you can validate the Bundle against a profile
-     * if (profileUri != null && !profileUri.isEmpty()) {
-     * FhirValidator validator = ctx.newValidator();
-     * ValidationResult result = validator.validateWithResult(bundle,
-     * new ValidationOptions().addProfile(profileUri));
-     * if (!result.isSuccessful()) {
-     * System.out.println("Validation against profile failed.");
-     * return;
-     * }
-     * }
-     * 
-     * // Serialize the Bundle back to JSON
-     * String serializedBundle = parser.encodeResourceToString(bundle);
-     * 
-     * // Print the serialized JSON representation of the Bundle
-     * System.out.println(serializedBundle);
-     * }
-     */
-
 }
