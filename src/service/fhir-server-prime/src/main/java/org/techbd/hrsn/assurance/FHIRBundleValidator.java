@@ -30,6 +30,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 
@@ -1068,32 +1069,262 @@ public class FHIRBundleValidator {
 
     public String diagnosticsOperation(String sessionId) {
         if (sessionId == null) {
-            return getAllSessionsAsJson();
+            return getAllSessionsAsHtml();
         } else {
-            OrchestrationSession session = findSessionByKey(sessionId);
-            if (session != null) {
-                // // Found the session
-                String formattedSession = null;
-                try {
-                    formattedSession = prettyPrintJsonUsingDefaultPrettyPrinter(session.toJson());
-                    System.out.println(formattedSession);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-                return formattedSession;
-            } else {
-                // Session not found
-                return "No matching session";
-            }
+            return getSessionAsHtml(sessionId);
         }
     }
 
-    public String getAllSessionsAsJson() {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, OrchestrationSession> entry : sessions.entrySet()) {
-            sb.append(entry.getValue().toJsonMinimal());
+    private String getSessionAsHtml(String sessionId) {
+        OrchestrationSession session = findSessionByKey(sessionId);
+
+            StringBuilder html = new StringBuilder();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            if (session != null) {
+                            html.append("<!DOCTYPE html>\n");
+            html.append("<html lang=\"en\">\n");
+
+            html.append("<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/default.min.css\">\n");
+            html.append("<script src=\"https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js\"></script>\n");
+            html.append("\n<!-- and it's easy to individually load additional languages -->\n");
+            html.append("<script src=\"https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/languages/go.min.js\"></script>\n");
+            html.append("\n<script>hljs.highlightAll();</script>");
+
+            html.append("<head>\n");
+            html.append("    <meta charset=\"UTF-8\">\n");
+            html.append("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
+            html.append("    <title>Details of Session</title>\n");
+            html.append("    <style>\n");
+            html.append("        body {\n");
+            html.append("            font-family: Arial, sans-serif;\n");
+            html.append("            margin: 20px;\n");
+            html.append("        }\n");
+            html.append("        h1 {\n");
+            html.append("            text-align: left;\n");
+            html.append("        }\n");
+            html.append("        table {\n");
+            html.append("            width: 50%;\n");
+            html.append("            margin: 0 auto;\n");
+            html.append("            border-collapse: collapse;\n");
+            html.append("        }\n");
+            html.append("        th, td {\n");
+            html.append("            border: 1px solid #ddd;\n");
+            html.append("            padding: 8px;\n");
+            html.append("            text-align: left;\n");
+            html.append("        }\n");
+            html.append("        th {\n");
+            html.append("            background-color: #f2f2f2;\n");
+            html.append("        }\n");
+            html.append("    </style>\n");
+            html.append("</head>\n");
+            html.append("<body>\n");
+            html.append("    <h1>Details of Session</h1>\n");
+            html.append("    <table>\n");
+            html.append("        <tbody>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>Session Id</td>\n");
+            html.append("                <td>" + session.getOrchSessionId() + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>QE Identifier</td>\n");
+            html.append("                <td>" + session.getQeIdentifier() + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>Device Id</td>\n");
+            html.append("                <td>" + session.getDeviceId() + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>Version</td>\n");
+            html.append("                <td>" + session.getVersion() + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>Orchestration started at</td>\n");
+            html.append("                <td>" + session.getOrchStartedAt() + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("                <td>Orchestration finished at</td>\n");
+            html.append("                <td>" + session.getOrchFinishedAt() + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>DataLake submission status</td>\n");
+            html.append("                <td>" + session.getShinnyDataLakeSubmissionStatus() + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>DataLake submission start time</td>\n");
+            if (session.getShinnyDataLakeSubmissionStartTime() != 0) {
+                html.append("            <td>" + dateFormat.format(new Date(session.getShinnyDataLakeSubmissionStartTime())) + "</td>\n");
+            } else {
+            html.append("                <td></td>\n");
+            }
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>DataLake submission end time</td>\n");
+            if (session.getShinnyDataLakeSubmissionStartTime() != 0) {
+                html.append("            <td>" + dateFormat.format(new Date(session.getShinnyDataLakeSubmissionEndTime())) + "</td>\n");
+            } else {
+            html.append("                <td></td>\n");
+            }
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>DataLake submission process time</td>\n");
+            html.append("                <td>" + (session.getShinnyDataLakeSubmissionEndTime() - session.getShinnyDataLakeSubmissionStartTime()) + " ms</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>DataLake Submission Response</td>\n");
+            html.append("                <td>" + session.findShinnyDataLakeSubmissionDataByKey(sessionId) + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>Validation Exceptions</td>\n");
+            html.append("                <td>" + "" + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>The full session data</td>\n");
+            String fullData = "";
+            try {
+                fullData = prettyPrintJsonUsingDefaultPrettyPrinter(session.toJson());
+            } catch (JsonProcessingException e) {
+                fullData = "Error while parsing the session data";
+            }
+            html.append("                <td><pre><code class=\"language-html\">" + fullData + "</code></pre></td>\n");
+            html.append("            </tr>\n");
+            html.append("        </tbody>\n");
+            html.append("    </table>\n");
+            html.append("</body>\n");
+            html.append("</html>\n");
+            } else {
+                // Session not found
+                html.append("<!DOCTYPE html>\n");
+                html.append("<html lang=\"en\">\n");
+                html.append("<head>\n");
+                html.append("    <meta charset=\"UTF-8\">\n");
+                html.append("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
+                html.append("    <title>Details of Session</title>\n");
+                html.append("    <style>\n");
+                html.append("        body {\n");
+                html.append("            font-family: Arial, sans-serif;\n");
+                html.append("            margin: 20px;\n");
+                html.append("        }\n");
+                html.append("        h1 {\n");
+                html.append("            text-align: center;\n");
+                html.append("        }\n");
+                html.append("        table {\n");
+                html.append("            width: 50%;\n");
+                html.append("            margin: 0 auto;\n");
+                html.append("            border-collapse: collapse;\n");
+                html.append("        }\n");
+                html.append("        th, td {\n");
+                html.append("            border: 1px solid #ddd;\n");
+                html.append("            padding: 8px;\n");
+                html.append("            text-align: center;\n");
+                html.append("        }\n");
+                html.append("        th {\n");
+                html.append("            background-color: #f2f2f2;\n");
+                html.append("        }\n");
+                html.append("    </style>\n");
+                html.append("</head>\n");
+                html.append("<body>\n");
+                html.append("    <h1>Details of Session</h1>\n");
+                html.append("    <table>\n");
+                html.append("        <tbody>\n");
+                html.append("            <tr>\n");
+                html.append("                <td>No matching session</td>\n");
+                html.append("            </tr>\n");
+                html.append("        </tbody>\n");
+                html.append("    </table>\n");
+                html.append("</body>\n");
+                html.append("</html>\n");
+            }
+
+            return html.toString();
+    }
+
+    public String getAllSessionsAsHtml() {
+        StringBuilder html = new StringBuilder();
+
+        html.append("<!DOCTYPE html>\n");
+        html.append("<html lang=\"en\">\n");
+        html.append("<head>\n");
+        html.append("    <meta charset=\"UTF-8\">\n");
+        html.append("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
+        html.append("    <title>Admin Diagnostics</title>\n");
+        html.append("    <style>\n");
+        html.append("        body {\n");
+        html.append("            font-family: Arial, sans-serif;\n");
+        html.append("            margin: 20px;\n");
+        html.append("        }\n");
+        html.append("        h1 {\n");
+        html.append("            text-align: center;\n");
+        html.append("        }\n");
+        html.append("        table {\n");
+        html.append("            width: 100%;\n");
+        html.append("            border-collapse: collapse;\n");
+        html.append("            margin: 20px 0;\n");
+        html.append("        }\n");
+        html.append("        th, td {\n");
+        html.append("            border: 1px solid #ddd;\n");
+        html.append("            padding: 8px;\n");
+        html.append("            text-align: center;\n");
+        html.append("        }\n");
+        html.append("        th {\n");
+        html.append("            background-color: #f2f2f2;\n");
+        html.append("        }\n");
+        html.append("    </style>\n");
+        html.append("</head>\n");
+        html.append("<body>\n");
+        html.append("    <h1>Admin Diagnostics</h1>\n");
+        html.append("    <table>\n");
+        html.append("        <thead>\n");
+        html.append("            <tr>\n");
+        html.append("                <th>Session Id</th>\n");
+        html.append("                <th>QE Identifier</th>\n");
+        html.append("                <th>Device Id</th>\n");
+        html.append("                <th>Version</th>\n");
+        html.append("                <th>Started At</th>\n");
+        html.append("                <th>DataLake Submission Status</th>\n");
+        html.append("                <th>DataLake Submission Start Time</th>\n");
+        html.append("                <th>DataLake Submission End Time</th>\n");
+        html.append("                <th>DataLake Submission Process TIme (ms)</th>\n");
+        html.append("            </tr>\n");
+        html.append("        </thead>\n");
+        html.append("        <tbody>\n");
+
+        if(sessions.size() == 0) {
+                html.append("            <tr>\n");
+                html.append("No data in session.\n");
+                html.append("            </tr>\n");
+        } else {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (Map.Entry<String, OrchestrationSession> entry : sessions.entrySet()) {
+                OrchestrationSession session = entry.getValue();
+                html.append("            <tr>\n");
+                //html.append("                <td>" + session.getOrchSessionId() + "</td>\n");
+
+                html.append("                <td><a href=\"/admin/diagnostics/"+ session.getOrchSessionId() +"\">" + session.getOrchSessionId() + "</a></td>\n");
+                html.append("                <td>" + session.getQeIdentifier() + "</td>\n");
+                html.append("                <td>" + session.getDeviceId() + "</td>\n");
+                html.append("                <td>" + session.getVersion() + "</td>\n");
+                html.append("                <td>" + session.getOrchStartedAt() + "</td>\n");
+                html.append("                <td>" + session.getShinnyDataLakeSubmissionStatus() + "</td>\n");
+                if (session.getShinnyDataLakeSubmissionStartTime() != 0) {
+                    html.append("                <td>" + dateFormat.format(new Date(session.getShinnyDataLakeSubmissionStartTime())) + "</td>\n");
+                } else {
+                html.append("                <td></td>\n");
+                }
+                if (session.getShinnyDataLakeSubmissionStartTime() != 0) {
+                    html.append("                <td>" + dateFormat.format(new Date(session.getShinnyDataLakeSubmissionEndTime())) + "</td>\n");
+                } else {
+                html.append("                <td></td>\n");
+                }
+                html.append("                <td>" + (session.getShinnyDataLakeSubmissionEndTime() - session.getShinnyDataLakeSubmissionStartTime()) + " ms</td>\n");
+            }
         }
-        return sb.toString();
+        
+        html.append("        </tbody>\n");
+        html.append("    </table>\n");
+        html.append("</body>\n");
+        html.append("</html>\n");
+
+        return html.toString();
     }
 
     public OrchestrationSession findSessionByKey(String key) {
