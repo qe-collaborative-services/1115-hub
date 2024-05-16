@@ -1,0 +1,239 @@
+{
+    "info": {
+        "_postman_id": "12345678-1234-5678-1234-567812345678",
+        "name": "FHIR Service Test",
+        "description": "This collection tests and verifies the FHIR service with two API endpoints",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Fetch CapabilityStatement",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "{{contentType}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{hostName}}/metadata",
+                    "host": [
+                        "{{hostName}}"
+                    ],
+                    "path": [
+                        "metadata"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Validate Bundle - Happy Path",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "{{contentType}}"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/fhir+json;charset=utf-8"
+                    },
+                    {
+                        "key": "TECH_BD_FHIR_SERVICE_QE_IDENTIFIER",
+                        "value": "{{TECH_BD_FHIR_SERVICE_QE_IDENTIFIER}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{hostName}}/Bundle/$validate",
+                    "host": [
+                        "{{hostName}}"
+                    ],
+                    "path": [
+                        "Bundle",
+                        "$validate"
+                    ]
+                },
+                "body": {
+                    "mode": "file",
+                    "file": {
+                        "src": "fhir-fixture-shinny-impl-guide-sample.json"
+                    }
+                }
+            }
+        },
+        {
+            "name": "Validate Bundle - Unhappy Path",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "{{contentType}}"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/fhir+json;charset=utf-8"
+                    },
+                    {
+                        "key": "TECH_BD_FHIR_SERVICE_QE_IDENTIFIER",
+                        "value": "{{TECH_BD_FHIR_SERVICE_QE_IDENTIFIER}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{hostName}}/Bundle/$validate",
+                    "host": [
+                        "{{hostName}}"
+                    ],
+                    "path": [
+                        "Bundle",
+                        "$validate"
+                    ]
+                },
+                "body": {
+                    "mode": "file",
+                    "file": {
+                        "src": "fhir-fixture-unhappy-path-01.json"
+                    }
+                }
+            }
+        },
+        {
+            "name": "Validate Bundle from Bronx QE - Unhappy Path",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "{{contentType}}"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/fhir+json;charset=utf-8"
+                    },
+                    {
+                        "key": "TECH_BD_FHIR_SERVICE_QE_IDENTIFIER",
+                        "value": "{{TECH_BD_FHIR_SERVICE_QE_IDENTIFIER}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{hostName}}/Bundle/$validate",
+                    "host": [
+                        "{{hostName}}"
+                    ],
+                    "path": [
+                        "Bundle",
+                        "$validate"
+                    ]
+                },
+                "body": {
+                    "mode": "file",
+                    "file": {
+                        "src": "fhir-fixture-shinny-bronx-unhappy-path.json"
+                    }
+                }
+            }
+        },
+        {
+            "name": "Validate Bundle from HealtheConnections QE - Unhappy Path",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "{{contentType}}"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/fhir+json;charset=utf-8"
+                    },
+                    {
+                        "key": "TECH_BD_FHIR_SERVICE_QE_IDENTIFIER",
+                        "value": "{{TECH_BD_FHIR_SERVICE_QE_IDENTIFIER}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{hostName}}/Bundle/$validate",
+                    "host": [
+                        "{{hostName}}"
+                    ],
+                    "path": [
+                        "Bundle",
+                        "$validate"
+                    ]
+                },
+                "body": {
+                    "mode": "file",
+                    "file": {
+                        "src": "fhir-fixture-shinny-healtheconnections-unhappy-path.json"
+                    }
+                }
+            }
+        },
+        {
+            "name": "Submit Bundle to Datalake",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{hostName}}/Bundle/?qe=HEALTHELINK",
+                    "host": [
+                        "{{hostName}}"
+                    ],
+                    "path": [
+                        "Bundle"
+                    ],
+                    "query": [
+                        {
+                            "key": "qe",
+                            "value": "HEALTHELINK"
+                        }
+                    ]
+                },
+                "body": {
+                    "mode": "file",
+                    "file": {
+                        "src": "fhir-fixture-shinny-impl-guide-sample.json"
+                    }
+                }
+            }
+        },
+        {
+            "name": "Get Session Details",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/fhir+json;charset=utf-8"
+                    },
+                    {
+                        "key": "TECH_BD_FHIR_SERVICE_QE_IDENTIFIER",
+                        "value": "{{TECH_BD_FHIR_SERVICE_QE_IDENTIFIER}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{hostName}}/admin/diagnostics/{{sessionId}}",
+                    "host": [
+                        "{{hostName}}"
+                    ],
+                    "path": [
+                        "admin",
+                        "diagnostics",
+                        "{{sessionId}}"
+                    ]
+                }
+            }
+        }
+    ]
+}
