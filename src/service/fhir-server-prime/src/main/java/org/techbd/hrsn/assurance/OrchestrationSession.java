@@ -144,6 +144,10 @@ public class OrchestrationSession {
     private final String deviceId; // TODO : store in JSON
     private final String version; // TODO : store in JSON
     private final String qeIdentifier; // TODO : store in JSON
+    public String getQeIdentifier() {
+        return qeIdentifier;
+    }
+
     private final Date orchStartedAt = new Date(); // TODO : store in JSON
     private final FhirContext ctx;
     private final IParser parser; // Initialize the parser in constructor
@@ -161,6 +165,16 @@ public class OrchestrationSession {
 
     public void setShinnyDataLakeSubmissionData(Map<String, String> shinnyDataLakeSubmissionData) {
         this.shinnyDataLakeSubmissionData = shinnyDataLakeSubmissionData;
+    }
+
+    public String findShinnyDataLakeSubmissionDataByKey(String key) {
+        for (Map.Entry<String, String> entry : shinnyDataLakeSubmissionData.entrySet()) {
+            if (entry.getKey().equals(key)) {
+                return entry.getValue();
+            }
+        }
+        // Key not found
+        return null;
     }
 
     // should be completly independent of hhtp
