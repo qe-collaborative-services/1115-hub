@@ -22,13 +22,10 @@ within the project.
 
 ### fhir-service.test.http
 
-This file is crucial for verifying and testing the FHIR service. It interacts
+This is the REST-API execution file performs the actual test. It interacts
 with two primary API endpoints (/Bundle/$validate & /Bundle/) to ensure they are
 functioning correctly. This files also needs an .env file for storing the
 environmental variables like host name & port.
-
-`Purpose`: Provides automated tests for the FHIR service endpoints using HTTP
-requests.
 
 #### Test Scenarios:
 
@@ -42,6 +39,19 @@ requests.
   accepted and appropriately stored by the server.
 - `Bundle Submission (Unhappy Path)`: Checks error handling for invalid Bundle
   submissions.
+
+#### Running httpYac tests in Postman
+
+For developers who prefer to use Postman for API testing and debugging, you can easily convert `fhir-service.test.http` httpYac file to Postman:
+
+- Open the `fhir-service.test.http` and familiarize yourself with the structure of the file. You will see sections defining HTTP requests, including HTTP methods (GET, POST, etc.), URLs, headers, and body content.
+- Open Postman and create a new collection.
+- Add a new request to the collection for each HTTP request defined in the `fhir-service.test.http` file:
+  - Copy the method (GET, POST, etc.) from the httpYac file and set it in Postman.
+  - Copy the URL from the httpYac file and paste it into the Postman request URL field.
+  - Set the request headers in Postman by copying the headers from the httpYac file. Ensure each header key and value is correctly set.
+  - If the request includes a body, copy the body content from the httpYac file and paste it into the Postman body section. Select the appropriate body type (e.g., raw, JSON, form-data).
+  - Be sure to replace variables as necessary
 
 ### fhir-fixture-shinny-impl-guide-sample.json
 
