@@ -37,7 +37,7 @@ class OrchestrationSessionTest {
     void setUp() {
 
         FhirContext ctx = FhirContext.forR4();
-        session = new OrchestrationSession(qeIdentifier, ctx, orchSessionId, deviceId, version);
+        session = new OrchestrationSession(qeIdentifier, ctx, orchSessionId, deviceId, version, "HAPI");
 
         // Set up the profile URI and folder path for validation
         try {

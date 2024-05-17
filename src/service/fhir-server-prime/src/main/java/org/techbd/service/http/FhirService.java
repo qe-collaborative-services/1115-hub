@@ -103,20 +103,20 @@ public class FhirService {
         return FHIRBundleValidator.getInstance().diagnosticsOperation(sessionId);
     }
 
-    public String validateFhirResourceData(String jsonData, String qeIdentifier) {
+    public String validateFhirResourceData(String jsonData, String qeIdentifier, String validationEngine) {
         String sessionId = UUID.randomUUID().toString();
-        return FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier, sessionId);
+        return FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier, sessionId, validationEngine);
     }
 
     @Async
-    public String validateBundleAndSave(String jsonData, String qeIdentifier, String apiUrl) {
+    public String validateBundleAndSave(String jsonData, String qeIdentifier, String apiUrl, String validationEngine) {
         // POST
         // https://40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev?processingAgent=QE
         // Make the POST request asynchronously
 
         // Validate process
         String sessionId = UUID.randomUUID().toString();
-        FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier, sessionId);
+        FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier, sessionId, validationEngine);
 
         // Prepare Target API URI
         String targetApiUrl = null;
@@ -175,7 +175,7 @@ public class FhirService {
         return "API invoked";
     }
 
-    public String adminValidate(String jsonData, String qeIdentifier) {
-        return FHIRBundleValidator.getInstance().adminValidate(jsonData, qeIdentifier);
+    public String adminValidate(String jsonData, String qeIdentifier, String validationEngine) {
+        return FHIRBundleValidator.getInstance().adminValidate(jsonData, qeIdentifier, validationEngine);
     }
 }

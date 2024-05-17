@@ -54,8 +54,10 @@ public class FhirController {
      */
     @PostMapping("/Bundle/$validate")
     public String validateBundle(@RequestBody String qeValue,
-            @RequestHeader("TECH_BD_FHIR_SERVICE_QE_IDENTIFIER") String qeIdentifier) {
-        return fhirService.validateFhirResourceData(qeValue, qeIdentifier);
+            @RequestHeader("TECH_BD_FHIR_SERVICE_QE_IDENTIFIER") String qeIdentifier,
+            @RequestHeader(name = "TECH_BD_FHIR_SERVICE_VALIDATION_ENGINE", required = false) String validationEngine) {
+        validationEngine = "HAPI";
+        return fhirService.validateFhirResourceData(qeValue, qeIdentifier, validationEngine);
     }
 
     /**
@@ -70,8 +72,10 @@ public class FhirController {
     @PostMapping("/Bundle/")
     public String validateBundleAndSave(@RequestBody String qeValue,
             @RequestParam("qe") String qeIdentifier,
-            @RequestHeader(name = "TECH_BD_FHIR_SERVICE_SHINNY_DATALAKE_API_URL", required = false) String apiUrl) {
-        return fhirService.validateBundleAndSave(qeValue, qeIdentifier, apiUrl);
+            @RequestHeader(name = "TECH_BD_FHIR_SERVICE_SHINNY_DATALAKE_API_URL", required = false) String apiUrl,
+            @RequestHeader(name = "TECH_BD_FHIR_SERVICE_VALIDATION_ENGINE", required = false) String validationEngine) {
+        validationEngine = "HAPI";
+        return fhirService.validateBundleAndSave(qeValue, qeIdentifier, apiUrl, validationEngine);
     }
 
     /**
@@ -82,8 +86,10 @@ public class FhirController {
      */
     @PostMapping("/admin/validate")
     public String validateBundleAdmin(@RequestBody String qeValue,
-            @RequestHeader("TECH_BD_FHIR_SERVICE_QE_IDENTIFIER") String qeIdentifier) {
-        return fhirService.adminValidate(qeValue, qeIdentifier);
+            @RequestHeader("TECH_BD_FHIR_SERVICE_QE_IDENTIFIER") String qeIdentifier,
+            @RequestHeader(name = "TECH_BD_FHIR_SERVICE_VALIDATION_ENGINE", required = false) String validationEngine) {
+        validationEngine = "HAPI";
+        return fhirService.adminValidate(qeValue, qeIdentifier, validationEngine);
     }
 
     @GetMapping("/")
