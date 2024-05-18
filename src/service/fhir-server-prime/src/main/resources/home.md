@@ -1,4 +1,4 @@
-# HAPI FHIR Server
+# FHIR Server
 
 ## Prerequisites (Sandbox)
 
