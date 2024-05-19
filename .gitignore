@@ -1,3 +1,4 @@
 .DS_Store
 SFTP-simulator*
 ingest-diags-*
+src/service/fhir-server-prime/target
