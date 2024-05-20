@@ -1,5 +1,7 @@
 package org.techbd.service.http;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
@@ -15,11 +17,12 @@ import java.net.URL;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 @Service
 public class FhirService {
     private WebClient webClient;
+
+    private final static Logger log = LoggerFactory.getLogger(FhirController.class);
 
     @Autowired
     public FhirService(WebClient.Builder webClientBuilder) {
@@ -103,19 +106,17 @@ public class FhirService {
         return FHIRBundleValidator.getInstance().diagnosticsOperation(sessionId);
     }
 
-    public String validateFhirResourceData(String jsonData, String qeIdentifier, String validationEngine) {
-        String sessionId = UUID.randomUUID().toString();
+    public String validateFhirResourceData(String jsonData, String qeIdentifier, String validationEngine, String sessionId) {
         return FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier, sessionId, validationEngine);
     }
 
     @Async
-    public String validateBundleAndSave(String jsonData, String qeIdentifier, String apiUrl, String validationEngine) {
+    public String validateBundleAndSave(String jsonData, String qeIdentifier, String apiUrl, String validationEngine, String sessionId) {
         // POST
         // https://40lafnwsw7.execute-api.us-east-1.amazonaws.com/dev?processingAgent=QE
         // Make the POST request asynchronously
 
         // Validate process
-        String sessionId = UUID.randomUUID().toString();
         FHIRBundleValidator.getInstance().validateFhirResource(jsonData, qeIdentifier, sessionId, validationEngine);
 
         // Prepare Target API URI
@@ -134,7 +135,7 @@ public class FhirService {
             host = url.getHost();
             path = url.getPath();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            log.error("Exception in parsing shinnyDataLakeApiUri: ", e);
         }
 
         FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.STARTED);
@@ -154,6 +155,7 @@ public class FhirService {
                     FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.ASYNC_FAILED);
                     FHIRBundleValidator.getInstance().findSessionByKey(sessionId).setShinnyDataLakeSubmissionEndTime(System.currentTimeMillis());
                     if (error instanceof WebClientResponseException responseException) {
+                        log.error("Exception from shinnyDataLakeApiUri: ", responseException);
                         // TODO: Process the response here, and save to db.
                         if (responseException.getStatusCode() == HttpStatus.FORBIDDEN) {
                             // Handle 403 Forbidden err
