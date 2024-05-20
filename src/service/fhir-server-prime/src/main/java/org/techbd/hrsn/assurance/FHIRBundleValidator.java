@@ -11,6 +11,8 @@ import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.server.exceptions.UnprocessableEntityException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -22,6 +24,8 @@ import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.techbd.hrsn.assurance.Globals.ShinnyDataLakeSubmissionStatus;
 import org.techbd.hrsn.assurance.Globals.ValidationEngine;
 
@@ -50,12 +54,14 @@ public class FHIRBundleValidator {
 
     private final Map<String, OrchestrationSession> sessions = new HashMap<>();
 
+    private final static Logger log = LoggerFactory.getLogger(FHIRBundleValidator.class);
+
     public FHIRBundleValidator() {
         PropertiesConfiguration config = new PropertiesConfiguration();
         try {
             config.load("application.properties");
         } catch (ConfigurationException e) {
-            e.printStackTrace();
+            log.error("Exception while loading the properties file: ", e);
         }
         // Load values fom application.properties
         shinnyDataLakeApiImpGuideProfileUri = config.getString("shinnyDataLakeApiImpGuideProfileUri");
@@ -994,49 +1000,85 @@ public class FHIRBundleValidator {
         return retVal;
     }
 
-    // public public MethodOutcome validateFhirResource(@ResourceParam String
-    // jsonBody,
-    // @RequestParam(value = "qe", required = false) String qeValue) {
-    // @Validate
-    // return json string
-    public String validateFhirResource(String jsonBody, String qeIdentifier, String sessionId) {
-        OrchestrationSession session = new OrchestrationSession(qeIdentifier,
+    public OrchestrationSession createSession(String sessionId) {
+        OrchestrationSession session = new OrchestrationSession(null,
                 context, sessionId, FHIRBundleValidator.deviceId,
-                FHIRBundleValidator.version);
-        session.setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.NOT_SUBMITTED);
-        session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
+                FHIRBundleValidator.version, null);
         this.sessions.put(sessionId, session);
-        System.out.println("Session: " + session);
-        String formattedSession = null;
-        try {
-            formattedSession = prettyPrintJsonUsingDefaultPrettyPrinter(session.toJson());
-            System.out.println(formattedSession);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        return session;
+    }
+    
+    public OrchestrationSession saveHttpRequestInfo(String sessionId, String ipAddress, String reqDetails) {
+        OrchestrationSession session = findSessionByKey(sessionId);
+        session.setDeviceId(ipAddress);
+        session.setFullHttpRequest(reqDetails);
+        return session;
+    }
+
+    public String validateFhirResource(String jsonBody, String qeIdentifier, String sessionId, String validationEngine) {
+        OrchestrationSession session = findSessionByKey(sessionId);
+        if(null == session) {
+            session = new OrchestrationSession(qeIdentifier,
+                context, sessionId, FHIRBundleValidator.deviceId,
+                FHIRBundleValidator.version, validationEngine);
         }
+        String formattedSession = null;
+        if(validationEngine == "HAPI") {
+            try {
+                session.setValidationEngine(validationEngine);
+                session.setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.NOT_SUBMITTED);
+                session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
+                JsonObject jsonObject = JsonParser.parseString(session.toJson()).getAsJsonObject();
+                JsonObject newJsonObject = new JsonObject();
+                newJsonObject.addProperty("resourceType", "OperationOutcome");
+                JsonElement techbdSession = jsonObject.get("techbdSession");
+                newJsonObject.add("techbdSession", techbdSession);
+                Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+                formattedSession = gson.toJson(newJsonObject);
+    
+                log.info(formattedSession);
+            } catch (Exception e) {
+                log.error("Excetion while validationg with Validation Engine: " + validationEngine, e);
+            }
+        } else if (validationEngine == "HL7_OFFICIAL") {
+
+        }
+
         return formattedSession;
     }
 
     // @Operation(name = "$admin_validate", idempotent = true)
-    public String adminValidate(/* @ResourceParam */ String jsonBody, String qeIdentifier) {
-        System.out.println(" adminValidate");
+    public String adminValidate(/* @ResourceParam */ String jsonBody, String qeIdentifier, String validationEngine) {
 
         String sessionId = UUID.randomUUID().toString();
         OrchestrationSession session = new OrchestrationSession(qeIdentifier,
                 context, sessionId, FHIRBundleValidator.deviceId,
-                FHIRBundleValidator.version);
-        session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
-        this.sessions.put(sessionId, session);
-        OperationOutcome operationOutcome = session.entries.get(0).getOperationOutcome();
+                FHIRBundleValidator.version, validationEngine);
+        OperationOutcome operationOutcome = null;
+
+        if(validationEngine == "HAPI") {
+            session.setValidationEngine(validationEngine);
+            session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
+            this.sessions.put(sessionId, session);
+            //OperationOutcome operationOutcome = session.entries.get(0).getOperationOutcome();
+            if(session.entries.get(0) instanceof OrchestrationSessionHapiValidationEngineEntryBundle) {
+                OrchestrationSessionHapiValidationEngineEntryBundle bundle = (OrchestrationSessionHapiValidationEngineEntryBundle) session.entries.get(0);
+                operationOutcome = bundle.getOperationOutcome();
+            }
+        } else if (validationEngine == "HL7_OFFICIAL") {
+
+        }
+
+
         MethodOutcome outcome = new MethodOutcome();
         outcome.setOperationOutcome(operationOutcome);
 
         String json = session.toJson();
-        System.out.println("json : " + json);
+        log.info("json : " + json);
+
         // Convert JSON to HTML
         String html = convertJsonToHtml(json);
-        // Display HTML
-        System.out.println("html : " + html);
+
         return html;
 
     }
@@ -1062,7 +1104,7 @@ public class FHIRBundleValidator {
             prop.load(input);
             propertyVal = prop.getProperty(key);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Exception: ", e);
         }
         return propertyVal;
     }
@@ -1146,6 +1188,12 @@ public class FHIRBundleValidator {
             html.append("                <td>" + session.getOrchFinishedAt() + "</td>\n");
             html.append("            </tr>\n");
             html.append("            <tr>\n");
+            html.append("                <td>Validation Engine</td>\n");
+            if(null != session.entries) {
+                html.append("                <td>" + session.entries.get(0).validationEngine + "</td>\n");
+            }
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
             html.append("                <td>DataLake submission status</td>\n");
             html.append("                <td>" + session.getShinnyDataLakeSubmissionStatus() + "</td>\n");
             html.append("            </tr>\n");
@@ -1186,6 +1234,15 @@ public class FHIRBundleValidator {
                 fullData = "Error while parsing the session data";
             }
             html.append("                <td><pre><code class=\"language-html\">" + fullData + "</code></pre></td>\n");
+            html.append("            </tr>\n");
+            
+            html.append("            <tr>\n");
+            html.append("                <td>Http request from</td>\n");
+            html.append("                <td>" + session.getDeviceId() + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>Full HTTP Request</td>\n");
+            html.append("                <td>" + session.getFullHttpRequest() + "</td>\n");
             html.append("            </tr>\n");
             html.append("        </tbody>\n");
             html.append("    </table>\n");

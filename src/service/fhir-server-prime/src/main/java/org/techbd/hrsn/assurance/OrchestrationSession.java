@@ -7,6 +7,7 @@ import ca.uhn.fhir.validation.FhirValidator;
 import ca.uhn.fhir.validation.ValidationOptions;
 import ca.uhn.fhir.validation.ValidationResult;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.hl7.fhir.instance.model.api.IBaseResource;
@@ -30,7 +31,7 @@ class OrchestrationSessionHelpers {
 
     // Convert JsonObject to JSON string
     public static String jsonObjectToJsonString(JsonObject jsonObject) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         return gson.toJson(jsonObject);
     }
 
@@ -41,24 +42,41 @@ class OrchestrationSessionHelpers {
     }
 }
 
-class OrchestrationSessionEntryBundle {
+interface Bundleable {
+    public String toJson();
+}
+
+class BaseBundle {
+    protected String payload;
+    protected ArrayList<Exception> exceptions; // TODO: store in JSON
+    protected ValidationEngine validationEngine;
+
+    protected ArrayList<Exception> getExceptions() {
+        return exceptions;
+    }
+
+    protected ValidationEngine getValidationEngine() {
+        return validationEngine;
+    }
+}
+
+class OrchestrationSessionHapiValidationEngineEntryBundle extends BaseBundle implements Bundleable {
 
     private final IParser parser;
-    private final String payload;
     private final FhirValidator validator;
     private final ValidationOptions options;
-    private final ArrayList<Exception> exceptions; // TODO: store in JSON
     private IBaseResource resource;
     private ValidationResult result; // TODO : store in JSON
     private OperationOutcome operationOutcome; // TODO: store in JSON
 
-    public OrchestrationSessionEntryBundle(String payload, IParser parser, FhirValidator validator,
+    public OrchestrationSessionHapiValidationEngineEntryBundle(String payload, IParser parser, FhirValidator validator,
             ValidationOptions options) {
         this.payload = payload;
         this.parser = parser;
         this.validator = validator;
         this.options = options;
         this.exceptions = new ArrayList<>();
+        super.validationEngine = ValidationEngine.HAPI;
     }
 
     public JsonObject toJsonObject() {
@@ -114,8 +132,97 @@ class OrchestrationSessionEntryBundle {
         return operationOutcome;
     }
 
-    public ArrayList<Exception> getExceptions() {
-        return exceptions;
+    public boolean validate() {
+        // Perform bundle validation logic
+        // Create OrchestrationEntry instances for each validation outcome
+        System.out.println("validateBundle : ");
+
+        try {
+            resource = parser.parseResource(payload);
+            // Validate the resource with the specified profile
+            this.result = validator.validateWithResult(resource, this.options);
+        } catch (Exception e) {
+            exceptions.add(e);
+            return false;
+        }
+
+        operationOutcome = (OperationOutcome) result.toOperationOutcome();
+
+        return true;
+    }
+
+}
+
+class OrchestrationSessionHl7ValidationEngineEntryBundle extends BaseBundle implements Bundleable {
+
+    private final IParser parser;
+    private final FhirValidator validator;
+    private final ValidationOptions options;
+    private IBaseResource resource;
+    private ValidationResult result; // TODO : store in JSON
+    private OperationOutcome operationOutcome; // TODO: store in JSON
+
+    public OrchestrationSessionHl7ValidationEngineEntryBundle(String payload, IParser parser, FhirValidator validator,
+            ValidationOptions options) {
+        this.payload = payload;
+        this.parser = parser;
+        this.validator = validator;
+        this.options = options;
+        this.exceptions = new ArrayList<>();
+        super.validationEngine = ValidationEngine.HAPI;
+    }
+
+    public JsonObject toJsonObject() {
+        JsonObject jsonObject = new JsonObject();
+
+        // Add result to JSON
+        if (result != null) {
+            jsonObject.add("result", resultToJson());
+        }
+
+        // Add operationOutcome to JSON
+        if (operationOutcome != null) {
+            jsonObject.add("operationOutcome", operationOutcomeToJson());
+        }
+
+        // Add exceptions to JSON
+        if (exceptions != null && !exceptions.isEmpty()) {
+            JsonArray exceptionsArray = new JsonArray();
+            for (Exception exception : exceptions) {
+                exceptionsArray.add(exception.getMessage());
+            }
+            jsonObject.add("exceptions", exceptionsArray);
+        }
+
+        return jsonObject;
+    }
+
+    public String toJson() {
+        return OrchestrationSessionHelpers.jsonObjectToJsonString(this.toJsonObject());
+
+    }
+
+    private JsonObject resultToJson() {
+        JsonObject json = new JsonObject();
+        // Customize the conversion of ValidationResult to JSON based on your
+        // requirements
+        // For example:
+        json.addProperty("isSuccessful", this.result.isSuccessful());
+        // Add more properties as needed
+        return json;
+    }
+
+    // Helper method to convert OperationOutcome to JSON
+    private JsonObject operationOutcomeToJson() {
+        String operaionOutcomeResult = parser.encodeResourceToString(this.operationOutcome);
+        JsonObject json = new JsonObject();
+        Gson gson = new Gson();
+        json.add("outcome", gson.fromJson(operaionOutcomeResult, JsonObject.class));
+        return json;
+    }
+
+    public OperationOutcome getOperationOutcome() {
+        return operationOutcome;
     }
 
     public boolean validate() {
@@ -140,24 +247,43 @@ class OrchestrationSessionEntryBundle {
 }
 
 public class OrchestrationSession {
+    //TODO: private RequestResponseActivity rra; // Will be null until requestResponsePojoFilter handles the respose storage.
     private final String orchSessionId; // TODO : store in JSON
-    private final String deviceId; // TODO : store in JSON
+    private String deviceId; // TODO : store in JSON
     private final String version; // TODO : store in JSON
-    private final String qeIdentifier; // TODO : store in JSON
-    public String getQeIdentifier() {
-        return qeIdentifier;
-    }
-
+    private String qeIdentifier = "unspecified"; // TODO : store in JSON
     private final Date orchStartedAt = new Date(); // TODO : store in JSON
     private final FhirContext ctx;
     private final IParser parser; // Initialize the parser in constructor
-    public ArrayList<OrchestrationSessionEntryBundle> entries = new ArrayList<>();
+    public ArrayList<BaseBundle> entries = new ArrayList<>();
     private Date orchFinishedAt; // TODO : store in JSON
     private ShinnyDataLakeSubmissionStatus shinnyDataLakeSubmissionStatus; // Holds the session status
     private long shinnyDataLakeSubmissionStartTime; // Holds the async call start time in milli sec
     private long shinnyDataLakeSubmissionEndTime; // Holds the async call end time in milli sec
-
     private Map<String, String> shinnyDataLakeSubmissionData = new HashMap<>();
+    private String validationEngine;
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public void setValidationEngine(String validationEngine) {
+        this.validationEngine = validationEngine;
+    }
+
+    private String fullHttpRequest;
+
+    public String getFullHttpRequest() {
+        return fullHttpRequest;
+    }
+
+    public void setFullHttpRequest(String fullHttpRequest) {
+        this.fullHttpRequest = fullHttpRequest;
+    }
+
+    public String getQeIdentifier() {
+        return qeIdentifier;
+    }
 
     public Map<String, String> getShinnyDataLakeSubmissionData() {
         return shinnyDataLakeSubmissionData;
@@ -179,14 +305,18 @@ public class OrchestrationSession {
 
     // should be completly independent of hhtp
     public OrchestrationSession(String qeIdentifier, FhirContext ctx, String orchSessionId, String deviceId,
-            String version) {
-        this.qeIdentifier = qeIdentifier;
+            String version, String validationEngine) {
+        if(null != qeIdentifier && !qeIdentifier.isEmpty()) {
+            this.qeIdentifier = qeIdentifier;
+        }
+
         this.ctx = ctx;
         this.orchSessionId = orchSessionId;
         this.deviceId = deviceId;
         this.version = version;
         this.parser = ctx.newJsonParser(); // Updated code
         this.parser.setParserErrorHandler(new StrictErrorHandler());
+        this.validationEngine = validationEngine;
     }
 
     public ShinnyDataLakeSubmissionStatus getShinnyDataLakeSubmissionStatus() {
@@ -216,10 +346,17 @@ public class OrchestrationSession {
     public JsonObject toJsonObject(boolean useFullData) {
         // TODO: Date orchFinishedAt
         orchFinishedAt = new Date();
+        JsonObject jsonBaseObject = new JsonObject();
+        jsonBaseObject.addProperty("resourceType", "OperationOutcome");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("orchSessionId", orchSessionId);
         jsonObject.addProperty("deviceId", deviceId);
         jsonObject.addProperty("version", version);
+        if(null != validationEngine) {
+            jsonObject.addProperty("validationEngine", validationEngine);
+        } else {
+            System.out.println("validationEngine is null");
+        }
         jsonObject.addProperty("orchStartedAt", orchStartedAt.toString());
         if (shinnyDataLakeSubmissionStatus == null) {
             jsonObject.addProperty("shinnyDataLakeSubmissionStatus", "");
@@ -234,17 +371,21 @@ public class OrchestrationSession {
         if (useFullData) {
             // Create a JSON array to hold the entry objects
             JsonArray entriesArray = new JsonArray();
-            for (OrchestrationSessionEntryBundle entry : entries) {
-                JsonObject entryJson = entry.toJsonObject();
-                entriesArray.add(entryJson);
+            for (BaseBundle entry : entries) {
+                if(entry instanceof OrchestrationSessionHapiValidationEngineEntryBundle) {
+                    OrchestrationSessionHapiValidationEngineEntryBundle bundle = (OrchestrationSessionHapiValidationEngineEntryBundle) entry;
+                    JsonObject entryJson = bundle.toJsonObject();
+                    entriesArray.add(entryJson);
+                }
             }
 
             // Add the array of entry objects to the main JSON object
             jsonObject.add("entries", entriesArray);
         }
-
         jsonObject.addProperty("orchFinishedAt", orchFinishedAt != null ? orchFinishedAt.toString() : null);
-        return jsonObject;
+
+        jsonBaseObject.add("techbdSession", jsonObject);
+        return jsonBaseObject;
     }
 
     public String toJson() {
@@ -279,6 +420,7 @@ public class OrchestrationSession {
 
     // TODO: Add enum parameter for validationEngine : HAPI (default), INFERNO, HL7
     public void validateBundle(String payload, String profileUrl, ValidationEngine ve) {
+        this.validationEngine = "HAPI";
         // Perform bundle validation logic
         // Create OrchestrationEntry instances for each validation outcome
 
@@ -289,7 +431,7 @@ public class OrchestrationSession {
         ValidationOptions options = new ValidationOptions();
         options.addProfile(profileUrl);
         // Create an OrchestrationEntry instance to store the validation outcome
-        OrchestrationSessionEntryBundle entry = new OrchestrationSessionEntryBundle(payload, this.parser, validator,
+        OrchestrationSessionHapiValidationEngineEntryBundle entry = new OrchestrationSessionHapiValidationEngineEntryBundle(payload, this.parser, validator,
                 options);
         entry.validate();
         entries.add(entry);
