@@ -7,12 +7,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.server.ConfigurableWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.net.InetAddress;
 import java.util.Collections;
 
+@ComponentScan(basePackages = "org.techbd")
 @SpringBootApplication
-public class FHIRApplication implements ApplicationRunner, WebServerFactoryCustomizer<ConfigurableWebServerFactory> {
+public class FHIRApplication implements ApplicationRunner, WebServerFactoryCustomizer<ConfigurableWebServerFactory>, WebMvcConfigurer  {
 
 	@Value("${server.port}")
 	private int port;

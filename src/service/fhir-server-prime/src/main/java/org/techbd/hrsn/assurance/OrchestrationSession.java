@@ -247,10 +247,11 @@ class OrchestrationSessionHl7ValidationEngineEntryBundle extends BaseBundle impl
 }
 
 public class OrchestrationSession {
+    //TODO: private RequestResponseActivity rra; // Will be null until requestResponsePojoFilter handles the respose storage.
     private final String orchSessionId; // TODO : store in JSON
-    private final String deviceId; // TODO : store in JSON
+    private String deviceId; // TODO : store in JSON
     private final String version; // TODO : store in JSON
-    private final String qeIdentifier; // TODO : store in JSON
+    private String qeIdentifier = "unspecified"; // TODO : store in JSON
     private final Date orchStartedAt = new Date(); // TODO : store in JSON
     private final FhirContext ctx;
     private final IParser parser; // Initialize the parser in constructor
@@ -261,6 +262,24 @@ public class OrchestrationSession {
     private long shinnyDataLakeSubmissionEndTime; // Holds the async call end time in milli sec
     private Map<String, String> shinnyDataLakeSubmissionData = new HashMap<>();
     private String validationEngine;
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public void setValidationEngine(String validationEngine) {
+        this.validationEngine = validationEngine;
+    }
+
+    private String fullHttpRequest;
+
+    public String getFullHttpRequest() {
+        return fullHttpRequest;
+    }
+
+    public void setFullHttpRequest(String fullHttpRequest) {
+        this.fullHttpRequest = fullHttpRequest;
+    }
 
     public String getQeIdentifier() {
         return qeIdentifier;
@@ -287,7 +306,10 @@ public class OrchestrationSession {
     // should be completly independent of hhtp
     public OrchestrationSession(String qeIdentifier, FhirContext ctx, String orchSessionId, String deviceId,
             String version, String validationEngine) {
-        this.qeIdentifier = qeIdentifier;
+        if(null != qeIdentifier && !qeIdentifier.isEmpty()) {
+            this.qeIdentifier = qeIdentifier;
+        }
+
         this.ctx = ctx;
         this.orchSessionId = orchSessionId;
         this.deviceId = deviceId;
@@ -398,7 +420,7 @@ public class OrchestrationSession {
 
     // TODO: Add enum parameter for validationEngine : HAPI (default), INFERNO, HL7
     public void validateBundle(String payload, String profileUrl, ValidationEngine ve) {
-        this.validationEngine = ve.name();
+        this.validationEngine = "HAPI";
         // Perform bundle validation logic
         // Create OrchestrationEntry instances for each validation outcome
 

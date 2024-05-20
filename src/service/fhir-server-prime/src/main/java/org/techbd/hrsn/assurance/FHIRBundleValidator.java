@@ -24,6 +24,8 @@ import org.hl7.fhir.r4.model.*;
 import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
 import org.hl7.fhir.r4.model.OperationOutcome.IssueSeverity;
 import org.hl7.fhir.r4.model.Patient.PatientCommunicationComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.techbd.hrsn.assurance.Globals.ShinnyDataLakeSubmissionStatus;
 import org.techbd.hrsn.assurance.Globals.ValidationEngine;
 
@@ -52,12 +54,14 @@ public class FHIRBundleValidator {
 
     private final Map<String, OrchestrationSession> sessions = new HashMap<>();
 
+    private final static Logger log = LoggerFactory.getLogger(FHIRBundleValidator.class);
+
     public FHIRBundleValidator() {
         PropertiesConfiguration config = new PropertiesConfiguration();
         try {
             config.load("application.properties");
         } catch (ConfigurationException e) {
-            e.printStackTrace();
+            log.error("Exception while loading the properties file: ", e);
         }
         // Load values fom application.properties
         shinnyDataLakeApiImpGuideProfileUri = config.getString("shinnyDataLakeApiImpGuideProfileUri");
@@ -996,17 +1000,34 @@ public class FHIRBundleValidator {
         return retVal;
     }
 
+    public OrchestrationSession createSession(String sessionId) {
+        OrchestrationSession session = new OrchestrationSession(null,
+                context, sessionId, FHIRBundleValidator.deviceId,
+                FHIRBundleValidator.version, null);
+        this.sessions.put(sessionId, session);
+        return session;
+    }
+    
+    public OrchestrationSession saveHttpRequestInfo(String sessionId, String ipAddress, String reqDetails) {
+        OrchestrationSession session = findSessionByKey(sessionId);
+        session.setDeviceId(ipAddress);
+        session.setFullHttpRequest(reqDetails);
+        return session;
+    }
+
     public String validateFhirResource(String jsonBody, String qeIdentifier, String sessionId, String validationEngine) {
-        OrchestrationSession session = new OrchestrationSession(qeIdentifier,
+        OrchestrationSession session = findSessionByKey(sessionId);
+        if(null == session) {
+            session = new OrchestrationSession(qeIdentifier,
                 context, sessionId, FHIRBundleValidator.deviceId,
                 FHIRBundleValidator.version, validationEngine);
+        }
         String formattedSession = null;
         if(validationEngine == "HAPI") {
             try {
+                session.setValidationEngine(validationEngine);
                 session.setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.NOT_SUBMITTED);
                 session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
-                this.sessions.put(sessionId, session);
-                System.out.println("Session: " + session);
                 JsonObject jsonObject = JsonParser.parseString(session.toJson()).getAsJsonObject();
                 JsonObject newJsonObject = new JsonObject();
                 newJsonObject.addProperty("resourceType", "OperationOutcome");
@@ -1015,9 +1036,9 @@ public class FHIRBundleValidator {
                 Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
                 formattedSession = gson.toJson(newJsonObject);
     
-                System.out.println(formattedSession);
+                log.info(formattedSession);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Excetion while validationg with Validation Engine: " + validationEngine, e);
             }
         } else if (validationEngine == "HL7_OFFICIAL") {
 
@@ -1036,6 +1057,7 @@ public class FHIRBundleValidator {
         OperationOutcome operationOutcome = null;
 
         if(validationEngine == "HAPI") {
+            session.setValidationEngine(validationEngine);
             session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
             this.sessions.put(sessionId, session);
             //OperationOutcome operationOutcome = session.entries.get(0).getOperationOutcome();
@@ -1052,7 +1074,7 @@ public class FHIRBundleValidator {
         outcome.setOperationOutcome(operationOutcome);
 
         String json = session.toJson();
-        System.out.println("json : " + json);
+        log.info("json : " + json);
 
         // Convert JSON to HTML
         String html = convertJsonToHtml(json);
@@ -1082,7 +1104,7 @@ public class FHIRBundleValidator {
             prop.load(input);
             propertyVal = prop.getProperty(key);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Exception: ", e);
         }
         return propertyVal;
     }
@@ -1167,7 +1189,9 @@ public class FHIRBundleValidator {
             html.append("            </tr>\n");
             html.append("            <tr>\n");
             html.append("                <td>Validation Engine</td>\n");
-            html.append("                <td>" + session.entries.get(0).validationEngine + "</td>\n");
+            if(null != session.entries) {
+                html.append("                <td>" + session.entries.get(0).validationEngine + "</td>\n");
+            }
             html.append("            </tr>\n");
             html.append("            <tr>\n");
             html.append("                <td>DataLake submission status</td>\n");
@@ -1210,6 +1234,15 @@ public class FHIRBundleValidator {
                 fullData = "Error while parsing the session data";
             }
             html.append("                <td><pre><code class=\"language-html\">" + fullData + "</code></pre></td>\n");
+            html.append("            </tr>\n");
+            
+            html.append("            <tr>\n");
+            html.append("                <td>Http request from</td>\n");
+            html.append("                <td>" + session.getDeviceId() + "</td>\n");
+            html.append("            </tr>\n");
+            html.append("            <tr>\n");
+            html.append("                <td>Full HTTP Request</td>\n");
+            html.append("                <td>" + session.getFullHttpRequest() + "</td>\n");
             html.append("            </tr>\n");
             html.append("        </tbody>\n");
             html.append("    </table>\n");
