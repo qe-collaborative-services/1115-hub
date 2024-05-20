@@ -55,15 +55,6 @@ public class RequestResponseLog4jFilter extends OncePerRequestFilter {
       this.enabled = false;
    }
 
-   // @Override
-   // protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-   //    if (isAsyncDispatch(request)) {
-   //       filterChain.doFilter(request, response);
-   //    } else {
-   //       doFilterWrapped(wrapRequest(request), wrapResponse(response), filterChain);
-   //    }
-   // }
-
    protected void doFilterWrapped(ContentCachingRequestWrapper request, ContentCachingResponseWrapper response, jakarta.servlet.FilterChain filterChain) throws ServletException, IOException, jakarta.servlet.ServletException {
 
       StringBuilder msg = new StringBuilder();
