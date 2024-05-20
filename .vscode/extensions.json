@@ -1,12 +1,17 @@
 {
-    "recommendations": [
-      "hediet.vscode-drawio",
-      "usernamehw.errorlens",
-      "denoland.vscode-deno",
-      "yzhang.markdown-all-in-one",
-      "shd101wyy.markdown-preview-enhanced",
-      "mechatroner.rainbow-csv",
-      "gruntfuggly.todo-tree",
-      "yy0931.vscode-sqlite3-editor"
-    ]
-  }
+  "recommendations": [
+    "hediet.vscode-drawio",
+    "usernamehw.errorlens",
+    "denoland.vscode-deno",
+    "yzhang.markdown-all-in-one",
+    "shd101wyy.markdown-preview-enhanced",
+    "mechatroner.rainbow-csv",
+    "gruntfuggly.todo-tree",
+    "yy0931.vscode-sqlite3-editor",
+    "vscjava.vscode-java-test",
+    "vscjava.vscode-maven",
+    "vscjava.vscode-java-dependency",
+    "redhat.java",
+    "vscjava.vscode-java-pack"
+  ]
+}
