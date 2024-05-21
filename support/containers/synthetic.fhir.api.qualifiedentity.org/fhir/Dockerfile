@@ -1,24 +1,11 @@
-# Use Debian 11 (Bullseye) slim as the base image
-FROM debian:bullseye-slim
+FROM maven:3.9.6-amazoncorretto-21-debian
 # Avoid prompts from apt during build
 ENV DEBIAN_FRONTEND=noninteractive
 # Update packages and install necessary dependencies
 RUN apt-get update
-RUN apt-get install -y curl unzip wget sqlite3 git cron netcat procps unzip zip
+RUN apt-get install -y curl unzip wget sqlite3 git cron
 RUN rm -rf /var/lib/apt/lists/*
 
-# Install SDKMAN
-RUN curl -s "https://get.sdkman.io" | bash
-
-# Activate SDKMAN
-RUN bash -c "source \"$HOME/.sdkman/bin/sdkman-init.sh\""
-
-# Install Java and Maven using SDKMAN
-RUN bash -c "source \"$HOME/.sdkman/bin/sdkman-init.sh\" && sdk install java 21.0.3-amzn && sdk default java 21.0.3-amzn"
-RUN bash -c "source \"$HOME/.sdkman/bin/sdkman-init.sh\" && sdk install maven 3.9.6 && sdk default maven 3.9.6"
-
-# Setup Environment Variable
-ENV PATH="/root/.sdkman/candidates/java/current/bin:/root/.sdkman/candidates/maven/current/bin:${PATH}"
 RUN java --version
 RUN mvn --version
 
