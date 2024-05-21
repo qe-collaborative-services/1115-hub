@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.techbd.hrsn.assurance.Globals;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
@@ -98,28 +102,8 @@ public class FhirController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<String> home() {
-        try {
-            log.info("Loading home.md");
-            // Load the home.md file from the classpath
-            Resource resource = resourceLoader.getResource("classpath:home.md");
-
-            // Read the content of the file
-            BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
-            String content = reader.lines().collect(Collectors.joining("\n"));
-            reader.close();
-
-            // Convert md file content to HTML
-            Parser parser = Parser.builder().build();
-            Node document = parser.parse(content);
-            HtmlRenderer renderer = HtmlRenderer.builder().build();
-            
-            // Return the content as a response
-            return ResponseEntity.ok(renderer.render(document));
-        } catch (IOException e) {
-            log.error("Error on loading home.md", e);
-            // If an error occurs (e.g., file not found), return a 404 Not Found response
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Home page not found", e);
-        }
+    public void home(HttpServletResponse response) throws IOException {
+        String swaggerUrl = Globals.getProverty("springdoc.swagger-ui.path");
+        response.sendRedirect(swaggerUrl);
     }
 }
