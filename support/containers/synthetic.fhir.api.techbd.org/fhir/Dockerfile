@@ -4,11 +4,21 @@ FROM debian:bullseye-slim
 ENV DEBIAN_FRONTEND=noninteractive
 # Update packages and install necessary dependencies
 RUN apt-get update
-RUN apt-get install -y curl unzip wget sqlite3 git cron netcat procps openjdk-17-jdk maven
+RUN apt-get install -y curl unzip wget sqlite3 git cron netcat procps unzip zip
 RUN rm -rf /var/lib/apt/lists/*
 
-# make sure java and maven are in the path
-ENV PATH="/usr/lib/jvm/java-17-openjdk-amd64/bin:/usr/share/maven/bin:$PATH"
+# Install SDKMAN
+RUN curl -s "https://get.sdkman.io" | bash
+
+# Activate SDKMAN
+RUN bash -c "source \"$HOME/.sdkman/bin/sdkman-init.sh\""
+
+# Install Java and Maven using SDKMAN
+RUN bash -c "source \"$HOME/.sdkman/bin/sdkman-init.sh\" && sdk install java 21.0.3-amzn && sdk default java 21.0.3-amzn"
+RUN bash -c "source \"$HOME/.sdkman/bin/sdkman-init.sh\" && sdk install maven 3.9.6 && sdk default maven 3.9.6"
+
+# Setup Environment Variable
+ENV PATH="/root/.sdkman/candidates/java/current/bin:/root/.sdkman/candidates/maven/current/bin:${PATH}"
 RUN java --version
 RUN mvn --version
 
@@ -23,5 +33,5 @@ EXPOSE 8080
 
 # start the fhir server
 WORKDIR /app/1115-hub/src/service/fhir-server-prime
-CMD ["mvn", "clean", "install", "jetty:run"]
 
+CMD ["mvn", "spring-boot:run", "-Dspring-boot.run.arguments=--server.port=8080 --server.host=0.0.0.0"]

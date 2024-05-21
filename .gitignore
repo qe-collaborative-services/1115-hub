@@ -7,4 +7,5 @@ ingest-diags-*
 
 # Java
 .mvn
+src/service/fhir-server-prime/logs
 src/service/fhir-server-prime/target
