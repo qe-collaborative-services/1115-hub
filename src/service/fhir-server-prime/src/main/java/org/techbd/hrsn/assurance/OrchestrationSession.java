@@ -272,6 +272,7 @@ public class OrchestrationSession {
     }
 
     private String fullHttpRequest;
+    public HttpRequestResponse httpRequestResponse;
 
     public String getFullHttpRequest() {
         return fullHttpRequest;
@@ -317,6 +318,7 @@ public class OrchestrationSession {
         this.parser = ctx.newJsonParser(); // Updated code
         this.parser.setParserErrorHandler(new StrictErrorHandler());
         this.validationEngine = validationEngine;
+        this.httpRequestResponse = new HttpRequestResponse();
     }
 
     public ShinnyDataLakeSubmissionStatus getShinnyDataLakeSubmissionStatus() {
