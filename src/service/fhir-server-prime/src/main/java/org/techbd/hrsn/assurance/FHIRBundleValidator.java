@@ -1026,6 +1026,7 @@ public class FHIRBundleValidator {
         if(validationEngine == "HAPI") {
             try {
                 session.setValidationEngine(validationEngine);
+                session.httpRequestResponse.setRequestBody(jsonBody);
                 session.setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.NOT_SUBMITTED);
                 session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
                 JsonObject jsonObject = JsonParser.parseString(session.toJson()).getAsJsonObject();
@@ -1092,21 +1093,7 @@ public class FHIRBundleValidator {
     }
 
     public String getVersionFromProperties() {
-        return getProverty("application.version");
-    }
-
-    public String getProverty(String key) {
-        String propertyVal = ""; // Default value if reading from properties file fails
-
-        try (InputStream input = FHIRBundleValidator.class.getClassLoader()
-                .getResourceAsStream("application.properties")) {
-            Properties prop = new Properties();
-            prop.load(input);
-            propertyVal = prop.getProperty(key);
-        } catch (Exception e) {
-            log.error("Exception: ", e);
-        }
-        return propertyVal;
+        return Globals.getProverty("application.version");
     }
 
     public String diagnosticsOperation(String sessionId) {
@@ -1189,7 +1176,7 @@ public class FHIRBundleValidator {
             html.append("            </tr>\n");
             html.append("            <tr>\n");
             html.append("                <td>Validation Engine</td>\n");
-            if(null != session.entries) {
+            if(null != session.entries && session.entries.size() !=0) {
                 html.append("                <td>" + session.entries.get(0).validationEngine + "</td>\n");
             }
             html.append("            </tr>\n");
@@ -1242,7 +1229,13 @@ public class FHIRBundleValidator {
             html.append("            </tr>\n");
             html.append("            <tr>\n");
             html.append("                <td>Full HTTP Request</td>\n");
-            html.append("                <td>" + session.getFullHttpRequest() + "</td>\n");
+            Gson gson = new GsonBuilder()
+                    .setPrettyPrinting()    // Enables pretty printing
+                    .disableHtmlEscaping()  // Disables HTML escaping
+                    .create();
+
+            String httpReqResp = gson.toJson(session.httpRequestResponse);
+            html.append("                <td><pre><code class=\"language-html\">" + httpReqResp + "</code></pre></td>\n");
             html.append("            </tr>\n");
             html.append("        </tbody>\n");
             html.append("    </table>\n");
