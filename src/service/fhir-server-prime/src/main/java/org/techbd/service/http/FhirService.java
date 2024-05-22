@@ -14,13 +14,9 @@ import org.techbd.hrsn.assurance.Globals;
 import org.techbd.hrsn.assurance.Globals.ShinnyDataLakeSubmissionStatus;
 import org.techbd.hrsn.assurance.OrchestrationSession;
 
-import ca.uhn.fhir.validation.FhirValidator;
-
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.Instant;
 
 @Service
 public class FhirService {
@@ -37,10 +33,9 @@ public class FhirService {
     public String getMetadata() {
         String version = FHIRBundleValidator.getInstance().getVersionFromProperties();
 
-        ZonedDateTime currentTime = ZonedDateTime.now(ZoneId.of("UTC"));
-        // Format the time in the desired format
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z");
-        String curTime = currentTime.format(formatter);
+        Instant now = Instant.now();
+        String curTime = Globals.formatInstant(now);
+
         String fhirServerUrl = Globals.getProverty("fhirServerUrl");
         String operationDefinitionBaseUrl = Globals.getProverty("operationDefinitionBaseUrl");
 
