@@ -888,7 +888,6 @@ public class FHIRBundleValidator {
         }
         return html.toString();
     }
-    // JAVA STARTS
 
     public static String prettyPrintJsonUsingDefaultPrettyPrinter(String uglyJsonString)
             throws JsonProcessingException {
@@ -1007,13 +1006,6 @@ public class FHIRBundleValidator {
         this.sessions.put(sessionId, session);
         return session;
     }
-    
-    public OrchestrationSession saveHttpRequestInfo(String sessionId, String ipAddress, String reqDetails) {
-        OrchestrationSession session = findSessionByKey(sessionId);
-        session.setDeviceId(ipAddress);
-        session.setFullHttpRequest(reqDetails);
-        return session;
-    }
 
     public String validateFhirResource(String jsonBody, String qeIdentifier, String sessionId, String validationEngine) {
         OrchestrationSession session = findSessionByKey(sessionId);
@@ -1025,10 +1017,12 @@ public class FHIRBundleValidator {
         String formattedSession = null;
         if(validationEngine == "HAPI") {
             try {
+                session.setOrchStartedAt(Instant.now());
                 session.setValidationEngine(validationEngine);
                 session.httpRequestResponse.setRequestBody(jsonBody);
                 session.setShinnyDataLakeSubmissionStatus(ShinnyDataLakeSubmissionStatus.NOT_SUBMITTED);
                 session.validateBundle(jsonBody, shinnyDataLakeApiImpGuideProfileUri, ValidationEngine.HAPI);
+                session.setOrchFinishedAt(Instant.now());
                 JsonObject jsonObject = JsonParser.parseString(session.toJson()).getAsJsonObject();
                 JsonObject newJsonObject = new JsonObject();
                 newJsonObject.addProperty("resourceType", "OperationOutcome");
