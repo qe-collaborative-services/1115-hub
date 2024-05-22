@@ -252,11 +252,11 @@ public class OrchestrationSession {
     private String deviceId; // TODO : store in JSON
     private final String version; // TODO : store in JSON
     private String qeIdentifier = "unspecified"; // TODO : store in JSON
-    private final Date orchStartedAt = new Date(); // TODO : store in JSON
+    private Instant orchStartedAt; // TODO : store in JSON
     private final FhirContext ctx;
     private final IParser parser; // Initialize the parser in constructor
     public ArrayList<BaseBundle> entries = new ArrayList<>();
-    private Date orchFinishedAt; // TODO : store in JSON
+    private Instant orchFinishedAt; // TODO : store in JSON
     private ShinnyDataLakeSubmissionStatus shinnyDataLakeSubmissionStatus; // Holds the session status
     private long shinnyDataLakeSubmissionStartTime; // Holds the async call start time in milli sec
     private long shinnyDataLakeSubmissionEndTime; // Holds the async call end time in milli sec
@@ -271,16 +271,7 @@ public class OrchestrationSession {
         this.validationEngine = validationEngine;
     }
 
-    private String fullHttpRequest;
     public HttpRequestResponse httpRequestResponse;
-
-    public String getFullHttpRequest() {
-        return fullHttpRequest;
-    }
-
-    public void setFullHttpRequest(String fullHttpRequest) {
-        this.fullHttpRequest = fullHttpRequest;
-    }
 
     public String getQeIdentifier() {
         return qeIdentifier;
@@ -346,8 +337,8 @@ public class OrchestrationSession {
     }
 
     public JsonObject toJsonObject(boolean useFullData) {
-        // TODO: Date orchFinishedAt
-        orchFinishedAt = new Date();
+        // // TODO: Date orchFinishedAt
+        // orchFinishedAt = new Date();
         JsonObject jsonBaseObject = new JsonObject();
         jsonBaseObject.addProperty("resourceType", "OperationOutcome");
         JsonObject jsonObject = new JsonObject();
@@ -359,7 +350,7 @@ public class OrchestrationSession {
         } else {
             System.out.println("validationEngine is null");
         }
-        jsonObject.addProperty("orchStartedAt", orchStartedAt.toString());
+        jsonObject.addProperty("orchStartedAt", Globals.formatInstant(orchStartedAt));
         if (shinnyDataLakeSubmissionStatus == null) {
             jsonObject.addProperty("shinnyDataLakeSubmissionStatus", "");
         } else {
@@ -384,7 +375,7 @@ public class OrchestrationSession {
             // Add the array of entry objects to the main JSON object
             jsonObject.add("entries", entriesArray);
         }
-        jsonObject.addProperty("orchFinishedAt", orchFinishedAt != null ? orchFinishedAt.toString() : null);
+        jsonObject.addProperty("orchFinishedAt", orchFinishedAt != null ? Globals.formatInstant(orchFinishedAt) : null);
 
         jsonBaseObject.add("techbdSession", jsonObject);
         return jsonBaseObject;
@@ -412,12 +403,20 @@ public class OrchestrationSession {
         return version;
     }
 
-    public Date getOrchStartedAt() {
+    public Instant getOrchStartedAt() {
         return orchStartedAt;
     }
 
-    public Date getOrchFinishedAt() {
+    public Instant getOrchFinishedAt() {
         return orchFinishedAt;
+    }
+
+    public void setOrchStartedAt(Instant instant) {
+        this.orchStartedAt = instant;
+    }
+
+    public void setOrchFinishedAt(Instant instant) {
+        this.orchFinishedAt = instant;
     }
 
     // TODO: Add enum parameter for validationEngine : HAPI (default), INFERNO, HL7

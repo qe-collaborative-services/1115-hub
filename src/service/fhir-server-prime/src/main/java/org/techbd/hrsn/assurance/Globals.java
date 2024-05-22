@@ -1,6 +1,11 @@
 package org.techbd.hrsn.assurance;
 
 import java.io.InputStream;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
 public class Globals {
@@ -19,7 +24,7 @@ public class Globals {
         FINISHED
     }
 
-        public static String getProverty(String key) {
+    public static String getProverty(String key) {
         String propertyVal = ""; // Default value if reading from properties file fails
 
         try (InputStream input = FHIRBundleValidator.class.getClassLoader()
@@ -30,5 +35,18 @@ public class Globals {
         } catch (Exception e) {
         }
         return propertyVal;
+    }
+
+    public static String formatInstant(Instant instant) {
+        instant = instant.truncatedTo(ChronoUnit.MICROS);
+
+        // Convert the Instant to ZonedDateTime in the system default time zone
+        ZonedDateTime zonedDateTime = instant.atZone(ZoneId.systemDefault());
+
+        // Create a formatter for the desired format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+
+        // Format the ZonedDateTime and return the result
+        return zonedDateTime.format(formatter);
     }
 }
