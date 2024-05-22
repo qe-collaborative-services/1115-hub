@@ -85,11 +85,10 @@ public class RequestResponseBundleFilter extends OncePerRequestFilter {
          
          String sessionId = UUID.randomUUID().toString();
          OrchestrationSession session = FHIRBundleValidator.getInstance().createSession(sessionId);
-         session.setDeviceId(request.getRemoteAddr());
-         session.setFullHttpRequest(msg.toString());
          session.httpRequestResponse.setRequestMethod(request.getMethod());
          session.httpRequestResponse.setRequestUrl(request.getRequestURI());
          session.httpRequestResponse.setRequestHost(request.getRemoteHost());
+         session.setDeviceId(request.getRemoteHost());
          session.httpRequestResponse.setRequestIp(request.getRemoteAddr());
          session.httpRequestResponse.setRequestHeaders(logRequestHeader(request, request.getRemoteAddr() + "|>", msg));
          // add new header and take it from the controller.(session id) TECH_BD_FHIR_SERVICE_SESSION_ID_PRIME
