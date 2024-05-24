@@ -1128,7 +1128,7 @@ export class OrchEngine {
                 ELSE '${new Date().toISOString()}' END,
                 'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
               ),
-              CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'language' ELSE NULL END, PREFERRED_LANGUAGE_CODE,
+              'language', 'en',
               CASE WHEN (RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL) OR (ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL) OR (SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL) THEN 'extension' ELSE NULL END, json_array(
                               CASE WHEN RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL THEN json_object(
                                   'extension', json_array(
@@ -1176,7 +1176,7 @@ export class OrchEngine {
                                       'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
                                       'text', 'Medical Record Number'
                                   ),
-                                  'system', CONCAT('${baseUrl}','/facility/',adt.FACILITY_ID),
+                                  'system', CONCAT('${baseUrl}','facility/',adt.FACILITY_ID),
                                   'value', qat.PAT_MRN_ID,
                                   'assigner', json_object('reference', 'Organization/' || qat.FACILITY_ID)
                               ),
@@ -1220,11 +1220,11 @@ export class OrchEngine {
                     CASE WHEN ZIP IS NOT NULL AND CAST(ZIP AS TEXT) != '' IS NOT NULL THEN 'postalCode' ELSE NULL END, CAST(ZIP AS TEXT)
                 )
               ),
-              'communication', json_array(
+              CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'communication' ELSE NULL END, json_array(
                 json_object('language', json_object(
                   'coding', json_array(
                     json_object(
-                      'code', 'en'
+                      'code', PREFERRED_LANGUAGE_CODE
                     )
                   )
                 ),
@@ -1289,7 +1289,7 @@ export class OrchEngine {
             ),
             'identifier', JSON_ARRAY(
                 JSON_OBJECT(
-                    'system', '${baseUrl}' || qed.FACILITY_ID,
+                    'system', '${baseUrl}' || 'facility/' || qed.FACILITY_ID,
                     'value', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-'))
                 )
             ),
