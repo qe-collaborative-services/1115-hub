@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.20.0";
+export const ORCHESTRATE_VERSION = "0.23.6";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1090,7 +1090,9 @@ export class OrchEngine {
               'id', CONCAT('${uuid.v1.generate()}','-',PAT_MRN_ID,'-',ENCOUNTER_ID),
               'type', 'transaction',
               'meta', JSON_OBJECT(
-                  'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
+                  'lastUpdated', CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
+                                    ELSE '${new Date().toISOString()}'
+                                END
               ),
               'timestamp', '${new Date().toISOString()}',
               'entry', json(json_group_array(cte.json_data))
@@ -1122,7 +1124,8 @@ export class OrchEngine {
               'resourceType', 'Patient',
               'id', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
               'meta', json_object(
-                'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+                'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID)
+                ELSE '${new Date().toISOString()}' END,
                 'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
               ),
               CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'language' ELSE NULL END, PREFERRED_LANGUAGE_CODE,
@@ -1242,7 +1245,8 @@ export class OrchEngine {
               'resourceType', 'Consent',
               'id', CONCAT('consentFor',adt.PAT_MRN_ID),
               'meta', json_object(
-                'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+                'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID)
+                ELSE '${new Date().toISOString()}' END,
                 'profile', json_array('http://shinny.org/StructureDefinition/shin-ny-consent')
               ),
               'status','active',
@@ -1279,7 +1283,8 @@ export class OrchEngine {
             'resourceType', 'Organization',
             'id', qed.FACILITY_ID,
             'meta', JSON_OBJECT(
-                'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),
+                'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID)
+                ELSE '${new Date().toISOString()}' END,
                 'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-organization')
             ),
             'identifier', JSON_ARRAY(
@@ -1368,7 +1373,8 @@ export class OrchEngine {
           'resourceType', 'Observation',
               'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
               'meta', JSON_OBJECT(
-                  'lastUpdated', scr.RECORDED_TIME,
+                  'lastUpdated',CASE WHEN regexp_matches(scr.RECORDED_TIME,'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN scr.RECORDED_TIME
+                  ELSE '${new Date().toISOString()}' END,
                   'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
               ),
               'status', SCREENING_STATUS_CODE,
@@ -1418,7 +1424,8 @@ export class OrchEngine {
                             ORDER BY RECORDED_TIME
                           ) AS sub1),
               'meta', JSON_OBJECT(
-                  'lastUpdated', MAX(RECORDED_TIME),
+                  'lastUpdated',CASE WHEN regexp_matches(MAX(RECORDED_TIME),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN MAX(RECORDED_TIME)
+                  ELSE '${new Date().toISOString()}' END,
                   'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
               ),
               'status', SCREENING_STATUS_CODE,
@@ -1478,6 +1485,8 @@ export class OrchEngine {
           'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END,
           'meta', JSON_OBJECT(
               'lastUpdated', RECORDED_TIME,
+              'lastUpdated',CASE WHEN regexp_matches(RECORDED_TIME,'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN RECORDED_TIME
+              ELSE '${new Date().toISOString()}' END,
               'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
           ),
           'status', CASE WHEN ENCOUNTER_STATUS_CODE IS NOT NULL THEN ENCOUNTER_STATUS_CODE ELSE 'unknown' END,
