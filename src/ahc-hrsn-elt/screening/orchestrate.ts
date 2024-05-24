@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.20.0";
+export const ORCHESTRATE_VERSION = "0.23.6";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1090,7 +1090,9 @@ export class OrchEngine {
               'id', CONCAT('${uuid.v1.generate()}','-',PAT_MRN_ID,'-',ENCOUNTER_ID),
               'type', 'transaction',
               'meta', JSON_OBJECT(
-                  'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
+                  'lastUpdated', CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
+                                    ELSE '${new Date().toISOString()}'
+                                END
               ),
               'timestamp', '${new Date().toISOString()}',
               'entry', json(json_group_array(cte.json_data))
@@ -1115,16 +1117,18 @@ export class OrchEngine {
   createCteFhirPatient(): string {
     // Return the SQL string for the cte_fhir_patient common table expression
     // You can use a similar approach as in the original query
+    const baseUrl = "https://synthetic.fhir.api.techbd.org/";
     return `WITH cte_fhir_patient AS (
-      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object('fullUrl', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object('fullUrl', CONCAT('${baseUrl}','r4/Patient/',adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
         'resource', json_object(
               'resourceType', 'Patient',
               'id', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
               'meta', json_object(
-                'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
+                'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID)
+                ELSE '${new Date().toISOString()}' END,
                 'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
               ),
-              CASE WHEN PREFERRED_LANGUAGE_CODE IS NOT NULL THEN 'language' ELSE NULL END, PREFERRED_LANGUAGE_CODE,
+              'language', 'en',
               CASE WHEN (RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL) OR (ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL) OR (SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL) THEN 'extension' ELSE NULL END, json_array(
                               CASE WHEN RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL THEN json_object(
                                   'extension', json_array(
@@ -1172,7 +1176,7 @@ export class OrchEngine {
                                       'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'MR')),
                                       'text', 'Medical Record Number'
                                   ),
-                                  'system', CONCAT('/facility/',adt.FACILITY_ID),
+                                  'system', CONCAT('${baseUrl}','facility/',adt.FACILITY_ID),
                                   'value', qat.PAT_MRN_ID,
                                   'assigner', json_object('reference', 'Organization/' || qat.FACILITY_ID)
                               ),
@@ -1205,7 +1209,7 @@ export class OrchEngine {
                 CASE WHEN LAST_NAME IS NOT NULL THEN 'family' ELSE NULL END, LAST_NAME,
                 'given', json_array(FIRST_NAME,CASE WHEN MIDDLE_NAME IS NOT NULL THEN MIDDLE_NAME END))
               ),
-              CASE WHEN ADMINISTRATIVE_SEX_CODE IS NOT NULL THEN 'gender' ELSE NULL END, ADMINISTRATIVE_SEX_CODE,
+              CASE WHEN ADMINISTRATIVE_SEX_CODE IS NOT NULL THEN 'gender' ELSE NULL END, CASE WHEN ADMINISTRATIVE_SEX_CODE IN ('MALE','M','male','Male','m') THEN 'male' ELSE CASE WHEN ADMINISTRATIVE_SEX_CODE IN ('FEMALE','F','female','Female','f') THEN 'female' ELSE CASE WHEN ADMINISTRATIVE_SEX_CODE IN ('OTHER','O','other','Other','o','Oth','oth') THEN 'other' ELSE 'unknown' END END END,
               CASE WHEN PAT_BIRTH_DATE IS NOT NULL THEN 'birthDate' ELSE NULL END, PAT_BIRTH_DATE,
               CASE WHEN CITY IS NOT NULL AND CITY != '' IS NOT NULL AND STATE IS NOT NULL AND STATE != '' THEN 'address' ELSE NULL END, json_array(
                   json_object(
@@ -1236,13 +1240,14 @@ export class OrchEngine {
   createCteFhirConsent(): string {
     // Return the SQL string for the cte_fhir_consent common table expression
     return `cte_fhir_consent AS (
-      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object('fullUrl', CONCAT('consentFor',adt.PAT_MRN_ID),
+      SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object(
         'resource', json_object(
               'resourceType', 'Consent',
               'id', CONCAT('consentFor',adt.PAT_MRN_ID),
               'meta', json_object(
-                'lastUpdated',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
-                'profile', json_array('http://shinny.org/StructureDefinition/shin-ny-organization')
+                'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID)
+                ELSE '${new Date().toISOString()}' END,
+                'profile', json_array('http://shinny.org/StructureDefinition/shin-ny-consent')
               ),
               'status','active',
               'scope', json_object('coding',json_array(json_object('code','treatment')),'text','treatment'),
@@ -1270,19 +1275,21 @@ export class OrchEngine {
 
   createCteFhirOrg(): string {
     // Return the SQL string for the cte_fhir_org common table expression
+    const baseUrl = "https://synthetic.fhir.api.techbd.org/";
     return `cte_fhir_org AS (
       SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,qed.PAT_MRN_ID, JSON_OBJECT(
-        'fullUrl', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
+        'fullUrl', '${baseUrl}' || 'r4/organization/' || LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
         'resource', JSON_OBJECT(
             'resourceType', 'Organization',
             'id', qed.FACILITY_ID,
             'meta', JSON_OBJECT(
-                'lastUpdated', (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),
+                'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID)
+                ELSE '${new Date().toISOString()}' END,
                 'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-organization')
             ),
             'identifier', JSON_ARRAY(
                 JSON_OBJECT(
-                    'system', qed.FACILITY_ID,
+                    'system', '${baseUrl}' || 'facility/' || qed.FACILITY_ID,
                     'value', LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-'))
                 )
             ),
@@ -1358,14 +1365,16 @@ export class OrchEngine {
 
   createCteFhirObservation(): string {
     // Return the SQL string for the cte_fhir_observation common table expression
+    const baseUrl = "https://synthetic.fhir.api.techbd.org/r4/observation/";
     return `cte_fhir_observation AS (
       SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
-        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
+        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('${baseUrl}','observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('${baseUrl}','observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
         'resource', JSON_OBJECT(
           'resourceType', 'Observation',
               'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
               'meta', JSON_OBJECT(
-                  'lastUpdated', scr.RECORDED_TIME,
+                  'lastUpdated',CASE WHEN regexp_matches(scr.RECORDED_TIME,'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN scr.RECORDED_TIME
+                  ELSE '${new Date().toISOString()}' END,
                   'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
               ),
               'status', SCREENING_STATUS_CODE,
@@ -1387,9 +1396,10 @@ export class OrchEngine {
 
   createCteFhirObservationGrouper(): string {
     // Return the SQL string for the cte_fhir_observation_grouper common table expression
+    const baseUrl = "https://synthetic.fhir.api.techbd.org/r4/observation/";
     return `cte_fhir_observation_grouper AS (
       SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,scr.PAT_MRN_ID, JSON_OBJECT(
-        'fullUrl', (SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') ELSE CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') END
+        'fullUrl', (SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('${baseUrl}','observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') ELSE CONCAT('${baseUrl}','observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') END
                       FROM (SELECT MAX(QUESTION_SLNO) as slNo, PAT_MRN_ID, FACILITY_ID, RECORDED_TIME
                             FROM
                               ${csv.aggrScreeningTableName} ssub
@@ -1414,7 +1424,8 @@ export class OrchEngine {
                             ORDER BY RECORDED_TIME
                           ) AS sub1),
               'meta', JSON_OBJECT(
-                  'lastUpdated', MAX(RECORDED_TIME),
+                  'lastUpdated',CASE WHEN regexp_matches(MAX(RECORDED_TIME),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN MAX(RECORDED_TIME)
+                  ELSE '${new Date().toISOString()}' END,
                   'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
               ),
               'status', SCREENING_STATUS_CODE,
@@ -1465,14 +1476,17 @@ export class OrchEngine {
 
   createCteFhirEncounter(): string {
     // Return the SQL string for the cte_fhir_encounter common table expression
+    const baseUrl = "https://synthetic.fhir.api.techbd.org/r4/encounter/";
     return `cte_fhir_encounter AS (
       SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) scr.PAT_MRN_ID, CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID, JSON_OBJECT(
-        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END,
+        'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('${baseUrl}',scr.ENCOUNTER_ID) ELSE CONCAT('${baseUrl}','encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END,
         'resource', JSON_OBJECT(
           'resourceType', 'Encounter',
           'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END,
           'meta', JSON_OBJECT(
               'lastUpdated', RECORDED_TIME,
+              'lastUpdated',CASE WHEN regexp_matches(RECORDED_TIME,'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN RECORDED_TIME
+              ELSE '${new Date().toISOString()}' END,
               'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
           ),
           'status', CASE WHEN ENCOUNTER_STATUS_CODE IS NOT NULL THEN ENCOUNTER_STATUS_CODE ELSE 'unknown' END,
