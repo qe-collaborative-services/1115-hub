@@ -934,7 +934,7 @@ export class QeAdminDataCsvFileIngestSource<
       ${tr.mandatoryValueInAllRows("ORGANIZATION_TYPE")}
       ${tr.onlyAllowedValuesInAllRows(
         "ORGANIZATION_TYPE",
-        "'Hospital', 'DTC', 'SNF', 'SCN', 'CBO', 'OMH', 'OASAS', 'Practice', 'Article 36', 'Article 40', 'MCO'"
+        "'prov','dept','team','govt','ins','pay','edu','reli','crs','cg','bus','other','laboratory','imaging','pharmacy','health-information-network','health-data-aggregator'"
       )}
       ${tr.mandatoryValueInAllRows("FACILITY_ADDRESS1")}
       ${qedar.onlyAllowValidUniqueFacilityAddress1PerFacilityInAllRows("FACILITY_ADDRESS1")}

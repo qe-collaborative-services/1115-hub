@@ -1294,17 +1294,6 @@ export class OrchEngine {
                 )
             ),
             'active', true,
-            CASE WHEN qed.ORGANIZATION_TYPE IS NOT NULL THEN 'type' ELSE NULL END, JSON_ARRAY(
-                JSON_OBJECT(
-                    'coding', JSON_ARRAY(
-                        JSON_OBJECT(
-                            'system', 'http://terminology.hl7.org/CodeSystem/organization-type',
-                            'code', qed.ORGANIZATION_TYPE,
-                            'display', qed.ORGANIZATION_TYPE
-                        )
-                    )
-                )
-            ),
             'name', qed.FACILITY_LONG_NAME,
             'address', JSON_ARRAY(
                 JSON_OBJECT(
