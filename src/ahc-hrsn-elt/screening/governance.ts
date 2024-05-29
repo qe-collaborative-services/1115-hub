@@ -195,7 +195,7 @@ export class CommonAssuranceRules<
         referenceTableName: "sexual_orientation_reference",
         referenceFieldName: "SEXUAL_ORIENTATION_CODE",
       },
-      "SEXUAL_ORIENTATION_DESCRIPTION": {
+      "SEXUAL_ORIENTATION_CODE_DESCRIPTION": {
         referenceTableName: "sexual_orientation_reference",
         referenceFieldName: "SEXUAL_ORIENTATION_CODE_DESCRIPTION",
       },
@@ -227,7 +227,7 @@ export class CommonAssuranceRules<
         referenceTableName: "preferred_language_reference",
         referenceFieldName: "ISO 639-2 Code",
       },
-      "PREFERRED_LANGUAGE_DESCRIPTION": {
+      "PREFERRED_LANGUAGE_CODE_DESCRIPTION": {
         referenceTableName: "preferred_language_reference",
         referenceFieldName: "English name of Language",
       },
@@ -1501,7 +1501,7 @@ export class AdminDemographicAssuranceRules<
   onlyAllowValidSexualOrientationDescriptionInAllRows(
     columnName: ColumnName,
   ) {
-    const cteName = "valid_sexual_orientation_description_in_all_rows";
+    const cteName = "valid_SEXUAL_ORIENTATION_CODE_DESCRIPTION_in_all_rows";
     const sexualOrientationReferenceTable = "sexual_orientation_reference";
 
     // Construct the SQL query using tagged template literals

@@ -72,15 +72,17 @@ const adminDemographicCsvColumnNames = [
   "CITY",
   "STATE",
   "ZIP",
+  "PHONE",
+  "SSN",
   "GENDER_IDENTITY_CODE_SYSTEM_NAME",
   "GENDER_IDENTITY_CODE",
   "GENDER_IDENTITY_CODE_DESCRIPTION",
   "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME",
   "SEXUAL_ORIENTATION_CODE",
-  "SEXUAL_ORIENTATION_DESCRIPTION",
+  "SEXUAL_ORIENTATION_CODE_DESCRIPTION",
   "PREFERRED_LANGUAGE_CODE_SYSTEM_NAME",
   "PREFERRED_LANGUAGE_CODE",
-  "PREFERRED_LANGUAGE_DESCRIPTION",
+  "PREFERRED_LANGUAGE_CODE_DESCRIPTION",
   "RACE_CODE_SYSTEM_NAME",
   "RACE_CODE",
   "RACE_CODE_DESCRIPTION",
@@ -312,7 +314,7 @@ export class ScreeningCsvFileIngestSource<
       ${sar.onlyAllowValidEncounterTypeCodeInAllRows("ENCOUNTER_TYPE_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "ENCOUNTER_TYPE_CODE_SYSTEM",
-        "'SNOMED-CT', 'SNOMED', 'http://snomed.info/sct'"
+        "'SNOMED-CT', 'snomed-ct', 'Snomed-ct', 'SNOMED', 'snomed', 'Snomed', 'http://snomed.info/sct'"
       )}
       ${sar.onlyAllowValidEncounterTypeDescriptionInAllRows("ENCOUNTER_TYPE_CODE_DESCRIPTION")}
       ${sar.car.onlyAllowValidFieldCombinationsInAllRows("ENCOUNTER_TYPE_CODE","ENCOUNTER_TYPE_CODE_DESCRIPTION")}
@@ -334,7 +336,7 @@ export class ScreeningCsvFileIngestSource<
       ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE_DESCRIPTION")}
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_CODE_DESCRIPTION",
-        "'Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions','Accountable health communities (AHC) health-related social needs screening (HRSN) tool'"
+        "'Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions','accountable health communities (AHC) health-related social needs (HRSN) supplemental questions','Accountable health communities (AHC) health-related social needs screening (HRSN) tool','accountable health communities (AHC) health-related social needs screening (HRSN) tool','NYS AHC HRSN screening'"
       )}
       ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE_SYSTEM_NAME")}
       ${sar.onlyAllowValidScreeningQuestionAnswerMandatoryValuesInAllRows("SCREENING_CODE")}
@@ -349,7 +351,7 @@ export class ScreeningCsvFileIngestSource<
       )}
       ${tr.onlyAllowedValuesInAllRows(
         "SCREENING_CODE_SYSTEM_NAME",
-        "'LN', 'LOINC', 'http://loinc.org'"
+        "'LN', 'ln', 'LOINC', 'loinc', 'http://loinc.org', 'NYS standard','NYS Standard'"
       )}
       ${tr.mandatoryValueInAllRows("RECORDED_TIME")}
       ${sar.onlyAllowValidRecordedTimeInAllRows("RECORDED_TIME")}
@@ -690,7 +692,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${tr.onlyAllowValidDateTimeInAllRows("PAT_BIRTH_DATE")}
       ${tr.mandatoryValueInAllRows("CITY")}
       ${tr.mandatoryValueInAllRows("STATE")}
-      ${tr.onlyAllowedValuesInAllRows("STATE", "'NY', 'New York'")}
+      ${tr.onlyAllowedValuesInAllRows("STATE", "'NY', 'ny', 'New York','new york', 'NEW YORK'")}
       ${tr.mandatoryValueInAllRows("ZIP")}
       ${adar.car.onlyAllowValidZipInAllRows("ZIP")}
       ${adar.car.onlyAllowValidIntegerAlphaNumericStringInAllRows("ADDRESS1")}
@@ -703,9 +705,9 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("GENDER_IDENTITY_CODE","GENDER_IDENTITY_CODE_DESCRIPTION")}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("GENDER_IDENTITY_CODE_DESCRIPTION","GENDER_IDENTITY_CODE")}
       ${adar.onlyAllowValidSexualOrientationCodeInAllRows("SEXUAL_ORIENTATION_CODE")}
-      ${adar.onlyAllowValidSexualOrientationDescriptionInAllRows("SEXUAL_ORIENTATION_DESCRIPTION")}
-      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEXUAL_ORIENTATION_CODE","SEXUAL_ORIENTATION_DESCRIPTION")}
-      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEXUAL_ORIENTATION_DESCRIPTION","SEXUAL_ORIENTATION_CODE")}
+      ${adar.onlyAllowValidSexualOrientationDescriptionInAllRows("SEXUAL_ORIENTATION_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEXUAL_ORIENTATION_CODE","SEXUAL_ORIENTATION_CODE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEXUAL_ORIENTATION_CODE_DESCRIPTION","SEXUAL_ORIENTATION_CODE")}
       ${tr.onlyAllowedValuesInAllRows(
         "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME",
         "'SNOMED-CT','SNOMED','http://snomed.info/sct'"
@@ -717,13 +719,13 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.onlyAllowValidRaceCodeInAllRows("RACE_CODE")}
       ${adar.onlyAllowValidRaceCodeDescriptionInAllRows("RACE_CODE_DESCRIPTION")}
       ${adar.onlyAllowValidPreferredLanguageCodeInAllRows("PREFERRED_LANGUAGE_CODE")}
-      ${adar.onlyAllowValidPreferredLanguageCodeDescriptionInAllRows("PREFERRED_LANGUAGE_DESCRIPTION")}
+      ${adar.onlyAllowValidPreferredLanguageCodeDescriptionInAllRows("PREFERRED_LANGUAGE_CODE_DESCRIPTION")}
       ${tr.onlyAllowedValuesInAllRows(
         "PREFERRED_LANGUAGE_CODE_SYSTEM_NAME",
         "'ISO','ISO 639-2','http://hl7.org/fhir/us/core/ValueSet/simple-language'"
       )}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE","RACE_CODE_DESCRIPTION")}
-      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("PREFERRED_LANGUAGE_CODE","PREFERRED_LANGUAGE_DESCRIPTION")}
+      ${adar.car.onlyAllowValidFieldCombinationsInAllRows("PREFERRED_LANGUAGE_CODE","PREFERRED_LANGUAGE_CODE_DESCRIPTION")}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("RACE_CODE_DESCRIPTION","RACE_CODE")}
       ${tr.onlyAllowedValuesInAllRows("RACE_CODE_SYSTEM_NAME", "'CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238'")}
       ${tr.onlyAllowedValuesInAllRows(
