@@ -3,5 +3,12 @@
 POST https://{{host}}/{{path}}?processingAgent=QE HTTP/1.1
 content-type: application/json
 
-< /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir_healthelink-20240305-testcase3-MRN.json
+< /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-healthelink-20240327-testcase1-MRN-healthelinkS8KXK30S8W.json
+
+### Submit FHIR Resource Bundle
+
+POST https://{{host}}/{{path}}?processingAgent=QE HTTP/1.1
+content-type: application/json
+
+< /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-healthelink-20240327-testcase1-MRN-healthelinkCZ8BSG71LI.json
 

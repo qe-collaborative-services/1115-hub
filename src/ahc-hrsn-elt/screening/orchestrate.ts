@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.23.6";
+export const ORCHESTRATE_VERSION = "0.23.7";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1161,12 +1161,12 @@ export class OrchEngine {
                                       'valueCode',CAST(SEX_AT_BIRTH_CODE AS TEXT)
 
                             ) END,
-                              CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_DESCRIPTION IS NOT NULL THEN json_object(
+                              CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_CODE_DESCRIPTION IS NOT NULL THEN json_object(
                                       'url','http://shinny.org/StructureDefinition/shinny-sexual-orientation',
                                       'valueCodeableConcept',json_object('coding', json_array(json_object(
                                                     'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
                                                     'code',SEXUAL_ORIENTATION_CODE,
-                                                    'display',SEXUAL_ORIENTATION_DESCRIPTION
+                                                    'display',SEXUAL_ORIENTATION_CODE_DESCRIPTION
                                                     )))
 
                             ) END),
