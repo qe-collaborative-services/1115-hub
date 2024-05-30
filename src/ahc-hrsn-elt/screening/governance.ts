@@ -925,7 +925,7 @@ export class ScreeningAssuranceRules<
                 ELSE CASE WHEN t2.ANSWER_CODE='LA32060-8' THEN 150 * CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) ELSE 0 END
                 END AS SCREENING_ANSWER_VALUE,
                 Scrn_Phycical_Act_Score.SCRN_PHYSICAL_ACTIVITY_VALUE AS SCREENING_CALCULATED_VALUE,
-                (SELECT src_file_row_number FROM ${this.tableName} WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS SRC_FILE_ROW_NUMBER,
+                (SELECT src_file_row_number FROM ${this.tableName} WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED PHYSICAL ACTIVITY SCORE%') AS SRC_FILE_ROW_NUMBER,
                 'ANSWER_CODE_DESCRIPTION' AS ANSWER_CODE_DESCRIPTION
 
               from
@@ -943,7 +943,7 @@ export class ScreeningAssuranceRules<
                 From
                 ${this.tableName} scr
                 Where
-                  UPPER(scr.QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS Scrn_Phycical_Act_Score
+                  UPPER(scr.QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED PHYSICAL ACTIVITY SCORE%') AS Scrn_Phycical_Act_Score
                       On
                 1 = 1
           ) As calc_fld
@@ -1347,7 +1347,7 @@ export class ScreeningAssuranceRules<
                   FROM ${this.tableName}
                   Where UPPER(QUESTION_CODE_DESCRIPTION)
                   IN ('TOTAL SAFETY SCORE',
-                  'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+                  'CALCULATED PHYSICAL ACTIVITY SCORE',
                   'CALCULATED MENTAL HEALTH SCORE')
               )
       )
@@ -1390,7 +1390,7 @@ export class ScreeningAssuranceRules<
         AND  UPPER(scr.QUESTION_CODE_DESCRIPTION)
         NOT IN(
           'TOTAL SAFETY SCORE',
-          'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+          'CALCULATED PHYSICAL ACTIVITY SCORE',
           'CALCULATED MENTAL HEALTH SCORE'
         )
       )
@@ -1428,7 +1428,7 @@ export class ScreeningAssuranceRules<
                   FROM ${this.tableName}
                   Where UPPER(QUESTION_CODE_DESCRIPTION)
                   IN ('TOTAL SAFETY SCORE',
-                  'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+                  'CALCULATED PHYSICAL ACTIVITY SCORE',
                   'CALCULATED MENTAL HEALTH SCORE')
               )
       )
