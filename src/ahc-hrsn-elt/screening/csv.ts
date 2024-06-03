@@ -72,6 +72,8 @@ const adminDemographicCsvColumnNames = [
   "CITY",
   "STATE",
   "ZIP",
+  "PHONE",
+  "SSN",
   "GENDER_IDENTITY_CODE_SYSTEM_NAME",
   "GENDER_IDENTITY_CODE",
   "GENDER_IDENTITY_CODE_DESCRIPTION",

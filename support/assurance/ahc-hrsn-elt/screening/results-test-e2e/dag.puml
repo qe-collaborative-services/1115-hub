@@ -5,19 +5,55 @@ queue daginit as "init"
 label dagingest as "ingest"
 label dagensureContent as "ensureContent"
 label dagemitResources as "emitResources"
+label dagcheckRequiredTables as "checkRequiredTables"
+label dagcreateFhirViewQuery as "createFhirViewQuery"
+label dagcreateCteFhirPatient as "createCteFhirPatient"
+label dagcreateCteFhirConsent as "createCteFhirConsent"
+label dagcreateCteFhirOrg as "createCteFhirOrg"
+label dagcreateDerivedFromCte as "createDerivedFromCte"
+label dagcreateCteFhirObservation as "createCteFhirObservation"
+label dagcreateCteFhirObservationGrouper as "createCteFhirObservationGrouper"
+label dagcreateCteFhirEncounter as "createCteFhirEncounter"
 rectangle gprepareInit as "prepareInit"
 rectangle ginit as "init"
 rectangle gingest as "ingest"
 rectangle gensureContent as "ensureContent"
 rectangle gemitResources as "emitResources"
+rectangle gcheckRequiredTables as "checkRequiredTables"
+rectangle gcreateFhirViewQuery as "createFhirViewQuery"
+rectangle gcreateCteFhirPatient as "createCteFhirPatient"
+rectangle gcreateCteFhirConsent as "createCteFhirConsent"
+rectangle gcreateCteFhirOrg as "createCteFhirOrg"
+rectangle gcreateDerivedFromCte as "createDerivedFromCte"
+rectangle gcreateCteFhirObservation as "createCteFhirObservation"
+rectangle gcreateCteFhirObservationGrouper as "createCteFhirObservationGrouper"
+rectangle gcreateCteFhirEncounter as "createCteFhirEncounter"
 DAG --> dagprepareInit
 dagprepareInit --> daginit
 daginit --> dagingest
 dagingest --> dagensureContent
 dagensureContent --> dagemitResources
+dagemitResources --> dagcheckRequiredTables
+dagcheckRequiredTables --> dagcreateFhirViewQuery
+dagcreateFhirViewQuery --> dagcreateCteFhirPatient
+dagcreateCteFhirPatient --> dagcreateCteFhirConsent
+dagcreateCteFhirConsent --> dagcreateCteFhirOrg
+dagcreateCteFhirOrg --> dagcreateDerivedFromCte
+dagcreateDerivedFromCte --> dagcreateCteFhirObservation
+dagcreateCteFhirObservation --> dagcreateCteFhirObservationGrouper
+dagcreateCteFhirObservationGrouper --> dagcreateCteFhirEncounter
 Graph --> gprepareInit
 gprepareInit --> ginit
 ginit --> gingest
 gingest --> gensureContent
 gensureContent --> gemitResources
+gemitResources --> gcheckRequiredTables
+gcheckRequiredTables --> gcreateFhirViewQuery
+gcreateFhirViewQuery --> gcreateCteFhirPatient
+gcreateCteFhirPatient --> gcreateCteFhirConsent
+gcreateCteFhirConsent --> gcreateCteFhirOrg
+gcreateCteFhirOrg --> gcreateDerivedFromCte
+gcreateDerivedFromCte --> gcreateCteFhirObservation
+gcreateCteFhirObservation --> gcreateCteFhirObservationGrouper
+gcreateCteFhirObservationGrouper --> gcreateCteFhirEncounter
 @enduml
