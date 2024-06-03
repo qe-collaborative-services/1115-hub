@@ -17,7 +17,7 @@ Screening,ENCOUNTER_TYPE_CODE_DESCRIPTION,No,ENCOUNTER_TYPE REFERENCE,No,,
 Screening,SCREENING_STATUS_CODE,Yes,SCREENING_STATUS_REFERENCE,Yes,,Yes
 Screening,SCREENING_STATUS_CODE_DESCRIPTION,No,SCREENING_STATUS_REFERENCE,No,,Yes
 Screening,SCREENING_STATUS_CODE_SYSTEM,Yes,SCREENING_STATUS_REFERENCE,No,,Yes
-Screening,SCREENING_CODE_DESCRIPTION,Yes,Accountable health communities (AHC) health-related social needs screening (HRSN) tool (96777-8) or Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions,Yes,,Yes
+Screening,SCREENING_CODE_DESCRIPTION,Yes,Accountable health communities (AHC) health-related social needs screening (HRSN) tool (96777-8) or Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions or NYS AHC HRSN screening,Yes,,Yes
 Screening,SCREENING_CODE_SYSTEM_NAME,Yes,LN or LOINC,Yes,,Yes
 Screening,SCREENING_CODE,Yes,96777-8 or 97023-6,Yes,,Yes
 Screening,RECORDED_TIME,Yes,Date Time- Format: YYYYMMDD HH:MM:SS YYYY is not before 2023.,Rejection if empty,,Can normalize to this format
@@ -51,15 +51,17 @@ Admin_Demographic,ADDRESS2,No,Is not a string of numbers,,Could be an issue if t
 Admin_Demographic,CITY,Yes,Is a city in New York State.,Yes,Could be an issue if the patient has an address- provide feedback,
 Admin_Demographic,STATE,Yes,New York or NY,Yes,,
 Admin_Demographic,ZIP,Yes,All numeric: 5 or 9 digits,Yes,,
+Admin_Demographic,PHONE,No,,No,,
+Admin_Demographic,SSN,No,,No,,
 Admin_Demographic,GENDER_IDENTITY_CODE_SYSTEM_NAME,No,SNOMED-CT or SNOMED,No,,"If code is available, yes"
 Admin_Demographic,GENDER_IDENTITY_CODE,No,See GENDER_IDENTITY tab,No,,
 Admin_Demographic,GENDER_IDENTITY_DESCRIPTION,No,See GENDER_IDENTITY tab,No,,"If code is available, yes"
 Admin_Demographic,SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,No,SNOMED-CT or SNOMED,No,,"If code is available, yes"
 Admin_Demographic,SEXUAL_ORIENTATION_CODE,No,See SEXUAL_ORIENTATION tab,No,,
-Admin_Demographic,SEXUAL_ORIENTATION_DESCRIPTION,No,"Bisexual, Heterosexual , Homosexual, Other, Unknown",No,,"If code is available, yes"
+Admin_Demographic,SEXUAL_ORIENTATION_CODE_DESCRIPTION,No,"Bisexual, Heterosexual , Homosexual, Other, Unknown",No,,"If code is available, yes"
 Admin_Demographic,PREFERRED_LANGUAGE_CODE_SYSTEM_NAME,No,ISO or ISO 639-2,No,,"If code is available, yes"
 Admin_Demographic,PREFERRED_LANGUAGE_CODE,No,"If available, is complete across all rows � Codes align with ISO. PREFERRED_LANGUAGE tab ",No,,
-Admin_Demographic,PREFERRED_LANGUAGE_DESCRIPTION,No,"If available, is complete across all rows � Codes align with ISO. PREFERRED_LANGUAGE tab",No,,"If code is available, yes"
+Admin_Demographic,PREFERRED_LANGUAGE_CODE_DESCRIPTION,No,"If available, is complete across all rows � Codes align with ISO. PREFERRED_LANGUAGE tab",No,,"If code is available, yes"
 Admin_Demographic,RACE_CODE_SYSTEM_NAME,No, CDC or CDCRE,No,,"If code is available, yes"
 Admin_Demographic,RACE_CODE,No,Aligns with CDC version 1.2- RACE tab,No,,
 Admin_Demographic,RACE_CODE_DESCRIPTION,No,Aligns with CDC version 1.2- RACE tab,No,,"If code is available, yes"
