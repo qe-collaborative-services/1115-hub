@@ -3,12 +3,26 @@
 POST https://{{host}}/{{path}}?processingAgent=QE HTTP/1.1
 content-type: application/json
 
-< /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-healthelink-20240327-testcase1-MRN-healthelinkS8KXK30S8W.json
+< /home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-qcs-test-20240531-testcase1-MRN-qcs-testTCQWYEJSDX.json
 
 ### Submit FHIR Resource Bundle
 
 POST https://{{host}}/{{path}}?processingAgent=QE HTTP/1.1
 content-type: application/json
 
-< /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-healthelink-20240327-testcase1-MRN-healthelinkCZ8BSG71LI.json
+< /home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-qcs-test-20240531-testcase1-MRN-qcs-testTCQWYEJSDX.json
+
+### Submit FHIR Resource Bundle
+
+POST https://{{host}}/{{path}}?processingAgent=QE HTTP/1.1
+content-type: application/json
+
+< /home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-qcs-test-20240531-testcase1-MRN-qcs-testJKLNXS5A02.json
+
+### Submit FHIR Resource Bundle
+
+POST https://{{host}}/{{path}}?processingAgent=QE HTTP/1.1
+content-type: application/json
+
+< /home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-qcs-test-20240531-testcase1-MRN-qcs-testJKLNXS5A02.json
 

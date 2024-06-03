@@ -2,33 +2,36 @@
 workflowPaths:
   ingressTx:
     home: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/ingress-tx
+      /home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/ingress-tx
   inProcess:
     home: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e
+      /home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e
   egress:
     home: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e
+      /home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e
 walkRootPaths:
   - support/assurance/ahc-hrsn-elt/screening/synthetic-content
-referenceDataHome: >-
-  /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data
+referenceDataHome: /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data
 sources:
   - uri: >-
-      support/assurance/ahc-hrsn-elt/screening/synthetic-content/DEMOGRAPHIC_DATA_20240529.csv
+      support/assurance/ahc-hrsn-elt/screening/synthetic-content/QE_ADMIN_DATA_qcs-test-20240531-testcase1.csv
     nature: CSV
-    tableName: admin_demographics_20240529
+    tableName: qe_admin_data_qcs_test_20240531_testcase1
     ingestionIssues: 0
   - uri: >-
-      support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH
-      HEL_Report 2452_ran 020124DeIdent.xlsx
+      support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx
     nature: ERROR
     tableName: ERROR
     ingestionIssues: 1
   - uri: >-
-      support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_20240529.csv
+      support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_qcs-test-20240531-testcase1.csv
     nature: CSV
-    tableName: screening_20240529
+    tableName: screening_qcs_test_20240531_testcase1
+    ingestionIssues: 0
+  - uri: >-
+      support/assurance/ahc-hrsn-elt/screening/synthetic-content/DEMOGRAPHIC_DATA_qcs-test-20240531-testcase1.csv
+    nature: CSV
+    tableName: admin_demographics_qcs_test_20240531_testcase1
     ingestionIssues: 0
   - uri: >-
       support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx
@@ -36,82 +39,78 @@ sources:
     tableName: ERROR
     ingestionIssues: 1
   - uri: >-
-      support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx
+      support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH
+      HEL_Report 2452_ran 020124DeIdent.xlsx
     nature: ERROR
     tableName: ERROR
     ingestionIssues: 1
   - uri: >-
-      support/assurance/ahc-hrsn-elt/screening/synthetic-content/QE_ADMIN_DATA_20240529.csv
-    nature: CSV
-    tableName: qe_admin_data_20240529
-    ingestionIssues: 0
-  - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv
     nature: CSV
     tableName: ahc_cross_walk
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv
     nature: CSV
     tableName: encounter_class_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv
     nature: CSV
     tableName: encounter_status_code_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv
     nature: CSV
     tableName: encounter_type_code_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv
     nature: CSV
     tableName: screening_status_code_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv
     nature: CSV
     tableName: gender_identity_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv
     nature: CSV
     tableName: administrative_sex_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv
     nature: CSV
     tableName: sex_at_birth_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv
     nature: CSV
     tableName: sexual_orientation_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv
     nature: CSV
     tableName: business_rules
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv
     nature: CSV
     tableName: race_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv
     nature: CSV
     tableName: ethnicity_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv
     nature: CSV
     tableName: preferred_language_reference
     ingestionIssues: 0
   - uri: >-
-      /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv
+      /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv
     nature: CSV
     tableName: sdoh_domain_reference
     ingestionIssues: 0
@@ -131,6 +130,7 @@ sources:
   - [`jsonResult_6` STDOUT (status: `0`)](#jsonresult-6-stdout-status-0-)
 - [emitDiagnostics](#emitdiagnostics)
 - [jsonResult_8](#jsonresult-8)
+  - [`jsonResult_8` STDOUT (status: `0`)](#jsonresult-8-stdout-status-0-)
 - [jsonResult_9](#jsonresult-9)
   - [`jsonResult_9` STDOUT (status: `0`)](#jsonresult-9-stdout-status-0-)
 
@@ -242,8 +242,8 @@ CREATE VIEW IF NOT EXISTS "orch_session_diagnostic_text" AS
     LEFT JOIN orch_session_issue AS isi ON isee.orch_session_entry_id = isi.session_entry_id;
 
 -- register the current device and session and use the identifiers for all logging
-INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'ALAN-FRANCIS', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
-INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.23.7', ('2024-05-29T09:02:17.067Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
+INSERT INTO "device" ("device_id", "name", "state", "boundary", "segmentation", "state_sysinfo", "elaboration") VALUES ('7bab389e-54af-5a13-a39f-079abdc73a48', 'Megin', 'SINGLETON', 'UNKNOWN', NULL, '{"os-arch":"x64","os-platform":"linux"}', NULL) ON CONFLICT DO NOTHING;
+INSERT INTO "orch_session" ("orch_session_id", "device_id", "version", "orch_started_at", "orch_finished_at", "elaboration", "args_json", "diagnostics_json", "diagnostics_md") VALUES ('05269d28-15ae-5bd6-bd88-f949ccfa52d7', '7bab389e-54af-5a13-a39f-079abdc73a48', '0.30.1', ('2024-06-03T04:00:46.886Z'), NULL, NULL, NULL, NULL, 'Session 05269d28-15ae-5bd6-bd88-f949ccfa52d7 markdown diagnostics not provided (not completed?)');
 
 -- Load Reference data from csvs
 
@@ -262,142 +262,18 @@ No STDERR emitted by `init`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/DEMOGRAPHIC_DATA_20240529.csv (admin_demographics_20240529)
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/QE_ADMIN_DATA_qcs-test-20240531-testcase1.csv (qe_admin_data_qcs_test_20240531_testcase1)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('8b7c669c-1795-5f6b-8f3a-3e502b74c628', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/DEMOGRAPHIC_DATA_20240529.csv', 'admin_demographics_20240529', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('8b7c669c-1795-5f6b-8f3a-3e502b74c628', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/QE_ADMIN_DATA_qcs-test-20240531-testcase1.csv', 'qe_admin_data_qcs_test_20240531_testcase1', NULL);
 
 -- state management diagnostics
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7b979b68-7227-53fd-b689-e4fe153afb76', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'AdminDemographicCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7b979b68-7227-53fd-b689-e4fe153afb76', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'QeAdminDataCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- be sure to add src_file_row_number and session_id columns to each row
 -- because assurance CTEs require them
-CREATE TABLE admin_demographics_20240529 AS
+CREATE TABLE qe_admin_data_qcs_test_20240531_testcase1 AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '8b7c669c-1795-5f6b-8f3a-3e502b74c628' as session_entry_id
-    FROM read_csv_auto('support/assurance/ahc-hrsn-elt/screening/synthetic-content/DEMOGRAPHIC_DATA_20240529.csv', types={'MPI_ID': 'VARCHAR', 'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR', 'SEXUAL_ORIENTATION_CODE': 'VARCHAR', 'GENDER_IDENTITY_CODE': 'VARCHAR'});
-
-WITH required_column_names_in_src AS (
-    SELECT column_name
-      FROM (VALUES ('MPI_ID'), ('PAT_MRN_ID'), ('FACILITY_ID'), ('CONSENT'), ('FIRST_NAME'), ('MIDDLE_NAME'), ('LAST_NAME'), ('ADMINISTRATIVE_SEX_CODE'), ('ADMINISTRATIVE_SEX_CODE_DESCRIPTION'), ('ADMINISTRATIVE_SEX_CODE_SYSTEM'), ('SEX_AT_BIRTH_CODE'), ('SEX_AT_BIRTH_CODE_DESCRIPTION'), ('SEX_AT_BIRTH_CODE_SYSTEM'), ('PAT_BIRTH_DATE'), ('ADDRESS1'), ('ADDRESS2'), ('CITY'), ('STATE'), ('ZIP'), ('PHONE'), ('SSN'), ('GENDER_IDENTITY_CODE_SYSTEM_NAME'), ('GENDER_IDENTITY_CODE'), ('GENDER_IDENTITY_CODE_DESCRIPTION'), ('SEXUAL_ORIENTATION_CODE_SYSTEM_NAME'), ('SEXUAL_ORIENTATION_CODE'), ('SEXUAL_ORIENTATION_CODE_DESCRIPTION'), ('PREFERRED_LANGUAGE_CODE_SYSTEM_NAME'), ('PREFERRED_LANGUAGE_CODE'), ('PREFERRED_LANGUAGE_CODE_DESCRIPTION'), ('RACE_CODE_SYSTEM_NAME'), ('RACE_CODE'), ('RACE_CODE_DESCRIPTION'), ('ETHNICITY_CODE_SYSTEM_NAME'), ('ETHNICITY_CODE'), ('ETHNICITY_CODE_DESCRIPTION'), ('MEDICAID_CIN')) AS required(column_name)
-     WHERE required.column_name NOT IN (
-         SELECT column_name
-           FROM information_schema.columns
-          WHERE table_name = 'admin_demographics_20240529')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Column',
-           'Required column ' || column_name || ' is missing in admin_demographics_20240529.',
-           'Ensure admin_demographics_20240529 contains the column "' || column_name || '"'
-      FROM required_column_names_in_src;
-
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('abf5c680-a135-5d89-b871-fa5b9b99aed6', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'AdminDemographicCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-    
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('641dff51-97fd-56b3-8443-c1ed568a6d66', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('d70a4700-6b40-52fc-a7a2-69ef0d7f69ff', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '641dff51-97fd-56b3-8443-c1ed568a6d66', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('47277588-99e8-59f5-8384-b24344a86073', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('58b22e99-5854-53bf-adbe-08e67df99b85', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '47277588-99e8-59f5-8384-b24344a86073', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a26ce332-3ced-5623-861d-23a2ef78e4a9', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('bc0c03b5-d1ba-5301-850f-5e4c42c1bf09', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a26ce332-3ced-5623-861d-23a2ef78e4a9', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('ae477ba1-c7f1-5f34-847a-50bddb7130aa', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'ae477ba1-c7f1-5f34-847a-50bddb7130aa', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_20240529.csv (screening_20240529)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('591191c7-f693-5957-8734-ac87151ca981', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_20240529.csv', 'screening_20240529', NULL);
-
--- state management diagnostics
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3b4eb0e5-6239-537a-8e67-e50e172e72a2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'ScreeningCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-
--- be sure to add src_file_row_number and session_id columns to each row
--- because assurance CTEs require them
-CREATE TABLE screening_20240529 AS
-  SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '591191c7-f693-5957-8734-ac87151ca981' as session_entry_id
-    FROM read_csv_auto('support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_20240529.csv', types={'RECORDED_TIME': 'VARCHAR', 'ENCOUNTER_TYPE_CODE': 'VARCHAR'});
-
-WITH required_column_names_in_src AS (
-    SELECT column_name
-      FROM (VALUES ('PAT_MRN_ID'), ('FACILITY_ID'), ('ENCOUNTER_ID'), ('ENCOUNTER_CLASS_CODE_SYSTEM'), ('ENCOUNTER_CLASS_CODE'), ('ENCOUNTER_CLASS_CODE_DESCRIPTION'), ('ENCOUNTER_STATUS_CODE_SYSTEM'), ('ENCOUNTER_STATUS_CODE'), ('ENCOUNTER_STATUS_CODE_DESCRIPTION'), ('ENCOUNTER_TYPE_CODE_SYSTEM'), ('ENCOUNTER_TYPE_CODE'), ('ENCOUNTER_TYPE_CODE_DESCRIPTION'), ('SCREENING_CODE_DESCRIPTION'), ('SCREENING_CODE_SYSTEM_NAME'), ('SCREENING_CODE'), ('SCREENING_STATUS_CODE_DESCRIPTION'), ('SCREENING_STATUS_CODE'), ('SCREENING_STATUS_CODE_SYSTEM'), ('RECORDED_TIME'), ('QUESTION_CODE_DESCRIPTION'), ('ANSWER_CODE_DESCRIPTION'), ('UCUM_UNITS'), ('QUESTION_CODE'), ('QUESTION_CODE_SYSTEM_NAME'), ('ANSWER_CODE'), ('ANSWER_CODE_SYSTEM_NAME'), ('PARENT_QUESTION_CODE'), ('SDOH_DOMAIN'), ('POTENTIAL_NEED_INDICATED')) AS required(column_name)
-     WHERE required.column_name NOT IN (
-         SELECT column_name
-           FROM information_schema.columns
-          WHERE table_name = 'screening_20240529')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '591191c7-f693-5957-8734-ac87151ca981',
-           'Missing Column',
-           'Required column ' || column_name || ' is missing in screening_20240529.',
-           'Ensure screening_20240529 contains the column "' || column_name || '"'
-      FROM required_column_names_in_src;
-
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('071f8fe1-4899-5c71-9c86-7d7377661d45', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'ScreeningCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-    
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('86b4a49e-7378-5159-9f41-b005208c31bc', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('a530fe1b-57ef-5a90-8bea-835ece2483da', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a3fe7098-8ae8-5612-81ac-cbe10780c19b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('99e72a60-96ab-5ef1-a3af-3e7759777664', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a3fe7098-8ae8-5612-81ac-cbe10780c19b', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e36daa69-3c63-5384-b6a7-03fa3b00641d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('89f7ec04-277a-5799-afaa-a70d0f2a8ed5', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e36daa69-3c63-5384-b6a7-03fa3b00641d', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('c60cf3db-b1bf-5103-b278-b0c128ce924a', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c60cf3db-b1bf-5103-b278-b0c128ce924a', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b10e248d-8c94-59ec-83fc-a1249dd3b111', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('5222b730-9add-5b52-b0c9-6f2506b0af9d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b10e248d-8c94-59ec-83fc-a1249dd3b111', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('fa7874f6-f848-572b-a9ab-9db4c8d5e959', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('c302047e-21cf-5059-a32c-e81a9bd3a9b9', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'fa7874f6-f848-572b-a9ab-9db4c8d5e959', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('3252fee6-3a9a-5f4c-81c6-739201046d79', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('78d6a904-035e-54ae-8ac2-ca5cdf3f75f7', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '3252fee6-3a9a-5f4c-81c6-739201046d79', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('9860873a-c387-5d98-9930-4ff296eb7192', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('d5d6e25d-81b4-5f98-8b91-ea2dbc155a9c', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9860873a-c387-5d98-9930-4ff296eb7192', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('46171763-bd21-57a8-a403-0785f72643cf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('4971a2f5-06a3-5898-823d-364145d3b9a5', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '46171763-bd21-57a8-a403-0785f72643cf', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('c2c0cbca-70cb-54f6-9dc7-66b47c4f3157', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
-INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('8640a4b5-53ef-506e-bcde-83f00315d4b2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c2c0cbca-70cb-54f6-9dc7-66b47c4f3157', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
--- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/QE_ADMIN_DATA_20240529.csv (qe_admin_data_20240529)
--- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('544998d3-58c5-5f65-9dc8-9f998508495f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/QE_ADMIN_DATA_20240529.csv', 'qe_admin_data_20240529', NULL);
-
--- state management diagnostics
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0adb81bc-3df2-5f86-99cc-2d20e1dd5efd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'QeAdminDataCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
-
--- be sure to add src_file_row_number and session_id columns to each row
--- because assurance CTEs require them
-CREATE TABLE qe_admin_data_20240529 AS
-  SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '544998d3-58c5-5f65-9dc8-9f998508495f' as session_entry_id
-    FROM read_csv_auto('support/assurance/ahc-hrsn-elt/screening/synthetic-content/QE_ADMIN_DATA_20240529.csv');
+    FROM read_csv_auto('support/assurance/ahc-hrsn-elt/screening/synthetic-content/QE_ADMIN_DATA_qcs-test-20240531-testcase1.csv');
 
 WITH required_column_names_in_src AS (
     SELECT column_name
@@ -405,22 +281,146 @@ WITH required_column_names_in_src AS (
      WHERE required.column_name NOT IN (
          SELECT column_name
            FROM information_schema.columns
-          WHERE table_name = 'qe_admin_data_20240529')
+          WHERE table_name = 'qe_admin_data_qcs_test_20240531_testcase1')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
            'Missing Column',
-           'Required column ' || column_name || ' is missing in qe_admin_data_20240529.',
-           'Ensure qe_admin_data_20240529 contains the column "' || column_name || '"'
+           'Required column ' || column_name || ' is missing in qe_admin_data_qcs_test_20240531_testcase1.',
+           'Ensure qe_admin_data_qcs_test_20240531_testcase1 contains the column "' || column_name || '"'
       FROM required_column_names_in_src;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('10d0290c-b2eb-581e-b627-b5b8fcbb830f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'QeAdminDataCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('abf5c680-a135-5d89-b871-fa5b9b99aed6', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'QeAdminDataCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
     
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv (ahc_cross_walk)
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e6951d0b-be59-58c3-8a04-01181208c601', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv', 'ahc_cross_walk', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('641dff51-97fd-56b3-8443-c1ed568a6d66', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('d70a4700-6b40-52fc-a7a2-69ef0d7f69ff', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '641dff51-97fd-56b3-8443-c1ed568a6d66', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('47277588-99e8-59f5-8384-b24344a86073', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('58b22e99-5854-53bf-adbe-08e67df99b85', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '47277588-99e8-59f5-8384-b24344a86073', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a26ce332-3ced-5623-861d-23a2ef78e4a9', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('bc0c03b5-d1ba-5301-850f-5e4c42c1bf09', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a26ce332-3ced-5623-861d-23a2ef78e4a9', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('ae477ba1-c7f1-5f34-847a-50bddb7130aa', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'ae477ba1-c7f1-5f34-847a-50bddb7130aa', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''synthetic-fail-excel-01.xlsx'' (available: Sheet1)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_qcs-test-20240531-testcase1.csv (screening_qcs_test_20240531_testcase1)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('591191c7-f693-5957-8734-ac87151ca981', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_qcs-test-20240531-testcase1.csv', 'screening_qcs_test_20240531_testcase1', NULL);
+
+-- state management diagnostics
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3b4eb0e5-6239-537a-8e67-e50e172e72a2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'ScreeningCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+
+-- be sure to add src_file_row_number and session_id columns to each row
+-- because assurance CTEs require them
+CREATE TABLE screening_qcs_test_20240531_testcase1 AS
+  SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '591191c7-f693-5957-8734-ac87151ca981' as session_entry_id
+    FROM read_csv_auto('support/assurance/ahc-hrsn-elt/screening/synthetic-content/SCREENING_qcs-test-20240531-testcase1.csv', types={'RECORDED_TIME': 'VARCHAR', 'ENCOUNTER_TYPE_CODE': 'VARCHAR'});
+
+WITH required_column_names_in_src AS (
+    SELECT column_name
+      FROM (VALUES ('PAT_MRN_ID'), ('FACILITY_ID'), ('ENCOUNTER_ID'), ('ENCOUNTER_CLASS_CODE_SYSTEM'), ('ENCOUNTER_CLASS_CODE'), ('ENCOUNTER_CLASS_CODE_DESCRIPTION'), ('ENCOUNTER_STATUS_CODE_SYSTEM'), ('ENCOUNTER_STATUS_CODE'), ('ENCOUNTER_STATUS_CODE_DESCRIPTION'), ('ENCOUNTER_TYPE_CODE_SYSTEM'), ('ENCOUNTER_TYPE_CODE'), ('ENCOUNTER_TYPE_CODE_DESCRIPTION'), ('SCREENING_CODE_DESCRIPTION'), ('SCREENING_CODE_SYSTEM_NAME'), ('SCREENING_CODE'), ('SCREENING_STATUS_CODE_DESCRIPTION'), ('SCREENING_STATUS_CODE'), ('SCREENING_STATUS_CODE_SYSTEM'), ('RECORDED_TIME'), ('QUESTION_CODE_DESCRIPTION'), ('ANSWER_CODE_DESCRIPTION'), ('UCUM_UNITS'), ('QUESTION_CODE'), ('QUESTION_CODE_SYSTEM_NAME'), ('ANSWER_CODE'), ('ANSWER_CODE_SYSTEM_NAME'), ('PARENT_QUESTION_CODE'), ('SDOH_DOMAIN'), ('POTENTIAL_NEED_INDICATED')) AS required(column_name)
+     WHERE required.column_name NOT IN (
+         SELECT column_name
+           FROM information_schema.columns
+          WHERE table_name = 'screening_qcs_test_20240531_testcase1')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '591191c7-f693-5957-8734-ac87151ca981',
+           'Missing Column',
+           'Required column ' || column_name || ' is missing in screening_qcs_test_20240531_testcase1.',
+           'Ensure screening_qcs_test_20240531_testcase1 contains the column "' || column_name || '"'
+      FROM required_column_names_in_src;
+
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('071f8fe1-4899-5c71-9c86-7d7377661d45', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'ScreeningCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+    
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/DEMOGRAPHIC_DATA_qcs-test-20240531-testcase1.csv (admin_demographics_qcs_test_20240531_testcase1)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('86b4a49e-7378-5159-9f41-b005208c31bc', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/DEMOGRAPHIC_DATA_qcs-test-20240531-testcase1.csv', 'admin_demographics_qcs_test_20240531_testcase1', NULL);
+
+-- state management diagnostics
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a530fe1b-57ef-5a90-8bea-835ece2483da', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'AdminDemographicCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+
+-- be sure to add src_file_row_number and session_id columns to each row
+-- because assurance CTEs require them
+CREATE TABLE admin_demographics_qcs_test_20240531_testcase1 AS
+  SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '86b4a49e-7378-5159-9f41-b005208c31bc' as session_entry_id
+    FROM read_csv_auto('support/assurance/ahc-hrsn-elt/screening/synthetic-content/DEMOGRAPHIC_DATA_qcs-test-20240531-testcase1.csv', types={'MPI_ID': 'VARCHAR', 'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR', 'SEXUAL_ORIENTATION_CODE': 'VARCHAR', 'GENDER_IDENTITY_CODE': 'VARCHAR'});
+
+WITH required_column_names_in_src AS (
+    SELECT column_name
+      FROM (VALUES ('MPI_ID'), ('PAT_MRN_ID'), ('FACILITY_ID'), ('CONSENT'), ('FIRST_NAME'), ('MIDDLE_NAME'), ('LAST_NAME'), ('ADMINISTRATIVE_SEX_CODE'), ('ADMINISTRATIVE_SEX_CODE_DESCRIPTION'), ('ADMINISTRATIVE_SEX_CODE_SYSTEM'), ('SEX_AT_BIRTH_CODE'), ('SEX_AT_BIRTH_CODE_DESCRIPTION'), ('SEX_AT_BIRTH_CODE_SYSTEM'), ('PAT_BIRTH_DATE'), ('ADDRESS1'), ('ADDRESS2'), ('CITY'), ('STATE'), ('ZIP'), ('PHONE'), ('SSN'), ('GENDER_IDENTITY_CODE_SYSTEM_NAME'), ('GENDER_IDENTITY_CODE'), ('GENDER_IDENTITY_CODE_DESCRIPTION'), ('SEXUAL_ORIENTATION_CODE_SYSTEM_NAME'), ('SEXUAL_ORIENTATION_CODE'), ('SEXUAL_ORIENTATION_CODE_DESCRIPTION'), ('PREFERRED_LANGUAGE_CODE_SYSTEM_NAME'), ('PREFERRED_LANGUAGE_CODE'), ('PREFERRED_LANGUAGE_CODE_DESCRIPTION'), ('RACE_CODE_SYSTEM_NAME'), ('RACE_CODE'), ('RACE_CODE_DESCRIPTION'), ('ETHNICITY_CODE_SYSTEM_NAME'), ('ETHNICITY_CODE'), ('ETHNICITY_CODE_DESCRIPTION'), ('MEDICAID_CIN')) AS required(column_name)
+     WHERE required.column_name NOT IN (
+         SELECT column_name
+           FROM information_schema.columns
+          WHERE table_name = 'admin_demographics_qcs_test_20240531_testcase1')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Missing Column',
+           'Required column ' || column_name || ' is missing in admin_demographics_qcs_test_20240531_testcase1.',
+           'Ensure admin_demographics_qcs_test_20240531_testcase1 contains the column "' || column_name || '"'
+      FROM required_column_names_in_src;
+
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a3fe7098-8ae8-5612-81ac-cbe10780c19b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'AdminDemographicCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
+    
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('99e72a60-96ab-5ef1-a3af-3e7759777664', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('e36daa69-3c63-5384-b6a7-03fa3b00641d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '99e72a60-96ab-5ef1-a3af-3e7759777664', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('89f7ec04-277a-5799-afaa-a70d0f2a8ed5', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('c60cf3db-b1bf-5103-b278-b0c128ce924a', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '89f7ec04-277a-5799-afaa-a70d0f2a8ed5', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('b10e248d-8c94-59ec-83fc-a1249dd3b111', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('5222b730-9add-5b52-b0c9-6f2506b0af9d', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('fa7874f6-f848-572b-a9ab-9db4c8d5e959', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5222b730-9add-5b52-b0c9-6f2506b0af9d', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('c302047e-21cf-5059-a32c-e81a9bd3a9b9', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('3252fee6-3a9a-5f4c-81c6-739201046d79', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c302047e-21cf-5059-a32c-e81a9bd3a9b9', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''jrchc-hrsn-file-spec.xlsx'' (available: Original Report, HeL LOINC Mapping)', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('78d6a904-035e-54ae-8ac2-ca5cdf3f75f7', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('9860873a-c387-5d98-9930-4ff296eb7192', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '78d6a904-035e-54ae-8ac2-ca5cdf3f75f7', 'Sheet Missing', 'Excel workbook sheet ''Admin_Demographic'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('d5d6e25d-81b4-5f98-8b91-ea2dbc155a9c', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('46171763-bd21-57a8-a403-0785f72643cf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'd5d6e25d-81b4-5f98-8b91-ea2dbc155a9c', 'Sheet Missing', 'Excel workbook sheet ''Screening'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('4971a2f5-06a3-5898-823d-364145d3b9a5', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('c2c0cbca-70cb-54f6-9dc7-66b47c4f3157', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4971a2f5-06a3-5898-823d-364145d3b9a5', 'Sheet Missing', 'Excel workbook sheet ''QE_Admin_Data'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('8640a4b5-53ef-506e-bcde-83f00315d4b2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('544998d3-58c5-5f65-9dc8-9f998508495f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8640a4b5-53ef-506e-bcde-83f00315d4b2', 'Sheet Missing', 'Excel workbook sheet ''Question_Reference'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
+-- ingest support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx (ERROR)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('0adb81bc-3df2-5f86-99cc-2d20e1dd5efd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', 'ERROR', NULL);
+INSERT INTO "orch_session_issue" ("orch_session_issue_id", "session_id", "session_entry_id", "issue_type", "issue_message", "issue_row", "issue_column", "invalid_value", "remediation", "elaboration") VALUES ('10d0290c-b2eb-581e-b627-b5b8fcbb830f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '0adb81bc-3df2-5f86-99cc-2d20e1dd5efd', 'Sheet Missing', 'Excel workbook sheet ''Answer_Reference'' not found in ''JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx'' (available: JRCHC_SDOH HEL_Report 2452_ran )', NULL, NULL, 'support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx', NULL, NULL);
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv (ahc_cross_walk)
+-- required by IngestEngine, setup the ingestion entry for logging
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e6951d0b-be59-58c3-8a04-01181208c601', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv', 'ahc_cross_walk', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('2afb3098-bcfd-5a54-8ebb-4d65d399c55e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'AhcCrossWalkCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -429,7 +429,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE ahc_cross_walk AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'e6951d0b-be59-58c3-8a04-01181208c601' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv', header = true);
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/ahc-cross-walk.csv', header = true);
 
 WITH required_column_names_in_src AS (
     SELECT column_name
@@ -450,9 +450,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0e074bf2-f1fe-55d4-bd44-a88cbed79aeb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'AhcCrossWalkCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv (encounter_class_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv (encounter_class_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e8b3dab4-5058-5c79-8088-45b423119149', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv', 'encounter_class_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('e8b3dab4-5058-5c79-8088-45b423119149', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv', 'encounter_class_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('9dabd022-4a26-55f2-98f4-e534e7704b23', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'EncounterClassReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -461,7 +461,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE encounter_class_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'e8b3dab4-5058-5c79-8088-45b423119149' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-class-reference.csv',
       header = true
     );
 
@@ -484,9 +484,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('80af4eff-d697-565b-9e3f-a587e322b1da', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'EncounterClassReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv (encounter_status_code_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv (encounter_status_code_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('6fcd9df5-34cf-5c09-8fb5-e73617e28d73', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv', 'encounter_status_code_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('6fcd9df5-34cf-5c09-8fb5-e73617e28d73', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv', 'encounter_status_code_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7e65e3a7-4415-55f4-866b-3b0cc4e85fc6', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -495,7 +495,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE encounter_status_code_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '6fcd9df5-34cf-5c09-8fb5-e73617e28d73' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-status-code-reference.csv',
       header = true
     );
 
@@ -518,9 +518,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('5b77d127-e62a-50a9-acee-bea63ff64dd5', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6fcd9df5-34cf-5c09-8fb5-e73617e28d73', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'EncounterStatusCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv (encounter_type_code_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv (encounter_type_code_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a92a6466-6fe4-58d7-8948-e2e09dc2fec2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv', 'encounter_type_code_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('a92a6466-6fe4-58d7-8948-e2e09dc2fec2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv', 'encounter_type_code_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('34e90086-3d06-5b10-972d-7d0b40a02289', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -529,7 +529,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE encounter_type_code_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/encounter-type-code-reference.csv',
       header = true
     );
 
@@ -552,9 +552,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('21d7e4ec-32e3-5e20-9029-28fdd6c5fa66', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'a92a6466-6fe4-58d7-8948-e2e09dc2fec2', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'EncounterTypeCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv (screening_status_code_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv (screening_status_code_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('4f7e4436-c5f6-5ba1-9793-580ab66789fb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv', 'screening_status_code_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('4f7e4436-c5f6-5ba1-9793-580ab66789fb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv', 'screening_status_code_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('86ff3ab6-900d-5474-b63c-cbcac3c66f1a', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -563,7 +563,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE screening_status_code_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '4f7e4436-c5f6-5ba1-9793-580ab66789fb' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/screening-status-code-reference.csv',
       header = true
     );
 
@@ -586,9 +586,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f6d4aff4-4b71-5662-8f57-00ee247dc57c', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '4f7e4436-c5f6-5ba1-9793-580ab66789fb', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'ScreeningStatusCodeReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv (gender_identity_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv (gender_identity_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv', 'gender_identity_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv', 'gender_identity_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4b7537b2-9d60-59f3-8c61-fa2ff4265c02', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'GenderIdentityReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -597,7 +597,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE gender_identity_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/gender-identity-reference.csv',
       header = true
     );
 
@@ -620,9 +620,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('657d6337-8d24-5b67-b139-87db6a228264', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '6202ec4a-f3d5-5302-9ed6-9cb59a5b2818', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'GenderIdentityReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv (administrative_sex_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv (administrative_sex_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('9f13dd7d-9ff8-509d-b716-cde856c5f0f0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv', 'administrative_sex_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('9f13dd7d-9ff8-509d-b716-cde856c5f0f0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv', 'administrative_sex_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('9c0d34d3-bf09-527a-aef5-85004a400be5', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -631,7 +631,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE administrative_sex_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '9f13dd7d-9ff8-509d-b716-cde856c5f0f0' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/administrative-sex-reference.csv',
       header = true
     );
 
@@ -654,9 +654,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('e2816d61-4406-5073-ac60-f129a107d938', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '9f13dd7d-9ff8-509d-b716-cde856c5f0f0', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'AdministrativeSexReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv (sex_at_birth_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv (sex_at_birth_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('413ec5cd-eee9-5c62-90a5-6670f8b9ddff', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv', 'sex_at_birth_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('413ec5cd-eee9-5c62-90a5-6670f8b9ddff', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv', 'sex_at_birth_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6c48996f-0dd4-572f-b087-e5913926cd4b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'SexAtBirthReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -665,7 +665,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE sex_at_birth_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '413ec5cd-eee9-5c62-90a5-6670f8b9ddff' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sex-at-birth-reference.csv',
       header = true
     );
 
@@ -688,9 +688,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('bebf797d-855b-5e76-93d2-2a802febd5a2', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '413ec5cd-eee9-5c62-90a5-6670f8b9ddff', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'SexAtBirthReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv (sexual_orientation_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv (sexual_orientation_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv', 'sexual_orientation_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('17cedd6e-e794-5b45-9790-c4ba2483cc1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv', 'sexual_orientation_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('c40829eb-7f91-583a-8af8-06de851777a0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'SexualOrientationReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -699,7 +699,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE sexual_orientation_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '17cedd6e-e794-5b45-9790-c4ba2483cc1e' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sexual-orientation-reference.csv',
       header = true
     );
 
@@ -722,9 +722,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a8ec8b43-9e16-5eeb-9683-bc14288971f1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '17cedd6e-e794-5b45-9790-c4ba2483cc1e', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'SexualOrientationReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv (business_rules)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv (business_rules)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('35c62034-5b20-5891-8d38-3e9b051dec6e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv', 'business_rules', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('35c62034-5b20-5891-8d38-3e9b051dec6e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv', 'business_rules', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('aa8b8d1a-c8cc-5a9b-b5aa-34a6fc85e11a', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'BusinessRulesReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -733,7 +733,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE business_rules AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '35c62034-5b20-5891-8d38-3e9b051dec6e' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/business-rules.csv',
       header = true
     );
 
@@ -756,9 +756,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8278fd0f-7116-55bd-8d7a-0a30681b0d2f', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '35c62034-5b20-5891-8d38-3e9b051dec6e', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'BusinessRulesReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv (race_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv (race_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('c420c3ba-ddbc-582b-9cdf-361497beb034', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv', 'race_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('c420c3ba-ddbc-582b-9cdf-361497beb034', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv', 'race_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('97c2cca2-92f5-5937-97e6-d84beeb4018e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'RaceReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -767,7 +767,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE race_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'c420c3ba-ddbc-582b-9cdf-361497beb034' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/race-reference.csv',
       header = true
     );
 
@@ -790,9 +790,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('442b5e69-76fb-5da8-ae00-b79ea50cbedb', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'c420c3ba-ddbc-582b-9cdf-361497beb034', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'RaceReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv (ethnicity_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv (ethnicity_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('5a941253-b661-5282-a5e6-97cbfe5dfb32', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv', 'ethnicity_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('5a941253-b661-5282-a5e6-97cbfe5dfb32', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv', 'ethnicity_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f58ee169-7478-59ca-9e36-aa384ddb501c', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'EthnicityReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -801,7 +801,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE ethnicity_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, '5a941253-b661-5282-a5e6-97cbfe5dfb32' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/ethnicity-reference.csv',
       header = true
     );
 
@@ -824,9 +824,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3cab2329-2aae-5475-9792-04e14e862f1e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '5a941253-b661-5282-a5e6-97cbfe5dfb32', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'EthnicityReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv (preferred_language_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv (preferred_language_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b63bd83d-959a-5a5f-8d60-08b84bf16c90', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv', 'preferred_language_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('b63bd83d-959a-5a5f-8d60-08b84bf16c90', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv', 'preferred_language_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('47d97ff4-908a-50f7-a2e2-443e2dad7056', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -835,7 +835,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE preferred_language_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'b63bd83d-959a-5a5f-8d60-08b84bf16c90' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/preferred-language-reference.csv',
       header = true
     );
 
@@ -858,9 +858,9 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
 
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('90a0010e-213e-58c3-9302-5e7310006b95', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'b63bd83d-959a-5a5f-8d60-08b84bf16c90', 'ATTEMPT_CSV_INGEST', 'INGESTED_CSV', NULL, 'PreferredLanguageReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
       
--- ingest /home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv (sdoh_domain_reference)
+-- ingest /home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv (sdoh_domain_reference)
 -- required by IngestEngine, setup the ingestion entry for logging
-INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('f626602e-8be5-5e8c-824c-bdde91b22817', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv', 'sdoh_domain_reference', NULL);
+INSERT INTO "orch_session_entry" ("orch_session_entry_id", "session_id", "ingest_src", "ingest_table_name", "elaboration") VALUES ('f626602e-8be5-5e8c-824c-bdde91b22817', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv', 'sdoh_domain_reference', NULL);
 
 -- state management diagnostics
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('398104b8-02dc-509b-998a-0b66b5a912e1', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'f626602e-8be5-5e8c-824c-bdde91b22817', 'ENTER(ingest)', 'ATTEMPT_CSV_INGEST', NULL, 'SdohDomainReferenceCsvFileIngestSource.ingestSQL', (CURRENT_TIMESTAMP), NULL);
@@ -869,7 +869,7 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
 -- because assurance CTEs require them
 CREATE TABLE sdoh_domain_reference AS
   SELECT *, row_number() OVER () as src_file_row_number, '05269d28-15ae-5bd6-bd88-f949ccfa52d7' as session_id, 'f626602e-8be5-5e8c-824c-bdde91b22817' as session_entry_id
-    FROM read_csv_auto('/home/alan/workspaces/github.com/alan-francis/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv',
+    FROM read_csv_auto('/home/megin/workspaces/1115-hub-fork/1115-hub/src/ahc-hrsn-elt/reference-data/sdoh-domain-reference.csv',
       header = true
     );
 
@@ -894,15 +894,15 @@ INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "sessio
       
 WITH check_all_tables_are_ingested_in_a_group AS (
   WITH required_tables AS (
-      SELECT 'screening_20240529'
+      SELECT 'screening_qcs_test_20240531_testcase1'
         AS table_name,
         'SCREENING' AS table_name_suffix
       UNION ALL
-      SELECT 'admin_demographics_20240529'
+      SELECT 'admin_demographics_qcs_test_20240531_testcase1'
         AS table_name,
         'DEMOGRAPHIC_DATA' AS table_name_suffix
       UNION ALL
-      SELECT 'qe_admin_data_20240529'
+      SELECT 'qe_admin_data_qcs_test_20240531_testcase1'
         AS table_name,
         'QE_ADMIN_DATA' AS table_name_suffix
   )
@@ -910,10 +910,10 @@ WITH check_all_tables_are_ingested_in_a_group AS (
   FROM required_tables rt
   LEFT JOIN information_schema.tables ist ON rt.table_name = ist.table_name
   WHERE
-    'admin_demographics_20240529' IN (
-      'screening_20240529',
-      'admin_demographics_20240529',
-      'qe_admin_data_20240529'
+    'qe_admin_data_qcs_test_20240531_testcase1' IN (
+      'screening_qcs_test_20240531_testcase1',
+      'admin_demographics_qcs_test_20240531_testcase1',
+      'qe_admin_data_qcs_test_20240531_testcase1'
       )
   AND ist.table_name IS NULL
 )
@@ -925,21 +925,21 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            NULL,
            NULL,
            table_name,
-           'CSV file ' || table_name_suffix || '_20240529 not found under the group (_20240529)',
+           'CSV file ' || table_name_suffix || '_qcs-test-20240531-testcase1 not found under the group (_qcs-test-20240531-testcase1)',
            NULL
       FROM check_all_tables_are_ingested_in_a_group
     ;
 WITH check_all_tables_are_ingested_in_a_group AS (
   WITH required_tables AS (
-      SELECT 'screening_20240529'
+      SELECT 'screening_qcs_test_20240531_testcase1'
         AS table_name,
         'SCREENING' AS table_name_suffix
       UNION ALL
-      SELECT 'admin_demographics_20240529'
+      SELECT 'admin_demographics_qcs_test_20240531_testcase1'
         AS table_name,
         'DEMOGRAPHIC_DATA' AS table_name_suffix
       UNION ALL
-      SELECT 'qe_admin_data_20240529'
+      SELECT 'qe_admin_data_qcs_test_20240531_testcase1'
         AS table_name,
         'QE_ADMIN_DATA' AS table_name_suffix
   )
@@ -947,10 +947,10 @@ WITH check_all_tables_are_ingested_in_a_group AS (
   FROM required_tables rt
   LEFT JOIN information_schema.tables ist ON rt.table_name = ist.table_name
   WHERE
-    'screening_20240529' IN (
-      'screening_20240529',
-      'admin_demographics_20240529',
-      'qe_admin_data_20240529'
+    'screening_qcs_test_20240531_testcase1' IN (
+      'screening_qcs_test_20240531_testcase1',
+      'admin_demographics_qcs_test_20240531_testcase1',
+      'qe_admin_data_qcs_test_20240531_testcase1'
       )
   AND ist.table_name IS NULL
 )
@@ -962,21 +962,21 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            NULL,
            NULL,
            table_name,
-           'CSV file ' || table_name_suffix || '_20240529 not found under the group (_20240529)',
+           'CSV file ' || table_name_suffix || '_qcs-test-20240531-testcase1 not found under the group (_qcs-test-20240531-testcase1)',
            NULL
       FROM check_all_tables_are_ingested_in_a_group
     ;
 WITH check_all_tables_are_ingested_in_a_group AS (
   WITH required_tables AS (
-      SELECT 'screening_20240529'
+      SELECT 'screening_qcs_test_20240531_testcase1'
         AS table_name,
         'SCREENING' AS table_name_suffix
       UNION ALL
-      SELECT 'admin_demographics_20240529'
+      SELECT 'admin_demographics_qcs_test_20240531_testcase1'
         AS table_name,
         'DEMOGRAPHIC_DATA' AS table_name_suffix
       UNION ALL
-      SELECT 'qe_admin_data_20240529'
+      SELECT 'qe_admin_data_qcs_test_20240531_testcase1'
         AS table_name,
         'QE_ADMIN_DATA' AS table_name_suffix
   )
@@ -984,36 +984,36 @@ WITH check_all_tables_are_ingested_in_a_group AS (
   FROM required_tables rt
   LEFT JOIN information_schema.tables ist ON rt.table_name = ist.table_name
   WHERE
-    'qe_admin_data_20240529' IN (
-      'screening_20240529',
-      'admin_demographics_20240529',
-      'qe_admin_data_20240529'
+    'admin_demographics_qcs_test_20240531_testcase1' IN (
+      'screening_qcs_test_20240531_testcase1',
+      'admin_demographics_qcs_test_20240531_testcase1',
+      'qe_admin_data_qcs_test_20240531_testcase1'
       )
   AND ist.table_name IS NULL
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
            'CSV File Missing',
            NULL,
            NULL,
            table_name,
-           'CSV file ' || table_name_suffix || '_20240529 not found under the group (_20240529)',
+           'CSV file ' || table_name_suffix || '_qcs-test-20240531-testcase1 not found under the group (_qcs-test-20240531-testcase1)',
            NULL
       FROM check_all_tables_are_ingested_in_a_group
     ;
 WITH check_all_tables_are_ingested_in_a_group AS (
   WITH required_tables AS (
-      SELECT 'screening_20240529'
+      SELECT 'screening_qcs_test_20240531_testcase1'
         AS table_name,
         'SCREENING' AS table_name_suffix
       UNION ALL
-      SELECT 'admin_demographics_20240529'
+      SELECT 'admin_demographics_qcs_test_20240531_testcase1'
         AS table_name,
         'DEMOGRAPHIC_DATA' AS table_name_suffix
       UNION ALL
-      SELECT 'qe_admin_data_20240529'
+      SELECT 'qe_admin_data_qcs_test_20240531_testcase1'
         AS table_name,
         'QE_ADMIN_DATA' AS table_name_suffix
   )
@@ -1022,9 +1022,9 @@ WITH check_all_tables_are_ingested_in_a_group AS (
   LEFT JOIN information_schema.tables ist ON rt.table_name = ist.table_name
   WHERE
     'screening_status_code_reference' IN (
-      'screening_20240529',
-      'admin_demographics_20240529',
-      'qe_admin_data_20240529'
+      'screening_qcs_test_20240531_testcase1',
+      'admin_demographics_qcs_test_20240531_testcase1',
+      'qe_admin_data_qcs_test_20240531_testcase1'
       )
   AND ist.table_name IS NULL
 )
@@ -1036,7 +1036,7 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            NULL,
            NULL,
            table_name,
-           'CSV file ' || table_name_suffix || '_20240529 not found under the group (_20240529)',
+           'CSV file ' || table_name_suffix || '_qcs-test-20240531-testcase1 not found under the group (_qcs-test-20240531-testcase1)',
            NULL
       FROM check_all_tables_are_ingested_in_a_group
     ;
@@ -1044,21 +1044,21 @@ SELECT session_entry_id, orch_session_issue_id, issue_type, issue_message, inval
 ```
 ### `ingest` STDOUT (status: `0`)
 ```json
-[{"session_entry_id":"641dff51-97fd-56b3-8443-c1ed568a6d66","orch_session_issue_id":"d70a4700-6b40-52fc-a7a2-69ef0d7f69ff","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
-{"session_entry_id":"47277588-99e8-59f5-8384-b24344a86073","orch_session_issue_id":"58b22e99-5854-53bf-adbe-08e67df99b85","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
-{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","orch_session_issue_id":"bc0c03b5-d1ba-5301-850f-5e4c42c1bf09","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
-{"session_entry_id":"ae477ba1-c7f1-5f34-847a-50bddb7130aa","orch_session_issue_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
-{"session_entry_id":"b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0","orch_session_issue_id":"7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
-{"session_entry_id":"86b4a49e-7378-5159-9f41-b005208c31bc","orch_session_issue_id":"a530fe1b-57ef-5a90-8bea-835ece2483da","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
-{"session_entry_id":"a3fe7098-8ae8-5612-81ac-cbe10780c19b","orch_session_issue_id":"99e72a60-96ab-5ef1-a3af-3e7759777664","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
-{"session_entry_id":"e36daa69-3c63-5384-b6a7-03fa3b00641d","orch_session_issue_id":"89f7ec04-277a-5799-afaa-a70d0f2a8ed5","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
-{"session_entry_id":"c60cf3db-b1bf-5103-b278-b0c128ce924a","orch_session_issue_id":"b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
-{"session_entry_id":"b10e248d-8c94-59ec-83fc-a1249dd3b111","orch_session_issue_id":"5222b730-9add-5b52-b0c9-6f2506b0af9d","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
-{"session_entry_id":"fa7874f6-f848-572b-a9ab-9db4c8d5e959","orch_session_issue_id":"c302047e-21cf-5059-a32c-e81a9bd3a9b9","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
-{"session_entry_id":"3252fee6-3a9a-5f4c-81c6-739201046d79","orch_session_issue_id":"78d6a904-035e-54ae-8ac2-ca5cdf3f75f7","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
-{"session_entry_id":"9860873a-c387-5d98-9930-4ff296eb7192","orch_session_issue_id":"d5d6e25d-81b4-5f98-8b91-ea2dbc155a9c","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
-{"session_entry_id":"46171763-bd21-57a8-a403-0785f72643cf","orch_session_issue_id":"4971a2f5-06a3-5898-823d-364145d3b9a5","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
-{"session_entry_id":"c2c0cbca-70cb-54f6-9dc7-66b47c4f3157","orch_session_issue_id":"8640a4b5-53ef-506e-bcde-83f00315d4b2","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"}]
+[{"session_entry_id":"641dff51-97fd-56b3-8443-c1ed568a6d66","orch_session_issue_id":"d70a4700-6b40-52fc-a7a2-69ef0d7f69ff","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"47277588-99e8-59f5-8384-b24344a86073","orch_session_issue_id":"58b22e99-5854-53bf-adbe-08e67df99b85","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"a26ce332-3ced-5623-861d-23a2ef78e4a9","orch_session_issue_id":"bc0c03b5-d1ba-5301-850f-5e4c42c1bf09","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"ae477ba1-c7f1-5f34-847a-50bddb7130aa","orch_session_issue_id":"8aad9cfa-b1a2-5fb1-a6ab-613a79a7e839","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"b41ccd27-9a4f-5cc8-9c5d-b55242d90fb0","orch_session_issue_id":"7ef8bdeb-fd56-5eb9-a09b-ef15ce18dc49","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'synthetic-fail-excel-01.xlsx' (available: Sheet1)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/synthetic-fail-excel-01.xlsx"},
+{"session_entry_id":"99e72a60-96ab-5ef1-a3af-3e7759777664","orch_session_issue_id":"e36daa69-3c63-5384-b6a7-03fa3b00641d","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"89f7ec04-277a-5799-afaa-a70d0f2a8ed5","orch_session_issue_id":"c60cf3db-b1bf-5103-b278-b0c128ce924a","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"b2a7c7e8-5ffe-5f28-8112-4eb7abb6397f","orch_session_issue_id":"b10e248d-8c94-59ec-83fc-a1249dd3b111","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"5222b730-9add-5b52-b0c9-6f2506b0af9d","orch_session_issue_id":"fa7874f6-f848-572b-a9ab-9db4c8d5e959","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"c302047e-21cf-5059-a32c-e81a9bd3a9b9","orch_session_issue_id":"3252fee6-3a9a-5f4c-81c6-739201046d79","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'jrchc-hrsn-file-spec.xlsx' (available: Original Report, HeL LOINC Mapping)","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/jrchc-hrsn-file-spec.xlsx"},
+{"session_entry_id":"78d6a904-035e-54ae-8ac2-ca5cdf3f75f7","orch_session_issue_id":"9860873a-c387-5d98-9930-4ff296eb7192","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Admin_Demographic' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
+{"session_entry_id":"d5d6e25d-81b4-5f98-8b91-ea2dbc155a9c","orch_session_issue_id":"46171763-bd21-57a8-a403-0785f72643cf","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Screening' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
+{"session_entry_id":"4971a2f5-06a3-5898-823d-364145d3b9a5","orch_session_issue_id":"c2c0cbca-70cb-54f6-9dc7-66b47c4f3157","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'QE_Admin_Data' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
+{"session_entry_id":"8640a4b5-53ef-506e-bcde-83f00315d4b2","orch_session_issue_id":"544998d3-58c5-5f65-9dc8-9f998508495f","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Question_Reference' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"},
+{"session_entry_id":"0adb81bc-3df2-5f86-99cc-2d20e1dd5efd","orch_session_issue_id":"10d0290c-b2eb-581e-b627-b5b8fcbb830f","issue_type":"Sheet Missing","issue_message":"Excel workbook sheet 'Answer_Reference' not found in 'JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx' (available: JRCHC_SDOH HEL_Report 2452_ran )","invalid_value":"support/assurance/ahc-hrsn-elt/screening/synthetic-content/JRCHC_SDOH HEL_Report 2452_ran 020124DeIdent.xlsx"}]
 
 ```
 No STDERR emitted by `ingest`.
@@ -1072,1007 +1072,13 @@ No STDERR emitted by `ingest`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0626c65d-bfe1-5eba-8a88-316343d5a123', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'AdminDemographicCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('0626c65d-bfe1-5eba-8a88-316343d5a123', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'QeAdminDataCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
-WITH mandatory_value AS (
-    SELECT 'FIRST_NAME' AS issue_column,
-           "FIRST_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "FIRST_NAME" IS NULL
-        OR TRIM(CAST("FIRST_NAME" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH pattern AS (
-    SELECT 'FIRST_NAME' AS issue_column,
-           "FIRST_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE CAST("FIRST_NAME" AS VARCHAR) NOT SIMILAR TO '^[A-Za-z]+$'
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Pattern Mismatch',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]+$',
-           'Follow the pattern ^[A-Za-z]+$ in ' || issue_column
-      FROM pattern;
-WITH pattern AS (
-    SELECT 'MIDDLE_NAME' AS issue_column,
-           "MIDDLE_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE CAST("MIDDLE_NAME" AS VARCHAR) NOT SIMILAR TO '^[A-Za-z]+$'
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Pattern Mismatch',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]+$',
-           'Follow the pattern ^[A-Za-z]+$ in ' || issue_column
-      FROM pattern;
-WITH mandatory_value AS (
-    SELECT 'LAST_NAME' AS issue_column,
-           "LAST_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "LAST_NAME" IS NULL
-        OR TRIM(CAST("LAST_NAME" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH pattern AS (
-    SELECT 'LAST_NAME' AS issue_column,
-           "LAST_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE CAST("LAST_NAME" AS VARCHAR) NOT SIMILAR TO '^[A-Za-z]+$'
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Pattern Mismatch',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]+$',
-           'Follow the pattern ^[A-Za-z]+$ in ' || issue_column
-      FROM pattern;
-WITH mandatory_value AS (
-    SELECT 'ADMINISTRATIVE_SEX_CODE' AS issue_column,
-           "ADMINISTRATIVE_SEX_CODE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "ADMINISTRATIVE_SEX_CODE" IS NULL
-        OR TRIM(CAST("ADMINISTRATIVE_SEX_CODE" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'ADMINISTRATIVE_SEX_CODE_SYSTEM' AS issue_column,
-           "ADMINISTRATIVE_SEX_CODE_SYSTEM" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "ADMINISTRATIVE_SEX_CODE_SYSTEM" IS NULL
-        OR TRIM(CAST("ADMINISTRATIVE_SEX_CODE_SYSTEM" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH valid_administrative_sex_code_in_all_rows AS (
-    SELECT 'ADMINISTRATIVE_SEX_CODE' AS issue_column,
-           sr."ADMINISTRATIVE_SEX_CODE" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 sr
-      LEFT JOIN administrative_sex_reference ref
-      ON UPPER(sr."ADMINISTRATIVE_SEX_CODE") = UPPER(ref.ADMINISTRATIVE_SEX_CODE)
-     WHERE sr."ADMINISTRATIVE_SEX_CODE" IS NOT NULL
-      AND ref.ADMINISTRATIVE_SEX_CODE IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid ADMINISTRATIVE SEX CODE',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid ADMINISTRATIVE SEX CODE "' || invalid_value || '" found in ' || issue_column,
-           'Validate ADMINISTRATIVE SEX CODE with administrative sex reference data'
-      FROM valid_administrative_sex_code_in_all_rows;
-WITH valid_administrative_sex_code_description_in_all_rows AS (
-    SELECT 'ADMINISTRATIVE_SEX_CODE_DESCRIPTION' AS issue_column,
-           sr."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 sr
-      LEFT JOIN administrative_sex_reference ref
-      ON UPPER(sr."ADMINISTRATIVE_SEX_CODE_DESCRIPTION") = UPPER(ref.ADMINISTRATIVE_SEX_CODE_DESCRIPTION)
-     WHERE sr."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" IS NOT NULL
-      AND ref.ADMINISTRATIVE_SEX_CODE_DESCRIPTION IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid ADMINISTRATIVE SEX CODE DESCRIPTION',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid ADMINISTRATIVE SEX CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
-           'Validate ADMINISTRATIVE SEX CODE DESCRIPTION with administrative sex reference data'
-      FROM valid_administrative_sex_code_description_in_all_rows;
-WITH valid_administrative_sex_code_system_in_all_rows AS (
-    SELECT 'ADMINISTRATIVE_SEX_CODE_SYSTEM' AS issue_column,
-           sr."ADMINISTRATIVE_SEX_CODE_SYSTEM" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 sr
-      LEFT JOIN administrative_sex_reference ref
-      ON UPPER(sr."ADMINISTRATIVE_SEX_CODE_SYSTEM") = UPPER(ref.ADMINISTRATIVE_SEX_CODE_SYSTEM)
-     WHERE sr."ADMINISTRATIVE_SEX_CODE_SYSTEM" IS NOT NULL
-      AND ref.ADMINISTRATIVE_SEX_CODE_SYSTEM IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid ADMINISTRATIVE SEX CODE SYSTEM',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid ADMINISTRATIVE SEX CODE SYSTEM "' || invalid_value || '" found in ' || issue_column,
-           'Validate ADMINISTRATIVE SEX CODE SYSTEM with administrative sex reference data'
-      FROM valid_administrative_sex_code_system_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'ADMINISTRATIVE_SEX_CODE' AS issue_column,
-      tbl."ADMINISTRATIVE_SEX_CODE" AS invalid_value,
-      tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."ADMINISTRATIVE_SEX_CODE" is not null
-  and tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "ADMINISTRATIVE_SEX_CODE_DESCRIPTION" FROM administrative_sex_reference WHERE UPPER(CAST(tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS VARCHAR)) AND UPPER(CAST(tbl."ADMINISTRATIVE_SEX_CODE" AS VARCHAR)) = UPPER(CAST("ADMINISTRATIVE_SEX_CODE" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The ADMINISTRATIVE_SEX_CODE "' || invalid_value || '" of ADMINISTRATIVE_SEX_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the ADMINISTRATIVE_SEX_CODE of ADMINISTRATIVE_SEX_CODE_DESCRIPTION in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'ADMINISTRATIVE_SEX_CODE_DESCRIPTION' AS issue_column,
-      tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS invalid_value,
-      tbl."ADMINISTRATIVE_SEX_CODE" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" is not null
-  and tbl."ADMINISTRATIVE_SEX_CODE" is not null
-  and NOT EXISTS ( SELECT "ADMINISTRATIVE_SEX_CODE" FROM administrative_sex_reference WHERE UPPER(CAST(tbl."ADMINISTRATIVE_SEX_CODE" AS VARCHAR)) = UPPER(CAST("ADMINISTRATIVE_SEX_CODE" AS VARCHAR)) AND UPPER(CAST(tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The ADMINISTRATIVE_SEX_CODE_DESCRIPTION "' || invalid_value || '" of ADMINISTRATIVE_SEX_CODE "' || dependent_value || '" is not matching with the ADMINISTRATIVE_SEX_CODE_DESCRIPTION of ADMINISTRATIVE_SEX_CODE in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_sex_at_birth_code_in_all_rows AS (
-    SELECT 'SEX_AT_BIRTH_CODE' AS issue_column,
-           sr."SEX_AT_BIRTH_CODE" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 sr
-      LEFT JOIN sex_at_birth_reference ref
-      ON UPPER(sr.SEX_AT_BIRTH_CODE) = UPPER(ref.SEX_AT_BIRTH_CODE)
-     WHERE sr.SEX_AT_BIRTH_CODE IS NOT NULL
-      AND ref.SEX_AT_BIRTH_CODE IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid SEX AT BIRTH CODE',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid SEX AT BIRTH CODE "' || invalid_value || '" found in ' || issue_column,
-           'Validate SEX AT BIRTH CODE with sex at birth reference data'
-      FROM valid_sex_at_birth_code_in_all_rows;
-WITH valid_sex_at_birth_code_description_in_all_rows AS (
-    SELECT 'SEX_AT_BIRTH_CODE_DESCRIPTION' AS issue_column,
-           sr."SEX_AT_BIRTH_CODE_DESCRIPTION" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 sr
-      LEFT JOIN sex_at_birth_reference ref
-      ON UPPER(sr.SEX_AT_BIRTH_CODE_DESCRIPTION) = UPPER(ref.SEX_AT_BIRTH_CODE_DESCRIPTION)
-     WHERE sr.SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL
-      AND ref.SEX_AT_BIRTH_CODE_DESCRIPTION IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid SEX_AT_BIRTH_CODE_DESCRIPTION',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid SEX_AT_BIRTH_CODE_DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
-           'Validate SEX_AT_BIRTH_CODE_DESCRIPTION with sex at birth reference data'
-      FROM valid_sex_at_birth_code_description_in_all_rows;
-WITH valid_sex_at_birth_code_system_in_all_rows AS (
-    SELECT 'SEX_AT_BIRTH_CODE_SYSTEM' AS issue_column,
-           sr."SEX_AT_BIRTH_CODE_SYSTEM" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 sr
-      LEFT JOIN sex_at_birth_reference ref
-      ON UPPER(sr.SEX_AT_BIRTH_CODE_SYSTEM) = UPPER(ref.SEX_AT_BIRTH_CODE_SYSTEM)
-     WHERE sr.SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL
-      AND ref.SEX_AT_BIRTH_CODE_SYSTEM IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid SEX AT BIRTH CODE SYSTEM',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid SEX AT BIRTH CODE SYSTEM "' || invalid_value || '" found in ' || issue_column,
-           'Validate SEX AT BIRTH CODE SYSTEM with sex at birth reference data'
-      FROM valid_sex_at_birth_code_system_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'SEX_AT_BIRTH_CODE' AS issue_column,
-      tbl."SEX_AT_BIRTH_CODE" AS invalid_value,
-      tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."SEX_AT_BIRTH_CODE" is not null
-  and tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "SEX_AT_BIRTH_CODE_DESCRIPTION" FROM sex_at_birth_reference WHERE UPPER(CAST(tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("SEX_AT_BIRTH_CODE_DESCRIPTION" AS VARCHAR)) AND UPPER(CAST(tbl."SEX_AT_BIRTH_CODE" AS VARCHAR)) = UPPER(CAST("SEX_AT_BIRTH_CODE" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The SEX_AT_BIRTH_CODE "' || invalid_value || '" of SEX_AT_BIRTH_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the SEX_AT_BIRTH_CODE of SEX_AT_BIRTH_CODE_DESCRIPTION in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'SEX_AT_BIRTH_CODE_DESCRIPTION' AS issue_column,
-      tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" AS invalid_value,
-      tbl."SEX_AT_BIRTH_CODE" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" is not null
-  and tbl."SEX_AT_BIRTH_CODE" is not null
-  and NOT EXISTS ( SELECT "SEX_AT_BIRTH_CODE" FROM sex_at_birth_reference WHERE UPPER(CAST(tbl."SEX_AT_BIRTH_CODE" AS VARCHAR)) = UPPER(CAST("SEX_AT_BIRTH_CODE" AS VARCHAR)) AND UPPER(CAST(tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("SEX_AT_BIRTH_CODE_DESCRIPTION" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The SEX_AT_BIRTH_CODE_DESCRIPTION "' || invalid_value || '" of SEX_AT_BIRTH_CODE "' || dependent_value || '" is not matching with the SEX_AT_BIRTH_CODE_DESCRIPTION of SEX_AT_BIRTH_CODE in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH mandatory_value AS (
-    SELECT 'PAT_BIRTH_DATE' AS issue_column,
-           "PAT_BIRTH_DATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "PAT_BIRTH_DATE" IS NULL
-        OR TRIM(CAST("PAT_BIRTH_DATE" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH valid_date_time_in_all_rows AS (
-    SELECT 'PAT_BIRTH_DATE' AS issue_column,
-           "PAT_BIRTH_DATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "PAT_BIRTH_DATE" IS NOT NULL
-       AND TRY_CAST("PAT_BIRTH_DATE" AS TIMESTAMP) IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid Date',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid timestamp "' || invalid_value || '" found in ' || issue_column,
-           'Please be sure to provide both a valid date and time.'
-      FROM valid_date_time_in_all_rows;
-WITH mandatory_value AS (
-    SELECT 'CITY' AS issue_column,
-           "CITY" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "CITY" IS NULL
-        OR TRIM(CAST("CITY" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'STATE' AS issue_column,
-           "STATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "STATE" IS NULL
-        OR TRIM(CAST("STATE" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'STATE' AS issue_column,
-           "STATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "STATE" NOT IN ('NY', 'ny', 'New York','new york', 'NEW YORK')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''NY'', ''ny'', ''New York'',''new york'', ''NEW YORK'')',
-           'Use only allowed values ''NY'', ''ny'', ''New York'',''new york'', ''NEW YORK'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'ZIP' AS issue_column,
-           "ZIP" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "ZIP" IS NULL
-        OR TRIM(CAST("ZIP" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH pattern AS (
-    SELECT 'ZIP' AS issue_column,
-           "ZIP" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE CAST("ZIP" AS VARCHAR) NOT SIMILAR TO '^\d{5}(\d{4})?$'
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Pattern Mismatch',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^\d{5}(\d{4})?$',
-           'Follow the pattern ^\d{5}(\d{4})?$ in ' || issue_column
-      FROM pattern;
-WITH valid_integer_alphanumeric_string_in_all_rows AS (
-  SELECT 'ADDRESS1' AS issue_column,
-    t."ADDRESS1" AS invalid_value,
-    t.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529 t
-  WHERE t."ADDRESS1" SIMILAR TO '[0-9]+'
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Data Type Mismatch',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'Invalid string of numbers found'
-      FROM valid_integer_alphanumeric_string_in_all_rows;
-WITH valid_address1_or_medicaid_cin_in_all_rows AS (
-    SELECT 'ADDRESS1' AS issue_column,
-           ADDRESS1 AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM admin_demographics_20240529
-      WHERE (ADDRESS1 IS NULL OR TRIM("ADDRESS1") = '') AND (MEDICAID_CIN IS NULL OR TRIM("MEDICAID_CIN") = '')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid ADDRESS1',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field "' || issue_column || '" is empty',
-           'The required field value ADDRESS1 is missing. This is required due to the absence of the MEDICAID_CIN.'
-      FROM valid_address1_or_medicaid_cin_in_all_rows;
-WITH valid_gender_identity_code_in_all_rows AS (
-    SELECT 'GENDER_IDENTITY_CODE' AS issue_column,
-           sr."GENDER_IDENTITY_CODE" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 sr
-      LEFT JOIN gender_identity_reference ref
-      ON UPPER(sr.GENDER_IDENTITY_CODE) = UPPER(ref.GENDER_IDENTITY_CODE)
-     WHERE sr.GENDER_IDENTITY_CODE IS NOT NULL
-      AND ref.GENDER_IDENTITY_CODE IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid GENDER IDENTITY CODE',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid GENDER IDENTITY CODE "' || invalid_value || '" found in ' || issue_column,
-           'Validate GENDER IDENTITY CODE with gender identity reference data'
-      FROM valid_gender_identity_code_in_all_rows;
-WITH allowed_values AS (
-    SELECT 'GENDER_IDENTITY_CODE_SYSTEM_NAME' AS issue_column,
-           "GENDER_IDENTITY_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "GENDER_IDENTITY_CODE_SYSTEM_NAME" NOT IN ('SNOMED-CT','SNOMED','http://snomed.info/sct')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''SNOMED-CT'',''SNOMED'',''http://snomed.info/sct'')',
-           'Use only allowed values ''SNOMED-CT'',''SNOMED'',''http://snomed.info/sct'' in ' || issue_column
-      FROM allowed_values;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'GENDER_IDENTITY_CODE' AS issue_column,
-      tbl."GENDER_IDENTITY_CODE" AS invalid_value,
-      tbl."GENDER_IDENTITY_CODE_DESCRIPTION" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."GENDER_IDENTITY_CODE" is not null
-  and tbl."GENDER_IDENTITY_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "GENDER_IDENTITY_CODE_DESCRIPTION" FROM gender_identity_reference WHERE UPPER(CAST(tbl."GENDER_IDENTITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("GENDER_IDENTITY_CODE_DESCRIPTION" AS VARCHAR)) AND UPPER(CAST(tbl."GENDER_IDENTITY_CODE" AS VARCHAR)) = UPPER(CAST("GENDER_IDENTITY_CODE" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The GENDER_IDENTITY_CODE "' || invalid_value || '" of GENDER_IDENTITY_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the GENDER_IDENTITY_CODE of GENDER_IDENTITY_CODE_DESCRIPTION in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'GENDER_IDENTITY_CODE_DESCRIPTION' AS issue_column,
-      tbl."GENDER_IDENTITY_CODE_DESCRIPTION" AS invalid_value,
-      tbl."GENDER_IDENTITY_CODE" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."GENDER_IDENTITY_CODE_DESCRIPTION" is not null
-  and tbl."GENDER_IDENTITY_CODE" is not null
-  and NOT EXISTS ( SELECT "GENDER_IDENTITY_CODE" FROM gender_identity_reference WHERE UPPER(CAST(tbl."GENDER_IDENTITY_CODE" AS VARCHAR)) = UPPER(CAST("GENDER_IDENTITY_CODE" AS VARCHAR)) AND UPPER(CAST(tbl."GENDER_IDENTITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("GENDER_IDENTITY_CODE_DESCRIPTION" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The GENDER_IDENTITY_CODE_DESCRIPTION "' || invalid_value || '" of GENDER_IDENTITY_CODE "' || dependent_value || '" is not matching with the GENDER_IDENTITY_CODE_DESCRIPTION of GENDER_IDENTITY_CODE in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_sexual_orientation_code_in_all_rows AS (
-    SELECT 'SEXUAL_ORIENTATION_CODE' AS issue_column,
-           sr."SEXUAL_ORIENTATION_CODE" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 sr
-      LEFT JOIN sexual_orientation_reference ref
-      ON UPPER(sr.SEXUAL_ORIENTATION_CODE) = UPPER(ref.SEXUAL_ORIENTATION_CODE)
-     WHERE sr.SEXUAL_ORIENTATION_CODE IS NOT NULL
-      AND ref.SEXUAL_ORIENTATION_CODE IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid SEXUAL ORIENTATION CODE',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid SEXUAL ORIENTATION CODE "' || invalid_value || '" found in ' || issue_column,
-           'Validate SEXUAL ORIENTATION CODE with sexual orientation reference data'
-      FROM valid_sexual_orientation_code_in_all_rows;
-WITH valid_SEXUAL_ORIENTATION_CODE_DESCRIPTION_in_all_rows AS (
-    SELECT 'SEXUAL_ORIENTATION_CODE_DESCRIPTION' AS issue_column,
-           sr."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS invalid_value,
-           sr.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 sr
-      LEFT JOIN sexual_orientation_reference ref
-      ON UPPER(sr.SEXUAL_ORIENTATION_CODE_DESCRIPTION) = UPPER(ref.SEXUAL_ORIENTATION_CODE_DESCRIPTION)
-     WHERE sr.SEXUAL_ORIENTATION_CODE_DESCRIPTION IS NOT NULL
-      AND ref.SEXUAL_ORIENTATION_CODE_DESCRIPTION IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid SEXUAL ORIENTATION CODE DESCRIPTION',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid SEXUAL ORIENTATION CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
-           'Validate SEXUAL ORIENTATION CODE DESCRIPTION with sexual orientation reference data'
-      FROM valid_SEXUAL_ORIENTATION_CODE_DESCRIPTION_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'SEXUAL_ORIENTATION_CODE' AS issue_column,
-      tbl."SEXUAL_ORIENTATION_CODE" AS invalid_value,
-      tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."SEXUAL_ORIENTATION_CODE" is not null
-  and tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "SEXUAL_ORIENTATION_CODE_DESCRIPTION" FROM sexual_orientation_reference WHERE UPPER(CAST(tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS VARCHAR)) AND UPPER(CAST(tbl."SEXUAL_ORIENTATION_CODE" AS VARCHAR)) = UPPER(CAST("SEXUAL_ORIENTATION_CODE" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The SEXUAL_ORIENTATION_CODE "' || invalid_value || '" of SEXUAL_ORIENTATION_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the SEXUAL_ORIENTATION_CODE of SEXUAL_ORIENTATION_CODE_DESCRIPTION in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'SEXUAL_ORIENTATION_CODE_DESCRIPTION' AS issue_column,
-      tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS invalid_value,
-      tbl."SEXUAL_ORIENTATION_CODE" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" is not null
-  and tbl."SEXUAL_ORIENTATION_CODE" is not null
-  and NOT EXISTS ( SELECT "SEXUAL_ORIENTATION_CODE" FROM sexual_orientation_reference WHERE UPPER(CAST(tbl."SEXUAL_ORIENTATION_CODE" AS VARCHAR)) = UPPER(CAST("SEXUAL_ORIENTATION_CODE" AS VARCHAR)) AND UPPER(CAST(tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The SEXUAL_ORIENTATION_CODE_DESCRIPTION "' || invalid_value || '" of SEXUAL_ORIENTATION_CODE "' || dependent_value || '" is not matching with the SEXUAL_ORIENTATION_CODE_DESCRIPTION of SEXUAL_ORIENTATION_CODE in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH allowed_values AS (
-    SELECT 'SEXUAL_ORIENTATION_CODE_SYSTEM_NAME' AS issue_column,
-           "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME" NOT IN ('SNOMED-CT','SNOMED','http://snomed.info/sct')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''SNOMED-CT'',''SNOMED'',''http://snomed.info/sct'')',
-           'Use only allowed values ''SNOMED-CT'',''SNOMED'',''http://snomed.info/sct'' in ' || issue_column
-      FROM allowed_values;
-WITH valid_ethnicity_code_in_all_rows AS (
-    SELECT 'ETHNICITY_CODE' AS issue_column,
-           ad."ETHNICITY_CODE" AS invalid_value,
-           ad.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 ad
-      LEFT JOIN ethnicity_reference ref
-      ON UPPER(CAST(ad."ETHNICITY_CODE" AS VARCHAR)) = UPPER(CAST(ref."Concept Code" AS VARCHAR))
-     WHERE ad."ETHNICITY_CODE" IS NOT NULL
-      AND ref."Concept Code" IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid ETHNICITY CODE',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid ETHNICITY CODE "' || invalid_value || '" found in ' || issue_column,
-           'Validate ETHNICITY CODE with ethnicity reference data'
-      FROM valid_ethnicity_code_in_all_rows;
-WITH valid_ethnicity_code_description_in_all_rows AS (
-    SELECT 'ETHNICITY_CODE_DESCRIPTION' AS issue_column,
-           ad."ETHNICITY_CODE_DESCRIPTION" AS invalid_value,
-           ad.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 ad
-      LEFT JOIN ethnicity_reference ref
-      ON UPPER(CAST(ad."ETHNICITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST(ref."Concept Name" AS VARCHAR))
-     WHERE ad."ETHNICITY_CODE_DESCRIPTION" IS NOT NULL
-      AND ref."Concept Name" IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid ETHNICITY CODE DESCRIPTION',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid ETHNICITY CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
-           'Validate ETHNICITY CODE DESCRIPTION with ethnicity reference data'
-      FROM valid_ethnicity_code_description_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'ETHNICITY_CODE' AS issue_column,
-      tbl."ETHNICITY_CODE" AS invalid_value,
-      tbl."ETHNICITY_CODE_DESCRIPTION" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."ETHNICITY_CODE" is not null
-  and tbl."ETHNICITY_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "Concept Name" FROM ethnicity_reference WHERE UPPER(CAST(tbl."ETHNICITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Concept Name" AS VARCHAR)) AND UPPER(CAST(tbl."ETHNICITY_CODE" AS VARCHAR)) = UPPER(CAST("Concept Code" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The ETHNICITY_CODE "' || invalid_value || '" of ETHNICITY_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the ETHNICITY_CODE of ETHNICITY_CODE_DESCRIPTION in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'ETHNICITY_CODE_DESCRIPTION' AS issue_column,
-      tbl."ETHNICITY_CODE_DESCRIPTION" AS invalid_value,
-      tbl."ETHNICITY_CODE" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."ETHNICITY_CODE_DESCRIPTION" is not null
-  and tbl."ETHNICITY_CODE" is not null
-  and NOT EXISTS ( SELECT "Concept Code" FROM ethnicity_reference WHERE UPPER(CAST(tbl."ETHNICITY_CODE" AS VARCHAR)) = UPPER(CAST("Concept Code" AS VARCHAR)) AND UPPER(CAST(tbl."ETHNICITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Concept Name" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The ETHNICITY_CODE_DESCRIPTION "' || invalid_value || '" of ETHNICITY_CODE "' || dependent_value || '" is not matching with the ETHNICITY_CODE_DESCRIPTION of ETHNICITY_CODE in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_race_code_in_all_rows AS (
-    SELECT 'RACE_CODE' AS issue_column,
-           ad."RACE_CODE" AS invalid_value,
-           ad.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 ad
-      LEFT JOIN race_reference ref
-      ON UPPER(CAST(ad."RACE_CODE" AS VARCHAR)) = UPPER(CAST(ref."Concept Code" AS VARCHAR))
-     WHERE ad."RACE_CODE" IS NOT NULL
-      AND ref."Concept Code" IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid RACE CODE',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid RACE CODE "' || invalid_value || '" found in ' || issue_column,
-           'Validate RACE CODE with race reference data'
-      FROM valid_race_code_in_all_rows;
-WITH valid_race_code_description_in_all_rows AS (
-    SELECT 'RACE_CODE_DESCRIPTION' AS issue_column,
-           ad."RACE_CODE_DESCRIPTION" AS invalid_value,
-           ad.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 ad
-      LEFT JOIN race_reference ref
-      ON UPPER(CAST(ad."RACE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST(ref."Concept Name" AS VARCHAR))
-     WHERE ad."RACE_CODE_DESCRIPTION" IS NOT NULL
-      AND ref."Concept Name" IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid RACE CODE DESCRIPTION',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid RACE CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
-           'Validate RACE CODE DESCRIPTION with race reference data'
-      FROM valid_race_code_description_in_all_rows;
-WITH valid_preferred_language_code_in_all_rows AS (
-    SELECT 'PREFERRED_LANGUAGE_CODE' AS issue_column,
-           ad."PREFERRED_LANGUAGE_CODE" AS invalid_value,
-           ad.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 ad
-      LEFT JOIN preferred_language_reference ref
-      ON UPPER(CAST(ad."PREFERRED_LANGUAGE_CODE" AS VARCHAR)) = UPPER(CAST(ref."ISO 639-2 Code" AS VARCHAR))
-     WHERE ad."PREFERRED_LANGUAGE_CODE" IS NOT NULL
-      AND ref."ISO 639-2 Code" IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid PREFERRED LANGUAGE CODE',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid PREFERRED LANGUAGE CODE "' || invalid_value || '" found in ' || issue_column,
-           'Validate PREFERRED LANGUAGE CODE with preferred language reference data'
-      FROM valid_preferred_language_code_in_all_rows;
-WITH valid_preferred_language_code_description_in_all_rows AS (
-    SELECT 'PREFERRED_LANGUAGE_CODE_DESCRIPTION' AS issue_column,
-           ad."PREFERRED_LANGUAGE_CODE_DESCRIPTION" AS invalid_value,
-           ad.src_file_row_number AS issue_row
-      FROM admin_demographics_20240529 ad
-      LEFT JOIN preferred_language_reference ref
-      ON UPPER(CAST(ad."PREFERRED_LANGUAGE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST(ref."English name of Language" AS VARCHAR))
-     WHERE ad."PREFERRED_LANGUAGE_CODE_DESCRIPTION" IS NOT NULL
-      AND ref."English name of Language" IS NULL
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid PREFERRED LANGUAGE CODE DESCRIPTION',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid PREFERRED LANGUAGE CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
-           'Validate PREFERRED LANGUAGE CODE DESCRIPTION with preferred language reference data'
-      FROM valid_preferred_language_code_description_in_all_rows;
-WITH allowed_values AS (
-    SELECT 'PREFERRED_LANGUAGE_CODE_SYSTEM_NAME' AS issue_column,
-           "PREFERRED_LANGUAGE_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "PREFERRED_LANGUAGE_CODE_SYSTEM_NAME" NOT IN ('ISO','ISO 639-2','http://hl7.org/fhir/us/core/ValueSet/simple-language')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''ISO'',''ISO 639-2'',''http://hl7.org/fhir/us/core/ValueSet/simple-language'')',
-           'Use only allowed values ''ISO'',''ISO 639-2'',''http://hl7.org/fhir/us/core/ValueSet/simple-language'' in ' || issue_column
-      FROM allowed_values;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'RACE_CODE' AS issue_column,
-      tbl."RACE_CODE" AS invalid_value,
-      tbl."RACE_CODE_DESCRIPTION" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."RACE_CODE" is not null
-  and tbl."RACE_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "Concept Name" FROM race_reference WHERE UPPER(CAST(tbl."RACE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Concept Name" AS VARCHAR)) AND UPPER(CAST(tbl."RACE_CODE" AS VARCHAR)) = UPPER(CAST("Concept Code" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The RACE_CODE "' || invalid_value || '" of RACE_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the RACE_CODE of RACE_CODE_DESCRIPTION in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'PREFERRED_LANGUAGE_CODE' AS issue_column,
-      tbl."PREFERRED_LANGUAGE_CODE" AS invalid_value,
-      tbl."PREFERRED_LANGUAGE_CODE_DESCRIPTION" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."PREFERRED_LANGUAGE_CODE" is not null
-  and tbl."PREFERRED_LANGUAGE_CODE_DESCRIPTION" is not null
-  and NOT EXISTS ( SELECT "English name of Language" FROM preferred_language_reference WHERE UPPER(CAST(tbl."PREFERRED_LANGUAGE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("English name of Language" AS VARCHAR)) AND UPPER(CAST(tbl."PREFERRED_LANGUAGE_CODE" AS VARCHAR)) = UPPER(CAST("ISO 639-2 Code" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The PREFERRED_LANGUAGE_CODE "' || invalid_value || '" of PREFERRED_LANGUAGE_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the PREFERRED_LANGUAGE_CODE of PREFERRED_LANGUAGE_CODE_DESCRIPTION in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH valid_field_combination_in_all_rows AS (
-  SELECT 	'RACE_CODE_DESCRIPTION' AS issue_column,
-      tbl."RACE_CODE_DESCRIPTION" AS invalid_value,
-      tbl."RACE_CODE" AS dependent_value,
-      tbl.src_file_row_number AS issue_row
-  FROM admin_demographics_20240529  tbl
-  WHERE tbl."RACE_CODE_DESCRIPTION" is not null
-  and tbl."RACE_CODE" is not null
-  and NOT EXISTS ( SELECT "Concept Code" FROM race_reference WHERE UPPER(CAST(tbl."RACE_CODE" AS VARCHAR)) = UPPER(CAST("Concept Code" AS VARCHAR)) AND UPPER(CAST(tbl."RACE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Concept Name" AS VARCHAR)))
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Combination Not Matching',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'The RACE_CODE_DESCRIPTION "' || invalid_value || '" of RACE_CODE "' || dependent_value || '" is not matching with the RACE_CODE_DESCRIPTION of RACE_CODE in reference data'
-      FROM valid_field_combination_in_all_rows;
-WITH allowed_values AS (
-    SELECT 'RACE_CODE_SYSTEM_NAME' AS issue_column,
-           "RACE_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "RACE_CODE_SYSTEM_NAME" NOT IN ('CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''CDC'',''CDCRE'',''urn:oid:2.16.840.1.113883.6.238'')',
-           'Use only allowed values ''CDC'',''CDCRE'',''urn:oid:2.16.840.1.113883.6.238'' in ' || issue_column
-      FROM allowed_values;
-WITH allowed_values AS (
-    SELECT 'ETHNICITY_CODE_SYSTEM_NAME' AS issue_column,
-           "ETHNICITY_CODE_SYSTEM_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "ETHNICITY_CODE_SYSTEM_NAME" NOT IN ('CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''CDC'',''CDCRE'',''urn:oid:2.16.840.1.113883.6.238'')',
-           'Use only allowed values ''CDC'',''CDCRE'',''urn:oid:2.16.840.1.113883.6.238'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'MPI_ID' AS issue_column,
-           "MPI_ID" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "MPI_ID" IS NULL
-        OR TRIM(CAST("MPI_ID" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
 WITH mandatory_value AS (
     SELECT 'PAT_MRN_ID' AS issue_column,
            "PAT_MRN_ID" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
      WHERE "PAT_MRN_ID" IS NULL
         OR TRIM(CAST("PAT_MRN_ID" AS VARCHAR)) = ''
 )
@@ -2087,30 +1093,11 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
       FROM mandatory_value;
-WITH valid_mpi_id_per_pat_mrn_id_in_all_rows AS (
-    SELECT 'MPI_ID' AS issue_column,
-      MPI_ID AS invalid_value,
-      min(src_file_row_number) AS issue_row
-    FROM admin_demographics_20240529
-    GROUP BY MPI_ID
-    HAVING COUNT(DISTINCT PAT_MRN_ID) > 1
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid MPI_ID',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per PAT MRN ID',
-           'MPI_ID is not unique per PAT MRN ID.'
-      FROM valid_mpi_id_per_pat_mrn_id_in_all_rows;
 WITH mandatory_value AS (
     SELECT 'FACILITY_ID' AS issue_column,
            "FACILITY_ID" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
      WHERE "FACILITY_ID" IS NULL
         OR TRIM(CAST("FACILITY_ID" AS VARCHAR)) = ''
 )
@@ -2125,69 +1112,51 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
       FROM mandatory_value;
-WITH pattern AS (
-    SELECT 'MEDICAID_CIN' AS issue_column,
-           "MEDICAID_CIN" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE CAST("MEDICAID_CIN" AS VARCHAR) NOT SIMILAR TO '^[A-Za-z]{2}\d{5}[A-Za-z]$'
+WITH valid_unique_facility_id_per_facility_in_all_rows AS (
+  SELECT 'FACILITY_ID' AS issue_column,
+    FACILITY_ID AS invalid_value,
+    min(src_file_row_number) AS issue_row
+  FROM qe_admin_data_qcs_test_20240531_testcase1
+  GROUP BY FACILITY_ID
+  HAVING COUNT(DISTINCT FACILITY_LONG_NAME) > 1
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
            '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Pattern Mismatch',
+           'Invalid FACILITY_ID',
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]{2}\d{5}[A-Za-z]$',
-           'Follow the pattern ^[A-Za-z]{2}\d{5}[A-Za-z]$ in ' || issue_column
-      FROM pattern;
-WITH valid_unique_medicaid_cin_per_mrn_in_all_rows AS (
-  SELECT 'MEDICAID_CIN' AS issue_column,
-          "MEDICAID_CIN" AS invalid_value,
-          min(src_file_row_number) AS issue_row
-    FROM admin_demographics_20240529
-    WHERE MEDICAID_CIN IS NOT NULL
-    GROUP BY pat_mrn_id, MEDICAID_CIN
-    HAVING COUNT(*) > 1
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid Unique Medicaid Cin Per Mrn',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid Unique Medicaid Cin Per Mrn "' || invalid_value || '" found in ' || issue_column,
-           'Validate Unique Medicaid Cin Per Mrn'
-      FROM valid_unique_medicaid_cin_per_mrn_in_all_rows;
-WITH valid_address1_or_medicaid_cin_in_all_rows AS (
-    SELECT 'MEDICAID_CIN' AS issue_column,
-           MEDICAID_CIN AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM admin_demographics_20240529
-      WHERE (MEDICAID_CIN IS NULL OR TRIM("MEDICAID_CIN") = '') AND (ADDRESS1 IS NULL OR TRIM("ADDRESS1") = '')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
-           'Invalid MEDICAID_CIN',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field "' || issue_column || '" is empty',
-           'The required field value MEDICAID_CIN is missing. This is required due to the absence of the ADDRESS1.'
-      FROM valid_address1_or_medicaid_cin_in_all_rows;
+           'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per facility',
+           'FACILITY_ID is not unique per facility.'
+      FROM valid_unique_facility_id_per_facility_in_all_rows;
 WITH mandatory_value AS (
-    SELECT 'CONSENT' AS issue_column,
-           "CONSENT" AS invalid_value,
+    SELECT 'FACILITY_LONG_NAME' AS issue_column,
+           "FACILITY_LONG_NAME" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "CONSENT" IS NULL
-        OR TRIM(CAST("CONSENT" AS VARCHAR)) = ''
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "FACILITY_LONG_NAME" IS NULL
+        OR TRIM(CAST("FACILITY_LONG_NAME" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH mandatory_value AS (
+    SELECT 'ORGANIZATION_TYPE' AS issue_column,
+           "ORGANIZATION_TYPE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "ORGANIZATION_TYPE" IS NULL
+        OR TRIM(CAST("ORGANIZATION_TYPE" AS VARCHAR)) = ''
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2201,11 +1170,11 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Provide a value for ' || issue_column
       FROM mandatory_value;
 WITH allowed_values AS (
-    SELECT 'CONSENT' AS issue_column,
-           "CONSENT" AS invalid_value,
+    SELECT 'ORGANIZATION_TYPE' AS issue_column,
+           "ORGANIZATION_TYPE" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "admin_demographics_20240529"
-     WHERE "CONSENT" NOT IN ('Yes', 'YES', 'yes', 'Y', 'y', 'No', 'NO', 'no','N', 'n','Unknown', 'UNKNOWN', 'unknown','UNK', 'Unk', 'unk')
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "ORGANIZATION_TYPE" NOT IN ('prov','dept','team','govt','ins','pay','edu','reli','crs','cg','bus','other','laboratory','imaging','pharmacy','health-information-network','health-data-aggregator')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
@@ -2215,11 +1184,270 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''YES'', ''yes'', ''Y'', ''y'', ''No'', ''NO'', ''no'',''N'', ''n'',''Unknown'', ''UNKNOWN'', ''unknown'',''UNK'', ''Unk'', ''unk'')',
-           'Use only allowed values ''Yes'', ''YES'', ''yes'', ''Y'', ''y'', ''No'', ''NO'', ''no'',''N'', ''n'',''Unknown'', ''UNKNOWN'', ''unknown'',''UNK'', ''Unk'', ''unk'' in ' || issue_column
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''prov'',''dept'',''team'',''govt'',''ins'',''pay'',''edu'',''reli'',''crs'',''cg'',''bus'',''other'',''laboratory'',''imaging'',''pharmacy'',''health-information-network'',''health-data-aggregator'')',
+           'Use only allowed values ''prov'',''dept'',''team'',''govt'',''ins'',''pay'',''edu'',''reli'',''crs'',''cg'',''bus'',''other'',''laboratory'',''imaging'',''pharmacy'',''health-information-network'',''health-data-aggregator'' in ' || issue_column
       FROM allowed_values;
+WITH mandatory_value AS (
+    SELECT 'FACILITY_ADDRESS1' AS issue_column,
+           "FACILITY_ADDRESS1" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "FACILITY_ADDRESS1" IS NULL
+        OR TRIM(CAST("FACILITY_ADDRESS1" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH valid_unique_facility_address1_per_facility_in_all_rows AS (
+  SELECT 'FACILITY_ADDRESS1' AS issue_column,
+    FACILITY_ADDRESS1 AS invalid_value,
+    min(src_file_row_number) AS issue_row
+  FROM qe_admin_data_qcs_test_20240531_testcase1
+  GROUP BY FACILITY_ADDRESS1
+  HAVING COUNT(DISTINCT FACILITY_LONG_NAME) > 1
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Invalid FACILITY_ADDRESS1',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per facility',
+           'FACILITY_ADDRESS1 is not unique per facility.'
+      FROM valid_unique_facility_address1_per_facility_in_all_rows;
+WITH valid_integer_alphanumeric_string_in_all_rows AS (
+  SELECT 'FACILITY_ADDRESS1' AS issue_column,
+    t."FACILITY_ADDRESS1" AS invalid_value,
+    t.src_file_row_number AS issue_row
+  FROM qe_admin_data_qcs_test_20240531_testcase1 t
+  WHERE t."FACILITY_ADDRESS1" SIMILAR TO '[0-9]+'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Data Type Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'Invalid string of numbers found'
+      FROM valid_integer_alphanumeric_string_in_all_rows;
+WITH mandatory_value AS (
+    SELECT 'FACILITY_STATE' AS issue_column,
+           "FACILITY_STATE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "FACILITY_STATE" IS NULL
+        OR TRIM(CAST("FACILITY_STATE" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH allowed_values AS (
+    SELECT 'FACILITY_STATE' AS issue_column,
+           "FACILITY_STATE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "FACILITY_STATE" NOT IN ('NY', 'New York')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''NY'', ''New York'')',
+           'Use only allowed values ''NY'', ''New York'' in ' || issue_column
+      FROM allowed_values;
+WITH mandatory_value AS (
+    SELECT 'FACILITY_ZIP' AS issue_column,
+           "FACILITY_ZIP" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "FACILITY_ZIP" IS NULL
+        OR TRIM(CAST("FACILITY_ZIP" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH pattern AS (
+    SELECT 'FACILITY_ZIP' AS issue_column,
+           "FACILITY_ZIP" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE CAST("FACILITY_ZIP" AS VARCHAR) NOT SIMILAR TO '^\d{5}(\d{4})?$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^\d{5}(\d{4})?$',
+           'Follow the pattern ^\d{5}(\d{4})?$ in ' || issue_column
+      FROM pattern;
+WITH mandatory_value AS (
+    SELECT 'VISIT_PART_2_FLAG' AS issue_column,
+           "VISIT_PART_2_FLAG" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "VISIT_PART_2_FLAG" IS NULL
+        OR TRIM(CAST("VISIT_PART_2_FLAG" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH allowed_values AS (
+    SELECT 'VISIT_PART_2_FLAG' AS issue_column,
+           "VISIT_PART_2_FLAG" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "VISIT_PART_2_FLAG" NOT IN ('Yes', 'No')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
+           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
+      FROM allowed_values;
+WITH mandatory_value AS (
+    SELECT 'VISIT_OMH_FLAG' AS issue_column,
+           "VISIT_OMH_FLAG" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "VISIT_OMH_FLAG" IS NULL
+        OR TRIM(CAST("VISIT_OMH_FLAG" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH allowed_values AS (
+    SELECT 'VISIT_OMH_FLAG' AS issue_column,
+           "VISIT_OMH_FLAG" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "VISIT_OMH_FLAG" NOT IN ('Yes', 'No')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
+           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
+      FROM allowed_values;
+WITH mandatory_value AS (
+    SELECT 'VISIT_OPWDD_FLAG' AS issue_column,
+           "VISIT_OPWDD_FLAG" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "VISIT_OPWDD_FLAG" IS NULL
+        OR TRIM(CAST("VISIT_OPWDD_FLAG" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH allowed_values AS (
+    SELECT 'VISIT_OPWDD_FLAG' AS issue_column,
+           "VISIT_OPWDD_FLAG" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE "VISIT_OPWDD_FLAG" NOT IN ('Yes', 'No')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
+           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
+      FROM allowed_values;
+WITH pattern AS (
+    SELECT 'FACILITY_LONG_NAME' AS issue_column,
+           "FACILITY_LONG_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "qe_admin_data_qcs_test_20240531_testcase1"
+     WHERE CAST("FACILITY_LONG_NAME" AS VARCHAR) NOT SIMILAR TO '^[a-zA-Z\s]+$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '8b7c669c-1795-5f6b-8f3a-3e502b74c628',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[a-zA-Z\s]+$',
+           'Follow the pattern ^[a-zA-Z\s]+$ in ' || issue_column
+      FROM pattern;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('11b19c60-a371-5444-9831-cb06a48b442e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AdminDemographicCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3e774fb3-fc39-5ce3-9b1f-aa7dbb147319', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'QeAdminDataCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('6ec2d7d4-0366-56b5-8763-dd9d6361dce0', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
@@ -2228,7 +1456,7 @@ WITH mandatory_value AS (
     SELECT 'PAT_MRN_ID' AS issue_column,
            "PAT_MRN_ID" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "PAT_MRN_ID" IS NULL
         OR TRIM(CAST("PAT_MRN_ID" AS VARCHAR)) = ''
 )
@@ -2247,7 +1475,7 @@ WITH mandatory_value AS (
     SELECT 'FACILITY_ID' AS issue_column,
            "FACILITY_ID" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "FACILITY_ID" IS NULL
         OR TRIM(CAST("FACILITY_ID" AS VARCHAR)) = ''
 )
@@ -2271,24 +1499,24 @@ WITH valid_pat_mrn_id_across_all_three_tables AS (
                         ELSE 'ADMIN_DEMOGRAPHIC'
                     END AS unmatched_source,
                     COALESCE(ad.src_file_row_number, qe.src_file_row_number) AS src_file_row_number,
-      FROM  admin_demographics_20240529 ad
-      FULL OUTER JOIN qe_admin_data_20240529 qe
+      FROM  admin_demographics_qcs_test_20240531_testcase1 ad
+      FULL OUTER JOIN qe_admin_data_qcs_test_20240531_testcase1 qe
           ON ad.PAT_MRN_ID = qe.PAT_MRN_ID
           AND ad.FACILITY_ID = qe.FACILITY_ID
       WHERE ad.PAT_MRN_ID IS NULL OR qe.PAT_MRN_ID IS NULL
   )
   Select 'PAT_MRN_ID' AS issue_column, pat_mrn_id AS invalid_pat_value, FACILITY_ID AS invalid_facility_value, unmatched_source, src_file_row_number  AS issue_row,
-  case when unmatched_source = 'ADMIN_DEMOGRAPHIC' then 'admin_demographics_20240529'
-  when unmatched_source = 'QE_ADMIN_DATA' then 'qe_admin_data_20240529'
+  case when unmatched_source = 'ADMIN_DEMOGRAPHIC' then 'admin_demographics_qcs_test_20240531_testcase1'
+  when unmatched_source = 'QE_ADMIN_DATA' then 'qe_admin_data_qcs_test_20240531_testcase1'
   Else '' End As issue_table_name
   from cte_qe_demographic_unmatched
   UNION
   Select DISTINCT 'PAT_MRN_ID' AS issue_column, s.PAT_MRN_ID AS invalid_pat_value,s.FACILITY_ID AS invalid_facility_value,'SCREENING' As unmatched_source, src_file_row_number  AS issue_row,
-  'screening_20240529' as issue_table_name
-  FROM screening_20240529 s
+  'screening_qcs_test_20240531_testcase1' as issue_table_name
+  FROM screening_qcs_test_20240531_testcase1 s
     Left Outer Join (
-      SELECT  DISTINCT a.PAT_MRN_ID,a.FACILITY_ID From admin_demographics_20240529 a
-      Inner Join qe_admin_data_20240529 q
+      SELECT  DISTINCT a.PAT_MRN_ID,a.FACILITY_ID From admin_demographics_qcs_test_20240531_testcase1 a
+      Inner Join qe_admin_data_qcs_test_20240531_testcase1 q
       ON a.PAT_MRN_ID = q.PAT_MRN_ID
       AND a.FACILITY_ID = q.FACILITY_ID
       WHERE a.PAT_MRN_ID IS NOT NULL AND q.PAT_MRN_ID IS NOT NULL
@@ -2312,7 +1540,7 @@ WITH mandatory_value AS (
     SELECT 'ENCOUNTER_CLASS_CODE' AS issue_column,
            "ENCOUNTER_CLASS_CODE" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ENCOUNTER_CLASS_CODE" IS NULL
         OR TRIM(CAST("ENCOUNTER_CLASS_CODE" AS VARCHAR)) = ''
 )
@@ -2331,7 +1559,7 @@ WITH valid_encounter_class_in_all_rows AS (
     SELECT 'ENCOUNTER_CLASS_CODE' AS issue_column,
            sr."ENCOUNTER_CLASS_CODE" AS invalid_value,
            sr.src_file_row_number AS issue_row
-      FROM screening_20240529 sr
+      FROM screening_qcs_test_20240531_testcase1 sr
       LEFT JOIN encounter_class_reference ecr
       ON UPPER(sr.ENCOUNTER_CLASS_CODE) = UPPER(ecr.Code)
      WHERE sr.ENCOUNTER_CLASS_CODE IS NOT NULL
@@ -2353,7 +1581,7 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_CLASS_CODE" AS invalid_value,
       tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
-  FROM screening_20240529  tbl
+  FROM screening_qcs_test_20240531_testcase1  tbl
   WHERE tbl."ENCOUNTER_CLASS_CODE" is not null
   and tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" is not null
   and NOT EXISTS ( SELECT "Display" FROM encounter_class_reference WHERE UPPER(CAST(tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Display" AS VARCHAR)) AND UPPER(CAST(tbl."ENCOUNTER_CLASS_CODE" AS VARCHAR)) = UPPER(CAST("Code" AS VARCHAR)))
@@ -2374,7 +1602,7 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" AS invalid_value,
       tbl."ENCOUNTER_CLASS_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
-  FROM screening_20240529  tbl
+  FROM screening_qcs_test_20240531_testcase1  tbl
   WHERE tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" is not null
   and tbl."ENCOUNTER_CLASS_CODE" is not null
   and NOT EXISTS ( SELECT "Code" FROM encounter_class_reference WHERE UPPER(CAST(tbl."ENCOUNTER_CLASS_CODE" AS VARCHAR)) = UPPER(CAST("Code" AS VARCHAR)) AND UPPER(CAST(tbl."ENCOUNTER_CLASS_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Display" AS VARCHAR)))
@@ -2394,7 +1622,7 @@ WITH mandatory_value AS (
     SELECT 'ENCOUNTER_CLASS_CODE_SYSTEM' AS issue_column,
            "ENCOUNTER_CLASS_CODE_SYSTEM" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ENCOUNTER_CLASS_CODE_SYSTEM" IS NULL
         OR TRIM(CAST("ENCOUNTER_CLASS_CODE_SYSTEM" AS VARCHAR)) = ''
 )
@@ -2413,7 +1641,7 @@ WITH allowed_values AS (
     SELECT 'ENCOUNTER_CLASS_CODE_SYSTEM' AS issue_column,
            "ENCOUNTER_CLASS_CODE_SYSTEM" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ENCOUNTER_CLASS_CODE_SYSTEM" NOT IN ('http://terminology.hl7.org/CodeSystem/v3-ActCode')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -2431,7 +1659,7 @@ WITH valid_encounter_class_in_all_rows AS (
     SELECT 'ENCOUNTER_CLASS_CODE_DESCRIPTION' AS issue_column,
            sr."ENCOUNTER_CLASS_CODE_DESCRIPTION" AS invalid_value,
            sr.src_file_row_number AS issue_row
-      FROM screening_20240529 sr
+      FROM screening_qcs_test_20240531_testcase1 sr
       LEFT JOIN encounter_class_reference ecr
       ON UPPER(sr.ENCOUNTER_CLASS_CODE_DESCRIPTION) = UPPER(ecr.Display)
      WHERE sr.ENCOUNTER_CLASS_CODE_DESCRIPTION IS NOT NULL
@@ -2452,7 +1680,7 @@ WITH mandatory_value AS (
     SELECT 'ENCOUNTER_STATUS_CODE' AS issue_column,
            "ENCOUNTER_STATUS_CODE" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ENCOUNTER_STATUS_CODE" IS NULL
         OR TRIM(CAST("ENCOUNTER_STATUS_CODE" AS VARCHAR)) = ''
 )
@@ -2471,7 +1699,7 @@ WITH valid_encounter_status_code_in_all_rows AS (
     SELECT 'ENCOUNTER_STATUS_CODE' AS issue_column,
            sr."ENCOUNTER_STATUS_CODE" AS invalid_value,
            sr.src_file_row_number AS issue_row
-      FROM screening_20240529 sr
+      FROM screening_qcs_test_20240531_testcase1 sr
       LEFT JOIN encounter_status_code_reference ecr
       ON UPPER(sr.ENCOUNTER_STATUS_CODE) = UPPER(ecr.Code)
      WHERE sr.ENCOUNTER_STATUS_CODE IS NOT NULL
@@ -2492,7 +1720,7 @@ WITH valid_encounter_status_code_in_all_rows AS (
     SELECT 'ENCOUNTER_STATUS_CODE_DESCRIPTION' AS issue_column,
            sr."ENCOUNTER_STATUS_CODE_DESCRIPTION" AS invalid_value,
            sr.src_file_row_number AS issue_row
-      FROM screening_20240529 sr
+      FROM screening_qcs_test_20240531_testcase1 sr
       LEFT JOIN encounter_status_code_reference ecr
       ON UPPER(sr.ENCOUNTER_STATUS_CODE_DESCRIPTION) = UPPER(ecr.Display)
      WHERE sr.ENCOUNTER_STATUS_CODE_DESCRIPTION IS NOT NULL
@@ -2514,7 +1742,7 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_STATUS_CODE" AS invalid_value,
       tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
-  FROM screening_20240529  tbl
+  FROM screening_qcs_test_20240531_testcase1  tbl
   WHERE tbl."ENCOUNTER_STATUS_CODE" is not null
   and tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" is not null
   and NOT EXISTS ( SELECT "Display" FROM encounter_status_code_reference WHERE UPPER(CAST(tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Display" AS VARCHAR)) AND UPPER(CAST(tbl."ENCOUNTER_STATUS_CODE" AS VARCHAR)) = UPPER(CAST("Code" AS VARCHAR)))
@@ -2535,7 +1763,7 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" AS invalid_value,
       tbl."ENCOUNTER_STATUS_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
-  FROM screening_20240529  tbl
+  FROM screening_qcs_test_20240531_testcase1  tbl
   WHERE tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" is not null
   and tbl."ENCOUNTER_STATUS_CODE" is not null
   and NOT EXISTS ( SELECT "Code" FROM encounter_status_code_reference WHERE UPPER(CAST(tbl."ENCOUNTER_STATUS_CODE" AS VARCHAR)) = UPPER(CAST("Code" AS VARCHAR)) AND UPPER(CAST(tbl."ENCOUNTER_STATUS_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Display" AS VARCHAR)))
@@ -2555,7 +1783,7 @@ WITH mandatory_value AS (
     SELECT 'ENCOUNTER_STATUS_CODE_SYSTEM' AS issue_column,
            "ENCOUNTER_STATUS_CODE_SYSTEM" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ENCOUNTER_STATUS_CODE_SYSTEM" IS NULL
         OR TRIM(CAST("ENCOUNTER_STATUS_CODE_SYSTEM" AS VARCHAR)) = ''
 )
@@ -2574,7 +1802,7 @@ WITH allowed_values AS (
     SELECT 'ENCOUNTER_STATUS_CODE_SYSTEM' AS issue_column,
            "ENCOUNTER_STATUS_CODE_SYSTEM" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ENCOUNTER_STATUS_CODE_SYSTEM" NOT IN ('http://hl7.org/fhir/encounter-status')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -2592,7 +1820,7 @@ WITH mandatory_value AS (
     SELECT 'ENCOUNTER_TYPE_CODE' AS issue_column,
            "ENCOUNTER_TYPE_CODE" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ENCOUNTER_TYPE_CODE" IS NULL
         OR TRIM(CAST("ENCOUNTER_TYPE_CODE" AS VARCHAR)) = ''
 )
@@ -2611,7 +1839,7 @@ WITH mandatory_value AS (
     SELECT 'ENCOUNTER_TYPE_CODE_SYSTEM' AS issue_column,
            "ENCOUNTER_TYPE_CODE_SYSTEM" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ENCOUNTER_TYPE_CODE_SYSTEM" IS NULL
         OR TRIM(CAST("ENCOUNTER_TYPE_CODE_SYSTEM" AS VARCHAR)) = ''
 )
@@ -2630,7 +1858,7 @@ WITH valid_encounter_type_code_in_all_rows AS (
     SELECT 'ENCOUNTER_TYPE_CODE' AS issue_column,
            sr."ENCOUNTER_TYPE_CODE" AS invalid_value,
            sr.src_file_row_number AS issue_row
-      FROM screening_20240529 sr
+      FROM screening_qcs_test_20240531_testcase1 sr
       LEFT JOIN encounter_type_code_reference ecr
       ON UPPER(CAST(sr.ENCOUNTER_TYPE_CODE AS VARCHAR)) = UPPER(CAST(ecr.Code AS VARCHAR))
      WHERE sr.ENCOUNTER_TYPE_CODE IS NOT NULL
@@ -2651,7 +1879,7 @@ WITH allowed_values AS (
     SELECT 'ENCOUNTER_TYPE_CODE_SYSTEM' AS issue_column,
            "ENCOUNTER_TYPE_CODE_SYSTEM" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ENCOUNTER_TYPE_CODE_SYSTEM" NOT IN ('SNOMED-CT', 'snomed-ct', 'Snomed-ct', 'SNOMED', 'snomed', 'Snomed', 'http://snomed.info/sct')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -2669,7 +1897,7 @@ WITH valid_encounter_type_code_in_all_rows AS (
     SELECT 'ENCOUNTER_TYPE_CODE_DESCRIPTION' AS issue_column,
            sr."ENCOUNTER_TYPE_CODE_DESCRIPTION" AS invalid_value,
            sr.src_file_row_number AS issue_row
-      FROM screening_20240529 sr
+      FROM screening_qcs_test_20240531_testcase1 sr
       LEFT JOIN encounter_type_code_reference ecr
       ON UPPER(CAST(sr.ENCOUNTER_TYPE_CODE_DESCRIPTION AS VARCHAR)) = UPPER(CAST(ecr.Display AS VARCHAR))
      WHERE sr.ENCOUNTER_TYPE_CODE_DESCRIPTION IS NOT NULL
@@ -2691,7 +1919,7 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_TYPE_CODE" AS invalid_value,
       tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
-  FROM screening_20240529  tbl
+  FROM screening_qcs_test_20240531_testcase1  tbl
   WHERE tbl."ENCOUNTER_TYPE_CODE" is not null
   and tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" is not null
   and NOT EXISTS ( SELECT "Display" FROM encounter_type_code_reference WHERE UPPER(CAST(tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Display" AS VARCHAR)) AND UPPER(CAST(tbl."ENCOUNTER_TYPE_CODE" AS VARCHAR)) = UPPER(CAST("Code" AS VARCHAR)))
@@ -2712,7 +1940,7 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" AS invalid_value,
       tbl."ENCOUNTER_TYPE_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
-  FROM screening_20240529  tbl
+  FROM screening_qcs_test_20240531_testcase1  tbl
   WHERE tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" is not null
   and tbl."ENCOUNTER_TYPE_CODE" is not null
   and NOT EXISTS ( SELECT "Code" FROM encounter_type_code_reference WHERE UPPER(CAST(tbl."ENCOUNTER_TYPE_CODE" AS VARCHAR)) = UPPER(CAST("Code" AS VARCHAR)) AND UPPER(CAST(tbl."ENCOUNTER_TYPE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Display" AS VARCHAR)))
@@ -2732,7 +1960,7 @@ WITH mandatory_value AS (
     SELECT 'SCREENING_STATUS_CODE' AS issue_column,
            "SCREENING_STATUS_CODE" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "SCREENING_STATUS_CODE" IS NULL
         OR TRIM(CAST("SCREENING_STATUS_CODE" AS VARCHAR)) = ''
 )
@@ -2751,7 +1979,7 @@ WITH valid_screening_status_code_in_all_rows AS (
     SELECT 'SCREENING_STATUS_CODE' AS issue_column,
            sr."SCREENING_STATUS_CODE" AS invalid_value,
            sr.src_file_row_number AS issue_row
-      FROM screening_20240529 sr
+      FROM screening_qcs_test_20240531_testcase1 sr
       LEFT JOIN screening_status_code_reference ref
       ON UPPER(sr.SCREENING_STATUS_CODE) = UPPER(ref.Code)
      WHERE sr.SCREENING_STATUS_CODE IS NOT NULL
@@ -2772,7 +2000,7 @@ WITH valid_screening_status_code_in_all_rows AS (
     SELECT 'SCREENING_STATUS_CODE_DESCRIPTION' AS issue_column,
            sr."SCREENING_STATUS_CODE_DESCRIPTION" AS invalid_value,
            sr.src_file_row_number AS issue_row
-      FROM screening_20240529 sr
+      FROM screening_qcs_test_20240531_testcase1 sr
       LEFT JOIN screening_status_code_reference ecr
       ON UPPER(sr.SCREENING_STATUS_CODE_DESCRIPTION) = UPPER(ecr.Display)
      WHERE sr.SCREENING_STATUS_CODE_DESCRIPTION IS NOT NULL
@@ -2794,7 +2022,7 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."SCREENING_STATUS_CODE" AS invalid_value,
       tbl."SCREENING_STATUS_CODE_DESCRIPTION" AS dependent_value,
       tbl.src_file_row_number AS issue_row
-  FROM screening_20240529  tbl
+  FROM screening_qcs_test_20240531_testcase1  tbl
   WHERE tbl."SCREENING_STATUS_CODE" is not null
   and tbl."SCREENING_STATUS_CODE_DESCRIPTION" is not null
   and NOT EXISTS ( SELECT "Display" FROM screening_status_code_reference WHERE UPPER(CAST(tbl."SCREENING_STATUS_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Display" AS VARCHAR)) AND UPPER(CAST(tbl."SCREENING_STATUS_CODE" AS VARCHAR)) = UPPER(CAST("Code" AS VARCHAR)))
@@ -2815,7 +2043,7 @@ WITH valid_field_combination_in_all_rows AS (
       tbl."SCREENING_STATUS_CODE_DESCRIPTION" AS invalid_value,
       tbl."SCREENING_STATUS_CODE" AS dependent_value,
       tbl.src_file_row_number AS issue_row
-  FROM screening_20240529  tbl
+  FROM screening_qcs_test_20240531_testcase1  tbl
   WHERE tbl."SCREENING_STATUS_CODE_DESCRIPTION" is not null
   and tbl."SCREENING_STATUS_CODE" is not null
   and NOT EXISTS ( SELECT "Code" FROM screening_status_code_reference WHERE UPPER(CAST(tbl."SCREENING_STATUS_CODE" AS VARCHAR)) = UPPER(CAST("Code" AS VARCHAR)) AND UPPER(CAST(tbl."SCREENING_STATUS_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Display" AS VARCHAR)))
@@ -2835,7 +2063,7 @@ WITH mandatory_value AS (
     SELECT 'SCREENING_STATUS_CODE_SYSTEM' AS issue_column,
            "SCREENING_STATUS_CODE_SYSTEM" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "SCREENING_STATUS_CODE_SYSTEM" IS NULL
         OR TRIM(CAST("SCREENING_STATUS_CODE_SYSTEM" AS VARCHAR)) = ''
 )
@@ -2854,7 +2082,7 @@ WITH allowed_values AS (
     SELECT 'SCREENING_STATUS_CODE_SYSTEM' AS issue_column,
            "SCREENING_STATUS_CODE_SYSTEM" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "SCREENING_STATUS_CODE_SYSTEM" NOT IN ('http://hl7.org/fhir/observation-status')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -2872,15 +2100,15 @@ WITH valid_screening_question_answer_mandatory_values_in_all_rows AS (
       SELECT  'ANSWER_CODE' AS issue_column,
               "ANSWER_CODE" AS invalid_value,
               src_file_row_number AS issue_row
-        FROM screening_20240529
+        FROM screening_qcs_test_20240531_testcase1
         WHERE (ANSWER_CODE IS NULL OR TRIM("ANSWER_CODE") = '')
         AND src_file_row_number
         NOT IN(
           Select src_file_row_number
-            FROM screening_20240529
+            FROM screening_qcs_test_20240531_testcase1
             Where UPPER(QUESTION_CODE_DESCRIPTION)
             IN ('TOTAL SAFETY SCORE',
-            'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+            'CALCULATED PHYSICAL ACTIVITY SCORE',
             'CALCULATED MENTAL HEALTH SCORE')
         )
 )
@@ -2899,15 +2127,15 @@ WITH valid_screening_question_answer_mandatory_values_in_all_rows AS (
       SELECT  'ANSWER_CODE_SYSTEM_NAME' AS issue_column,
               "ANSWER_CODE_SYSTEM_NAME" AS invalid_value,
               src_file_row_number AS issue_row
-        FROM screening_20240529
+        FROM screening_qcs_test_20240531_testcase1
         WHERE (ANSWER_CODE_SYSTEM_NAME IS NULL OR TRIM("ANSWER_CODE_SYSTEM_NAME") = '')
         AND src_file_row_number
         NOT IN(
           Select src_file_row_number
-            FROM screening_20240529
+            FROM screening_qcs_test_20240531_testcase1
             Where UPPER(QUESTION_CODE_DESCRIPTION)
             IN ('TOTAL SAFETY SCORE',
-            'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+            'CALCULATED PHYSICAL ACTIVITY SCORE',
             'CALCULATED MENTAL HEALTH SCORE')
         )
 )
@@ -2926,15 +2154,15 @@ WITH valid_screening_question_answer_mandatory_values_in_all_rows AS (
       SELECT  'QUESTION_CODE' AS issue_column,
               "QUESTION_CODE" AS invalid_value,
               src_file_row_number AS issue_row
-        FROM screening_20240529
+        FROM screening_qcs_test_20240531_testcase1
         WHERE (QUESTION_CODE IS NULL OR TRIM("QUESTION_CODE") = '')
         AND src_file_row_number
         NOT IN(
           Select src_file_row_number
-            FROM screening_20240529
+            FROM screening_qcs_test_20240531_testcase1
             Where UPPER(QUESTION_CODE_DESCRIPTION)
             IN ('TOTAL SAFETY SCORE',
-            'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+            'CALCULATED PHYSICAL ACTIVITY SCORE',
             'CALCULATED MENTAL HEALTH SCORE')
         )
 )
@@ -2953,15 +2181,15 @@ WITH valid_screening_question_answer_mandatory_values_in_all_rows AS (
       SELECT  'QUESTION_CODE_SYSTEM_NAME' AS issue_column,
               "QUESTION_CODE_SYSTEM_NAME" AS invalid_value,
               src_file_row_number AS issue_row
-        FROM screening_20240529
+        FROM screening_qcs_test_20240531_testcase1
         WHERE (QUESTION_CODE_SYSTEM_NAME IS NULL OR TRIM("QUESTION_CODE_SYSTEM_NAME") = '')
         AND src_file_row_number
         NOT IN(
           Select src_file_row_number
-            FROM screening_20240529
+            FROM screening_qcs_test_20240531_testcase1
             Where UPPER(QUESTION_CODE_DESCRIPTION)
             IN ('TOTAL SAFETY SCORE',
-            'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+            'CALCULATED PHYSICAL ACTIVITY SCORE',
             'CALCULATED MENTAL HEALTH SCORE')
         )
 )
@@ -2980,15 +2208,15 @@ WITH valid_screening_question_answer_mandatory_values_in_all_rows AS (
       SELECT  'SCREENING_CODE_DESCRIPTION' AS issue_column,
               "SCREENING_CODE_DESCRIPTION" AS invalid_value,
               src_file_row_number AS issue_row
-        FROM screening_20240529
+        FROM screening_qcs_test_20240531_testcase1
         WHERE (SCREENING_CODE_DESCRIPTION IS NULL OR TRIM("SCREENING_CODE_DESCRIPTION") = '')
         AND src_file_row_number
         NOT IN(
           Select src_file_row_number
-            FROM screening_20240529
+            FROM screening_qcs_test_20240531_testcase1
             Where UPPER(QUESTION_CODE_DESCRIPTION)
             IN ('TOTAL SAFETY SCORE',
-            'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+            'CALCULATED PHYSICAL ACTIVITY SCORE',
             'CALCULATED MENTAL HEALTH SCORE')
         )
 )
@@ -3007,7 +2235,7 @@ WITH allowed_values AS (
     SELECT 'SCREENING_CODE_DESCRIPTION' AS issue_column,
            "SCREENING_CODE_DESCRIPTION" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "SCREENING_CODE_DESCRIPTION" NOT IN ('Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions','accountable health communities (AHC) health-related social needs (HRSN) supplemental questions','Accountable health communities (AHC) health-related social needs screening (HRSN) tool','accountable health communities (AHC) health-related social needs screening (HRSN) tool','NYS AHC HRSN screening')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -3025,15 +2253,15 @@ WITH valid_screening_question_answer_mandatory_values_in_all_rows AS (
       SELECT  'SCREENING_CODE_SYSTEM_NAME' AS issue_column,
               "SCREENING_CODE_SYSTEM_NAME" AS invalid_value,
               src_file_row_number AS issue_row
-        FROM screening_20240529
+        FROM screening_qcs_test_20240531_testcase1
         WHERE (SCREENING_CODE_SYSTEM_NAME IS NULL OR TRIM("SCREENING_CODE_SYSTEM_NAME") = '')
         AND src_file_row_number
         NOT IN(
           Select src_file_row_number
-            FROM screening_20240529
+            FROM screening_qcs_test_20240531_testcase1
             Where UPPER(QUESTION_CODE_DESCRIPTION)
             IN ('TOTAL SAFETY SCORE',
-            'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+            'CALCULATED PHYSICAL ACTIVITY SCORE',
             'CALCULATED MENTAL HEALTH SCORE')
         )
 )
@@ -3052,15 +2280,15 @@ WITH valid_screening_question_answer_mandatory_values_in_all_rows AS (
       SELECT  'SCREENING_CODE' AS issue_column,
               "SCREENING_CODE" AS invalid_value,
               src_file_row_number AS issue_row
-        FROM screening_20240529
+        FROM screening_qcs_test_20240531_testcase1
         WHERE (SCREENING_CODE IS NULL OR TRIM("SCREENING_CODE") = '')
         AND src_file_row_number
         NOT IN(
           Select src_file_row_number
-            FROM screening_20240529
+            FROM screening_qcs_test_20240531_testcase1
             Where UPPER(QUESTION_CODE_DESCRIPTION)
             IN ('TOTAL SAFETY SCORE',
-            'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+            'CALCULATED PHYSICAL ACTIVITY SCORE',
             'CALCULATED MENTAL HEALTH SCORE')
         )
 )
@@ -3079,7 +2307,7 @@ WITH mandatory_value AS (
     SELECT 'QUESTION_CODE_DESCRIPTION' AS issue_column,
            "QUESTION_CODE_DESCRIPTION" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "QUESTION_CODE_DESCRIPTION" IS NULL
         OR TRIM(CAST("QUESTION_CODE_DESCRIPTION" AS VARCHAR)) = ''
 )
@@ -3100,7 +2328,7 @@ WITH valid_answer_code_in_all_rows AS (
     scr."QUESTION_CODE" AS invalid_question_value,
     scr.SCREENING_CODE AS invalid_screening_value,
     scr.src_file_row_number AS issue_row
-    FROM screening_20240529 scr
+    FROM screening_qcs_test_20240531_testcase1 scr
     LEFT OUTER JOIN ahc_cross_walk crw
       ON UPPER(scr.SCREENING_CODE) = UPPER(crw.SCREENING_CODE)
       AND UPPER(scr.QUESTION_CODE) = UPPER(crw.QUESTION_CODE)
@@ -3133,7 +2361,7 @@ WITH valid_total_safety_score_in_all_rows AS (
             END
         ) AS screening_score
     FROM
-        screening_20240529 scr
+        screening_qcs_test_20240531_testcase1 scr
     LEFT OUTER JOIN (
         SELECT 	acw.SCREENING_CODE,
               acw.QUESTION_CODE,
@@ -3152,7 +2380,7 @@ WITH valid_total_safety_score_in_all_rows AS (
 )
 SELECT 	cross_walk_Score,
     screening_score AS invalid_value,
-    (SELECT src_file_row_number FROM screening_20240529 WHERE UPPER(TRIM(QUESTION_CODE_DESCRIPTION)) LIKE '%TOTAL SAFETY SCORE%') AS issue_row,
+    (SELECT src_file_row_number FROM screening_qcs_test_20240531_testcase1 WHERE UPPER(TRIM(QUESTION_CODE_DESCRIPTION)) LIKE '%TOTAL SAFETY SCORE%') AS issue_row,
   'ANSWER_CODE_DESCRIPTION' AS issue_column
 FROM cte_score
 WHERE screening_score <> cross_walk_Score
@@ -3176,12 +2404,12 @@ WITH valid_calculated_mental_health_score_in_all_rows AS (
   (
   SELECT Sum(crw.score) As CROSSWALK_ANSWER_SCORE,
       (SELECT CASE WHEN TRY_CAST(ANSWER_CODE_DESCRIPTION AS INTEGER) IS NOT NULL THEN CAST(ANSWER_CODE_DESCRIPTION AS INTEGER) ELSE 0 END AS SCREENING_CALC_SCORE
-        FROM screening_20240529 scr2
+        FROM screening_qcs_test_20240531_testcase1 scr2
         WHERE UPPER(scr2.QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED MENTAL HEALTH SCORE%'
     ) AS SCREENING_CALCULATED_SCORE,
-    (SELECT src_file_row_number FROM screening_20240529 WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED MENTAL HEALTH SCORE%') AS SRC_FILE_ROW_NUMBER,
+    (SELECT src_file_row_number FROM screening_qcs_test_20240531_testcase1 WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED MENTAL HEALTH SCORE%') AS SRC_FILE_ROW_NUMBER,
     'ANSWER_CODE_DESCRIPTION' AS ANSWER_CODE_DESCRIPTION
-      FROM screening_20240529 scr
+      FROM screening_qcs_test_20240531_testcase1 scr
       INNER JOIN (
           SELECT 	acw.score As SCORE
           FROM ahc_cross_walk acw
@@ -3218,7 +2446,7 @@ WITH valid_calculated_weekly_physical_activity_score_in_all_rows AS (
       ROW_NUMBER() OVER (
       ORDER BY scr.SCREENING_CODE) AS sequence_number
     FROM
-      screening_20240529 scr
+      screening_qcs_test_20240531_testcase1 scr
     INNER JOIN (
       SELECT
         acw.SCREENING_CODE,
@@ -3260,7 +2488,7 @@ WITH valid_calculated_weekly_physical_activity_score_in_all_rows AS (
           ELSE CASE WHEN t2.ANSWER_CODE='LA32060-8' THEN 150 * CAST(t1.ANSWER_CODE_DESCRIPTION AS INTEGER) ELSE 0 END
           END AS SCREENING_ANSWER_VALUE,
           Scrn_Phycical_Act_Score.SCRN_PHYSICAL_ACTIVITY_VALUE AS SCREENING_CALCULATED_VALUE,
-          (SELECT src_file_row_number FROM screening_20240529 WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS SRC_FILE_ROW_NUMBER,
+          (SELECT src_file_row_number FROM screening_qcs_test_20240531_testcase1 WHERE UPPER(QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED PHYSICAL ACTIVITY SCORE%') AS SRC_FILE_ROW_NUMBER,
           'ANSWER_CODE_DESCRIPTION' AS ANSWER_CODE_DESCRIPTION
 
         from
@@ -3276,9 +2504,9 @@ WITH valid_calculated_weekly_physical_activity_score_in_all_rows AS (
               ELSE 0
             END SCRN_PHYSICAL_ACTIVITY_VALUE
           From
-          screening_20240529 scr
+          screening_qcs_test_20240531_testcase1 scr
           Where
-            UPPER(scr.QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED WEEKLY PHYSICAL ACTIVITY%') AS Scrn_Phycical_Act_Score
+            UPPER(scr.QUESTION_CODE_DESCRIPTION) LIKE '%CALCULATED PHYSICAL ACTIVITY SCORE%') AS Scrn_Phycical_Act_Score
                 On
           1 = 1
     ) As calc_fld
@@ -3302,7 +2530,7 @@ WITH allowed_values AS (
     SELECT 'SCREENING_CODE' AS issue_column,
            "SCREENING_CODE" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "SCREENING_CODE" NOT IN ('96777-8', '97023-6')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -3320,7 +2548,7 @@ WITH allowed_values AS (
     SELECT 'SCREENING_CODE_SYSTEM_NAME' AS issue_column,
            "SCREENING_CODE_SYSTEM_NAME" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "SCREENING_CODE_SYSTEM_NAME" NOT IN ('LN', 'ln', 'LOINC', 'loinc', 'http://loinc.org', 'NYS standard','NYS Standard')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -3338,7 +2566,7 @@ WITH mandatory_value AS (
     SELECT 'RECORDED_TIME' AS issue_column,
            "RECORDED_TIME" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "RECORDED_TIME" IS NULL
         OR TRIM(CAST("RECORDED_TIME" AS VARCHAR)) = ''
 )
@@ -3357,7 +2585,7 @@ WITH valid_date_time_in_all_rows AS (
         SELECT  'RECORDED_TIME' AS issue_column,
               "RECORDED_TIME" AS invalid_value,
               src_file_row_number AS issue_row
-        FROM "screening_20240529"
+        FROM "screening_qcs_test_20240531_testcase1"
         WHERE "RECORDED_TIME" IS NOT NULL
         AND "RECORDED_TIME" NOT SIMILAR TO '([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))$'
         OR TRY_CAST("RECORDED_TIME" AS TIMESTAMP) IS NULL
@@ -3377,7 +2605,7 @@ WITH mandatory_value AS (
     SELECT 'SDOH_DOMAIN' AS issue_column,
            "SDOH_DOMAIN" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "SDOH_DOMAIN" IS NULL
         OR TRIM(CAST("SDOH_DOMAIN" AS VARCHAR)) = ''
 )
@@ -3396,7 +2624,7 @@ WITH valid_sdoh_domain_in_all_rows AS (
   SELECT DISTINCT scr.SDOH_DOMAIN AS invalid_value,
     'SDOH_DOMAIN' AS issue_column,
     scr.src_file_row_number AS issue_row
-  FROM screening_20240529 scr
+  FROM screening_qcs_test_20240531_testcase1 scr
   LEFT JOIN ahc_cross_walk cw
   ON UPPER(scr.SDOH_DOMAIN) = UPPER(cw.SDOH_DOMAIN)
   WHERE cw.SDOH_DOMAIN IS NULL
@@ -3414,7 +2642,7 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
       FROM valid_sdoh_domain_in_all_rows;
 WITH valid_question_code_for_screening_code_in_all_rows AS (
   SELECT DISTINCT scr.SCREENING_CODE AS issue_screening_value, scr.QUESTION_CODE AS invalid_value, 'QUESTION_CODE' AS issue_column, scr.src_file_row_number AS issue_row
-  FROM screening_20240529 scr
+  FROM screening_qcs_test_20240531_testcase1 scr
   LEFT JOIN ahc_cross_walk cw ON UPPER(scr.QUESTION_CODE) = UPPER(cw.QUESTION_CODE)
   AND UPPER(scr.SCREENING_CODE) = UPPER(cw.SCREENING_CODE)
   WHERE cw.QUESTION_CODE IS NULL
@@ -3435,7 +2663,7 @@ WITH mandatory_value AS (
     SELECT 'ANSWER_CODE_DESCRIPTION' AS issue_column,
            "ANSWER_CODE_DESCRIPTION" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ANSWER_CODE_DESCRIPTION" IS NULL
         OR TRIM(CAST("ANSWER_CODE_DESCRIPTION" AS VARCHAR)) = ''
 )
@@ -3454,7 +2682,7 @@ WITH allowed_values AS (
     SELECT 'QUESTION_CODE_SYSTEM_NAME' AS issue_column,
            "QUESTION_CODE_SYSTEM_NAME" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "QUESTION_CODE_SYSTEM_NAME" NOT IN ('LN','LOINC','http://loinc.org')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -3472,7 +2700,7 @@ WITH allowed_values AS (
     SELECT 'ANSWER_CODE_SYSTEM_NAME' AS issue_column,
            "ANSWER_CODE_SYSTEM_NAME" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "ANSWER_CODE_SYSTEM_NAME" NOT IN ('LN','LOINC','http://loinc.org')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -3490,7 +2718,7 @@ WITH mandatory_value AS (
     SELECT 'POTENTIAL_NEED_INDICATED' AS issue_column,
            "POTENTIAL_NEED_INDICATED" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "POTENTIAL_NEED_INDICATED" IS NULL
         OR TRIM(CAST("POTENTIAL_NEED_INDICATED" AS VARCHAR)) = ''
 )
@@ -3509,7 +2737,7 @@ WITH allowed_values AS (
     SELECT 'POTENTIAL_NEED_INDICATED' AS issue_column,
            "POTENTIAL_NEED_INDICATED" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "screening_20240529"
+      FROM "screening_qcs_test_20240531_testcase1"
      WHERE "POTENTIAL_NEED_INDICATED" NOT IN ('Yes','No','NA','yes','no','na')
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
@@ -3530,7 +2758,7 @@ WITH valid_screening_potential_need_indicated_question_answer_values_in_all_rows
           scr.QUESTION_CODE AS invalid_question_value,
           scr.SCREENING_CODE AS invalid_screening_value,
           scr.src_file_row_number AS issue_row
-  FROM screening_20240529 scr
+  FROM screening_qcs_test_20240531_testcase1 scr
   LEFT JOIN ahc_cross_walk acw
     ON UPPER(scr.SCREENING_CODE) = UPPER(acw.SCREENING_CODE)
     AND UPPER(scr.QUESTION_CODE) = UPPER(acw.QUESTION_CODE)
@@ -3540,7 +2768,7 @@ WITH valid_screening_potential_need_indicated_question_answer_values_in_all_rows
   AND  UPPER(scr.QUESTION_CODE_DESCRIPTION)
   NOT IN(
     'TOTAL SAFETY SCORE',
-    'CALCULATED WEEKLY PHYSICAL ACTIVITY',
+    'CALCULATED PHYSICAL ACTIVITY SCORE',
     'CALCULATED MENTAL HEALTH SCORE'
   )
 )
@@ -3555,228 +2783,22 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Provided Potential Need Indicated "' || invalid_value || '", Screening Code "' || invalid_screening_value || '", Question Code "' || invalid_question_value || '" and Answer Code "' || invalid_answer_value || '" are not matching with the reference data found in ' || issue_column,
            'Validate Potential Need Indicated, Screening Code, Question Code and Answer Code with ahc cross walk reference data'
       FROM valid_screening_potential_need_indicated_question_answer_values_in_all_rows;
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('3e774fb3-fc39-5ce3-9b1f-aa7dbb147319', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4c4f9b8e-e50f-5da7-9901-3ef393fa8abe', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'ScreeningCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('63d56427-0888-5164-bea5-3f122e5805fd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '544998d3-58c5-5f65-9dc8-9f998508495f', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'QeAdminDataCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('63d56427-0888-5164-bea5-3f122e5805fd', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'AdminDemographicCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 WITH mandatory_value AS (
-    SELECT 'PAT_MRN_ID' AS issue_column,
-           "PAT_MRN_ID" AS invalid_value,
+    SELECT 'FIRST_NAME' AS issue_column,
+           "FIRST_NAME" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "PAT_MRN_ID" IS NULL
-        OR TRIM(CAST("PAT_MRN_ID" AS VARCHAR)) = ''
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "FIRST_NAME" IS NULL
+        OR TRIM(CAST("FIRST_NAME" AS VARCHAR)) = ''
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'FACILITY_ID' AS issue_column,
-           "FACILITY_ID" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "FACILITY_ID" IS NULL
-        OR TRIM(CAST("FACILITY_ID" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH valid_unique_facility_id_per_facility_in_all_rows AS (
-  SELECT 'FACILITY_ID' AS issue_column,
-    FACILITY_ID AS invalid_value,
-    min(src_file_row_number) AS issue_row
-  FROM qe_admin_data_20240529
-  GROUP BY FACILITY_ID
-  HAVING COUNT(DISTINCT FACILITY_LONG_NAME) > 1
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Invalid FACILITY_ID',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per facility',
-           'FACILITY_ID is not unique per facility.'
-      FROM valid_unique_facility_id_per_facility_in_all_rows;
-WITH mandatory_value AS (
-    SELECT 'FACILITY_LONG_NAME' AS issue_column,
-           "FACILITY_LONG_NAME" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "FACILITY_LONG_NAME" IS NULL
-        OR TRIM(CAST("FACILITY_LONG_NAME" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH mandatory_value AS (
-    SELECT 'ORGANIZATION_TYPE' AS issue_column,
-           "ORGANIZATION_TYPE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "ORGANIZATION_TYPE" IS NULL
-        OR TRIM(CAST("ORGANIZATION_TYPE" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'ORGANIZATION_TYPE' AS issue_column,
-           "ORGANIZATION_TYPE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "ORGANIZATION_TYPE" NOT IN ('prov','dept','team','govt','ins','pay','edu','reli','crs','cg','bus','other','laboratory','imaging','pharmacy','health-information-network','health-data-aggregator')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''prov'',''dept'',''team'',''govt'',''ins'',''pay'',''edu'',''reli'',''crs'',''cg'',''bus'',''other'',''laboratory'',''imaging'',''pharmacy'',''health-information-network'',''health-data-aggregator'')',
-           'Use only allowed values ''prov'',''dept'',''team'',''govt'',''ins'',''pay'',''edu'',''reli'',''crs'',''cg'',''bus'',''other'',''laboratory'',''imaging'',''pharmacy'',''health-information-network'',''health-data-aggregator'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'FACILITY_ADDRESS1' AS issue_column,
-           "FACILITY_ADDRESS1" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "FACILITY_ADDRESS1" IS NULL
-        OR TRIM(CAST("FACILITY_ADDRESS1" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH valid_unique_facility_address1_per_facility_in_all_rows AS (
-  SELECT 'FACILITY_ADDRESS1' AS issue_column,
-    FACILITY_ADDRESS1 AS invalid_value,
-    min(src_file_row_number) AS issue_row
-  FROM qe_admin_data_20240529
-  GROUP BY FACILITY_ADDRESS1
-  HAVING COUNT(DISTINCT FACILITY_LONG_NAME) > 1
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Invalid FACILITY_ADDRESS1',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per facility',
-           'FACILITY_ADDRESS1 is not unique per facility.'
-      FROM valid_unique_facility_address1_per_facility_in_all_rows;
-WITH valid_integer_alphanumeric_string_in_all_rows AS (
-  SELECT 'FACILITY_ADDRESS1' AS issue_column,
-    t."FACILITY_ADDRESS1" AS invalid_value,
-    t.src_file_row_number AS issue_row
-  FROM qe_admin_data_20240529 t
-  WHERE t."FACILITY_ADDRESS1" SIMILAR TO '[0-9]+'
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Data Type Mismatch',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Invalid value "' || invalid_value || '" found in ' || issue_column,
-           'Invalid string of numbers found'
-      FROM valid_integer_alphanumeric_string_in_all_rows;
-WITH mandatory_value AS (
-    SELECT 'FACILITY_STATE' AS issue_column,
-           "FACILITY_STATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "FACILITY_STATE" IS NULL
-        OR TRIM(CAST("FACILITY_STATE" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Missing Mandatory Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Mandatory field ' || issue_column || ' is empty',
-           'Provide a value for ' || issue_column
-      FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'FACILITY_STATE' AS issue_column,
-           "FACILITY_STATE" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "FACILITY_STATE" NOT IN ('NY', 'New York')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''NY'', ''New York'')',
-           'Use only allowed values ''NY'', ''New York'' in ' || issue_column
-      FROM allowed_values;
-WITH mandatory_value AS (
-    SELECT 'FACILITY_ZIP' AS issue_column,
-           "FACILITY_ZIP" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "FACILITY_ZIP" IS NULL
-        OR TRIM(CAST("FACILITY_ZIP" AS VARCHAR)) = ''
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3785,16 +2807,450 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Provide a value for ' || issue_column
       FROM mandatory_value;
 WITH pattern AS (
-    SELECT 'FACILITY_ZIP' AS issue_column,
-           "FACILITY_ZIP" AS invalid_value,
+    SELECT 'FIRST_NAME' AS issue_column,
+           "FIRST_NAME" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE CAST("FACILITY_ZIP" AS VARCHAR) NOT SIMILAR TO '^\d{5}(\d{4})?$'
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE CAST("FIRST_NAME" AS VARCHAR) NOT SIMILAR TO '^[A-Za-z]+$'
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]+$',
+           'Follow the pattern ^[A-Za-z]+$ in ' || issue_column
+      FROM pattern;
+WITH pattern AS (
+    SELECT 'MIDDLE_NAME' AS issue_column,
+           "MIDDLE_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE CAST("MIDDLE_NAME" AS VARCHAR) NOT SIMILAR TO '^[A-Za-z]+$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]+$',
+           'Follow the pattern ^[A-Za-z]+$ in ' || issue_column
+      FROM pattern;
+WITH mandatory_value AS (
+    SELECT 'LAST_NAME' AS issue_column,
+           "LAST_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "LAST_NAME" IS NULL
+        OR TRIM(CAST("LAST_NAME" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH pattern AS (
+    SELECT 'LAST_NAME' AS issue_column,
+           "LAST_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE CAST("LAST_NAME" AS VARCHAR) NOT SIMILAR TO '^[A-Za-z]+$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Pattern Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]+$',
+           'Follow the pattern ^[A-Za-z]+$ in ' || issue_column
+      FROM pattern;
+WITH mandatory_value AS (
+    SELECT 'ADMINISTRATIVE_SEX_CODE' AS issue_column,
+           "ADMINISTRATIVE_SEX_CODE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "ADMINISTRATIVE_SEX_CODE" IS NULL
+        OR TRIM(CAST("ADMINISTRATIVE_SEX_CODE" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH mandatory_value AS (
+    SELECT 'ADMINISTRATIVE_SEX_CODE_SYSTEM' AS issue_column,
+           "ADMINISTRATIVE_SEX_CODE_SYSTEM" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "ADMINISTRATIVE_SEX_CODE_SYSTEM" IS NULL
+        OR TRIM(CAST("ADMINISTRATIVE_SEX_CODE_SYSTEM" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH valid_administrative_sex_code_in_all_rows AS (
+    SELECT 'ADMINISTRATIVE_SEX_CODE' AS issue_column,
+           sr."ADMINISTRATIVE_SEX_CODE" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 sr
+      LEFT JOIN administrative_sex_reference ref
+      ON UPPER(sr."ADMINISTRATIVE_SEX_CODE") = UPPER(ref.ADMINISTRATIVE_SEX_CODE)
+     WHERE sr."ADMINISTRATIVE_SEX_CODE" IS NOT NULL
+      AND ref.ADMINISTRATIVE_SEX_CODE IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid ADMINISTRATIVE SEX CODE',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid ADMINISTRATIVE SEX CODE "' || invalid_value || '" found in ' || issue_column,
+           'Validate ADMINISTRATIVE SEX CODE with administrative sex reference data'
+      FROM valid_administrative_sex_code_in_all_rows;
+WITH valid_administrative_sex_code_description_in_all_rows AS (
+    SELECT 'ADMINISTRATIVE_SEX_CODE_DESCRIPTION' AS issue_column,
+           sr."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 sr
+      LEFT JOIN administrative_sex_reference ref
+      ON UPPER(sr."ADMINISTRATIVE_SEX_CODE_DESCRIPTION") = UPPER(ref.ADMINISTRATIVE_SEX_CODE_DESCRIPTION)
+     WHERE sr."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" IS NOT NULL
+      AND ref.ADMINISTRATIVE_SEX_CODE_DESCRIPTION IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid ADMINISTRATIVE SEX CODE DESCRIPTION',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid ADMINISTRATIVE SEX CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
+           'Validate ADMINISTRATIVE SEX CODE DESCRIPTION with administrative sex reference data'
+      FROM valid_administrative_sex_code_description_in_all_rows;
+WITH valid_administrative_sex_code_system_in_all_rows AS (
+    SELECT 'ADMINISTRATIVE_SEX_CODE_SYSTEM' AS issue_column,
+           sr."ADMINISTRATIVE_SEX_CODE_SYSTEM" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 sr
+      LEFT JOIN administrative_sex_reference ref
+      ON UPPER(sr."ADMINISTRATIVE_SEX_CODE_SYSTEM") = UPPER(ref.ADMINISTRATIVE_SEX_CODE_SYSTEM)
+     WHERE sr."ADMINISTRATIVE_SEX_CODE_SYSTEM" IS NOT NULL
+      AND ref.ADMINISTRATIVE_SEX_CODE_SYSTEM IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid ADMINISTRATIVE SEX CODE SYSTEM',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid ADMINISTRATIVE SEX CODE SYSTEM "' || invalid_value || '" found in ' || issue_column,
+           'Validate ADMINISTRATIVE SEX CODE SYSTEM with administrative sex reference data'
+      FROM valid_administrative_sex_code_system_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'ADMINISTRATIVE_SEX_CODE' AS issue_column,
+      tbl."ADMINISTRATIVE_SEX_CODE" AS invalid_value,
+      tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."ADMINISTRATIVE_SEX_CODE" is not null
+  and tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" is not null
+  and NOT EXISTS ( SELECT "ADMINISTRATIVE_SEX_CODE_DESCRIPTION" FROM administrative_sex_reference WHERE UPPER(CAST(tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS VARCHAR)) AND UPPER(CAST(tbl."ADMINISTRATIVE_SEX_CODE" AS VARCHAR)) = UPPER(CAST("ADMINISTRATIVE_SEX_CODE" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The ADMINISTRATIVE_SEX_CODE "' || invalid_value || '" of ADMINISTRATIVE_SEX_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the ADMINISTRATIVE_SEX_CODE of ADMINISTRATIVE_SEX_CODE_DESCRIPTION in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'ADMINISTRATIVE_SEX_CODE_DESCRIPTION' AS issue_column,
+      tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS invalid_value,
+      tbl."ADMINISTRATIVE_SEX_CODE" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" is not null
+  and tbl."ADMINISTRATIVE_SEX_CODE" is not null
+  and NOT EXISTS ( SELECT "ADMINISTRATIVE_SEX_CODE" FROM administrative_sex_reference WHERE UPPER(CAST(tbl."ADMINISTRATIVE_SEX_CODE" AS VARCHAR)) = UPPER(CAST("ADMINISTRATIVE_SEX_CODE" AS VARCHAR)) AND UPPER(CAST(tbl."ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("ADMINISTRATIVE_SEX_CODE_DESCRIPTION" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The ADMINISTRATIVE_SEX_CODE_DESCRIPTION "' || invalid_value || '" of ADMINISTRATIVE_SEX_CODE "' || dependent_value || '" is not matching with the ADMINISTRATIVE_SEX_CODE_DESCRIPTION of ADMINISTRATIVE_SEX_CODE in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_sex_at_birth_code_in_all_rows AS (
+    SELECT 'SEX_AT_BIRTH_CODE' AS issue_column,
+           sr."SEX_AT_BIRTH_CODE" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 sr
+      LEFT JOIN sex_at_birth_reference ref
+      ON UPPER(sr.SEX_AT_BIRTH_CODE) = UPPER(ref.SEX_AT_BIRTH_CODE)
+     WHERE sr.SEX_AT_BIRTH_CODE IS NOT NULL
+      AND ref.SEX_AT_BIRTH_CODE IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid SEX AT BIRTH CODE',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid SEX AT BIRTH CODE "' || invalid_value || '" found in ' || issue_column,
+           'Validate SEX AT BIRTH CODE with sex at birth reference data'
+      FROM valid_sex_at_birth_code_in_all_rows;
+WITH valid_sex_at_birth_code_description_in_all_rows AS (
+    SELECT 'SEX_AT_BIRTH_CODE_DESCRIPTION' AS issue_column,
+           sr."SEX_AT_BIRTH_CODE_DESCRIPTION" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 sr
+      LEFT JOIN sex_at_birth_reference ref
+      ON UPPER(sr.SEX_AT_BIRTH_CODE_DESCRIPTION) = UPPER(ref.SEX_AT_BIRTH_CODE_DESCRIPTION)
+     WHERE sr.SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL
+      AND ref.SEX_AT_BIRTH_CODE_DESCRIPTION IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid SEX_AT_BIRTH_CODE_DESCRIPTION',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid SEX_AT_BIRTH_CODE_DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
+           'Validate SEX_AT_BIRTH_CODE_DESCRIPTION with sex at birth reference data'
+      FROM valid_sex_at_birth_code_description_in_all_rows;
+WITH valid_sex_at_birth_code_system_in_all_rows AS (
+    SELECT 'SEX_AT_BIRTH_CODE_SYSTEM' AS issue_column,
+           sr."SEX_AT_BIRTH_CODE_SYSTEM" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 sr
+      LEFT JOIN sex_at_birth_reference ref
+      ON UPPER(sr.SEX_AT_BIRTH_CODE_SYSTEM) = UPPER(ref.SEX_AT_BIRTH_CODE_SYSTEM)
+     WHERE sr.SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL
+      AND ref.SEX_AT_BIRTH_CODE_SYSTEM IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid SEX AT BIRTH CODE SYSTEM',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid SEX AT BIRTH CODE SYSTEM "' || invalid_value || '" found in ' || issue_column,
+           'Validate SEX AT BIRTH CODE SYSTEM with sex at birth reference data'
+      FROM valid_sex_at_birth_code_system_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'SEX_AT_BIRTH_CODE' AS issue_column,
+      tbl."SEX_AT_BIRTH_CODE" AS invalid_value,
+      tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."SEX_AT_BIRTH_CODE" is not null
+  and tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" is not null
+  and NOT EXISTS ( SELECT "SEX_AT_BIRTH_CODE_DESCRIPTION" FROM sex_at_birth_reference WHERE UPPER(CAST(tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("SEX_AT_BIRTH_CODE_DESCRIPTION" AS VARCHAR)) AND UPPER(CAST(tbl."SEX_AT_BIRTH_CODE" AS VARCHAR)) = UPPER(CAST("SEX_AT_BIRTH_CODE" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The SEX_AT_BIRTH_CODE "' || invalid_value || '" of SEX_AT_BIRTH_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the SEX_AT_BIRTH_CODE of SEX_AT_BIRTH_CODE_DESCRIPTION in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'SEX_AT_BIRTH_CODE_DESCRIPTION' AS issue_column,
+      tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" AS invalid_value,
+      tbl."SEX_AT_BIRTH_CODE" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" is not null
+  and tbl."SEX_AT_BIRTH_CODE" is not null
+  and NOT EXISTS ( SELECT "SEX_AT_BIRTH_CODE" FROM sex_at_birth_reference WHERE UPPER(CAST(tbl."SEX_AT_BIRTH_CODE" AS VARCHAR)) = UPPER(CAST("SEX_AT_BIRTH_CODE" AS VARCHAR)) AND UPPER(CAST(tbl."SEX_AT_BIRTH_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("SEX_AT_BIRTH_CODE_DESCRIPTION" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The SEX_AT_BIRTH_CODE_DESCRIPTION "' || invalid_value || '" of SEX_AT_BIRTH_CODE "' || dependent_value || '" is not matching with the SEX_AT_BIRTH_CODE_DESCRIPTION of SEX_AT_BIRTH_CODE in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH mandatory_value AS (
+    SELECT 'PAT_BIRTH_DATE' AS issue_column,
+           "PAT_BIRTH_DATE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "PAT_BIRTH_DATE" IS NULL
+        OR TRIM(CAST("PAT_BIRTH_DATE" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH valid_date_time_in_all_rows AS (
+    SELECT 'PAT_BIRTH_DATE' AS issue_column,
+           "PAT_BIRTH_DATE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "PAT_BIRTH_DATE" IS NOT NULL
+       AND TRY_CAST("PAT_BIRTH_DATE" AS TIMESTAMP) IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid Date',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid timestamp "' || invalid_value || '" found in ' || issue_column,
+           'Please be sure to provide both a valid date and time.'
+      FROM valid_date_time_in_all_rows;
+WITH mandatory_value AS (
+    SELECT 'CITY' AS issue_column,
+           "CITY" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "CITY" IS NULL
+        OR TRIM(CAST("CITY" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH mandatory_value AS (
+    SELECT 'STATE' AS issue_column,
+           "STATE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "STATE" IS NULL
+        OR TRIM(CAST("STATE" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH allowed_values AS (
+    SELECT 'STATE' AS issue_column,
+           "STATE" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "STATE" NOT IN ('NY', 'ny', 'New York','new york', 'NEW YORK')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''NY'', ''ny'', ''New York'',''new york'', ''NEW YORK'')',
+           'Use only allowed values ''NY'', ''ny'', ''New York'',''new york'', ''NEW YORK'' in ' || issue_column
+      FROM allowed_values;
+WITH mandatory_value AS (
+    SELECT 'ZIP' AS issue_column,
+           "ZIP" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "ZIP" IS NULL
+        OR TRIM(CAST("ZIP" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH pattern AS (
+    SELECT 'ZIP' AS issue_column,
+           "ZIP" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE CAST("ZIP" AS VARCHAR) NOT SIMILAR TO '^\d{5}(\d{4})?$'
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
            'Pattern Mismatch',
            issue_row,
            issue_column,
@@ -3802,18 +3258,522 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^\d{5}(\d{4})?$',
            'Follow the pattern ^\d{5}(\d{4})?$ in ' || issue_column
       FROM pattern;
-WITH mandatory_value AS (
-    SELECT 'VISIT_PART_2_FLAG' AS issue_column,
-           "VISIT_PART_2_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "VISIT_PART_2_FLAG" IS NULL
-        OR TRIM(CAST("VISIT_PART_2_FLAG" AS VARCHAR)) = ''
+WITH valid_integer_alphanumeric_string_in_all_rows AS (
+  SELECT 'ADDRESS1' AS issue_column,
+    t."ADDRESS1" AS invalid_value,
+    t.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1 t
+  WHERE t."ADDRESS1" SIMILAR TO '[0-9]+'
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Data Type Mismatch',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'Invalid string of numbers found'
+      FROM valid_integer_alphanumeric_string_in_all_rows;
+WITH valid_address1_or_medicaid_cin_in_all_rows AS (
+    SELECT 'ADDRESS1' AS issue_column,
+           ADDRESS1 AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1
+      WHERE (ADDRESS1 IS NULL OR TRIM("ADDRESS1") = '') AND (MEDICAID_CIN IS NULL OR TRIM("MEDICAID_CIN") = '')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid ADDRESS1',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field "' || issue_column || '" is empty',
+           'The required field value ADDRESS1 is missing. This is required due to the absence of the MEDICAID_CIN.'
+      FROM valid_address1_or_medicaid_cin_in_all_rows;
+WITH valid_gender_identity_code_in_all_rows AS (
+    SELECT 'GENDER_IDENTITY_CODE' AS issue_column,
+           sr."GENDER_IDENTITY_CODE" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 sr
+      LEFT JOIN gender_identity_reference ref
+      ON UPPER(sr.GENDER_IDENTITY_CODE) = UPPER(ref.GENDER_IDENTITY_CODE)
+     WHERE sr.GENDER_IDENTITY_CODE IS NOT NULL
+      AND ref.GENDER_IDENTITY_CODE IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid GENDER IDENTITY CODE',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid GENDER IDENTITY CODE "' || invalid_value || '" found in ' || issue_column,
+           'Validate GENDER IDENTITY CODE with gender identity reference data'
+      FROM valid_gender_identity_code_in_all_rows;
+WITH allowed_values AS (
+    SELECT 'GENDER_IDENTITY_CODE_SYSTEM_NAME' AS issue_column,
+           "GENDER_IDENTITY_CODE_SYSTEM_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "GENDER_IDENTITY_CODE_SYSTEM_NAME" NOT IN ('SNOMED-CT','SNOMED','http://snomed.info/sct')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''SNOMED-CT'',''SNOMED'',''http://snomed.info/sct'')',
+           'Use only allowed values ''SNOMED-CT'',''SNOMED'',''http://snomed.info/sct'' in ' || issue_column
+      FROM allowed_values;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'GENDER_IDENTITY_CODE' AS issue_column,
+      tbl."GENDER_IDENTITY_CODE" AS invalid_value,
+      tbl."GENDER_IDENTITY_CODE_DESCRIPTION" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."GENDER_IDENTITY_CODE" is not null
+  and tbl."GENDER_IDENTITY_CODE_DESCRIPTION" is not null
+  and NOT EXISTS ( SELECT "GENDER_IDENTITY_CODE_DESCRIPTION" FROM gender_identity_reference WHERE UPPER(CAST(tbl."GENDER_IDENTITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("GENDER_IDENTITY_CODE_DESCRIPTION" AS VARCHAR)) AND UPPER(CAST(tbl."GENDER_IDENTITY_CODE" AS VARCHAR)) = UPPER(CAST("GENDER_IDENTITY_CODE" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The GENDER_IDENTITY_CODE "' || invalid_value || '" of GENDER_IDENTITY_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the GENDER_IDENTITY_CODE of GENDER_IDENTITY_CODE_DESCRIPTION in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'GENDER_IDENTITY_CODE_DESCRIPTION' AS issue_column,
+      tbl."GENDER_IDENTITY_CODE_DESCRIPTION" AS invalid_value,
+      tbl."GENDER_IDENTITY_CODE" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."GENDER_IDENTITY_CODE_DESCRIPTION" is not null
+  and tbl."GENDER_IDENTITY_CODE" is not null
+  and NOT EXISTS ( SELECT "GENDER_IDENTITY_CODE" FROM gender_identity_reference WHERE UPPER(CAST(tbl."GENDER_IDENTITY_CODE" AS VARCHAR)) = UPPER(CAST("GENDER_IDENTITY_CODE" AS VARCHAR)) AND UPPER(CAST(tbl."GENDER_IDENTITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("GENDER_IDENTITY_CODE_DESCRIPTION" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The GENDER_IDENTITY_CODE_DESCRIPTION "' || invalid_value || '" of GENDER_IDENTITY_CODE "' || dependent_value || '" is not matching with the GENDER_IDENTITY_CODE_DESCRIPTION of GENDER_IDENTITY_CODE in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_sexual_orientation_code_in_all_rows AS (
+    SELECT 'SEXUAL_ORIENTATION_CODE' AS issue_column,
+           sr."SEXUAL_ORIENTATION_CODE" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 sr
+      LEFT JOIN sexual_orientation_reference ref
+      ON UPPER(sr.SEXUAL_ORIENTATION_CODE) = UPPER(ref.SEXUAL_ORIENTATION_CODE)
+     WHERE sr.SEXUAL_ORIENTATION_CODE IS NOT NULL
+      AND ref.SEXUAL_ORIENTATION_CODE IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid SEXUAL ORIENTATION CODE',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid SEXUAL ORIENTATION CODE "' || invalid_value || '" found in ' || issue_column,
+           'Validate SEXUAL ORIENTATION CODE with sexual orientation reference data'
+      FROM valid_sexual_orientation_code_in_all_rows;
+WITH valid_SEXUAL_ORIENTATION_CODE_DESCRIPTION_in_all_rows AS (
+    SELECT 'SEXUAL_ORIENTATION_CODE_DESCRIPTION' AS issue_column,
+           sr."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS invalid_value,
+           sr.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 sr
+      LEFT JOIN sexual_orientation_reference ref
+      ON UPPER(sr.SEXUAL_ORIENTATION_CODE_DESCRIPTION) = UPPER(ref.SEXUAL_ORIENTATION_CODE_DESCRIPTION)
+     WHERE sr.SEXUAL_ORIENTATION_CODE_DESCRIPTION IS NOT NULL
+      AND ref.SEXUAL_ORIENTATION_CODE_DESCRIPTION IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid SEXUAL ORIENTATION CODE DESCRIPTION',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid SEXUAL ORIENTATION CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
+           'Validate SEXUAL ORIENTATION CODE DESCRIPTION with sexual orientation reference data'
+      FROM valid_SEXUAL_ORIENTATION_CODE_DESCRIPTION_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'SEXUAL_ORIENTATION_CODE' AS issue_column,
+      tbl."SEXUAL_ORIENTATION_CODE" AS invalid_value,
+      tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."SEXUAL_ORIENTATION_CODE" is not null
+  and tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" is not null
+  and NOT EXISTS ( SELECT "SEXUAL_ORIENTATION_CODE_DESCRIPTION" FROM sexual_orientation_reference WHERE UPPER(CAST(tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS VARCHAR)) AND UPPER(CAST(tbl."SEXUAL_ORIENTATION_CODE" AS VARCHAR)) = UPPER(CAST("SEXUAL_ORIENTATION_CODE" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The SEXUAL_ORIENTATION_CODE "' || invalid_value || '" of SEXUAL_ORIENTATION_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the SEXUAL_ORIENTATION_CODE of SEXUAL_ORIENTATION_CODE_DESCRIPTION in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'SEXUAL_ORIENTATION_CODE_DESCRIPTION' AS issue_column,
+      tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS invalid_value,
+      tbl."SEXUAL_ORIENTATION_CODE" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" is not null
+  and tbl."SEXUAL_ORIENTATION_CODE" is not null
+  and NOT EXISTS ( SELECT "SEXUAL_ORIENTATION_CODE" FROM sexual_orientation_reference WHERE UPPER(CAST(tbl."SEXUAL_ORIENTATION_CODE" AS VARCHAR)) = UPPER(CAST("SEXUAL_ORIENTATION_CODE" AS VARCHAR)) AND UPPER(CAST(tbl."SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("SEXUAL_ORIENTATION_CODE_DESCRIPTION" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The SEXUAL_ORIENTATION_CODE_DESCRIPTION "' || invalid_value || '" of SEXUAL_ORIENTATION_CODE "' || dependent_value || '" is not matching with the SEXUAL_ORIENTATION_CODE_DESCRIPTION of SEXUAL_ORIENTATION_CODE in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH allowed_values AS (
+    SELECT 'SEXUAL_ORIENTATION_CODE_SYSTEM_NAME' AS issue_column,
+           "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "SEXUAL_ORIENTATION_CODE_SYSTEM_NAME" NOT IN ('SNOMED-CT','SNOMED','http://snomed.info/sct')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''SNOMED-CT'',''SNOMED'',''http://snomed.info/sct'')',
+           'Use only allowed values ''SNOMED-CT'',''SNOMED'',''http://snomed.info/sct'' in ' || issue_column
+      FROM allowed_values;
+WITH valid_ethnicity_code_in_all_rows AS (
+    SELECT 'ETHNICITY_CODE' AS issue_column,
+           ad."ETHNICITY_CODE" AS invalid_value,
+           ad.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 ad
+      LEFT JOIN ethnicity_reference ref
+      ON UPPER(CAST(ad."ETHNICITY_CODE" AS VARCHAR)) = UPPER(CAST(ref."Concept Code" AS VARCHAR))
+     WHERE ad."ETHNICITY_CODE" IS NOT NULL
+      AND ref."Concept Code" IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid ETHNICITY CODE',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid ETHNICITY CODE "' || invalid_value || '" found in ' || issue_column,
+           'Validate ETHNICITY CODE with ethnicity reference data'
+      FROM valid_ethnicity_code_in_all_rows;
+WITH valid_ethnicity_code_description_in_all_rows AS (
+    SELECT 'ETHNICITY_CODE_DESCRIPTION' AS issue_column,
+           ad."ETHNICITY_CODE_DESCRIPTION" AS invalid_value,
+           ad.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 ad
+      LEFT JOIN ethnicity_reference ref
+      ON UPPER(CAST(ad."ETHNICITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST(ref."Concept Name" AS VARCHAR))
+     WHERE ad."ETHNICITY_CODE_DESCRIPTION" IS NOT NULL
+      AND ref."Concept Name" IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid ETHNICITY CODE DESCRIPTION',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid ETHNICITY CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
+           'Validate ETHNICITY CODE DESCRIPTION with ethnicity reference data'
+      FROM valid_ethnicity_code_description_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'ETHNICITY_CODE' AS issue_column,
+      tbl."ETHNICITY_CODE" AS invalid_value,
+      tbl."ETHNICITY_CODE_DESCRIPTION" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."ETHNICITY_CODE" is not null
+  and tbl."ETHNICITY_CODE_DESCRIPTION" is not null
+  and NOT EXISTS ( SELECT "Concept Name" FROM ethnicity_reference WHERE UPPER(CAST(tbl."ETHNICITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Concept Name" AS VARCHAR)) AND UPPER(CAST(tbl."ETHNICITY_CODE" AS VARCHAR)) = UPPER(CAST("Concept Code" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The ETHNICITY_CODE "' || invalid_value || '" of ETHNICITY_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the ETHNICITY_CODE of ETHNICITY_CODE_DESCRIPTION in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'ETHNICITY_CODE_DESCRIPTION' AS issue_column,
+      tbl."ETHNICITY_CODE_DESCRIPTION" AS invalid_value,
+      tbl."ETHNICITY_CODE" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."ETHNICITY_CODE_DESCRIPTION" is not null
+  and tbl."ETHNICITY_CODE" is not null
+  and NOT EXISTS ( SELECT "Concept Code" FROM ethnicity_reference WHERE UPPER(CAST(tbl."ETHNICITY_CODE" AS VARCHAR)) = UPPER(CAST("Concept Code" AS VARCHAR)) AND UPPER(CAST(tbl."ETHNICITY_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Concept Name" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The ETHNICITY_CODE_DESCRIPTION "' || invalid_value || '" of ETHNICITY_CODE "' || dependent_value || '" is not matching with the ETHNICITY_CODE_DESCRIPTION of ETHNICITY_CODE in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_race_code_in_all_rows AS (
+    SELECT 'RACE_CODE' AS issue_column,
+           ad."RACE_CODE" AS invalid_value,
+           ad.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 ad
+      LEFT JOIN race_reference ref
+      ON UPPER(CAST(ad."RACE_CODE" AS VARCHAR)) = UPPER(CAST(ref."Concept Code" AS VARCHAR))
+     WHERE ad."RACE_CODE" IS NOT NULL
+      AND ref."Concept Code" IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid RACE CODE',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid RACE CODE "' || invalid_value || '" found in ' || issue_column,
+           'Validate RACE CODE with race reference data'
+      FROM valid_race_code_in_all_rows;
+WITH valid_race_code_description_in_all_rows AS (
+    SELECT 'RACE_CODE_DESCRIPTION' AS issue_column,
+           ad."RACE_CODE_DESCRIPTION" AS invalid_value,
+           ad.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 ad
+      LEFT JOIN race_reference ref
+      ON UPPER(CAST(ad."RACE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST(ref."Concept Name" AS VARCHAR))
+     WHERE ad."RACE_CODE_DESCRIPTION" IS NOT NULL
+      AND ref."Concept Name" IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid RACE CODE DESCRIPTION',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid RACE CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
+           'Validate RACE CODE DESCRIPTION with race reference data'
+      FROM valid_race_code_description_in_all_rows;
+WITH valid_preferred_language_code_in_all_rows AS (
+    SELECT 'PREFERRED_LANGUAGE_CODE' AS issue_column,
+           ad."PREFERRED_LANGUAGE_CODE" AS invalid_value,
+           ad.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 ad
+      LEFT JOIN preferred_language_reference ref
+      ON UPPER(CAST(ad."PREFERRED_LANGUAGE_CODE" AS VARCHAR)) = UPPER(CAST(ref."ISO 639-2 Code" AS VARCHAR))
+     WHERE ad."PREFERRED_LANGUAGE_CODE" IS NOT NULL
+      AND ref."ISO 639-2 Code" IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid PREFERRED LANGUAGE CODE',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid PREFERRED LANGUAGE CODE "' || invalid_value || '" found in ' || issue_column,
+           'Validate PREFERRED LANGUAGE CODE with preferred language reference data'
+      FROM valid_preferred_language_code_in_all_rows;
+WITH valid_preferred_language_code_description_in_all_rows AS (
+    SELECT 'PREFERRED_LANGUAGE_CODE_DESCRIPTION' AS issue_column,
+           ad."PREFERRED_LANGUAGE_CODE_DESCRIPTION" AS invalid_value,
+           ad.src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1 ad
+      LEFT JOIN preferred_language_reference ref
+      ON UPPER(CAST(ad."PREFERRED_LANGUAGE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST(ref."English name of Language" AS VARCHAR))
+     WHERE ad."PREFERRED_LANGUAGE_CODE_DESCRIPTION" IS NOT NULL
+      AND ref."English name of Language" IS NULL
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid PREFERRED LANGUAGE CODE DESCRIPTION',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid PREFERRED LANGUAGE CODE DESCRIPTION "' || invalid_value || '" found in ' || issue_column,
+           'Validate PREFERRED LANGUAGE CODE DESCRIPTION with preferred language reference data'
+      FROM valid_preferred_language_code_description_in_all_rows;
+WITH allowed_values AS (
+    SELECT 'PREFERRED_LANGUAGE_CODE_SYSTEM_NAME' AS issue_column,
+           "PREFERRED_LANGUAGE_CODE_SYSTEM_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "PREFERRED_LANGUAGE_CODE_SYSTEM_NAME" NOT IN ('ISO','ISO 639-2','http://hl7.org/fhir/us/core/ValueSet/simple-language')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''ISO'',''ISO 639-2'',''http://hl7.org/fhir/us/core/ValueSet/simple-language'')',
+           'Use only allowed values ''ISO'',''ISO 639-2'',''http://hl7.org/fhir/us/core/ValueSet/simple-language'' in ' || issue_column
+      FROM allowed_values;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'RACE_CODE' AS issue_column,
+      tbl."RACE_CODE" AS invalid_value,
+      tbl."RACE_CODE_DESCRIPTION" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."RACE_CODE" is not null
+  and tbl."RACE_CODE_DESCRIPTION" is not null
+  and NOT EXISTS ( SELECT "Concept Name" FROM race_reference WHERE UPPER(CAST(tbl."RACE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Concept Name" AS VARCHAR)) AND UPPER(CAST(tbl."RACE_CODE" AS VARCHAR)) = UPPER(CAST("Concept Code" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The RACE_CODE "' || invalid_value || '" of RACE_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the RACE_CODE of RACE_CODE_DESCRIPTION in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'PREFERRED_LANGUAGE_CODE' AS issue_column,
+      tbl."PREFERRED_LANGUAGE_CODE" AS invalid_value,
+      tbl."PREFERRED_LANGUAGE_CODE_DESCRIPTION" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."PREFERRED_LANGUAGE_CODE" is not null
+  and tbl."PREFERRED_LANGUAGE_CODE_DESCRIPTION" is not null
+  and NOT EXISTS ( SELECT "English name of Language" FROM preferred_language_reference WHERE UPPER(CAST(tbl."PREFERRED_LANGUAGE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("English name of Language" AS VARCHAR)) AND UPPER(CAST(tbl."PREFERRED_LANGUAGE_CODE" AS VARCHAR)) = UPPER(CAST("ISO 639-2 Code" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The PREFERRED_LANGUAGE_CODE "' || invalid_value || '" of PREFERRED_LANGUAGE_CODE_DESCRIPTION "' || dependent_value || '" is not matching with the PREFERRED_LANGUAGE_CODE of PREFERRED_LANGUAGE_CODE_DESCRIPTION in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH valid_field_combination_in_all_rows AS (
+  SELECT 	'RACE_CODE_DESCRIPTION' AS issue_column,
+      tbl."RACE_CODE_DESCRIPTION" AS invalid_value,
+      tbl."RACE_CODE" AS dependent_value,
+      tbl.src_file_row_number AS issue_row
+  FROM admin_demographics_qcs_test_20240531_testcase1  tbl
+  WHERE tbl."RACE_CODE_DESCRIPTION" is not null
+  and tbl."RACE_CODE" is not null
+  and NOT EXISTS ( SELECT "Concept Code" FROM race_reference WHERE UPPER(CAST(tbl."RACE_CODE" AS VARCHAR)) = UPPER(CAST("Concept Code" AS VARCHAR)) AND UPPER(CAST(tbl."RACE_CODE_DESCRIPTION" AS VARCHAR)) = UPPER(CAST("Concept Name" AS VARCHAR)))
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Combination Not Matching',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid value "' || invalid_value || '" found in ' || issue_column,
+           'The RACE_CODE_DESCRIPTION "' || invalid_value || '" of RACE_CODE "' || dependent_value || '" is not matching with the RACE_CODE_DESCRIPTION of RACE_CODE in reference data'
+      FROM valid_field_combination_in_all_rows;
+WITH allowed_values AS (
+    SELECT 'RACE_CODE_SYSTEM_NAME' AS issue_column,
+           "RACE_CODE_SYSTEM_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "RACE_CODE_SYSTEM_NAME" NOT IN ('CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''CDC'',''CDCRE'',''urn:oid:2.16.840.1.113883.6.238'')',
+           'Use only allowed values ''CDC'',''CDCRE'',''urn:oid:2.16.840.1.113883.6.238'' in ' || issue_column
+      FROM allowed_values;
+WITH allowed_values AS (
+    SELECT 'ETHNICITY_CODE_SYSTEM_NAME' AS issue_column,
+           "ETHNICITY_CODE_SYSTEM_NAME" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "ETHNICITY_CODE_SYSTEM_NAME" NOT IN ('CDC','CDCRE','urn:oid:2.16.840.1.113883.6.238')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''CDC'',''CDCRE'',''urn:oid:2.16.840.1.113883.6.238'')',
+           'Use only allowed values ''CDC'',''CDCRE'',''urn:oid:2.16.840.1.113883.6.238'' in ' || issue_column
+      FROM allowed_values;
+WITH mandatory_value AS (
+    SELECT 'MPI_ID' AS issue_column,
+           "MPI_ID" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "MPI_ID" IS NULL
+        OR TRIM(CAST("MPI_ID" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3821,36 +3781,18 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
       FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'VISIT_PART_2_FLAG' AS issue_column,
-           "VISIT_PART_2_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "VISIT_PART_2_FLAG" NOT IN ('Yes', 'No')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
-           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
-      FROM allowed_values;
 WITH mandatory_value AS (
-    SELECT 'VISIT_OMH_FLAG' AS issue_column,
-           "VISIT_OMH_FLAG" AS invalid_value,
+    SELECT 'PAT_MRN_ID' AS issue_column,
+           "PAT_MRN_ID" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "VISIT_OMH_FLAG" IS NULL
-        OR TRIM(CAST("VISIT_OMH_FLAG" AS VARCHAR)) = ''
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "PAT_MRN_ID" IS NULL
+        OR TRIM(CAST("PAT_MRN_ID" AS VARCHAR)) = ''
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3858,36 +3800,37 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
       FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'VISIT_OMH_FLAG' AS issue_column,
-           "VISIT_OMH_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "VISIT_OMH_FLAG" NOT IN ('Yes', 'No')
+WITH valid_mpi_id_per_pat_mrn_id_in_all_rows AS (
+    SELECT 'MPI_ID' AS issue_column,
+      MPI_ID AS invalid_value,
+      min(src_file_row_number) AS issue_row
+    FROM admin_demographics_qcs_test_20240531_testcase1
+    GROUP BY MPI_ID
+    HAVING COUNT(DISTINCT PAT_MRN_ID) > 1
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Invalid Value',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid MPI_ID',
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
-           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
-      FROM allowed_values;
+           'The unique field "' || issue_column || '" "' || invalid_value || '"is not unique per PAT MRN ID',
+           'MPI_ID is not unique per PAT MRN ID.'
+      FROM valid_mpi_id_per_pat_mrn_id_in_all_rows;
 WITH mandatory_value AS (
-    SELECT 'VISIT_OPWDD_FLAG' AS issue_column,
-           "VISIT_OPWDD_FLAG" AS invalid_value,
+    SELECT 'FACILITY_ID' AS issue_column,
+           "FACILITY_ID" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "VISIT_OPWDD_FLAG" IS NULL
-        OR TRIM(CAST("VISIT_OPWDD_FLAG" AS VARCHAR)) = ''
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "FACILITY_ID" IS NULL
+        OR TRIM(CAST("FACILITY_ID" AS VARCHAR)) = ''
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
            'Missing Mandatory Value',
            issue_row,
            issue_column,
@@ -3895,50 +3838,107 @@ INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry
            'Mandatory field ' || issue_column || ' is empty',
            'Provide a value for ' || issue_column
       FROM mandatory_value;
-WITH allowed_values AS (
-    SELECT 'VISIT_OPWDD_FLAG' AS issue_column,
-           "VISIT_OPWDD_FLAG" AS invalid_value,
-           src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE "VISIT_OPWDD_FLAG" NOT IN ('Yes', 'No')
-)
-INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
-    SELECT uuid(),
-           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
-           'Invalid Value',
-           issue_row,
-           issue_column,
-           invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''No'')',
-           'Use only allowed values ''Yes'', ''No'' in ' || issue_column
-      FROM allowed_values;
 WITH pattern AS (
-    SELECT 'FACILITY_LONG_NAME' AS issue_column,
-           "FACILITY_LONG_NAME" AS invalid_value,
+    SELECT 'MEDICAID_CIN' AS issue_column,
+           "MEDICAID_CIN" AS invalid_value,
            src_file_row_number AS issue_row
-      FROM "qe_admin_data_20240529"
-     WHERE CAST("FACILITY_LONG_NAME" AS VARCHAR) NOT SIMILAR TO '^[a-zA-Z\s]+$'
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE CAST("MEDICAID_CIN" AS VARCHAR) NOT SIMILAR TO '^[A-Za-z]{2}\d{5}[A-Za-z]$'
 )
 INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
     SELECT uuid(),
            '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
-           '544998d3-58c5-5f65-9dc8-9f998508495f',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
            'Pattern Mismatch',
            issue_row,
            issue_column,
            invalid_value,
-           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[a-zA-Z\s]+$',
-           'Follow the pattern ^[a-zA-Z\s]+$ in ' || issue_column
+           'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ^[A-Za-z]{2}\d{5}[A-Za-z]$',
+           'Follow the pattern ^[A-Za-z]{2}\d{5}[A-Za-z]$ in ' || issue_column
       FROM pattern;
+WITH valid_unique_medicaid_cin_per_mrn_in_all_rows AS (
+  SELECT 'MEDICAID_CIN' AS issue_column,
+          "MEDICAID_CIN" AS invalid_value,
+          min(src_file_row_number) AS issue_row
+    FROM admin_demographics_qcs_test_20240531_testcase1
+    WHERE MEDICAID_CIN IS NOT NULL
+    GROUP BY pat_mrn_id, MEDICAID_CIN
+    HAVING COUNT(*) > 1
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid Unique Medicaid Cin Per Mrn',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Invalid Unique Medicaid Cin Per Mrn "' || invalid_value || '" found in ' || issue_column,
+           'Validate Unique Medicaid Cin Per Mrn'
+      FROM valid_unique_medicaid_cin_per_mrn_in_all_rows;
+WITH valid_address1_or_medicaid_cin_in_all_rows AS (
+    SELECT 'MEDICAID_CIN' AS issue_column,
+           MEDICAID_CIN AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM admin_demographics_qcs_test_20240531_testcase1
+      WHERE (MEDICAID_CIN IS NULL OR TRIM("MEDICAID_CIN") = '') AND (ADDRESS1 IS NULL OR TRIM("ADDRESS1") = '')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid MEDICAID_CIN',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field "' || issue_column || '" is empty',
+           'The required field value MEDICAID_CIN is missing. This is required due to the absence of the ADDRESS1.'
+      FROM valid_address1_or_medicaid_cin_in_all_rows;
+WITH mandatory_value AS (
+    SELECT 'CONSENT' AS issue_column,
+           "CONSENT" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "CONSENT" IS NULL
+        OR TRIM(CAST("CONSENT" AS VARCHAR)) = ''
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Missing Mandatory Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Mandatory field ' || issue_column || ' is empty',
+           'Provide a value for ' || issue_column
+      FROM mandatory_value;
+WITH allowed_values AS (
+    SELECT 'CONSENT' AS issue_column,
+           "CONSENT" AS invalid_value,
+           src_file_row_number AS issue_row
+      FROM "admin_demographics_qcs_test_20240531_testcase1"
+     WHERE "CONSENT" NOT IN ('Yes', 'YES', 'yes', 'Y', 'y', 'No', 'NO', 'no','N', 'n','Unknown', 'UNKNOWN', 'unknown','UNK', 'Unk', 'unk')
+)
+INSERT INTO orch_session_issue (orch_session_issue_id, session_id, session_entry_id, issue_type, issue_row, issue_column, invalid_value, issue_message, remediation)
+    SELECT uuid(),
+           '05269d28-15ae-5bd6-bd88-f949ccfa52d7',
+           '86b4a49e-7378-5159-9f41-b005208c31bc',
+           'Invalid Value',
+           issue_row,
+           issue_column,
+           invalid_value,
+           'Value ' || invalid_value || ' in ' || issue_column || ' not in allowed list (''Yes'', ''YES'', ''yes'', ''Y'', ''y'', ''No'', ''NO'', ''no'',''N'', ''n'',''Unknown'', ''UNKNOWN'', ''unknown'',''UNK'', ''Unk'', ''unk'')',
+           'Use only allowed values ''Yes'', ''YES'', ''yes'', ''Y'', ''y'', ''No'', ''NO'', ''no'',''N'', ''n'',''Unknown'', ''UNKNOWN'', ''unknown'',''UNK'', ''Unk'', ''unk'' in ' || issue_column
+      FROM allowed_values;
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4c4f9b8e-e50f-5da7-9901-3ef393fa8abe', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'QeAdminDataCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d0b4aa83-f90e-55af-a33f-11508a4abe46', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AdminDemographicCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
     
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('2d193f6b-b33f-5f8b-8281-da48e6bceaaf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'AhcCrossWalkCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
 -- add field validation
 
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('d0b4aa83-f90e-55af-a33f-11508a4abe46', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AhcCrossWalkCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('11b19c60-a371-5444-9831-cb06a48b442e', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ATTEMPT_CSV_ASSURANCE', 'ASSURED_CSV', NULL, 'AhcCrossWalkCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
       
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7d8ecb6e-190a-5c47-b730-41cbb9d35145', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e8b3dab4-5058-5c79-8088-45b423119149', 'INGESTED_CSV', 'ATTEMPT_CSV_ASSURANCE', NULL, 'EncounterClassReferenceCsvFileIngestSource.assuranceSQL', (CURRENT_TIMESTAMP), NULL);
 
@@ -4032,11 +4032,11 @@ No STDERR emitted by `ensureContent`.
 SET autoinstall_known_extensions=true;
 SET autoload_known_extensions=true;
 -- end preambleSQL
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-05-29T09:02:19.254Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-05-29T09:02:19.254Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-05-29T09:02:19.254Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('334b7ece-79ec-5ea1-b98b-bb09d0e2b234', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-05-29T09:02:19.254Z'), NULL);
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4426d5b2-0661-5a83-9e90-36f1a5666cf8', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-05-29T09:02:19.254Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('05e8feaa-0bed-5909-a817-39812494b361', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'NONE', 'ENTER(prepareInit)', NULL, 'rsEE.beforeCell', ('2024-06-03T04:00:48.813Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8f460419-7b80-516d-8919-84520950f612', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(prepareInit)', 'ENTER(init)', NULL, 'rsEE.afterCell', ('2024-06-03T04:00:48.813Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('1931dfcc-e8fc-597d-b1bc-65b4287e6fdf', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(init)', 'ENTER(ingest)', NULL, 'rsEE.afterCell', ('2024-06-03T04:00:48.813Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('334b7ece-79ec-5ea1-b98b-bb09d0e2b234', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ingest)', 'ENTER(ensureContent)', NULL, 'rsEE.afterCell', ('2024-06-03T04:00:48.813Z'), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('4426d5b2-0661-5a83-9e90-36f1a5666cf8', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', NULL, 'EXIT(ensureContent)', 'ENTER(emitResources)', NULL, 'rsEE.afterCell', ('2024-06-03T04:00:48.813Z'), NULL);
 
 -- removed SQLPage and execution diagnostics SQL DML from diagnostics Markdown
 
@@ -4083,7 +4083,7 @@ SELECT
   WHERE isi.orch_session_issue_id IS NOT NULL
 ;
 
-ATTACH '/home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/resource.sqlite.db' AS resource_db (TYPE SQLITE);
+ATTACH '/home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/resource.sqlite.db' AS resource_db (TYPE SQLITE);
 
 -- copy relevant orchestration engine admin tables into the the attached database
 CREATE TABLE resource_db.device AS SELECT * FROM device;
@@ -4095,29 +4095,27 @@ CREATE TABLE resource_db.orch_session_issue AS SELECT * FROM orch_session_issue;
 CREATE TABLE resource_db.sqlpage_files AS SELECT * FROM sqlpage_files;
 
 -- export content tables from DuckDb into the attached database (nature-dependent)
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a5b8b3ab-b0e7-5f5c-b38b-60bca388de0b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ASSURED_CSV', 'EXIT(AdminDemographicCsvFileIngestSource)', NULL, 'AdminDemographicCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('a5b8b3ab-b0e7-5f5c-b38b-60bca388de0b', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ASSURED_CSV', 'EXIT(QeAdminDataCsvFileIngestSource)', NULL, 'QeAdminDataCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
-CREATE TABLE IF NOT EXISTS demographic_data AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM admin_demographics_20240529 WHERE 0=1;
-INSERT INTO demographic_data SELECT *, 'admin_demographics_20240529' AS source_table FROM admin_demographics_20240529;
+CREATE TABLE IF NOT EXISTS qe_admin_data AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM qe_admin_data_qcs_test_20240531_testcase1 WHERE 0=1;
+INSERT INTO qe_admin_data SELECT *, 'qe_admin_data_qcs_test_20240531_testcase1' AS source_table FROM qe_admin_data_qcs_test_20240531_testcase1;
 
-CREATE TABLE resource_db.admin_demographics_20240529 AS SELECT * FROM admin_demographics_20240529;
+CREATE TABLE resource_db.qe_admin_data_qcs_test_20240531_testcase1 AS SELECT * FROM qe_admin_data_qcs_test_20240531_testcase1;
 
-CREATE TABLE IF NOT EXISTS resource_db.demographic_data AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM admin_demographics_20240529 WHERE 0=1;
-INSERT INTO resource_db.demographic_data SELECT *, 'admin_demographics_20240529' AS source_table FROM admin_demographics_20240529;
+CREATE TABLE IF NOT EXISTS resource_db.qe_admin_data AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM qe_admin_data_qcs_test_20240531_testcase1 WHERE 0=1;
+INSERT INTO resource_db.qe_admin_data SELECT *, 'qe_admin_data_qcs_test_20240531_testcase1' AS source_table FROM qe_admin_data_qcs_test_20240531_testcase1;
 
-
-
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('66b21a3e-5135-5007-9061-14c2b6d33383', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'AdminDemographicCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('66b21a3e-5135-5007-9061-14c2b6d33383', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '8b7c669c-1795-5f6b-8f3a-3e502b74c628', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'QeAdminDataCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('7b50928a-200f-531a-9a0f-759de4ff1fe6', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ASSURED_CSV', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
-CREATE TABLE IF NOT EXISTS screening AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM screening_20240529 WHERE 0=1;
-INSERT INTO screening SELECT *, 'screening_20240529' AS source_table FROM screening_20240529;
+CREATE TABLE IF NOT EXISTS screening AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM screening_qcs_test_20240531_testcase1 WHERE 0=1;
+INSERT INTO screening SELECT *, 'screening_qcs_test_20240531_testcase1' AS source_table FROM screening_qcs_test_20240531_testcase1;
 
-CREATE TABLE resource_db.screening_20240529 AS SELECT * FROM screening_20240529;
+CREATE TABLE resource_db.screening_qcs_test_20240531_testcase1 AS SELECT * FROM screening_qcs_test_20240531_testcase1;
 
-CREATE TABLE IF NOT EXISTS resource_db.screening AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM screening_20240529 WHERE 0=1;
-INSERT INTO resource_db.screening SELECT *, 'screening_20240529' AS source_table FROM screening_20240529;
+CREATE TABLE IF NOT EXISTS resource_db.screening AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM screening_qcs_test_20240531_testcase1 WHERE 0=1;
+INSERT INTO resource_db.screening SELECT *, 'screening_qcs_test_20240531_testcase1' AS source_table FROM screening_qcs_test_20240531_testcase1;
 
 -- try sqltofhir Visual Studio Code extension for writing FHIR resources with SQL.
 -- see https://marketplace.visualstudio.com/items?itemName=arkhn.sqltofhir-vscode
@@ -4150,7 +4148,7 @@ CREATE VIEW IF NOT EXISTS screening_fhir AS
             'reference', 'Encounter/' || tab_screening.ENCOUNTER_ID
         )
     ) AS FHIR_Observation
-  FROM screening_20240529 as tab_screening LEFT JOIN admin_demographics_20240529 as tab_demograph
+  FROM screening_qcs_test_20240531_testcase1 as tab_screening LEFT JOIN admin_demographics_qcs_test_20240531_testcase1 as tab_demograph
   ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
 CREATE VIEW IF NOT EXISTS resource_db.screening_fhir AS
@@ -4182,7 +4180,7 @@ CREATE VIEW IF NOT EXISTS resource_db.screening_fhir AS
             'reference', 'Encounter/' || tab_screening.ENCOUNTER_ID
         )
     ) AS FHIR_Observation
-  FROM screening_20240529 as tab_screening LEFT JOIN admin_demographics_20240529 as tab_demograph
+  FROM screening_qcs_test_20240531_testcase1 as tab_screening LEFT JOIN admin_demographics_qcs_test_20240531_testcase1 as tab_demograph
   ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
         -- TODO: Need to fill out subject->display, source->display, questionnaire
@@ -4225,22 +4223,24 @@ CREATE VIEW IF NOT EXISTS resource_db.screening_fhir_questionnaire AS
             )
         )
     ) AS FHIR_Questionnaire
-  FROM screening_20240529 as tab_screening LEFT JOIN admin_demographics_20240529 as tab_demograph
+  FROM screening_qcs_test_20240531_testcase1 as tab_screening LEFT JOIN admin_demographics_qcs_test_20240531_testcase1 as tab_demograph
   ON tab_screening.PAT_MRN_ID = tab_demograph.PAT_MRN_ID;
 
   INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('87e8ac07-4d2f-55b3-9656-983edb280b85', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '591191c7-f693-5957-8734-ac87151ca981', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'ScreeningCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
-INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8e71e5ae-3d3f-53e4-bb52-332047079934', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ASSURED_CSV', 'EXIT(QeAdminDataCsvFileIngestSource)', NULL, 'QeAdminDataCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('8e71e5ae-3d3f-53e4-bb52-332047079934', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ASSURED_CSV', 'EXIT(AdminDemographicCsvFileIngestSource)', NULL, 'AdminDemographicCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
-CREATE TABLE IF NOT EXISTS qe_admin_data AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM qe_admin_data_20240529 WHERE 0=1;
-INSERT INTO qe_admin_data SELECT *, 'qe_admin_data_20240529' AS source_table FROM qe_admin_data_20240529;
+CREATE TABLE IF NOT EXISTS demographic_data AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM admin_demographics_qcs_test_20240531_testcase1 WHERE 0=1;
+INSERT INTO demographic_data SELECT *, 'admin_demographics_qcs_test_20240531_testcase1' AS source_table FROM admin_demographics_qcs_test_20240531_testcase1;
 
-CREATE TABLE resource_db.qe_admin_data_20240529 AS SELECT * FROM qe_admin_data_20240529;
+CREATE TABLE resource_db.admin_demographics_qcs_test_20240531_testcase1 AS SELECT * FROM admin_demographics_qcs_test_20240531_testcase1;
 
-CREATE TABLE IF NOT EXISTS resource_db.qe_admin_data AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM qe_admin_data_20240529 WHERE 0=1;
-INSERT INTO resource_db.qe_admin_data SELECT *, 'qe_admin_data_20240529' AS source_table FROM qe_admin_data_20240529;
+CREATE TABLE IF NOT EXISTS resource_db.demographic_data AS SELECT *, CAST(NULL AS VARCHAR) AS source_table FROM admin_demographics_qcs_test_20240531_testcase1 WHERE 0=1;
+INSERT INTO resource_db.demographic_data SELECT *, 'admin_demographics_qcs_test_20240531_testcase1' AS source_table FROM admin_demographics_qcs_test_20240531_testcase1;
 
-  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f96d2ad2-011f-583d-a66c-912a24a3ba02', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '544998d3-58c5-5f65-9dc8-9f998508495f', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'QeAdminDataCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
+
+
+  INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('f96d2ad2-011f-583d-a66c-912a24a3ba02', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', '86b4a49e-7378-5159-9f41-b005208c31bc', 'ATTEMPT_CSV_EXPORT', 'EXIT(ScreeningCsvFileIngestSource)', NULL, 'AdminDemographicCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
   
 INSERT INTO "orch_session_state" ("orch_session_state_id", "session_id", "session_entry_id", "from_state", "to_state", "transition_result", "transition_reason", "transitioned_at", "elaboration") VALUES ('911da40d-2914-515a-a1af-bc271400a941', '05269d28-15ae-5bd6-bd88-f949ccfa52d7', 'e6951d0b-be59-58c3-8a04-01181208c601', 'ASSURED_CSV', 'EXIT(AhcCrossWalkCsvFileIngestSource)', NULL, 'AhcCrossWalkCsvFileIngestSource.exportResourceSQL', (CURRENT_TIMESTAMP), NULL);
 
@@ -4574,7 +4574,7 @@ SET autoload_known_extensions=true;
               'id', CONCAT(adt.FACILITY_ID,'-',adt.PAT_MRN_ID),
               'meta', json_object(
                 'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID)
-                ELSE '2024-05-29T09:02:20.730Z' END,
+                ELSE '2024-06-03T04:00:50.078Z' END,
                 'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
               ),
               'language', 'en',
@@ -4691,7 +4691,7 @@ SET autoload_known_extensions=true;
               'id', CONCAT('consentFor',adt.PAT_MRN_ID),
               'meta', json_object(
                 'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID)
-                ELSE '2024-05-29T09:02:20.730Z' END,
+                ELSE '2024-06-03T04:00:50.078Z' END,
                 'profile', json_array('http://shinny.org/StructureDefinition/shin-ny-consent')
               ),
               'status','active',
@@ -4724,7 +4724,7 @@ SET autoload_known_extensions=true;
             'id', qed.FACILITY_ID,
             'meta', JSON_OBJECT(
                 'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID)
-                ELSE '2024-05-29T09:02:20.730Z' END,
+                ELSE '2024-06-03T04:00:50.078Z' END,
                 'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-organization')
             ),
             'identifier', JSON_ARRAY(
@@ -4794,7 +4794,7 @@ SET autoload_known_extensions=true;
               'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
               'meta', JSON_OBJECT(
                   'lastUpdated',CASE WHEN regexp_matches(scr.RECORDED_TIME,'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN scr.RECORDED_TIME
-                  ELSE '2024-05-29T09:02:20.730Z' END,
+                  ELSE '2024-06-03T04:00:50.078Z' END,
                   'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
               ),
               'status', SCREENING_STATUS_CODE,
@@ -4840,7 +4840,7 @@ SET autoload_known_extensions=true;
                           ) AS sub1),
               'meta', JSON_OBJECT(
                   'lastUpdated',CASE WHEN regexp_matches(MAX(RECORDED_TIME),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN MAX(RECORDED_TIME)
-                  ELSE '2024-05-29T09:02:20.730Z' END,
+                  ELSE '2024-06-03T04:00:50.078Z' END,
                   'profile', JSON_ARRAY('http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse')
               ),
               'status', SCREENING_STATUS_CODE,
@@ -4896,7 +4896,7 @@ SET autoload_known_extensions=true;
           'meta', JSON_OBJECT(
               'lastUpdated', RECORDED_TIME,
               'lastUpdated',CASE WHEN regexp_matches(RECORDED_TIME,'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN RECORDED_TIME
-              ELSE '2024-05-29T09:02:20.730Z' END,
+              ELSE '2024-06-03T04:00:50.078Z' END,
               'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
           ),
           'status', CASE WHEN ENCOUNTER_STATUS_CODE IS NOT NULL THEN ENCOUNTER_STATUS_CODE ELSE 'unknown' END,
@@ -4908,14 +4908,14 @@ SET autoload_known_extensions=true;
     FROM screening scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID WHERE scr.PAT_MRN_ID IS NOT NULL ORDER BY scr.ENCOUNTER_ID, scr.RECORDED_TIME DESC)
         SELECT cte.ENCOUNTER_ID,cte.PAT_MRN_ID, json_object(
           'resourceType', 'Bundle',
-              'id', CONCAT('2822c0b0-1d9a-11ef-abdc-ed16583fed7f','-',PAT_MRN_ID,'-',ENCOUNTER_ID),
+              'id', CONCAT('dd54ebe0-215d-11ef-bba2-d50ea2c66b59','-',PAT_MRN_ID,'-',ENCOUNTER_ID),
               'type', 'transaction',
               'meta', JSON_OBJECT(
                   'lastUpdated', CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
-                                    ELSE '2024-05-29T09:02:20.731Z'
+                                    ELSE '2024-06-03T04:00:50.078Z'
                                 END
               ),
-              'timestamp', '2024-05-29T09:02:20.731Z',
+              'timestamp', '2024-06-03T04:00:50.078Z',
               'entry', json(json_group_array(cte.json_data))
           ) AS FHIR_Bundle
           FROM (
@@ -4968,8 +4968,8 @@ SET autoload_known_extensions=true;
 -- end preambleSQL
 INSTALL spatial; LOAD spatial;
 -- TODO: join with orch_session table to give all the results in one sheet
-COPY (SELECT * FROM orch_session_issue_classification) TO '/home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/diagnostics.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
-COPY (SELECT * FROM orch_session_fhir_emit) TO '/home/alan/workspaces/github.com/alan-francis/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-diagnostics.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
+COPY (SELECT * FROM orch_session_issue_classification) TO '/home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/diagnostics.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
+COPY (SELECT * FROM orch_session_fhir_emit) TO '/home/megin/workspaces/1115-hub-fork/1115-hub/support/assurance/ahc-hrsn-elt/screening/results-test-e2e/fhir-diagnostics.xlsx' WITH (FORMAT GDAL, DRIVER 'xlsx');
 ```
 No STDOUT emitted by `emitDiagnostics` (status: `0`).
 
@@ -4987,8 +4987,14 @@ SET autoload_known_extensions=true;
 SELECT * FROM orch_session_fhir_emit;
         
 ```
-No STDOUT emitted by `jsonResult_8` (status: `0`).
+### `jsonResult_8` STDOUT (status: `0`)
+```json
+[{"ENCOUNTER_ID":"qcs-testTCQWYEJSDX","ORCH_SESSION_ID":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","DEVICE_ID":"7bab389e-54af-5a13-a39f-079abdc73a48","VERSION":"0.30.1","ORCH_SESSION_ENTRY_ID":"86b4a49e-7378-5159-9f41-b005208c31bc","PAT_MRN_ID":"qcs-test-20240531-testcase1-MRN","DISPOSITION":"","FHIR_EMITTABLE":"YES","FHIR_JSON_FILE":"fhir-qcs-test-20240531-testcase1-MRN-qcs-testTCQWYEJSDX.json"},
+{"ENCOUNTER_ID":"qcs-testJKLNXS5A02","ORCH_SESSION_ID":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","DEVICE_ID":"7bab389e-54af-5a13-a39f-079abdc73a48","VERSION":"0.30.1","ORCH_SESSION_ENTRY_ID":"86b4a49e-7378-5159-9f41-b005208c31bc","PAT_MRN_ID":"qcs-test-20240531-testcase1-MRN","DISPOSITION":"","FHIR_EMITTABLE":"YES","FHIR_JSON_FILE":"fhir-qcs-test-20240531-testcase1-MRN-qcs-testJKLNXS5A02.json"},
+{"ENCOUNTER_ID":"qcs-testJKLNXS5A02","ORCH_SESSION_ID":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","DEVICE_ID":"7bab389e-54af-5a13-a39f-079abdc73a48","VERSION":"0.30.1","ORCH_SESSION_ENTRY_ID":"8b7c669c-1795-5f6b-8f3a-3e502b74c628","PAT_MRN_ID":"qcs-test-20240531-testcase1-MRN","DISPOSITION":"","FHIR_EMITTABLE":"YES","FHIR_JSON_FILE":"fhir-qcs-test-20240531-testcase1-MRN-qcs-testJKLNXS5A02.json"},
+{"ENCOUNTER_ID":"qcs-testTCQWYEJSDX","ORCH_SESSION_ID":"05269d28-15ae-5bd6-bd88-f949ccfa52d7","DEVICE_ID":"7bab389e-54af-5a13-a39f-079abdc73a48","VERSION":"0.30.1","ORCH_SESSION_ENTRY_ID":"8b7c669c-1795-5f6b-8f3a-3e502b74c628","PAT_MRN_ID":"qcs-test-20240531-testcase1-MRN","DISPOSITION":"","FHIR_EMITTABLE":"YES","FHIR_JSON_FILE":"fhir-qcs-test-20240531-testcase1-MRN-qcs-testTCQWYEJSDX.json"}]
 
+```
 No STDERR emitted by `jsonResult_8`.
 
     
@@ -5006,8 +5012,10 @@ WHERE (fe.FHIR_EMITTABLE!='NO' OR fe.FHIR_EMITTABLE IS NULL);
 ```
 ### `jsonResult_9` STDOUT (status: `0`)
 ```json
-[{"PAT_MRN_ID":"healthelink-20240327-testcase1-MRN","ENCOUNTER_ID":"healthelinkS8KXK30S8W","FHIR":"{\"resourceType\":\"Bundle\",\"id\":\"2822c0b0-1d9a-11ef-abdc-ed16583fed7f-healthelink-20240327-testcase1-MRN-healthelinkS8KXK30S8W\",\"type\":\"transaction\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\"},\"timestamp\":\"2024-05-29T09:02:20.731Z\",\"entry\":[{\"resource\":{\"resourceType\":\"Consent\",\"id\":\"consentForhealthelink-20240327-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-consent\"]},\"status\":\"active\",\"scope\":{\"coding\":[{\"code\":\"treatment\"}],\"text\":\"treatment\"},\"category\":[{\"coding\":[{\"display\":\"Patient Consent\",\"code\":\"59284-0\",\"system\":\"http://loinc.org\"}]}],\"patient\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"dateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"organization\":[{\"reference\":\"Organization/CNYSCN\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-12\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-12\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"financial-insecurity\",\"display\":\"Financial Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"76513-1\",\"display\":\"How hard is it for you to pay for the very basics like food, housing, medical care, and heating? Would you say it is\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA22683-9\",\"display\":\"Somewhat hard\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-13\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-13\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"employment-status\",\"display\":\"Employment Status\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96780-2\",\"display\":\"Do you want help finding or keeping work or a job?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31983-2\",\"display\":\"I do not need or want help\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-14\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-14\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"social-connection\",\"display\":\"Social Connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96781-0\",\"display\":\"If for any reason you need help with day-to-day activities such as bathing, preparing meals, shopping, managing finances, etc., do you get the help you need?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31977-4\",\"display\":\"I get all the help I need\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-15\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-15\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"social-connection\",\"display\":\"Social Connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93159-2\",\"display\":\"How often do you feel lonely or isolated from those around you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA9933-8\",\"display\":\"Always\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-16\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-16\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"97027-7\",\"display\":\"Do you speak a language other than English at home?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA33-6\",\"display\":\"Yes\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-17\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-17\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96782-8\",\"display\":\"Do you want help with school or training? For example, starting or completing job training or getting a high school diploma, GED or equivalent.\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-18\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-18\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"89555-7\",\"display\":\"In the last 30 days, other than the activities you did for work, on average, how many days per week did you engage in moderate exercise (like walking fast, running, jogging, dancing, swimming, biking, or other similar activities)\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6115-5\",\"display\":\"4\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-19\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-19\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68516-4\",\"display\":\"On average, how many minutes did you usually spend exercising at this level on one of those days?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA19282-5\",\"display\":\"20\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-20\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-20\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"display\":\"Calculated weekly physical activity\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://unitsofmeasure.org\",\"code\":\"min/wk\",\"display\":\"80\"}]},\"derivedFrom\":[{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-19\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-18\"}],\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-21\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-21\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68517-2\",\"display\":\"How many times in the past 12 months have you had 5 or more drinks in a day (males) or 4 or more drinks in a day (females)?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA18876-5\",\"display\":\"Monthly\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-22\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-22\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96842-0\",\"display\":\"How many times in the past 12 months have you used tobacco products (like cigarettes, cigars, snuff, chew, electronic cigarettes)?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA26460-8\",\"display\":\"Once or Twice\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/organization/crossroads-ny-social-care-network-bus-cnyscn\",\"resource\":{\"resourceType\":\"Organization\",\"id\":\"CNYSCN\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-organization\"]},\"identifier\":[{\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"crossroads-ny-social-care-network-bus-cnyscn\"}],\"active\":true,\"name\":\"Crossroads NY Social Care Network\",\"address\":[{\"text\":\"25 W 45th st Suite 16\",\"city\":\"New York\",\"state\":\"New York\",\"postalCode\":\"10036\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-23\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-23\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95530-2\",\"display\":\"How many times in the past year have you used prescription drugs for non-medical reasons?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6270-8\",\"display\":\"Never\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-24\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-24\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68524-8\",\"display\":\"How many times in the past year have you used illegal drugs?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA18891-4\",\"display\":\"Weekly\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-25\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-25\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"44250-9\",\"display\":\"Little interest or pleasure in doing things?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6568-5\",\"display\":\"Not at all\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-26\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-26\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"44255-8\",\"display\":\"Feeling down, depressed, or hopeless?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6571-9\",\"display\":\"Nearly every day\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-27\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-27\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"display\":\"Calculated mental health score\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://unitsofmeasure.org\",\"code\":\"{score}\",\"display\":\"3\"}]},\"derivedFrom\":[{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-26\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-25\"}],\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-28\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-28\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"stress\",\"display\":\"Stress\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93038-8\",\"display\":\"Stress means a situation in which a person feels tense, restless, nervous, or anxious, or is unable to sleep at night because his or her mind is troubled all the time. Do you feel this kind of stress these days?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA13914-9\",\"display\":\"Very much\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-29\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-29\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"69858-9\",\"display\":\"Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-30\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-30\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"69861-3\",\"display\":\"Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a physician's office or shopping\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-30-grouper\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-30-grouper\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Social Connection\",\"code\":\"social-connection\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Financial Insecurity\",\"code\":\"financial-insecurity\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"SDOH Category Unspecified\",\"code\":\"sdoh-category-unspecified\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Employment Status\",\"code\":\"employment-status\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Stress\",\"code\":\"stress\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"97023-6\",\"display\":\"Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"encounter\":{\"reference\":\"Encounter/healthelinkS8KXK30S8W\"},\"effectiveDateTime\":\"1979-09-18T19:25:23.479719+03:00\",\"issued\":\"1979-09-18T19:25:23.479719+03:00\",\"hasMember\":[{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-12\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-13\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-14\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-15\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-16\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-17\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-18\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-19\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-20\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-21\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-22\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-23\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-24\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-25\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-26\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-27\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-28\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-29\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkS8KXK30S8W-efd3edf7a30bcb9a8ca91c244ddfc7c2-30\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/Patient/CNYSCN-healthelink-20240327-testcase1-MRN\",\"resource\":{\"resourceType\":\"Patient\",\"id\":\"CNYSCN-healthelink-20240327-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shinny-patient\"]},\"language\":\"en\",\"extension\":[{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"1019-9\",\"display\":\"White Mountain Apache\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-race\"},{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"2137-8\",\"display\":\"Spaniard\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity\"},{\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex\",\"valueCode\":\"M\"},{\"url\":\"http://shinny.org/StructureDefinition/shinny-sexual-orientation\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"42035005\",\"display\":\"Bisexual\"}]}}],\"identifier\":[{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MR\"}],\"text\":\"Medical Record Number\"},\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"healthelink-20240327-testcase1-MRN\",\"assigner\":{\"reference\":\"Organization/CNYSCN\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MA\"}]},\"system\":\"http://www.medicaid.gov/\",\"value\":\"MK72165H\",\"assigner\":{\"reference\":\"Organization/2.16.840.1.113883.3.249\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"PN\"}]},\"system\":\"http://www.acme.com/identifiers/patient\",\"value\":\"MPIData\"}],\"name\":[{\"text\":\"Anthony Todd Johnson\",\"family\":\"Johnson\",\"given\":[\"Anthony\",\"Todd\"]}],\"gender\":\"male\",\"birthDate\":\"2019-09-19\",\"address\":[{\"text\":\"7207 Murray Fort \",\"line\":[\"7207 Murray Fort\",null],\"city\":\"New Rochelle\",\"state\":\"NY\",\"postalCode\":\"10801\"}],\"communication\":[{\"language\":{\"coding\":[{\"code\":\"kon\"}]},\"preferred\":true}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/encounter/healthelinkS8KXK30S8W\",\"resource\":{\"resourceType\":\"Encounter\",\"id\":\"healthelinkS8KXK30S8W\",\"meta\":{\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"lastUpdated\":\"1979-09-18T19:25:23.479719+03:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-encounter\"]},\"status\":\"entered-in-error\",\"class\":{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActCode\",\"code\":\"IMP\"},\"type\":[{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"23918007\",\"display\":\"History taking, self-administered, by computer terminal\"}],\"text\":\"History taking, self-administered, by computer terminal\"}],\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"}}}]}"},
-{"PAT_MRN_ID":"healthelink-20240327-testcase1-MRN","ENCOUNTER_ID":"healthelinkCZ8BSG71LI","FHIR":"{\"resourceType\":\"Bundle\",\"id\":\"2822c0b0-1d9a-11ef-abdc-ed16583fed7f-healthelink-20240327-testcase1-MRN-healthelinkCZ8BSG71LI\",\"type\":\"transaction\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\"},\"timestamp\":\"2024-05-29T09:02:20.731Z\",\"entry\":[{\"resource\":{\"resourceType\":\"Consent\",\"id\":\"consentForhealthelink-20240327-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-consent\"]},\"status\":\"active\",\"scope\":{\"coding\":[{\"code\":\"treatment\"}],\"text\":\"treatment\"},\"category\":[{\"coding\":[{\"display\":\"Patient Consent\",\"code\":\"59284-0\",\"system\":\"http://loinc.org\"}]}],\"patient\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"dateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"organization\":[{\"reference\":\"Organization/CNYSCN\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-1\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-1\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"71802-3\",\"display\":\"What is your living situation today?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31995-6\",\"display\":\"I do not have a steady place to live (I am temporarily staying with others, in a hotel, in a shelter, living outside on the street, on a beach, in a car, abandoned building, bus or train station, or in a park)\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-2\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-2\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96778-6\",\"display\":\"Think about the place you live. Do you have problems with any of the following?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31999-8\",\"display\":\"Oven or stove not working\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-3\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-3\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"food-insecurity\",\"display\":\"Food Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"88122-7\",\"display\":\"Within the past 12 months, you worried that your food would run out before you got money to buy more.\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6729-3\",\"display\":\"Sometimes true\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-4\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-4\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"food-insecurity\",\"display\":\"Food Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"88123-5\",\"display\":\"Within the past 12 months, the food you bought just didn't last and you didn't have money to get more.\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA28398-8\",\"display\":\"Never true\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-5\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-5\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"transportation-insecurity\",\"display\":\"Transportation Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93030-5\",\"display\":\"In the past 12 months, has lack of reliable transportation kept you from medical appointments, meetings, work or from getting things needed for daily living?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-6\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-6\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96779-4\",\"display\":\"In the past 12 months has the electric, gas, oil, or water company threatened to shut off services in your home?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-7\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-7\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95618-5\",\"display\":\"How often does anyone, including family and friends, physically hurt you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA10082-8\",\"display\":\"Sometimes\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-8\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-8\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95617-7\",\"display\":\"How often does anyone, including family and friends, insult or talk down to you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA10066-1\",\"display\":\"Rarely\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-9\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-9\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95616-9\",\"display\":\"How often does anyone, including family and friends, threaten you with harm?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA10066-1\",\"display\":\"Rarely\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-10\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-10\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95615-1\",\"display\":\"How often does anyone, including family and friends, scream or curse at you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6482-9\",\"display\":\"Frequently\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-11\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-11\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95614-4\",\"display\":\"Total Safety Score\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://unitsofmeasure.org\",\"code\":\"{score}\",\"display\":\"12\"}]},\"derivedFrom\":[{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-10\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-8\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-7\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-9\"}],\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/organization/crossroads-ny-social-care-network-bus-cnyscn\",\"resource\":{\"resourceType\":\"Organization\",\"id\":\"CNYSCN\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-organization\"]},\"identifier\":[{\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"crossroads-ny-social-care-network-bus-cnyscn\"}],\"active\":true,\"name\":\"Crossroads NY Social Care Network\",\"address\":[{\"text\":\"25 W 45th st Suite 16\",\"city\":\"New York\",\"state\":\"New York\",\"postalCode\":\"10036\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-11-grouper\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-11-grouper\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"amended\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"SDOH Category Unspecified\",\"code\":\"sdoh-category-unspecified\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Food Insecurity\",\"code\":\"food-insecurity\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Transportation Insecurity\",\"code\":\"transportation-insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96777-8\",\"display\":\"Accountable health communities (AHC) health-related social needs screening (HRSN) tool\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"},\"encounter\":{\"reference\":\"Encounter/healthelinkCZ8BSG71LI\"},\"effectiveDateTime\":\"1999-03-18T20:20:51.539131-03:00\",\"issued\":\"1999-03-18T20:20:51.539131-03:00\",\"hasMember\":[{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-1\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-2\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-3\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-4\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-5\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-6\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-7\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-8\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-9\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-10\"},{\"reference\":\"Observation/observationResponseQuestion-healthelinkCZ8BSG71LI-94ffe50b997d4857a8605cb669242cd4-11\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/Patient/CNYSCN-healthelink-20240327-testcase1-MRN\",\"resource\":{\"resourceType\":\"Patient\",\"id\":\"CNYSCN-healthelink-20240327-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shinny-patient\"]},\"language\":\"en\",\"extension\":[{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"1019-9\",\"display\":\"White Mountain Apache\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-race\"},{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"2137-8\",\"display\":\"Spaniard\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity\"},{\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex\",\"valueCode\":\"M\"},{\"url\":\"http://shinny.org/StructureDefinition/shinny-sexual-orientation\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"42035005\",\"display\":\"Bisexual\"}]}}],\"identifier\":[{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MR\"}],\"text\":\"Medical Record Number\"},\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"healthelink-20240327-testcase1-MRN\",\"assigner\":{\"reference\":\"Organization/CNYSCN\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MA\"}]},\"system\":\"http://www.medicaid.gov/\",\"value\":\"MK72165H\",\"assigner\":{\"reference\":\"Organization/2.16.840.1.113883.3.249\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"PN\"}]},\"system\":\"http://www.acme.com/identifiers/patient\",\"value\":\"MPIData\"}],\"name\":[{\"text\":\"Anthony Todd Johnson\",\"family\":\"Johnson\",\"given\":[\"Anthony\",\"Todd\"]}],\"gender\":\"male\",\"birthDate\":\"2019-09-19\",\"address\":[{\"text\":\"7207 Murray Fort \",\"line\":[\"7207 Murray Fort\",null],\"city\":\"New Rochelle\",\"state\":\"NY\",\"postalCode\":\"10801\"}],\"communication\":[{\"language\":{\"coding\":[{\"code\":\"kon\"}]},\"preferred\":true}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/encounter/healthelinkCZ8BSG71LI\",\"resource\":{\"resourceType\":\"Encounter\",\"id\":\"healthelinkCZ8BSG71LI\",\"meta\":{\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"lastUpdated\":\"1999-03-18T20:20:51.539131-03:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-encounter\"]},\"status\":\"entered-in-error\",\"class\":{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActCode\",\"code\":\"IMP\"},\"type\":[{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"23918007\",\"display\":\"History taking, self-administered, by computer terminal\"}],\"text\":\"History taking, self-administered, by computer terminal\"}],\"subject\":{\"reference\":\"Patient/CNYSCN-healthelink-20240327-testcase1-MRN\"}}}]}"}]
+[{"PAT_MRN_ID":"qcs-test-20240531-testcase1-MRN","ENCOUNTER_ID":"qcs-testTCQWYEJSDX","FHIR":"{\"resourceType\":\"Bundle\",\"id\":\"dd54ebe0-215d-11ef-bba2-d50ea2c66b59-qcs-test-20240531-testcase1-MRN-qcs-testTCQWYEJSDX\",\"type\":\"transaction\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\"},\"timestamp\":\"2024-06-03T04:00:50.078Z\",\"entry\":[{\"resource\":{\"resourceType\":\"Consent\",\"id\":\"consentForqcs-test-20240531-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-consent\"]},\"status\":\"active\",\"scope\":{\"coding\":[{\"code\":\"treatment\"}],\"text\":\"treatment\"},\"category\":[{\"coding\":[{\"display\":\"Patient Consent\",\"code\":\"59284-0\",\"system\":\"http://loinc.org\"}]}],\"patient\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"dateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"organization\":[{\"reference\":\"Organization/CNYSCN\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/organization/crossroads-ny-social-care-network-scn-cnyscn\",\"resource\":{\"resourceType\":\"Organization\",\"id\":\"CNYSCN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-organization\"]},\"identifier\":[{\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"crossroads-ny-social-care-network-scn-cnyscn\"}],\"active\":true,\"name\":\"Crossroads NY Social Care Network\",\"address\":[{\"text\":\"25 W 45th st Suite 16\",\"city\":\"New York\",\"state\":\"New York\",\"postalCode\":\"10036\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-28\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-28\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"stress\",\"display\":\"Stress\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93038-8\",\"display\":\"Stress means a situation in which a person feels tense, restless, nervous, or anxious, or is unable to sleep at night because his or her mind is troubled all the time. Do you feel this kind of stress these days?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6568-5\",\"display\":\"Not at all\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-29\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-29\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"69858-9\",\"display\":\"Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"69861-3\",\"display\":\"Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a physician's office or shopping\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA33-6\",\"display\":\"Yes\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-12\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-12\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"financial-insecurity\",\"display\":\"Financial Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"76513-1\",\"display\":\"How hard is it for you to pay for the very basics like food, housing, medical care, and heating? Would you say it is\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31980-8\",\"display\":\"Not hard at all\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-13\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-13\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"employment-status\",\"display\":\"Employment Status\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96780-2\",\"display\":\"Do you want help finding or keeping work or a job?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31982-4\",\"display\":\"Yes, help keeping work\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-14\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-14\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"social-connection\",\"display\":\"Social Connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96781-0\",\"display\":\"If for any reason you need help with day-to-day activities such as bathing, preparing meals, shopping, managing finances, etc., do you get the help you need?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31976-6\",\"display\":\"I don't need any help\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-15\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-15\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"social-connection\",\"display\":\"Social Connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93159-2\",\"display\":\"How often do you feel lonely or isolated from those around you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA9933-8\",\"display\":\"Always\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-16\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-16\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"97027-7\",\"display\":\"Do you speak a language other than English at home?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-17\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-17\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96782-8\",\"display\":\"Do you want help with school or training? For example, starting or completing job training or getting a high school diploma, GED or equivalent.\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-18\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-18\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"89555-7\",\"display\":\"In the last 30 days, other than the activities you did for work, on average, how many days per week did you engage in moderate exercise (like walking fast, running, jogging, dancing, swimming, biking, or other similar activities)\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6111-4\",\"display\":\"0\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-19\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-19\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68516-4\",\"display\":\"On average, how many minutes did you usually spend exercising at this level on one of those days?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA28854-0\",\"display\":\"50\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-20\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-20\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"display\":\"Calculated Physical Activity Score\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://unitsofmeasure.org\",\"code\":\"min/wk\",\"display\":\"0\"}]},\"derivedFrom\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-19\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-18\"}],\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-21\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-21\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68517-2\",\"display\":\"How many times in the past 12 months have you had 5 or more drinks in a day (males) or 4 or more drinks in a day (females)?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA18876-5\",\"display\":\"Monthly\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-22\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-22\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96842-0\",\"display\":\"How many times in the past 12 months have you used tobacco products (like cigarettes, cigars, snuff, chew, electronic cigarettes)?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA18934-2\",\"display\":\"Daily or almost daily\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-23\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-23\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95530-2\",\"display\":\"How many times in the past year have you used prescription drugs for non-medical reasons?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA18934-2\",\"display\":\"Daily or almost daily\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-24\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-24\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68524-8\",\"display\":\"How many times in the past year have you used illegal drugs?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA26460-8\",\"display\":\"Once or Twice\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-25\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-25\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"44250-9\",\"display\":\"Little interest or pleasure in doing things?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6571-9\",\"display\":\"Nearly every day\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-26\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-26\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"44255-8\",\"display\":\"Feeling down, depressed, or hopeless?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6568-5\",\"display\":\"Not at all\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-27\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-27\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"display\":\"Calculated mental health score\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://unitsofmeasure.org\",\"code\":\"{score}\",\"display\":\"3\"}]},\"derivedFrom\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-25\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-26\"}],\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30-grouper\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30-grouper\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"SDOH Category Unspecified\",\"code\":\"sdoh-category-unspecified\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Employment Status\",\"code\":\"employment-status\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Stress\",\"code\":\"stress\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Financial Insecurity\",\"code\":\"financial-insecurity\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Social Connection\",\"code\":\"social-connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"97023-6\",\"display\":\"Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"encounter\":{\"reference\":\"Encounter/qcs-testTCQWYEJSDX\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"hasMember\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-12\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-13\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-14\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-15\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-16\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-17\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-18\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-19\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-20\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-21\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-22\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-23\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-24\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-25\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-26\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-27\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-28\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-29\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\",\"resource\":{\"resourceType\":\"Patient\",\"id\":\"CNYSCN-qcs-test-20240531-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shinny-patient\"]},\"language\":\"en\",\"extension\":[{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"1240-1\",\"display\":\"Nausu Waiwash\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-race\"},{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"2156-8\",\"display\":\"Costa Rican\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity\"},{\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex\",\"valueCode\":\"OTH\"},{\"url\":\"http://shinny.org/StructureDefinition/shinny-sexual-orientation\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"38628009\",\"display\":\"Homosexual\"}]}}],\"identifier\":[{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MR\"}],\"text\":\"Medical Record Number\"},\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"qcs-test-20240531-testcase1-MRN\",\"assigner\":{\"reference\":\"Organization/CNYSCN\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MA\"}]},\"system\":\"http://www.medicaid.gov/\",\"value\":\"PE53256Y\",\"assigner\":{\"reference\":\"Organization/2.16.840.1.113883.3.249\"}},null],\"name\":[{\"text\":\"Kimberly David Conner\",\"family\":\"Conner\",\"given\":[\"Kimberly\",\"David\"]}],\"gender\":\"unknown\",\"birthDate\":\"2003-05-16\",\"address\":[{\"text\":\"3350 Jonathan Brook Apt. 954 \",\"line\":[\"3350 Jonathan Brook Apt. 954\",null],\"city\":\"Schenectady\",\"state\":\"NY\",\"postalCode\":\"12301\"}],\"communication\":[{\"language\":{\"coding\":[{\"code\":\"lui\"}]},\"preferred\":true}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/encounter/qcs-testTCQWYEJSDX\",\"resource\":{\"resourceType\":\"Encounter\",\"id\":\"qcs-testTCQWYEJSDX\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-encounter\"]},\"status\":\"cancelled\",\"class\":{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActCode\",\"code\":\"FLD\"},\"type\":[{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"185320006\",\"display\":\"Encounter by computer link\"}],\"text\":\"Encounter by computer link\"}],\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"}}}]}"},
+{"PAT_MRN_ID":"qcs-test-20240531-testcase1-MRN","ENCOUNTER_ID":"qcs-testTCQWYEJSDX","FHIR":"{\"resourceType\":\"Bundle\",\"id\":\"dd54ebe0-215d-11ef-bba2-d50ea2c66b59-qcs-test-20240531-testcase1-MRN-qcs-testTCQWYEJSDX\",\"type\":\"transaction\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\"},\"timestamp\":\"2024-06-03T04:00:50.078Z\",\"entry\":[{\"resource\":{\"resourceType\":\"Consent\",\"id\":\"consentForqcs-test-20240531-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-consent\"]},\"status\":\"active\",\"scope\":{\"coding\":[{\"code\":\"treatment\"}],\"text\":\"treatment\"},\"category\":[{\"coding\":[{\"display\":\"Patient Consent\",\"code\":\"59284-0\",\"system\":\"http://loinc.org\"}]}],\"patient\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"dateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"organization\":[{\"reference\":\"Organization/CNYSCN\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/organization/crossroads-ny-social-care-network-scn-cnyscn\",\"resource\":{\"resourceType\":\"Organization\",\"id\":\"CNYSCN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-organization\"]},\"identifier\":[{\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"crossroads-ny-social-care-network-scn-cnyscn\"}],\"active\":true,\"name\":\"Crossroads NY Social Care Network\",\"address\":[{\"text\":\"25 W 45th st Suite 16\",\"city\":\"New York\",\"state\":\"New York\",\"postalCode\":\"10036\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-28\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-28\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"stress\",\"display\":\"Stress\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93038-8\",\"display\":\"Stress means a situation in which a person feels tense, restless, nervous, or anxious, or is unable to sleep at night because his or her mind is troubled all the time. Do you feel this kind of stress these days?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6568-5\",\"display\":\"Not at all\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-29\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-29\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"69858-9\",\"display\":\"Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"69861-3\",\"display\":\"Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a physician's office or shopping\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA33-6\",\"display\":\"Yes\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-12\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-12\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"financial-insecurity\",\"display\":\"Financial Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"76513-1\",\"display\":\"How hard is it for you to pay for the very basics like food, housing, medical care, and heating? Would you say it is\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31980-8\",\"display\":\"Not hard at all\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-13\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-13\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"employment-status\",\"display\":\"Employment Status\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96780-2\",\"display\":\"Do you want help finding or keeping work or a job?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31982-4\",\"display\":\"Yes, help keeping work\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-14\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-14\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"social-connection\",\"display\":\"Social Connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96781-0\",\"display\":\"If for any reason you need help with day-to-day activities such as bathing, preparing meals, shopping, managing finances, etc., do you get the help you need?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31976-6\",\"display\":\"I don't need any help\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-15\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-15\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"social-connection\",\"display\":\"Social Connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93159-2\",\"display\":\"How often do you feel lonely or isolated from those around you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA9933-8\",\"display\":\"Always\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-16\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-16\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"97027-7\",\"display\":\"Do you speak a language other than English at home?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-17\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-17\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96782-8\",\"display\":\"Do you want help with school or training? For example, starting or completing job training or getting a high school diploma, GED or equivalent.\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-18\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-18\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"89555-7\",\"display\":\"In the last 30 days, other than the activities you did for work, on average, how many days per week did you engage in moderate exercise (like walking fast, running, jogging, dancing, swimming, biking, or other similar activities)\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6111-4\",\"display\":\"0\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-19\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-19\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68516-4\",\"display\":\"On average, how many minutes did you usually spend exercising at this level on one of those days?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA28854-0\",\"display\":\"50\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-20\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-20\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"display\":\"Calculated Physical Activity Score\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://unitsofmeasure.org\",\"code\":\"min/wk\",\"display\":\"0\"}]},\"derivedFrom\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-19\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-18\"}],\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-21\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-21\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68517-2\",\"display\":\"How many times in the past 12 months have you had 5 or more drinks in a day (males) or 4 or more drinks in a day (females)?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA18876-5\",\"display\":\"Monthly\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-22\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-22\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96842-0\",\"display\":\"How many times in the past 12 months have you used tobacco products (like cigarettes, cigars, snuff, chew, electronic cigarettes)?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA18934-2\",\"display\":\"Daily or almost daily\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-23\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-23\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95530-2\",\"display\":\"How many times in the past year have you used prescription drugs for non-medical reasons?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA18934-2\",\"display\":\"Daily or almost daily\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-24\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-24\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"68524-8\",\"display\":\"How many times in the past year have you used illegal drugs?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA26460-8\",\"display\":\"Once or Twice\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-25\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-25\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"44250-9\",\"display\":\"Little interest or pleasure in doing things?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6571-9\",\"display\":\"Nearly every day\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-26\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-26\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"44255-8\",\"display\":\"Feeling down, depressed, or hopeless?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6568-5\",\"display\":\"Not at all\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-27\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-27\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"display\":\"Calculated mental health score\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://unitsofmeasure.org\",\"code\":\"{score}\",\"display\":\"3\"}]},\"derivedFrom\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-25\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-26\"}],\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30-grouper\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30-grouper\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"SDOH Category Unspecified\",\"code\":\"sdoh-category-unspecified\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Employment Status\",\"code\":\"employment-status\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Stress\",\"code\":\"stress\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Financial Insecurity\",\"code\":\"financial-insecurity\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Social Connection\",\"code\":\"social-connection\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"97023-6\",\"display\":\"Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"encounter\":{\"reference\":\"Encounter/qcs-testTCQWYEJSDX\"},\"effectiveDateTime\":\"2023-01-06T15:05:13.000000-04:00\",\"issued\":\"2023-01-06T15:05:13.000000-04:00\",\"hasMember\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-12\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-13\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-14\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-15\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-16\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-17\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-18\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-19\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-20\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-21\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-22\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-23\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-24\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-25\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-26\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-27\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-28\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-29\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testTCQWYEJSDX-1dbe031139add215a871a1aa8676a81e-30\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\",\"resource\":{\"resourceType\":\"Patient\",\"id\":\"CNYSCN-qcs-test-20240531-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shinny-patient\"]},\"language\":\"en\",\"extension\":[{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"1240-1\",\"display\":\"Nausu Waiwash\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-race\"},{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"2156-8\",\"display\":\"Costa Rican\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity\"},{\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex\",\"valueCode\":\"OTH\"},{\"url\":\"http://shinny.org/StructureDefinition/shinny-sexual-orientation\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"38628009\",\"display\":\"Homosexual\"}]}}],\"identifier\":[{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MR\"}],\"text\":\"Medical Record Number\"},\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"qcs-test-20240531-testcase1-MRN\",\"assigner\":{\"reference\":\"Organization/CNYSCN\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MA\"}]},\"system\":\"http://www.medicaid.gov/\",\"value\":\"PE53256Y\",\"assigner\":{\"reference\":\"Organization/2.16.840.1.113883.3.249\"}},null],\"name\":[{\"text\":\"Kimberly David Conner\",\"family\":\"Conner\",\"given\":[\"Kimberly\",\"David\"]}],\"gender\":\"unknown\",\"birthDate\":\"2003-05-16\",\"address\":[{\"text\":\"3350 Jonathan Brook Apt. 954 \",\"line\":[\"3350 Jonathan Brook Apt. 954\",null],\"city\":\"Schenectady\",\"state\":\"NY\",\"postalCode\":\"12301\"}],\"communication\":[{\"language\":{\"coding\":[{\"code\":\"lui\"}]},\"preferred\":true}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/encounter/qcs-testTCQWYEJSDX\",\"resource\":{\"resourceType\":\"Encounter\",\"id\":\"qcs-testTCQWYEJSDX\",\"meta\":{\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"lastUpdated\":\"2023-01-06T15:05:13.000000-04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-encounter\"]},\"status\":\"cancelled\",\"class\":{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActCode\",\"code\":\"FLD\"},\"type\":[{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"185320006\",\"display\":\"Encounter by computer link\"}],\"text\":\"Encounter by computer link\"}],\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"}}}]}"},
+{"PAT_MRN_ID":"qcs-test-20240531-testcase1-MRN","ENCOUNTER_ID":"qcs-testJKLNXS5A02","FHIR":"{\"resourceType\":\"Bundle\",\"id\":\"dd54ebe0-215d-11ef-bba2-d50ea2c66b59-qcs-test-20240531-testcase1-MRN-qcs-testJKLNXS5A02\",\"type\":\"transaction\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\"},\"timestamp\":\"2024-06-03T04:00:50.078Z\",\"entry\":[{\"resource\":{\"resourceType\":\"Consent\",\"id\":\"consentForqcs-test-20240531-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-consent\"]},\"status\":\"active\",\"scope\":{\"coding\":[{\"code\":\"treatment\"}],\"text\":\"treatment\"},\"category\":[{\"coding\":[{\"display\":\"Patient Consent\",\"code\":\"59284-0\",\"system\":\"http://loinc.org\"}]}],\"patient\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"dateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"organization\":[{\"reference\":\"Organization/CNYSCN\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/organization/crossroads-ny-social-care-network-scn-cnyscn\",\"resource\":{\"resourceType\":\"Organization\",\"id\":\"CNYSCN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-organization\"]},\"identifier\":[{\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"crossroads-ny-social-care-network-scn-cnyscn\"}],\"active\":true,\"name\":\"Crossroads NY Social Care Network\",\"address\":[{\"text\":\"25 W 45th st Suite 16\",\"city\":\"New York\",\"state\":\"New York\",\"postalCode\":\"10036\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-1\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-1\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"71802-3\",\"display\":\"What is your living situation today?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31994-9\",\"display\":\"I have a place to live today, but I am worried about losing it in the future\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-2\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-2\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96778-6\",\"display\":\"Think about the place you live. Do you have problems with any of the following?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31996-4\",\"display\":\"Pests such as bugs, ants, or mice\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-3\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-3\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"food-insecurity\",\"display\":\"Food Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"88122-7\",\"display\":\"Within the past 12 months, you worried that your food would run out before you got money to buy more.\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA28398-8\",\"display\":\"Never true\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-4\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-4\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"food-insecurity\",\"display\":\"Food Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"88123-5\",\"display\":\"Within the past 12 months, the food you bought just didn't last and you didn't have money to get more.\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA28398-8\",\"display\":\"Never true\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-5\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-5\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"transportation-insecurity\",\"display\":\"Transportation Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93030-5\",\"display\":\"In the past 12 months, has lack of reliable transportation kept you from medical appointments, meetings, work or from getting things needed for daily living?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-6\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-6\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96779-4\",\"display\":\"In the past 12 months has the electric, gas, oil, or water company threatened to shut off services in your home?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA33-6\",\"display\":\"Yes\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-7\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-7\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95618-5\",\"display\":\"How often does anyone, including family and friends, physically hurt you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6270-8\",\"display\":\"Never\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-8\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-8\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95617-7\",\"display\":\"How often does anyone, including family and friends, insult or talk down to you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6482-9\",\"display\":\"Frequently\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-9\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-9\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95616-9\",\"display\":\"How often does anyone, including family and friends, threaten you with harm?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA16644-9\",\"display\":\"Fairly often\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-10\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-10\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95615-1\",\"display\":\"How often does anyone, including family and friends, scream or curse at you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA10066-1\",\"display\":\"Rarely\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95614-4\",\"display\":\"Total Safety Score\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://unitsofmeasure.org\",\"code\":\"{score}\",\"display\":\"12\"}]},\"derivedFrom\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-10\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-9\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-8\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-7\"}],\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11-grouper\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11-grouper\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Food Insecurity\",\"code\":\"food-insecurity\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"SDOH Category Unspecified\",\"code\":\"sdoh-category-unspecified\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Transportation Insecurity\",\"code\":\"transportation-insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96777-8\",\"display\":\"Accountable health communities (AHC) health-related social needs screening (HRSN) tool\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"encounter\":{\"reference\":\"Encounter/qcs-testJKLNXS5A02\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"hasMember\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-1\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-2\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-3\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-4\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-5\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-6\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-7\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-8\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-9\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-10\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\",\"resource\":{\"resourceType\":\"Patient\",\"id\":\"CNYSCN-qcs-test-20240531-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shinny-patient\"]},\"language\":\"en\",\"extension\":[{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"1240-1\",\"display\":\"Nausu Waiwash\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-race\"},{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"2156-8\",\"display\":\"Costa Rican\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity\"},{\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex\",\"valueCode\":\"OTH\"},{\"url\":\"http://shinny.org/StructureDefinition/shinny-sexual-orientation\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"38628009\",\"display\":\"Homosexual\"}]}}],\"identifier\":[{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MR\"}],\"text\":\"Medical Record Number\"},\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"qcs-test-20240531-testcase1-MRN\",\"assigner\":{\"reference\":\"Organization/CNYSCN\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MA\"}]},\"system\":\"http://www.medicaid.gov/\",\"value\":\"PE53256Y\",\"assigner\":{\"reference\":\"Organization/2.16.840.1.113883.3.249\"}},null],\"name\":[{\"text\":\"Kimberly David Conner\",\"family\":\"Conner\",\"given\":[\"Kimberly\",\"David\"]}],\"gender\":\"unknown\",\"birthDate\":\"2003-05-16\",\"address\":[{\"text\":\"3350 Jonathan Brook Apt. 954 \",\"line\":[\"3350 Jonathan Brook Apt. 954\",null],\"city\":\"Schenectady\",\"state\":\"NY\",\"postalCode\":\"12301\"}],\"communication\":[{\"language\":{\"coding\":[{\"code\":\"lui\"}]},\"preferred\":true}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/encounter/qcs-testJKLNXS5A02\",\"resource\":{\"resourceType\":\"Encounter\",\"id\":\"qcs-testJKLNXS5A02\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-encounter\"]},\"status\":\"cancelled\",\"class\":{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActCode\",\"code\":\"FLD\"},\"type\":[{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"185320006\",\"display\":\"Encounter by computer link\"}],\"text\":\"Encounter by computer link\"}],\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"}}}]}"},
+{"PAT_MRN_ID":"qcs-test-20240531-testcase1-MRN","ENCOUNTER_ID":"qcs-testJKLNXS5A02","FHIR":"{\"resourceType\":\"Bundle\",\"id\":\"dd54ebe0-215d-11ef-bba2-d50ea2c66b59-qcs-test-20240531-testcase1-MRN-qcs-testJKLNXS5A02\",\"type\":\"transaction\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\"},\"timestamp\":\"2024-06-03T04:00:50.078Z\",\"entry\":[{\"resource\":{\"resourceType\":\"Consent\",\"id\":\"consentForqcs-test-20240531-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-consent\"]},\"status\":\"active\",\"scope\":{\"coding\":[{\"code\":\"treatment\"}],\"text\":\"treatment\"},\"category\":[{\"coding\":[{\"display\":\"Patient Consent\",\"code\":\"59284-0\",\"system\":\"http://loinc.org\"}]}],\"patient\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"dateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"organization\":[{\"reference\":\"Organization/CNYSCN\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/organization/crossroads-ny-social-care-network-scn-cnyscn\",\"resource\":{\"resourceType\":\"Organization\",\"id\":\"CNYSCN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-organization\"]},\"identifier\":[{\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"crossroads-ny-social-care-network-scn-cnyscn\"}],\"active\":true,\"name\":\"Crossroads NY Social Care Network\",\"address\":[{\"text\":\"25 W 45th st Suite 16\",\"city\":\"New York\",\"state\":\"New York\",\"postalCode\":\"10036\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-1\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-1\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"71802-3\",\"display\":\"What is your living situation today?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31994-9\",\"display\":\"I have a place to live today, but I am worried about losing it in the future\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-2\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-2\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96778-6\",\"display\":\"Think about the place you live. Do you have problems with any of the following?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA31996-4\",\"display\":\"Pests such as bugs, ants, or mice\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-3\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-3\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"food-insecurity\",\"display\":\"Food Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"88122-7\",\"display\":\"Within the past 12 months, you worried that your food would run out before you got money to buy more.\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA28398-8\",\"display\":\"Never true\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-4\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-4\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"food-insecurity\",\"display\":\"Food Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"88123-5\",\"display\":\"Within the past 12 months, the food you bought just didn't last and you didn't have money to get more.\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA28398-8\",\"display\":\"Never true\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-5\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-5\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"transportation-insecurity\",\"display\":\"Transportation Insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"93030-5\",\"display\":\"In the past 12 months, has lack of reliable transportation kept you from medical appointments, meetings, work or from getting things needed for daily living?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA32-8\",\"display\":\"No\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-6\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-6\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96779-4\",\"display\":\"In the past 12 months has the electric, gas, oil, or water company threatened to shut off services in your home?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA33-6\",\"display\":\"Yes\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-7\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-7\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95618-5\",\"display\":\"How often does anyone, including family and friends, physically hurt you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6270-8\",\"display\":\"Never\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-8\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-8\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95617-7\",\"display\":\"How often does anyone, including family and friends, insult or talk down to you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA6482-9\",\"display\":\"Frequently\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-9\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-9\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95616-9\",\"display\":\"How often does anyone, including family and friends, threaten you with harm?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA16644-9\",\"display\":\"Fairly often\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-10\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-10\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95615-1\",\"display\":\"How often does anyone, including family and friends, scream or curse at you?\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"LA10066-1\",\"display\":\"Rarely\"}]},\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"code\":\"sdoh-category-unspecified\",\"display\":\"SDOH Category Unspecified\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"95614-4\",\"display\":\"Total Safety Score\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://unitsofmeasure.org\",\"code\":\"{score}\",\"display\":\"12\"}]},\"derivedFrom\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-10\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-9\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-8\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-7\"}],\"interpretation\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation\",\"code\":\"POS\",\"display\":\"Positive\"}]}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11-grouper\",\"resource\":{\"resourceType\":\"Observation\",\"id\":\"observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11-grouper\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse\"]},\"status\":\"unknown\",\"category\":[{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"social-history\",\"display\":\"Social History\"}]},{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/observation-category\",\"code\":\"survey\",\"display\":\"Survey\"}]},{\"coding\":[{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Food Insecurity\",\"code\":\"food-insecurity\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"SDOH Category Unspecified\",\"code\":\"sdoh-category-unspecified\"},{\"system\":\"http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes\",\"display\":\"Transportation Insecurity\",\"code\":\"transportation-insecurity\"}]}],\"code\":{\"coding\":[{\"system\":\"http://loinc.org\",\"code\":\"96777-8\",\"display\":\"Accountable health communities (AHC) health-related social needs screening (HRSN) tool\"}]},\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"},\"encounter\":{\"reference\":\"Encounter/qcs-testJKLNXS5A02\"},\"effectiveDateTime\":\"2023-04-02T08:41:20.000000+04:00\",\"issued\":\"2023-04-02T08:41:20.000000+04:00\",\"hasMember\":[{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-1\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-2\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-3\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-4\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-5\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-6\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-7\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-8\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-9\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-10\"},{\"reference\":\"Observation/observationResponseQuestion-qcs-testJKLNXS5A02-37629c0233fa326c686b2bc49bdeb19c-11\"}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\",\"resource\":{\"resourceType\":\"Patient\",\"id\":\"CNYSCN-qcs-test-20240531-testcase1-MRN\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shinny-patient\"]},\"language\":\"en\",\"extension\":[{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"1240-1\",\"display\":\"Nausu Waiwash\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-race\"},{\"extension\":[{\"url\":\"ombCategory\",\"valueCoding\":{\"system\":\"urn:oid:2.16.840.1.113883.6.238\",\"code\":\"2156-8\",\"display\":\"Costa Rican\"}}],\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity\"},{\"url\":\"http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex\",\"valueCode\":\"OTH\"},{\"url\":\"http://shinny.org/StructureDefinition/shinny-sexual-orientation\",\"valueCodeableConcept\":{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"38628009\",\"display\":\"Homosexual\"}]}}],\"identifier\":[{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MR\"}],\"text\":\"Medical Record Number\"},\"system\":\"https://synthetic.fhir.api.techbd.org/facility/CNYSCN\",\"value\":\"qcs-test-20240531-testcase1-MRN\",\"assigner\":{\"reference\":\"Organization/CNYSCN\"}},{\"type\":{\"coding\":[{\"system\":\"http://terminology.hl7.org/CodeSystem/v2-0203\",\"code\":\"MA\"}]},\"system\":\"http://www.medicaid.gov/\",\"value\":\"PE53256Y\",\"assigner\":{\"reference\":\"Organization/2.16.840.1.113883.3.249\"}},null],\"name\":[{\"text\":\"Kimberly David Conner\",\"family\":\"Conner\",\"given\":[\"Kimberly\",\"David\"]}],\"gender\":\"unknown\",\"birthDate\":\"2003-05-16\",\"address\":[{\"text\":\"3350 Jonathan Brook Apt. 954 \",\"line\":[\"3350 Jonathan Brook Apt. 954\",null],\"city\":\"Schenectady\",\"state\":\"NY\",\"postalCode\":\"12301\"}],\"communication\":[{\"language\":{\"coding\":[{\"code\":\"lui\"}]},\"preferred\":true}]}},{\"fullUrl\":\"https://synthetic.fhir.api.techbd.org/r4/encounter/qcs-testJKLNXS5A02\",\"resource\":{\"resourceType\":\"Encounter\",\"id\":\"qcs-testJKLNXS5A02\",\"meta\":{\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"lastUpdated\":\"2023-04-02T08:41:20.000000+04:00\",\"profile\":[\"http://shinny.org/StructureDefinition/shin-ny-encounter\"]},\"status\":\"cancelled\",\"class\":{\"system\":\"http://terminology.hl7.org/CodeSystem/v3-ActCode\",\"code\":\"FLD\"},\"type\":[{\"coding\":[{\"system\":\"http://snomed.info/sct\",\"code\":\"185320006\",\"display\":\"Encounter by computer link\"}],\"text\":\"Encounter by computer link\"}],\"subject\":{\"reference\":\"Patient/CNYSCN-qcs-test-20240531-testcase1-MRN\"}}}]}"}]
 
 ```
 No STDERR emitted by `jsonResult_9`.
