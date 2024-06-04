@@ -1202,6 +1202,18 @@ export class OrchEngine {
                                           'value', CAST(adt.MPI_ID AS TEXT)
                                       )
                                   ELSE NULL
+                              END,
+                              CASE
+                                  WHEN adt.SSN IS NOT NULL THEN
+                                      json_object(
+                                          'type', json_object(
+                                              'coding', json_array(json_object('system', 'http://terminology.hl7.org/CodeSystem/v2-0203', 'code', 'SS', 'display', 'Social Security Number')),
+                                              'text', 'Social Security Number'
+                                          ),
+                                          'system', 'http://hl7.org/fhir/sid/us-ssn',
+                                          'value', CAST(adt.SSN AS TEXT)
+                                      )
+                                  ELSE NULL
                               END
                           ),
               CASE WHEN FIRST_NAME IS NOT NULL THEN 'name' ELSE NULL END, json_array(json_object(
@@ -1211,6 +1223,11 @@ export class OrchEngine {
               ),
               CASE WHEN ADMINISTRATIVE_SEX_CODE IS NOT NULL THEN 'gender' ELSE NULL END, CASE WHEN ADMINISTRATIVE_SEX_CODE IN ('MALE','M','male','Male','m') THEN 'male' ELSE CASE WHEN ADMINISTRATIVE_SEX_CODE IN ('FEMALE','F','female','Female','f') THEN 'female' ELSE CASE WHEN ADMINISTRATIVE_SEX_CODE IN ('OTHER','O','other','Other','o','Oth','oth') THEN 'other' ELSE 'unknown' END END END,
               CASE WHEN PAT_BIRTH_DATE IS NOT NULL THEN 'birthDate' ELSE NULL END, PAT_BIRTH_DATE,
+              CASE WHEN PHONE IS NOT NULL THEN 'telecom' ELSE NULL END, json_array(json_object(
+                 'system', 'phone',
+                 'value', CAST(PHONE AS TEXT)
+                )
+              ),
               CASE WHEN CITY IS NOT NULL AND CITY != '' IS NOT NULL AND STATE IS NOT NULL AND STATE != '' THEN 'address' ELSE NULL END, json_array(
                   json_object(
                     CASE WHEN ADDRESS1 IS NOT NULL AND ADDRESS1 != '' IS NOT NULL THEN 'text' ELSE NULL END, CONCAT(ADDRESS1, ' ', ADDRESS2),
