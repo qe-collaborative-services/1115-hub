@@ -634,7 +634,7 @@ export class AdminDemographicCsvFileIngestSource<
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
-          FROM read_csv_auto('${uri}', types={'MPI_ID': 'VARCHAR', 'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR', 'SEXUAL_ORIENTATION_CODE': 'VARCHAR', 'GENDER_IDENTITY_CODE': 'VARCHAR'});
+          FROM read_csv_auto('${uri}', types={'MPI_ID': 'VARCHAR', 'SEX_AT_BIRTH_CODE': 'VARCHAR', 'ADMINISTRATIVE_SEX_CODE': 'VARCHAR', 'SEXUAL_ORIENTATION_CODE': 'VARCHAR', 'GENDER_IDENTITY_CODE': 'VARCHAR', 'PHONE': 'VARCHAR', 'SSN': 'VARCHAR'});
 
       ${ssr.requiredColumnNames()}
 
