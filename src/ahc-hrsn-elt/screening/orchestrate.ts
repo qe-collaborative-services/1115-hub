@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.31.1";
+export const ORCHESTRATE_VERSION = "0.31.2";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1322,7 +1322,7 @@ export class OrchEngine {
             )
         )
     ) AS FHIR_Organization
-    FROM ${csv.aggrQeAdminData} qed LEFT JOIN ${csv.aggrScreeningTableName} scr ON qed.PAT_MRN_ID=scr.PAT_MRN_ID WHERE qed.FACILITY_ID!='' AND qed.FACILITY_ID iS NOT NULL AND qed.PAT_MRN_ID IS NOT NULL AND scr.PAT_MRN_ID IS NOT NULL ORDER BY qed.FACILITY_ID
+    FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrQeAdminData} qed ON adt.PAT_MRN_ID = qed.PAT_MRN_ID LEFT JOIN ${csv.aggrScreeningTableName} scr ON qed.PAT_MRN_ID=scr.PAT_MRN_ID WHERE qed.FACILITY_ID!='' AND qed.FACILITY_ID iS NOT NULL AND qed.PAT_MRN_ID IS NOT NULL AND scr.PAT_MRN_ID IS NOT NULL ORDER BY qed.FACILITY_ID
     )`;
   }
 
@@ -1396,7 +1396,7 @@ export class OrchEngine {
               'interpretation',json_array(json_object('coding',json_array(json_object('system','http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation','code','POS','display','Positive'))))
           )
       ) AS FHIR_Observation
-      FROM ${csv.aggrScreeningTableName} scr LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number AND df.pat_mrn_id=scr.PAT_MRN_ID AND df.encounter_id = (CASE
+      FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrScreeningTableName} scr ON adt.PAT_MRN_ID=scr.PAT_MRN_ID LEFT JOIN sdoh_domain_reference sdr ON scr.SDOH_DOMAIN = sdr.Display LEFT JOIN (SELECT DISTINCT QUESTION_CODE, QUESTION_SLNO, "UCUM_UNITS", CALCULATED_FIELD FROM ahc_cross_walk) acw ON acw.QUESTION_SLNO = scr.src_file_row_number LEFT JOIN derived_from_cte df ON df.parent_question_sl_no = scr.src_file_row_number AND df.pat_mrn_id=scr.PAT_MRN_ID AND df.encounter_id = (CASE
       WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END) AND md5(df.recorded_time) = md5(scr.RECORDED_TIME) WHERE acw.QUESTION_SLNO IS NOT NULL AND scr.PAT_MRN_ID IS NOT NULL ORDER BY acw.QUESTION_SLNO)`;
   }
 
@@ -1477,7 +1477,7 @@ export class OrchEngine {
                           )
           )
       ) AS FHIR_Observation_Grouper
-      FROM ${csv.aggrScreeningTableName} scr WHERE scr.PAT_MRN_ID IS NOT NULL GROUP BY SCREENING_CODE, FACILITY_ID, PAT_MRN_ID, SCREENING_CODE_DESCRIPTION,SCREENING_STATUS_CODE, SCREENING_CODE_SYSTEM_NAME,ENCOUNTER_ID)`;
+      FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrScreeningTableName} scr ON adt.PAT_MRN_ID=scr.PAT_MRN_ID WHERE scr.PAT_MRN_ID IS NOT NULL GROUP BY SCREENING_CODE, scr.FACILITY_ID, scr.PAT_MRN_ID, SCREENING_CODE_DESCRIPTION,SCREENING_STATUS_CODE, SCREENING_CODE_SYSTEM_NAME,ENCOUNTER_ID)`;
   }
 
   createCteFhirEncounter(): string {
@@ -1501,7 +1501,7 @@ export class OrchEngine {
           'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID))
         )
     ) AS FHIR_Encounter
-    FROM ${csv.aggrScreeningTableName} scr LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID WHERE scr.PAT_MRN_ID IS NOT NULL ORDER BY scr.ENCOUNTER_ID, scr.RECORDED_TIME DESC)`;
+    FROM ${csv.aggrPatientDemogrTableName} adt LEFT JOIN ${csv.aggrScreeningTableName} scr ON adt.PAT_MRN_ID=scr.PAT_MRN_ID LEFT JOIN cte_fhir_patient ON scr.PAT_MRN_ID=cte_fhir_patient.PAT_MRN_ID WHERE scr.PAT_MRN_ID IS NOT NULL ORDER BY scr.ENCOUNTER_ID, scr.RECORDED_TIME DESC)`;
   }
 
   // `finalize` means always run this even if errors abort the above methods
