@@ -251,7 +251,7 @@ export class ScreeningCsvFileIngestSource<
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
-          FROM read_csv_auto('${uri}', types={'RECORDED_TIME': 'VARCHAR', 'ENCOUNTER_TYPE_CODE': 'VARCHAR', 'ENCOUNTER_ID': 'VARCHAR', 'PAT_MRN_ID': 'VARCHAR', 'FACILITY_ID': 'VARCHAR'});
+        FROM read_csv_auto('${uri}', all_varchar=true);
 
       ${ssr.requiredColumnNames()}
 
@@ -895,7 +895,7 @@ export class QeAdminDataCsvFileIngestSource<
       -- because assurance CTEs require them
       CREATE TABLE ${tableName} AS
         SELECT *, row_number() OVER () as src_file_row_number, '${sessionID}' as session_id, '${sessionEntryID}' as session_entry_id
-          FROM read_csv_auto('${uri}', types={'PAT_MRN_ID': 'VARCHAR', 'FACILITY_ID': 'VARCHAR'});
+        FROM read_csv_auto('${uri}', all_varchar=true);
 
       ${ssr.requiredColumnNames()}
 
