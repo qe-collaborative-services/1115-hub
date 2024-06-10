@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.31.2";
+export const ORCHESTRATE_VERSION = "0.32.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -852,7 +852,39 @@ export class OrchEngine {
 
           DETACH DATABASE ${rdbSchemaName};
 
-          CREATE VIEW orch_session_fhir_emit AS
+
+          ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
+          .SQL(this.govn.emitCtx),
+        isc.current.nbCellID,
+      );
+      const orchSessionFhirEmitQuery = this.createOrchSessionFhirEmitQuery();
+      const fhirViewMainQuery = this.createFhirViewQuery();
+      const tableCount = await this.checkRequiredTables();
+      if (tableCount === 3) {
+        await this.duckdb.execute(orchSessionFhirEmitQuery);
+        await this.duckdb.execute(fhirViewMainQuery);
+        fhirGeneratorCheck = true;
+      }
+    }
+  }
+
+  async checkRequiredTables(): Promise<number> {
+    const resultsCheck = await this.duckdb.jsonResult(
+      this.govn.SQL`
+        SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_name IN ('${csv.aggrScreeningTableName}', '${csv.aggrPatientDemogrTableName}', '${csv.aggrQeAdminData}');
+      `.SQL(this.govn.emitCtx),
+    );
+
+    if (resultsCheck.json) {
+      for (const row of resultsCheck.json as TableCountRecord[]) {
+        return row.table_count;
+      }
+    }
+    return 0;
+  }
+  createOrchSessionFhirEmitQuery(): string {
+    return `
+      CREATE VIEW orch_session_fhir_emit AS
           WITH ValidEncounters AS (
               SELECT
               DISTINCT (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) AS UNIQUE_ID,
@@ -1037,34 +1069,7 @@ export class OrchEngine {
               InvalidEncounters
               WHERE
               ENCOUNTER_ID NOT IN (SELECT ENCOUNTER_ID FROM ValidEncounters);
-
-
-          ${afterFinalize.length > 0 ? (afterFinalize.join(";\n") + ";") : "-- no after-finalize SQL provided"}`
-          .SQL(this.govn.emitCtx),
-        isc.current.nbCellID,
-      );
-      const fhirViewMainQuery = this.createFhirViewQuery();
-      const tableCount = await this.checkRequiredTables();
-      if (tableCount === 3) {
-        await this.duckdb.execute(fhirViewMainQuery);
-        fhirGeneratorCheck = true;
-      }
-    }
-  }
-
-  async checkRequiredTables(): Promise<number> {
-    const resultsCheck = await this.duckdb.jsonResult(
-      this.govn.SQL`
-        SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_name IN ('${csv.aggrScreeningTableName}', '${csv.aggrPatientDemogrTableName}', '${csv.aggrQeAdminData}');
-      `.SQL(this.govn.emitCtx),
-    );
-
-    if (resultsCheck.json) {
-      for (const row of resultsCheck.json as TableCountRecord[]) {
-        return row.table_count;
-      }
-    }
-    return 0;
+    `;
   }
 
   createFhirViewQuery(): string {
@@ -1526,10 +1531,18 @@ export class OrchEngine {
         ws.unindentWhitespace(`
           INSTALL spatial; LOAD spatial;
           -- TODO: join with orch_session table to give all the results in one sheet
-          COPY (SELECT * FROM orch_session_issue_classification) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');
-          COPY (SELECT * FROM orch_session_fhir_emit) TO '${diagsFhirXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+          COPY (SELECT * FROM orch_session_issue_classification) TO '${diagsXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
         "emitDiagnostics"
       );
+      if (fhirGeneratorCheck) {
+        // deno-fmt-ignore
+        await this.duckdb.execute(
+          ws.unindentWhitespace(`
+            INSTALL spatial; LOAD spatial;
+            COPY (SELECT * FROM orch_session_fhir_emit) TO '${diagsFhirXlsx}' WITH (FORMAT GDAL, DRIVER 'xlsx');`),
+          "emitDiagnostics"
+        );
+      }
     }
 
     const stringifiableArgs = JSON.parse(
@@ -1557,25 +1570,39 @@ export class OrchEngine {
 
     if (egress.diagsJsonSupplier) {
       const diagsJson = egress.diagsJsonSupplier();
-      const fhirDiags = await this.duckdb.jsonResult(
-        this.govn.SQL`
-          SELECT * FROM orch_session_fhir_emit;
-        `.SQL(
-          this.govn.emitCtx,
-        ),
-      );
-      await Deno.writeTextFile(
-        diagsJson,
-        JSON.stringify(
-          {
-            args: stringifiableArgs,
-            diags: this.duckdb.diagnostics,
-            fhirDiags: fhirDiags.json,
-          },
-          null,
-          "  ",
-        ),
-      );
+      if (fhirGeneratorCheck) {
+        const fhirDiags = await this.duckdb.jsonResult(
+          this.govn.SQL`
+            SELECT * FROM orch_session_fhir_emit;
+          `.SQL(
+            this.govn.emitCtx,
+          ),
+        );
+        await Deno.writeTextFile(
+          diagsJson,
+          JSON.stringify(
+            {
+              args: stringifiableArgs,
+              diags: this.duckdb.diagnostics,
+              fhirDiags: fhirDiags.json,
+            },
+            null,
+            "  ",
+          ),
+        );
+      } else {
+        await Deno.writeTextFile(
+          diagsJson,
+          JSON.stringify(
+            {
+              args: stringifiableArgs,
+              diags: this.duckdb.diagnostics,
+            },
+            null,
+            "  ",
+          ),
+        );
+      }
     }
 
     if (egress.fhirJsonSupplier && fhirGeneratorCheck) {
