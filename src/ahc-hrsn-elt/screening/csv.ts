@@ -1039,7 +1039,7 @@ export function ingestCsvFilesSourcesSupplier(
       const groupMatch = filePath.match(patterns);
 
       if (groupMatch) {
-        const suffix = groupMatch[2];
+        const suffix = "_" + govn.toSnakeCase(groupMatch[2]);
         const screeningTableName = govn.toSnakeCase(
           `screening${suffix}`.toLowerCase(),
         );
