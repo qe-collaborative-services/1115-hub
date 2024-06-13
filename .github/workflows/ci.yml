@@ -16,8 +16,8 @@ concurrency:
 jobs:
   docs-deploy:
     needs: 
-      - synthetic-techbd-devl-deployment
-      - synthetic-techbd-staging
+      - synthetic-techbd-devl-sftp-deployment
+      - synthetic-techbd-prod-sftp-deployment
     environment:
       # i think we should adjust the environment name to match the branch name
       name: "github-pages"
@@ -37,7 +37,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  synthetic-techbd-devl-deployment:
+  synthetic-techbd-devl-sftp-deployment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -57,19 +57,19 @@ jobs:
           cd infrastructure-prime
           sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.sftp.qualifiedentity.org/.env
 
-      - name: Update fhir environment file
-        run: |
-          cd infrastructure-prime
-          sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.fhir.api.qualifiedentity.org/.env
+      #- name: Update fhir environment file
+      #  run: |
+      #    cd infrastructure-prime
+      #    sed -i 's/TAG=.*/TAG=${{ github.ref_name }}/g' aws/synthetic.fhir.api.qualifiedentity.org/.env
 
       - name: Commit and push changes
         run: |
           cd infrastructure-prime
           git add .
-          git commit -m "Update for ${{ github.ref_name }} techbd-devl deployment"
+          git commit -m "Update for ${{ github.ref_name }} TechBD Devl SFTP deployment"
           git push
 
-  synthetic-techbd-staging:
+  synthetic-techbd-prod-sftp-deployment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -87,7 +87,7 @@ jobs:
       - name: Create and switch to a new branch
         run: |
           cd infrastructure-prime
-          git checkout -b synthetic-techbd-${{ github.ref_name}}-deployment
+          git checkout -b synthetic-techbd-sftp-prod-${{ github.ref_name}}-deployment
   
       - name: Update sftp environment file
         run: |
@@ -103,10 +103,10 @@ jobs:
         run: |
           cd infrastructure-prime
           git add .
-          git commit -m "Update for ${{ github.ref_name }} techbd deployment"
-          git push --set-upstream origin synthetic-techbd-${{ github.ref_name}}-deployment
+          git commit -m "Update for ${{ github.ref_name }} TechBD Prod SFTP deployment"
+          git push --set-upstream origin synthetic-techbd-sftp-prod-${{ github.ref_name}}-deployment
 
       - name: Create Pull Request
         run: |
           cd infrastructure-prime
-          gh pr create --base main --head synthetic-techbd-${{ github.ref_name}}-deployment --title "SFTP techbd.org ${{ github.ref_name }} update" --body "Automated techbd deployment for version ${{ github.ref_name }}"
+          gh pr create --base main --head synthetic-techbd-sftp-prod-${{ github.ref_name}}-deployment --title "SFTP PROD techbd.org ${{ github.ref_name }} update" --body "Automated PROD SFTP techbd deployment for version ${{ github.ref_name }}"
