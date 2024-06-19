@@ -334,7 +334,7 @@ async function ingressWorkflow(
       JSON.stringify({ ...sessionEnd, finalizeAt: new Date() }, null, "  "),
     );
   } catch (error) {
-    sessionEnd.migrateUdiError = error;
+    sessionEnd.migrateUdiError = JSON.stringify(error);
     Deno.writeTextFile(
       sessionLogFsPath,
       JSON.stringify({ ...sessionEnd, finalizeAt: new Date() }, null, "  "),
