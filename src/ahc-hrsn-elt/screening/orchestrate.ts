@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.40.1";
+export const ORCHESTRATE_VERSION = "0.41.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
