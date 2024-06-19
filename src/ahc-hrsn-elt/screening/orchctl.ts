@@ -2,13 +2,15 @@ import { Command } from "https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts";
 import JSZip from "npm:jszip";
 import {
   colors as c,
+  config,
   fs,
   path,
   SQLa_orch as o,
   SQLa_orch_duckdb as ddbo,
 } from "./deps.ts";
 import * as mod from "./mod.ts";
-
+import { Client } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
+const env = config.config();
 async function prepareIngressTxFiles(
   srcDir: string,
   workflowPaths: mod.OrchEngineWorkflowPaths,
@@ -16,32 +18,37 @@ async function prepareIngressTxFiles(
   let checkIngestionFiles = false;
   // Read the source directory contents
   let count = 0;
+  const ingestFiles: string[] = [];
   for await (const dirEntry of Deno.readDir(srcDir)) {
-    if (dirEntry.isFile) {
-      checkIngestionFiles = true;
-      if (count == 0) {
-        await workflowPaths.initializePaths?.();
-      }
-      // Ensure the destination directory `${rootPath}/ingress-tx/XYZ_TEMP` exists
-      await fs.ensureDir(workflowPaths.ingressTx.home);
-      // Construct the source and destination paths
-      const srcPath = `${srcDir}/${dirEntry.name}`;
-      const destPath = `${workflowPaths.ingressTx.home}/${dirEntry.name}`;
-
-      // Move the file ingress file to the ingress tx directory
-      await fs.move(srcPath, destPath);
-      count++;
-
-      // Check if the file is a zip file and process it
-      if (dirEntry.name.endsWith(".zip")) {
-        await processZipFile(destPath, workflowPaths.ingressTx.home);
-      }
+    checkIngestionFiles = true;
+    if (count == 0) {
+      await workflowPaths.initializePaths?.();
     }
+    // Ensure the destination directory `${rootPath}/ingress-tx/XYZ_TEMP` exists
+    await fs.ensureDir(workflowPaths.ingressTx.home);
+    // Construct the source and destination paths
+    const srcPath = `${srcDir}/${dirEntry.name}`;
+    const destPath = `${workflowPaths.ingressTx.home}/${dirEntry.name}`;
+
+    // Move the file ingress file to the ingress tx directory
+    await fs.move(srcPath, destPath);
+    if (dirEntry.isFile) {
+      ingestFiles.push(dirEntry.name);
+    }
+    count++;
   }
   if (count > 0) {
     console.log(
       `Prepared ${count} files from ${srcDir} for ingress in ${workflowPaths.ingressTx.home}`,
     );
+  }
+  for (let index = 0; index < ingestFiles.length; index++) {
+    const fileName = ingestFiles[index];
+    // Check if the file is a zip file and process it
+    if (fileName.endsWith(".zip")) {
+      const destPath = `${workflowPaths.ingressTx.home}/${fileName}`;
+      await processZipFile(destPath, workflowPaths.ingressTx.home);
+    }
   }
   return checkIngestionFiles;
 }
@@ -157,6 +164,8 @@ async function ingressWorkflow(
       fhirJsonStructValid: boolean;
       fhirFileName: string;
     }[],
+    migrateUdi: false,
+    migrateUdiError: "",
   };
 
   const archiveHome = workflowPaths.ingressArchive?.home;
@@ -221,11 +230,116 @@ async function ingressWorkflow(
       }
     }
   }
+  const duckdb = new ddbo.DuckDbShell(args.session, {
+    duckdbCmd: "duckdb",
+    dbDestFsPathSupplier: args.workflowPaths.inProcess.duckDbFsPathSupplier,
+    preambleSQL: () =>
+      `-- preambleSQL\nSET autoinstall_known_extensions=true;\nSET autoload_known_extensions=true;\n-- end preambleSQL\n`,
+  });
+  const migrateTables = [
+    "demographic_data",
+    "qe_admin_data",
+    "screening",
+    "orch_session",
+    "orch_session_entry",
+    "orch_session_exec",
+    "orch_session_issue",
+    "orch_session_state",
+    "device",
+    "business_rules",
+  ];
+  try {
+    const client = new Client({
+      user: env.POSTGRES_USER,
+      password: env.POSTGRES_PASSWORD,
+      database: env.POSTGRES_DB,
+      hostname: env.POSTGRES_HOST,
+      port: env.POSTGRES_PORT,
+    });
+    await client.connect();
+    console.log("Connected to the postgres database!");
+    await duckdb.execute(
+      govn.SQL`
+          INSTALL postgres;
+          LOAD postgres;
 
-  Deno.writeTextFile(
-    sessionLogFsPath,
-    JSON.stringify({ ...sessionEnd, finalizeAt: new Date() }, null, "  "),
-  );
+          ATTACH 'dbname=${env.POSTGRES_DB} user=${env.POSTGRES_USER} host=${env.POSTGRES_HOST} password=${env.POSTGRES_PASSWORD}' AS post_db (TYPE POSTGRES);
+
+          ${
+        migrateTables.map((tableName) => ({
+          SQL: () =>
+            `CREATE TABLE IF NOT EXISTS post_db.techbd_orch_ctl.${tableName} AS SELECT * FROM ${tableName} WHERE FALSE;
+            INSERT INTO post_db.techbd_orch_ctl.${tableName} SELECT * FROM ${tableName};
+            `,
+        }))
+      }
+          DETACH DATABASE post_db;`.SQL(govn.emitCtx),
+    );
+    await client.queryObject(`
+      CREATE OR REPLACE VIEW techbd_orch_ctl.orch_session_issue_classification AS
+          WITH cte_business_rule AS (
+              SELECT
+                  field AS field,
+                  required AS required,
+                  "Resolved by QE/QCS" AS resolved_by_qe_qcs,
+                  CONCAT(
+                      CASE WHEN UPPER("True Rejection") = 'YES' THEN 'REJECTION' ELSE '' END,
+                      CASE WHEN UPPER("Warning Layer") = 'YES' THEN 'WARNING' ELSE '' END
+                  ) AS record_action
+              FROM
+              techbd_orch_ctl.business_rules
+          )
+          SELECT
+              -- Including all other columns from 'orch_session'
+              distinct on (isi.orch_session_issue_id) isi.orch_session_issue_id,
+              ises.orch_session_id,
+              -- Including all columns from 'orch_session_entry'
+              isee.orch_session_entry_id,
+              -- Extracting QE value from ingest_src
+              substring(isee.ingest_src FROM '/SFTP/([^/]+)/') AS qe_value,
+              isee.ingest_src,
+              isee.ingest_table_name,
+              -- Including all other columns from 'orch_session_issue'
+              isi.issue_type,
+              isi.issue_message,
+              isi.issue_row,
+              isi.issue_column,
+              isi.invalid_value,
+              isi.remediation AS remediation1,
+              CASE
+                  WHEN UPPER(isi.issue_type) = 'MISSING COLUMN' THEN 'STRUCTURAL ISSUE'
+                  ELSE br.record_action
+              END AS disposition,
+              CASE
+                  WHEN UPPER(br.resolved_by_qe_qcs) = 'YES' THEN 'Resolved By QE/QCS'
+                  ELSE NULL
+              END AS remediation2,
+              ises."version",
+              ises.orch_started_at,
+              ises.orch_finished_at
+          FROM
+            techbd_orch_ctl.orch_session AS ises
+          JOIN
+            techbd_orch_ctl.orch_session_entry AS isee ON ises.orch_session_id = isee.session_id
+          LEFT JOIN
+            techbd_orch_ctl.orch_session_issue AS isi ON isee.orch_session_entry_id = isi.session_entry_id
+          LEFT JOIN
+              cte_business_rule br ON br.field = isi.issue_column
+          WHERE
+              isi.orch_session_issue_id IS NOT NULL
+              AND isee.ingest_src NOT LIKE '%/reference-data/%';`);
+    sessionEnd.migrateUdi = true;
+    Deno.writeTextFile(
+      sessionLogFsPath,
+      JSON.stringify({ ...sessionEnd, finalizeAt: new Date() }, null, "  "),
+    );
+  } catch (error) {
+    sessionEnd.migrateUdiError = error;
+    Deno.writeTextFile(
+      sessionLogFsPath,
+      JSON.stringify({ ...sessionEnd, finalizeAt: new Date() }, null, "  "),
+    );
+  }
   console.info(c.dim(sessionLogFsPath));
 }
 
