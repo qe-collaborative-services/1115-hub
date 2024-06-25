@@ -1,0 +1,182 @@
+{
+  "fullUrl": "hrsn-questionnaire",
+  "resource": {
+    "resourceType": "Questionnaire",
+    "id": "hrsn-questionnaire",
+    "meta": {
+      "profile": [
+        "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire"
+      ]
+    },
+    "url": "http://shinny.org/fhir/Questionnaire/hrsn-questionnaire",
+    "version": "1.0.0",
+    "name": "Accountable health communities (AHC) health-related social needs screening (HRSN) & supplemental questions",
+    "status": "draft",
+    "experimental": true,
+    "subjectType": [
+      "Patient"
+    ],
+    "date": "2023-12-07T23:07:45+00:00",
+    "description": "A hunger vital signs form (showing calculatedExpression selecting a value from a list).",
+    "code": [
+      {
+        "system": "http://loinc.org",
+        "code": "96777-8",
+        "display": "Accountable health communities (AHC) health-related social needs screening (HRSN) tool"
+      },
+      {
+        "system": "http://loinc.org",
+        "code": "97023-6",
+        "display": "Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions"
+      }
+    ],
+    "item": [
+      {
+        "linkId": "/1",
+        "type": "group",
+        "item": [
+          {
+            "linkId": "/1.1",
+            "code": [
+              {
+                "system": "http://loinc.org",
+                "code": "96777-8",
+                "display": "Accountable health communities (AHC) health-related social needs screening (HRSN) tool"
+              }
+            ],
+            "type": "group",
+            "text": "Accountable health communities (AHC) health-related social needs screening (HRSN) tool",
+            "item": [
+              {
+                "linkId": "/1.1.1",
+                "code": [
+                  {
+                    "system": "http://loinc.org",
+                    "code": "71802-3"
+                  }
+                ],
+                "text": "What is your living situation today?",
+                "type": "choice",
+                "required": false,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "system": "http://loinc.org",
+                      "code": "LA31993-1",
+                      "display": "I have a steady place to live"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "system": "http://loinc.org",
+                      "code": "LA31994-9",
+                      "display": "I have a place to live today, but I am worried about losing it in the future"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "/1.1.2",
+                "code": [
+                  {
+                    "system": "http://loinc.org",
+                    "code": "96778-6"
+                  }
+                ],
+                "text": "Think about the place you live. Do you have problems with any of the following?",
+                "type": "choice",
+                "required": false,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "system": "http://loinc.org",
+                      "code": "LA28580-1",
+                      "display": "Mold"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "system": "http://loinc.org",
+                      "code": "LL6078-1",
+                      "display": "Adverse conditions in home"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "/1.2",
+            "code": [
+              {
+                "system": "http://loinc.org",
+                "code": "97023-6",
+                "display": "Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions"
+              }
+            ],
+            "type": "group",
+            "text": "Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions",
+            "item": [
+              {
+                "linkId": "/1.2.1",
+                "code": [
+                  {
+                    "system": "http://loinc.org",
+                    "code": "76513-1"
+                  }
+                ],
+                "text": "How hard is it for you to pay for the very basics like food, housing, medical care, and heating?",
+                "type": "choice",
+                "required": false,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "system": "http://loinc.org",
+                      "code": "LA22683-9",
+                      "display": "Somewhat Hard"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "system": "http://loinc.org",
+                      "code": "LL5867-8",
+                      "display": "Not hard at all"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId": "/1.2.2",
+                "code": [
+                  {
+                    "system": "http://loinc.org",
+                    "code": "96780-2"
+                  }
+                ],
+                "text": "Do you want help finding or keeping work or a job?",
+                "type": "choice",
+                "required": false,
+                "answerOption": [
+                  {
+                    "valueCoding": {
+                      "system": "http://loinc.org",
+                      "code": "LA31981-6",
+                      "display": "Yes, help finding work"
+                    }
+                  },
+                  {
+                    "valueCoding": {
+                      "system": "http://loinc.org",
+                      "code": "LA31983-2",
+                      "display": "I do not need or want help"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
