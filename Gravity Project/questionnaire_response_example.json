@@ -1,0 +1,866 @@
+{
+  "resourceType": "Bundle",
+  "id": "8ef1d025-95df-35f0-6218-7b6774190dd1",
+  "type": "transaction",
+  "meta": {
+    "lastUpdated": "2024-02-23T00:00:00Z",
+    "profile" : ["http://shinny.org/StructureDefinition/SHINNYBundleProfile"]
+  },
+  "timestamp": "2024-02-03T00:00:00Z",
+  "entry": [
+    {
+      "fullUrl": "98065610-3da2-1442-f01f-49fc5f30afcc",
+      "resource" : {
+        "resourceType" : "Patient",
+        "id" : "98065610-3da2-1442-f01f-49fc5f30afcc",
+        "meta": {
+          "lastUpdated": "2024-02-023T00:00:00Z",
+          "profile" : ["http://shinny.org/StructureDefinition/shinny-patient"]
+        },
+        "language" : "en",
+        "extension" : [
+        {
+          "extension" : [{
+              "url" : "ombCategory",
+              "valueCoding" : {
+              "system" : "urn:oid:2.16.840.1.113883.6.238",
+              "code" : "2106-3",
+              "display" : "White"
+            }
+            }
+          ],
+          "url" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+        },
+        {
+          "extension" : [{
+            "url" : "ombCategory",
+            "valueCoding" : {
+              "system" : "urn:oid:2.16.840.1.113883.6.238",
+              "code" : "2135-2",
+              "display" : "Hispanic or Latino"
+            }
+          }],
+          "url" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+        },
+        {
+          "url" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex",
+          "valueCode" : "F"
+        }],
+        "identifier" : [
+        {
+          "type" : {
+            "coding" : [{
+              "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+              "code" : "MR"
+            }]
+          },
+          "system" : "http://www.scn.gov/facility/CUMC",
+          "value" : "11223344",
+          "assigner" : {
+            "reference" : "Organization/scn_coordination_platform"
+          }
+        },
+        {
+          "type" : {
+            "coding" : [{
+              "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+              "code" : "MA"
+            }]
+          },
+          "system" : "http://www.medicaid.gov/",
+          "value" : "AA12345C",
+          "assigner" : {
+            "reference" : "Organization/2.16.840.1.113883.3.249"
+          }
+        },
+        {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "SS",
+                  "display": "Social Security Number"
+                }
+              ],
+              "text": "Social Security Number"
+            },
+            "system": "http://hl7.org/fhir/sid/us-ssn",
+            "value": "999-34-2964"
+        }],
+        "name" : [{
+          "family" : "Doe",
+          "given" : ["Jon"],
+          "prefix": [
+              "Mr.", "Dr.", "PhD", "CCNA"
+          ],
+          "suffix": [
+              "Jr.", "III"
+          ]
+        }],
+        "gender" : "female",
+        "birthDate" : "1981-07-16",
+        "address" : [{
+          "text" : "115 Broadway\tApt2",
+          "line" : ["115 Broadway",
+          "Apt2"],
+          "city" : "New York",
+          "state" : "NY",
+          "postalCode" : "10032"
+        }],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "555-120-6047",
+            "use": "home"
+          }
+        ],
+        "communication" : [
+          {
+            "language" : {
+              "coding" : [{
+                "code" : "EN",
+                "system": "urn:iso:std:iso:639"
+              }]
+            },
+            "preferred" : true
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:9cf94822-3fe7-e598-649e-52bf35f8a0df",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "9cf94822-3fe7-e598-649e-52bf35f8a0df",
+        "meta": {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile": [
+            "http://shinny.org/StructureDefinition/shin-ny-encounter"
+          ]
+        },
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "FLD"
+        },
+        "type": [ {
+          "coding": [ {
+            "system": "http://snomed.info/sct",
+            "code": "405672008",
+            "display": "Direct questioning (procedure)"
+          } ],
+          "text": "Direct questioning (procedure)"
+        } ],
+        "status": "finished",
+        "subject": {
+          "reference": "Patient/urn:uuid:98065610-3da2-1442-f01f-49fc5f30afcc"
+        }
+      }
+    },
+    {
+      "resource" : {
+        "resourceType" : "Consent",
+        "id" : "ConsentForJon",
+        "meta": {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile": [
+            "http://shinny.org/StructureDefinition/shinny-consent"
+          ]
+        },
+        "status" : "active",
+        "scope" : {
+          "coding" : [{
+            "code" : "treatment"
+          }],
+          "text" : "treatment"
+        },
+        "category" : [{
+          "coding" : [{
+            "code" : "59284-0",
+            "display" : "Patient Consent"
+          }]
+        }],
+        "patient" : {
+          "reference" : "Patient/JonDoe"
+        },
+        "provision" : {
+          "type" : "permit"
+        },
+        "policy": [
+        {
+          "authority": "urn:uuid:SacredHeart"
+        }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:SacredHeart",
+      "resource" : {
+        "resourceType" : "Organization",
+        "id" : "SacredHeart",
+        "meta" : {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile" : ["http://shinny.org/StructureDefinition/shin-ny-organization"]
+        },
+        "identifier" : [{
+          "system" : "http://www.sacredheart.gov/facility/CUMC",
+          "value" : "2.16.840.1.113883.3.249"
+        }],
+        "active" : true,
+        "type" : [{
+          "coding" : [{
+            "system" : "http://terminology.hl7.org/CodeSystem/organization-type",
+            "code" : "prov",
+            "display" : "Healthcare Provider"
+          }]
+        }],
+        "name" : "Health System Org Example"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:53fefa32-fcbb-4ff8-8a92-55ee120877b7",
+      "resource" : {
+        "resourceType" : "Organization",
+        "id" : "53fefa32-fcbb-4ff8-8a92-55ee120877b7",
+        "meta" : {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile" : ["http://shinny.org/StructureDefinition/shin-ny-organization"]
+        },
+        "identifier" : [{
+          "system" : "http://www.medicaid.gov/",
+          "value" : "2.16.840.1.113883.3.249"
+        }],
+        "active" : true,
+        "type" : [{
+          "coding" : [{
+            "system" : "http://terminology.hl7.org/CodeSystem/organization-type",
+            "code" : "ins",
+            "display" : "Insurance Company"
+          }]
+        }],
+        "name" : "Medicaid Org Example",
+        "address" : [{
+          "text" : "NY State of Health, P.O. Box 11774, Albany, NY 12211"
+        }]
+      }
+    },
+    {
+      "fullUrl": "ObservationResponseQuestion_1_grouper",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "ObservationResponseQuestion_1_grouper",
+        "meta": {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Housing Instability",
+                "code": "housing-instability"
+              },
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Inadequate Housing",
+                "code": "inadequate-housing"
+              },
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Food Insecurity",
+                "code": "food-insecurity"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96777-8",
+              "display": "Accountable health communities (AHC) health-related social needs screening (HRSN) tool"
+            }
+          ]
+        },
+        "encounter": {
+          "reference": "Encounter/urn:uuid:9cf94822-3fe7-e598-649e-52bf35f8a0df"
+        },
+        "subject": {
+          "reference": "Patient/urn:uuid:98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "derivedFrom": [
+          {
+            "reference": "9cf94822-3fe7-e598-649e-52bf35f8a0df",
+            "type": "QuestionnaireResponse-123"
+          }
+        ],
+        "effectiveDateTime": "2020-09-10T21:56:54.671Z",
+        "issued": "2020-09-10T21:56:54.671Z",
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ],
+        "hasMember": [
+          {
+            "reference": "Observation/ObservationResponseQuestion_1"
+          },
+          {
+            "reference": "Observation/ObservationResponseQuestion_2"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "ObservationResponseQuestion_1",
+      "resource": {
+        "resourceType": "Observation",
+        "meta": {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Housing Instability",
+                "code": "housing-instability"
+              },
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Homelessness",
+                "code": "homelessness"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "71802-3",
+              "display": "Housing status"
+            }
+          ],
+          "text": "What is your living situation today?"
+        },
+        "subject": {
+          "reference": "Patient/urn:uuid:98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "derivedFrom": [
+          {
+            "reference": "9cf94822-3fe7-e598-649e-52bf35f8a0df",
+            "type": "QuestionnaireResponse-123"
+          }
+        ],
+        "effectiveDateTime": "2023-07-12T16:08:00.000Z",
+        "issued": "2023-07-12T16:08:00.000Z",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "LA31993-1",
+              "display": "I have a steady place to live"
+            }
+          ],
+          "text": ""
+        },
+        "id": "ObservationResponseQuestion_1"
+      }
+    },
+    {
+      "fullUrl": "ObservationResponseQuestion_2",
+      "resource": {
+        "resourceType": "Observation",
+        "meta": {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Inadequate Housing",
+                "code": "inadequate-housing"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96778-6",
+              "display": "Problems with place where you live"
+            }
+          ],
+          "text": "Think about the place you live. Do you have problems with any of the following?"
+        },
+        "derivedFrom": [
+          {
+            "reference": "9cf94822-3fe7-e598-649e-52bf35f8a0df",
+            "type": "QuestionnaireResponse-123"
+          }
+        ],
+        "subject": {
+          "reference": "Patient/urn:uuid:98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "effectiveDateTime": "2023-07-12T16:08:00.000Z",
+        "issued": "2023-07-12T16:08:00.000Z",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "LA28580-1",
+              "display": "Mold"
+            }
+          ],
+          "text": "Mold"
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ],
+        "id": "ObservationResponseQuestion_2"
+      }
+    },
+    {
+      "fullUrl": "ObservationResponseQuestion_2_grouper",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "ObservationResponseQuestion_2_grouper",
+        "meta": {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Financial Insecurity",
+                "code": "financial-insecurity"
+              },
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Employment Status",
+                "code": "employment-status"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "97023-6",
+              "display": "Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions"
+            }
+          ]
+        },
+        "encounter": {
+          "reference": "Encounter/urn:uuid:9cf94822-3fe7-e598-649e-52bf35f8a0df"
+        },
+        "subject": {
+          "reference": "Patient/urn:uuid:98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "derivedFrom": [
+          {
+            "reference": "9cf94822-3fe7-e598-649e-52bf35f8a0df",
+            "type": "QuestionnaireResponse-123"
+          }
+        ],
+        "effectiveDateTime": "2020-09-10T21:56:54.671Z",
+        "issued": "2020-09-10T21:56:54.671Z",
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ],
+        "hasMember": [
+          {
+            "reference": "Observation/ObservationResponseQuestion_12"
+          },
+          {
+            "reference": "Observation/ObservationResponseQuestion_13"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "ObservationResponseQuestion_12",
+      "resource": {
+        "resourceType": "Observation",
+        "meta": {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Financial Insecurity",
+                "code": "financial-insecurity"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "76513-1",
+              "display": "How hard is it for you to pay for the very basics like food, housing, medical care, and heating"
+            }
+          ],
+          "text": "How hard is it for you to pay for the very basics like food, housing, medical care, and heating?"
+        },
+        "subject": {
+          "reference": "Patient/urn:uuid:98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "derivedFrom": [
+          {
+            "reference": "9cf94822-3fe7-e598-649e-52bf35f8a0df",
+            "type": "QuestionnaireResponse-123"
+          }
+        ],
+        "effectiveDateTime": "2023-07-12T16:08:00.000Z",
+        "issued": "2023-07-12T16:08:00.000Z",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "LA22683-9",
+              "display": "Somewhat Hard"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ],
+        "id": "ObservationResponseQuestion_12"
+      }
+    },
+    {
+      "fullUrl": "ObservationResponseQuestion_13",
+      "resource": {
+        "resourceType": "Observation",
+        "meta": {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationScreeningResponse"
+          ]
+        },
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "social-history",
+                "display": "Social History"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                "code": "survey",
+                "display": "Survey"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "display": "Employment Status",
+                "code": "employment-status"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "96780-2",
+              "display": "Wants help finding or keeping work or a job"
+            }
+          ],
+          "text": "Do you want help finding or keeping work or a job?"
+        },
+        "subject": {
+          "reference": "Patient/urn:uuid:98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "derivedFrom": [
+          {
+            "reference": "9cf94822-3fe7-e598-649e-52bf35f8a0df",
+            "type": "QuestionnaireResponse-123"
+          }
+        ],
+        "effectiveDateTime": "2023-07-12T16:08:00.000Z",
+        "issued": "2023-07-12T16:08:00.000Z",
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "LA31981-6",
+              "display": "Yes, help finding work"
+            }
+          ]
+        },
+        "interpretation": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "code": "POS",
+                "display": "Positive"
+              }
+            ]
+          }
+        ],
+        "id": "ObservationResponseQuestion_13"
+      }
+    },
+    {
+      "fullUrl": "QuestionnaireResponse-123",
+      "resource": {
+        "resourceType" : "QuestionnaireResponse",
+        "id" : "QuestionnaireResponse-123",
+        "meta" : {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile" : ["http://shinny.org/StructureDefinition/shinny-questionnaire-response"]
+        },
+        "questionnaire" : "http://shinny.org/fhir/Questionnaire/hrsn-questionnaire",
+        "status" : "completed",
+        "subject" : {
+          "reference" : "Patient/98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "author" : {
+          "reference" : "Patient/98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "source" : {
+          "reference" : "Patient/98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "encounter": {
+            "reference": "Encounter/urn:uuid:9cf94822-3fe7-e598-649e-52bf35f8a0df"
+        },
+
+        "authored" : "2024-01-01T00:00:00Z",
+        "item" : [
+          {
+            "linkId" : "1",
+            "definition" : "http://loinc.org/fhir/DataElement/96777-8",
+            "text" : "Accountable health communities (AHC) health-related social needs screening (HRSN) tool",
+            "item" : [{
+              "linkId" : "1.1",
+              "item" : [{
+                "linkId" : "1.1.1",
+                "definition" : "http://loinc.org/fhir/DataElement/71802-3",
+                "text" : "What is your living situation today?",
+                "answer" : [
+                  {
+                    "valueCoding" : {
+                      "system": "http://loinc.org",
+                      "code": "LA31993-1",
+                      "display": "I have a steady place to live"
+                    }
+                  },
+                  {
+                    "valueString": "I have a steady place to live"
+                  }
+                ]
+              },
+              {
+                "linkId" : "1.1.2",
+                "definition" : "http://loinc.org/fhir/DataElement/96778-6",
+                "text" : "Think about the place you live. Do you have problems with any of the following?",
+                "answer" : [{
+                  "valueCoding" : {
+                    "system" : "http://loinc.org",
+                    "code" : "LA28580-1",
+                    "display" : "Mold"
+                  }
+                }]
+              }
+              ]
+            }]
+          },
+          {
+            "linkId" : "1",
+            "definition" : "http://loinc.org/fhir/DataElement/97023-6",
+            "text" : "Accountable health communities (AHC) health-related social needs (HRSN) supplemental questions",
+            "item" : [{
+              "linkId" : "1.1",
+              "item" : [{
+                "linkId" : "1.1.1",
+                "definition" : "http://loinc.org/fhir/DataElement/76513-1",
+                "text" : "How hard is it for you to pay for the very basics like food, housing, medical care, and heating?",
+                "answer" : [
+                  {
+                    "valueCoding" : {
+                      "system": "http://loinc.org",
+                      "code": "LA22683-9",
+                      "display": "Somewhat Hard"
+                    }
+                  }
+                ]
+              },
+              {
+                "linkId" : "1.1.2",
+                "definition" : "http://loinc.org/fhir/DataElement/96780-2",
+                "text" : "Do you want help finding or keeping work or a job?",
+                "answer" : [{
+                  "valueCoding" : {
+                    "system" : "http://loinc.org",
+                    "code" : "LA31981-6",
+                    "display" : "Yes, help finding work"
+                  }
+                }]
+              }
+              ]
+            }]
+          }
+        ]
+      }
+    }
+  ]
+}
