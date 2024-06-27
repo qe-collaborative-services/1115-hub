@@ -1,0 +1,373 @@
+{
+  "resourceType": "Bundle",
+  "id": "8ef1d025-95df-35f0-6218-7b6774190dd1",
+  "type": "transaction",
+  "meta": {
+    "lastUpdated": "2024-02-23T00:00:00Z",
+    "profile" : ["http://shinny.org/StructureDefinition/SHINNYBundleProfile"]
+  },
+  "timestamp": "2024-02-03T00:00:00Z",
+  "entry": [
+    {
+      "fullUrl": "98065610-3da2-1442-f01f-49fc5f30afcc",
+      "resource" : {
+        "resourceType" : "Patient",
+        "id" : "98065610-3da2-1442-f01f-49fc5f30afcc",
+        "meta": {
+          "lastUpdated": "2024-02-023T00:00:00Z",
+          "profile" : ["http://shinny.org/StructureDefinition/shinny-patient"]
+        },
+        "language" : "en",
+        "extension" : [
+        {
+          "extension" : [{
+              "url" : "ombCategory",
+              "valueCoding" : {
+              "system" : "urn:oid:2.16.840.1.113883.6.238",
+              "code" : "2106-3",
+              "display" : "White"
+            }
+            }
+          ],
+          "url" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+        },
+        {
+          "extension" : [{
+            "url" : "ombCategory",
+            "valueCoding" : {
+              "system" : "urn:oid:2.16.840.1.113883.6.238",
+              "code" : "2135-2",
+              "display" : "Hispanic or Latino"
+            }
+          }],
+          "url" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+        },
+        {
+          "url" : "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex",
+          "valueCode" : "F"
+        }],
+        "identifier" : [
+        {
+          "type" : {
+            "coding" : [{
+              "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+              "code" : "MR"
+            }]
+          },
+          "system" : "http://www.scn.gov/facility/CUMC",
+          "value" : "11223344",
+          "assigner" : {
+            "reference" : "Organization/scn_coordination_platform"
+          }
+        },
+        {
+          "type" : {
+            "coding" : [{
+              "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+              "code" : "MA"
+            }]
+          },
+          "system" : "http://www.medicaid.gov/",
+          "value" : "AA12345C",
+          "assigner" : {
+            "reference" : "Organization/2.16.840.1.113883.3.249"
+          }
+        },
+        {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                  "code": "SS",
+                  "display": "Social Security Number"
+                }
+              ],
+              "text": "Social Security Number"
+            },
+            "system": "http://hl7.org/fhir/sid/us-ssn",
+            "value": "999-34-2964"
+        }],
+        "name" : [{
+          "family" : "Doe",
+          "given" : ["Jon"],
+          "prefix": [
+              "Mr.", "Dr.", "PhD", "CCNA"
+          ],
+          "suffix": [
+              "Jr.", "III"
+          ]
+        }],
+        "gender" : "female",
+        "birthDate" : "1981-07-16",
+        "address" : [{
+          "text" : "115 Broadway\tApt2",
+          "line" : ["115 Broadway",
+          "Apt2"],
+          "city" : "New York",
+          "state" : "NY",
+          "postalCode" : "10032"
+        }],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "555-120-6047",
+            "use": "home"
+          }
+        ],
+        "communication" : [
+          {
+            "language" : {
+              "coding" : [{
+                "code" : "EN",
+                "system": "urn:iso:std:iso:639"
+              }]
+            },
+            "preferred" : true
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:9cf94822-3fe7-e598-649e-52bf35f8a00Z",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "9cf94822-3fe7-e598-649e-52bf35f8a00Z",
+        "meta": {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile": [
+            "http://shinny.org/StructureDefinition/shin-ny-encounter"
+          ]
+        },
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "FLD"
+        },
+        "type": [ {
+          "coding": [ {
+            "system": "http://snomed.info/sct",
+            "code": "405672008",
+            "display": "Direct questioning (procedure)"
+          } ],
+          "text": "Direct questioning (procedure)"
+        } ],
+        "status": "finished",
+        "subject": {
+          "reference": "Patient/urn:uuid:98065610-3da2-1442-f01f-49fc5f30afcc"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:9cf94822-3fe7-e598-649e-52bf35f8a001",
+      "resource": {
+        "resourceType" : "Observation",
+        "id" : "SDOHCC-ObservationAssessmentInadequateFoodIntake",
+        "meta" : {
+          "lastUpdated": "2024-02-23T00:00:00Z",
+          "profile" : ["http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-ObservationAssessment"]
+        },
+        "status" : "final",
+        "category" : [
+          {
+            "coding" : [{
+            "system" : "http://terminology.hl7.org/CodeSystem/observation-category",
+            "code" : "social-history"
+            }]
+        },
+        {
+          "coding" : [{
+            "system" : "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+            "code" : "food-insecurity",
+            "display" : "Food Insecurity"
+          }]
+        }],
+
+        "code" : {
+          "coding" : [{
+            "system" : "http://snomed.info/sct",
+            "code" : "699653008",
+            "display" : "Inadequate oral food intake for physiological needs"
+          }]
+        },
+
+        "valueBoolean" : true,
+
+        "basedOn": [
+          {
+            "reference": "ServiceRequest/98065610-3da2-1442-f01f-49fc5f30afcc_467771000124109"
+          }
+        ],
+
+        "derivedFrom": [
+          {
+            "reference": "Observation/ObservationResponseQuestion_3"
+          }
+        ],
+        "subject" : {
+          "reference" : "Patient/98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "performer": [
+          {
+            "reference": "practitioner_bob_kelso",
+            "type": "Practioner"
+          }
+        ],
+        "effectiveDateTime" : "2024-05-10T21:56:54.671Z",
+        "encounter": {
+          "reference": "Encounter/9cf94822-3fe7-e598-649e-52bf35f8a0df"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:9cf94822-3fe7-e598-649e-52bf35f8a001",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "ConditionFoodInsecurityExample_1",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/sdoh-clinicalcare/StructureDefinition/SDOHCC-Condition"
+          ]
+        },
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active",
+              "display": "Active"
+            }
+          ]
+        },
+        "verificationStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+              "code": "confirmed",
+              "display": "Confirmed"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/core/CodeSystem/condition-category",
+                "code": "health-concern",
+                "display": "Health Concern"
+              }
+            ]
+          },
+          {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/us/sdoh-clinicalcare/CodeSystem/SDOHCC-CodeSystemTemporaryCodes",
+                "code": "food-insecurity",
+                "display": "Food Insecurity"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "733423003",
+              "display": "Food insecurity"
+            },
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10-cm",
+              "code": "Z59.4",
+              "display": "Lack of adequate food"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/98065610-3da2-1442-f01f-49fc5f30afcc"
+        },
+        "encounter": {
+          "reference": "Encounter/9cf94822-3fe7-e598-649e-52bf35f8a0df"
+        },
+        "onsetPeriod": {
+          "start": "2023-07-12T16:08:00.000Z"
+        },
+        "performer": [
+          {
+            "reference": "practitioner_bob_kelso",
+            "type": "Practioner"
+          }
+        ],
+        "evidence": [
+          {
+            "detail": [
+              {
+                "reference": "Observation/ObservationAssessmentInadequateFoodIntake"
+              },
+              {
+                "reference": "Observation/ObservationResponseQuestion_3"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "practitioner_bob_kelso",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "practitioner_bob_kelso",
+        "meta" : {
+          "lastUpdated": "2024-02-023T00:00:00Z",
+          "profile" : ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner"]
+        },
+        "name": [
+          {
+            "family": "Kelso",
+            "given": [
+              "Bob"
+            ],
+            "suffix": [
+              "MD", "CDPAD"
+            ],
+            "text": "Bob Kelso MD"
+          }
+        ],
+        "identifier" : [
+        {
+          "type" : {
+            "coding" : [{
+              "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+              "code" : "NPI"
+            }]
+          },
+          "system" : "http://hl7.org/fhir/sid/us-npi",
+          "value" : "123456789",
+          "assigner" : {
+            "reference" : "Organization/cbo"
+          }
+        }]
+      }
+    },
+    {
+      "fullUrl": "scn_coordination_platform",
+      "resource" : {
+        "resourceType" : "Organization",
+        "id" : "scn_coordination_platform",
+        "meta" : {
+          "lastUpdated": "2024-02-023T00:00:00Z",
+          "profile" : ["http://shinny.org/StructureDefinition/shin-ny-organization"]
+        },
+        "identifier" : [{
+          "system" : "http://www.cbo.gov/facility/cbo_1",
+          "value" : "2.16.840.1.113883.3.300"
+        }],
+        "active" : true,
+        "type" : [{
+          "coding" : [{
+            "system" : "http://terminology.hl7.org/CodeSystem/organization-type",
+            "code" : "other",
+            "display" : "Other"
+          }]
+        }],
+        "name" : "UniteUs"
+      }
+    }
+  ]
+}
