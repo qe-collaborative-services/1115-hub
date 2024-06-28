@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.41.0";
+export const ORCHESTRATE_VERSION = "0.42.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1135,7 +1135,7 @@ export class OrchEngine {
               ),
               'language', 'en',
               CASE WHEN (RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL) OR (ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL) OR (SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL) THEN 'extension' ELSE NULL END, json_array(
-                              CASE WHEN RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                              CASE WHEN RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL AND RACE_CODE IN ('1002-5','2028-9','2054-5','2076-8','2106-3') THEN json_object(
                                   'extension', json_array(
                                                 json_object(
                                                     'url','ombCategory',
@@ -1148,10 +1148,36 @@ export class OrchEngine {
                                             ),
                                   'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
                                 ) END,
-                                CASE WHEN ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL THEN json_object(
+                                CASE WHEN RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL AND RACE_CODE NOT IN ('1002-5','2028-9','2054-5','2076-8','2106-3') THEN json_object(
+                                  'extension', json_array(
+                                                json_object(
+                                                    'url','detailed',
+                                                    'valueCoding',json_object(
+                                                                'system',RACE_CODE_SYSTEM_NAME,
+                                                                'code',CAST(RACE_CODE AS TEXT),
+                                                                'display',RACE_CODE_DESCRIPTION
+                                                                )
+                                                            )
+                                            ),
+                                  'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+                                ) END,
+                                CASE WHEN ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL AND ETHNICITY_CODE IN ('2135-2','2186-5') THEN json_object(
                                   'extension',json_array(
                                                 json_object(
                                                     'url','ombCategory',
+                                                    'valueCoding',json_object(
+                                                                  'system',ETHNICITY_CODE_SYSTEM_NAME,
+                                                                  'code',CAST(ETHNICITY_CODE AS TEXT),
+                                                                  'display',ETHNICITY_CODE_DESCRIPTION
+                                                                  )
+                                                            )
+                                          ),
+                                    'url', 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
+                              ) END,
+                                CASE WHEN ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL AND ETHNICITY_CODE NOT IN ('2135-2','2186-5') THEN json_object(
+                                  'extension',json_array(
+                                                json_object(
+                                                    'url','detailed',
                                                     'valueCoding',json_object(
                                                                   'system',ETHNICITY_CODE_SYSTEM_NAME,
                                                                   'code',CAST(ETHNICITY_CODE AS TEXT),
