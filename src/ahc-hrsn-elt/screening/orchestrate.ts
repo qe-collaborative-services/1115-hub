@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.42.0";
+export const ORCHESTRATE_VERSION = "0.43.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1092,7 +1092,7 @@ export class OrchEngine {
         ${cteFhirEncounter}
         SELECT cte.ENCOUNTER_ID,cte.PAT_MRN_ID, json_object(
           'resourceType', 'Bundle',
-              'id', CONCAT('${uuid.v1.generate()}','-',PAT_MRN_ID,'-',ENCOUNTER_ID),
+              'id', sha256(CONCAT('${uuid.v1.generate()}','-',PAT_MRN_ID,'-',ENCOUNTER_ID)),
               'type', 'transaction',
               'meta', JSON_OBJECT(
                   'lastUpdated', CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr)
@@ -1291,7 +1291,7 @@ export class OrchEngine {
       SELECT DISTINCT ON (CONCAT(scr.ENCOUNTER_ID,scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END AS ENCOUNTER_ID,adt.pat_mrn_id,json_object(
         'resource', json_object(
               'resourceType', 'Consent',
-              'id', CONCAT('consentFor',adt.PAT_MRN_ID),
+              'id', sha256(CONCAT('consentFor',adt.PAT_MRN_ID)),
               'meta', json_object(
                 'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID)
                 ELSE '${new Date().toISOString()}' END,
@@ -1329,7 +1329,7 @@ export class OrchEngine {
         'fullUrl', '${baseUrl}' || 'r4/organization/' || LOWER(REPLACE(qed.FACILITY_LONG_NAME, ' ', '-')) || '-' || LOWER(REPLACE(qed.ORGANIZATION_TYPE, ' ', '-')) || '-' || LOWER(REPLACE(qed.FACILITY_ID, ' ', '-')),
         'resource', JSON_OBJECT(
             'resourceType', 'Organization',
-            'id', qed.FACILITY_ID,
+            'id', sha256(qed.FACILITY_ID),
             'meta', JSON_OBJECT(
                 'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID)
                 ELSE '${new Date().toISOString()}' END,
@@ -1376,7 +1376,7 @@ export class OrchEngine {
               scr.FACILITY_ID AS facility_id,
               scr.RECORDED_TIME AS recorded_time,
               CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)	END AS encounter_id,
-              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('Observation/','observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) ELSE CONCAT('Observation/','observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO) END  AS derived_reference
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO))) ELSE CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO))) END  AS derived_reference
           FROM
               ahc_cross_walk acw
           INNER JOIN ahc_cross_walk acw_sub ON acw_sub."QUESTION_SLNO_REFERENCE" = acw.QUESTION_SLNO
@@ -1408,7 +1408,7 @@ export class OrchEngine {
         'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('${baseUrl}','observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('${baseUrl}','observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
         'resource', JSON_OBJECT(
           'resourceType', 'Observation',
-              'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) ELSE CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO) END,
+              'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN sha256(CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO)) ELSE sha256(CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw.QUESTION_SLNO)) END,
               'meta', JSON_OBJECT(
                   'lastUpdated',CASE WHEN regexp_matches(scr.RECORDED_TIME,'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN scr.RECORDED_TIME
                   ELSE '${new Date().toISOString()}' END,
@@ -1449,7 +1449,7 @@ export class OrchEngine {
                           ) AS sub1),
         'resource', JSON_OBJECT(
           'resourceType', 'Observation',
-              'id', (SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') ELSE CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper') END
+              'id', (SELECT CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN sha256(CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper')) ELSE sha256(CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',slNo,'-grouper')) END
                       FROM (SELECT MAX(QUESTION_SLNO) as slNo, PAT_MRN_ID, FACILITY_ID,RECORDED_TIME
                             FROM
                               ${csv.aggrScreeningTableName} ssub
@@ -1492,7 +1492,7 @@ export class OrchEngine {
               'effectiveDateTime', MAX(RECORDED_TIME),
               'issued', MAX(RECORDED_TIME),
               'hasMember', (SELECT json_group_array(JSON_OBJECT(
-                              'reference', CASE WHEN sub1.ENCOUNTER_ID IS NOT NULL THEN CONCAT('Observation/','observationResponseQuestion-',sub1.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO) ELSE CONCAT('Observation/','observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO) END
+                              'reference', CASE WHEN sub1.ENCOUNTER_ID IS NOT NULL THEN CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',sub1.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO))) ELSE CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO))) END
                           ))
                           FROM (
                           SELECT DISTINCT
@@ -1519,7 +1519,7 @@ export class OrchEngine {
         'fullUrl', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('${baseUrl}',scr.ENCOUNTER_ID) ELSE CONCAT('${baseUrl}','encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END,
         'resource', JSON_OBJECT(
           'resourceType', 'Encounter',
-          'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID) END,
+          'id', CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN sha256(scr.ENCOUNTER_ID) ELSE sha256(CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)) END,
           'meta', JSON_OBJECT(
               'lastUpdated', RECORDED_TIME,
               'lastUpdated',CASE WHEN regexp_matches(RECORDED_TIME,'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN RECORDED_TIME
