@@ -1376,7 +1376,7 @@ export class OrchEngine {
               scr.FACILITY_ID AS facility_id,
               scr.RECORDED_TIME AS recorded_time,
               CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN scr.ENCOUNTER_ID ELSE CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)	END AS encounter_id,
-              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN sha256(CONCAT('Observation/','observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO)) ELSE sha256(CONCAT('Observation/','observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO)) END  AS derived_reference
+              CASE WHEN scr.ENCOUNTER_ID IS NOT NULL THEN CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',scr.ENCOUNTER_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO))) ELSE CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',scr.PAT_MRN_ID,'-',scr.FACILITY_ID,'-',md5(scr.RECORDED_TIME),'-',acw_sub.QUESTION_SLNO))) END  AS derived_reference
           FROM
               ahc_cross_walk acw
           INNER JOIN ahc_cross_walk acw_sub ON acw_sub."QUESTION_SLNO_REFERENCE" = acw.QUESTION_SLNO
@@ -1492,7 +1492,7 @@ export class OrchEngine {
               'effectiveDateTime', MAX(RECORDED_TIME),
               'issued', MAX(RECORDED_TIME),
               'hasMember', (SELECT json_group_array(JSON_OBJECT(
-                              'reference', CASE WHEN sub1.ENCOUNTER_ID IS NOT NULL THEN sha256(CONCAT('Observation/','observationResponseQuestion-',sub1.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO)) ELSE sha256(CONCAT('Observation/','observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO)) END
+                              'reference', CASE WHEN sub1.ENCOUNTER_ID IS NOT NULL THEN CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',sub1.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO))) ELSE CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO))) END
                           ))
                           FROM (
                           SELECT DISTINCT
