@@ -41,6 +41,7 @@ export class GroupCsvStructureRules<
         `NULL`,
         "table_name",
         `'CSV file ' || table_name_suffix || '${groupName} not found under the group (${groupName})'`,
+        `'Please make sure there are 3 files within the group ${groupName}'`,
       )
     }
     `;
@@ -130,7 +131,7 @@ export class CommonAssuranceRules<
   onlyAllowValidMedicaidCinFormatInAllRows(columnName: ColumnName) {
     return this.matchPatternWithRemediation(
       columnName,
-      "^[a-zA-Z0-9\\s]+$",
+      "^[A-Za-z]{2}\\d{5}[A-Za-z]$",
       columnName + " should follow the format 2 letters, 5 numbers, 1 letter",
     );
   }
@@ -157,7 +158,7 @@ export class CommonAssuranceRules<
         "issue_column",
         "invalid_value",
         `'Invalid value "' || invalid_value || '" found in ' || issue_column`,
-        `'Please remove the numbers from the value.'`,
+        `'Make sure the column ' || issue_column || 'has not only numbers.'`,
       )
     }`;
   }
