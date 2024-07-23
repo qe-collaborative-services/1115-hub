@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.43.0";
+export const ORCHESTRATE_VERSION = "0.44.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1209,7 +1209,7 @@ export class OrchEngine {
                                   ),
                                   'system', CONCAT('${baseUrl}','facility/',adt.FACILITY_ID),
                                   'value', qat.PAT_MRN_ID,
-                                  'assigner', json_object('reference', 'Organization/' || qat.FACILITY_ID)
+                                  'assigner', json_object('reference', 'Organization/' || sha256(qat.FACILITY_ID))
                               ),
                               CASE
                                   WHEN MEDICAID_CIN != '' THEN
@@ -1310,7 +1310,7 @@ export class OrchEngine {
                 'reference', CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)
               ),
               'dateTime',(SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),
-              'organization', json_array(json_object('reference', 'Organization/' || qat.FACILITY_ID))
+              'organization', json_array(json_object('reference', 'Organization/' || sha256(qat.FACILITY_ID)))
 
 
         )
@@ -1488,8 +1488,8 @@ export class OrchEngine {
                 'coding', json_array(json_object(CASE WHEN SCREENING_CODE_SYSTEM_NAME IS NOT NULL THEN 'system' ELSE NULL END,SCREENING_CODE_SYSTEM_NAME,CASE WHEN scr.SCREENING_CODE IS NOT NULL THEN 'code' ELSE NULL END,scr.SCREENING_CODE,CASE WHEN SCREENING_CODE_DESCRIPTION IS NOT NULL THEN 'display' ELSE NULL END,SCREENING_CODE_DESCRIPTION))
               ),
               'subject', json_object('reference',CONCAT('Patient/',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)),
-              CASE WHEN ENCOUNTER_ID IS NOT NULL THEN 'encounter' ELSE NULL END, json_object('reference',CONCAT('Encounter/',ENCOUNTER_ID)),
               'effectiveDateTime', MAX(RECORDED_TIME),
+              'encounter', CASE WHEN ENCOUNTER_ID IS NOT NULL THEN json_object('reference',CONCAT('Encounter/',sha256(ENCOUNTER_ID))) ELSE json_object('reference',CONCAT('Encounter/',sha256(CONCAT('encounter-',scr.FACILITY_ID,'-',scr.PAT_MRN_ID)))) END,
               'issued', MAX(RECORDED_TIME),
               'hasMember', (SELECT json_group_array(JSON_OBJECT(
                               'reference', CASE WHEN sub1.ENCOUNTER_ID IS NOT NULL THEN CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',sub1.ENCOUNTER_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO))) ELSE CONCAT('Observation/',sha256(CONCAT('observationResponseQuestion-',sub1.PAT_MRN_ID,'-',sub1.FACILITY_ID,'-',md5(sub1.RECORDED_TIME),'-',sub1.QUESTION_SLNO))) END

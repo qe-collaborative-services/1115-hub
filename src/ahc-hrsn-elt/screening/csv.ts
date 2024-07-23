@@ -672,10 +672,10 @@ export class AdminDemographicCsvFileIngestSource<
       )}
 
       ${tr.mandatoryValueInAllRows("FIRST_NAME")}
-      ${tr.onlyAllowAlphabetsInAllRows("FIRST_NAME")}
-      ${tr.onlyAllowAlphabetsInAllRows("MIDDLE_NAME")}
+      ${adar.car.onlyAllowAlphabetsInAllRows("FIRST_NAME")}
+      ${adar.car.onlyAllowAlphabetsInAllRows("MIDDLE_NAME")}
       ${tr.mandatoryValueInAllRows("LAST_NAME")}
-      ${tr.onlyAllowAlphabetsInAllRows("LAST_NAME")}
+      ${adar.car.onlyAllowAlphabetsInAllRows("LAST_NAME")}
       ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX_CODE")}
       ${tr.mandatoryValueInAllRows("ADMINISTRATIVE_SEX_CODE_SYSTEM")}
       ${adar.onlyAllowValidAdministrativeSexCodeInAllRows("ADMINISTRATIVE_SEX_CODE")}
@@ -689,7 +689,7 @@ export class AdminDemographicCsvFileIngestSource<
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEX_AT_BIRTH_CODE","SEX_AT_BIRTH_CODE_DESCRIPTION")}
       ${adar.car.onlyAllowValidFieldCombinationsInAllRows("SEX_AT_BIRTH_CODE_DESCRIPTION","SEX_AT_BIRTH_CODE")}
       ${tr.mandatoryValueInAllRows("PAT_BIRTH_DATE")}
-      ${tr.onlyAllowValidDateTimeInAllRows("PAT_BIRTH_DATE")}
+      ${adar.onlyAllowValidPatBirthDateDateInAllTableRows("PAT_BIRTH_DATE")}
       ${tr.mandatoryValueInAllRows("CITY")}
       ${tr.mandatoryValueInAllRows("STATE")}
       ${tr.onlyAllowedValuesInAllRows("STATE", "'NY', 'ny', 'New York','new york', 'NEW YORK'")}

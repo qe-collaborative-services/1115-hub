@@ -1,5 +1,7 @@
 import { SQLa_orch_duckdb as ddbo } from "./deps.ts";
 
+const escapedSqlLiteral = (literal: string) => literal.replaceAll("'", "''");
+
 export class GroupCsvStructureRules<
   TableName extends string,
   ColumnName extends string,
@@ -39,6 +41,7 @@ export class GroupCsvStructureRules<
         `NULL`,
         "table_name",
         `'CSV file ' || table_name_suffix || '${groupName} not found under the group (${groupName})'`,
+        `'Please make sure there are 3 files within the group ${groupName}'`,
       )
     }
     `;
@@ -53,35 +56,83 @@ export class CommonAssuranceRules<
   ColumnName extends string,
 > extends ddbo.DuckDbOrchTableAssuranceRules<TableName, ColumnName> {
   // if there are any custom business logic rules put them here and if they can
-  // be further generalized we can move them into the upstream SQLa library
+  // be further geenralized we can move them into the upstream SQLa library
+  matchPatternWithRemediation(
+    columnName: ColumnName,
+    pattern: string,
+    remediation: string,
+  ) {
+    const cteName = "pattern";
+    const escapedHumanMsgFragment = escapedSqlLiteral(pattern);
+    const patternSql =
+      `CAST("${columnName}" AS VARCHAR) NOT SIMILAR TO '${pattern}'`;
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 "${columnName}" AS invalid_value,
+                 src_file_row_number AS issue_row
+            FROM "${this.tableName}"
+           WHERE ${patternSql}
+      )
+      ${
+      this.insertRowValueIssueCtePartial(
+        cteName,
+        "Pattern Mismatch",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Value ' || invalid_value || ' in ' || issue_column || ' does not match the pattern ${escapedHumanMsgFragment}'`,
+        `'${remediation}'`,
+      )
+    }`;
+  }
+
+  onlyAllowAlphabetsInAllRows(columnName: ColumnName) {
+    return this.matchPatternWithRemediation(
+      columnName,
+      "^[A-Za-z]+$",
+      columnName + "should be alphabetical",
+    );
+  }
 
   // any rules defined here will be available as car.rule() in the
   onlyAllowValidZipInAllRows(columnName: ColumnName) {
-    return this.tableRules.patternValueInAllRows(
+    return this.matchPatternWithRemediation(
       columnName,
       "^\\d{5}(\\d{4})?$",
+      "Zip code should be having 5 or 9 digits which are all numbers",
     );
   }
 
   onlyAllowAlphabetsAndNumbersInAllRows(columnName: ColumnName) {
-    return this.tableRules.patternValueInAllRows(columnName, "^[a-zA-Z0-9]+$");
+    return this.matchPatternWithRemediation(
+      columnName,
+      "^[a-zA-Z0-9]+$",
+      columnName + " should contain only alphabets and numbers",
+    );
   }
 
   onlyAllowAlphabetsWithSpacesInAllRows(columnName: ColumnName) {
-    return this.tableRules.patternValueInAllRows(columnName, "^[a-zA-Z\\s]+$");
+    return this.matchPatternWithRemediation(
+      columnName,
+      "^[a-zA-Z\\s]+$",
+      columnName + " should contain only alphabets with spaces",
+    );
   }
 
   onlyAllowAlphabetsAndNumbersWithSpaceInAllRows(columnName: ColumnName) {
-    return this.tableRules.patternValueInAllRows(
+    return this.matchPatternWithRemediation(
       columnName,
       "^[a-zA-Z0-9\\s]+$",
+      columnName + " should contain only alphabets and numbers with spaces",
     );
   }
 
   onlyAllowValidMedicaidCinFormatInAllRows(columnName: ColumnName) {
-    return this.tableRules.patternValueInAllRows(
+    return this.matchPatternWithRemediation(
       columnName,
       "^[A-Za-z]{2}\\d{5}[A-Za-z]$",
+      columnName + " should follow the format 2 letters, 5 numbers, 1 letter",
     );
   }
 
@@ -107,7 +158,7 @@ export class CommonAssuranceRules<
         "issue_column",
         "invalid_value",
         `'Invalid value "' || invalid_value || '" found in ' || issue_column`,
-        `'Invalid string of numbers found'`,
+        `'Make sure the column ' || issue_column || 'has not only numbers.'`,
       )
     }`;
   }
@@ -1204,7 +1255,7 @@ export class ScreeningAssuranceRules<
         "issue_column",
         "invalid_value",
         `'Invalid timestamp "' || invalid_value || '" found in ' || issue_column`,
-        `'Please be sure to provide both a valid date and time.'`,
+        `'Please follow the format YYYY-MM-DDTHH:MM:SS.000Z.'`,
       )}`;
   }
 
@@ -1262,7 +1313,7 @@ export class ScreeningAssuranceRules<
         "issue_column",
         "invalid_pat_value",
         `'${patMrnIdcolumnName} ("' || invalid_pat_value || '") that does not match the ${facilityIdcolumnName} ("' || invalid_facility_value || '") across the files was found in "' || issue_table_name || '".'`,
-        `'Validate ${patMrnIdcolumnName} that maches the ${facilityIdcolumnName} across the files'`,
+        `'Validate ${patMrnIdcolumnName} that matches the ${facilityIdcolumnName} across the files'`,
       )
     }`;
   }
@@ -2048,6 +2099,33 @@ export class AdminDemographicAssuranceRules<
     }`;
   }
   // if there are any admin-demographic-specific business logic rules put them here;
+
+  onlyAllowValidPatBirthDateDateInAllTableRows(
+    columnName: ColumnName,
+  ) {
+    // Construct the SQL query using tagged template literals
+    const cteName = "valid_date_in_all_rows";
+    // deno-fmt-ignore
+    return this.govn.SQL`
+      WITH ${cteName} AS (
+          SELECT '${columnName}' AS issue_column,
+                 "${columnName}" AS invalid_value,
+                 src_file_row_number AS issue_row
+            FROM "${this.tableName}"
+           WHERE "${columnName}" IS NOT NULL
+             AND (TRY_CAST("${columnName}" AS DATE) IS NULL
+         		OR "${columnName}"::TEXT ~ '^\d{4}-\\d{2}-\\d{2}$')
+      )
+      ${this.insertRowValueIssueCtePartial(
+        cteName,
+        "Invalid Date",
+        "issue_row",
+        "issue_column",
+        "invalid_value",
+        `'Invalid date "' || invalid_value || '" found in ' || issue_column`,
+        `'Please follow the format YYYY-MM-DD for a valid ${columnName} .'`,
+      )}`;
+  }
 }
 
 /**
