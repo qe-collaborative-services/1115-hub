@@ -17,7 +17,7 @@ import * as csv from "./csv.ts";
 import * as excel from "./excel.ts";
 import * as gov from "./governance.ts";
 
-export const ORCHESTRATE_VERSION = "0.44.0";
+export const ORCHESTRATE_VERSION = "0.45.0";
 
 export interface FhirRecord {
   PAT_MRN_ID: string;
@@ -1131,7 +1131,7 @@ export class OrchEngine {
               'meta', json_object(
                 'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID)
                 ELSE '${new Date().toISOString()}' END,
-                'profile', json_array('http://shinny.org/StructureDefinition/shinny-patient')
+                'profile', json_array('http://shinny.org/ImplementationGuide/HRSN/StructureDefinition/shinny-patient')
               ),
               'language', 'en',
               CASE WHEN (RACE_CODE_SYSTEM_NAME IS NOT NULL AND RACE_CODE IS NOT NULL AND RACE_CODE_DESCRIPTION IS NOT NULL) OR (ETHNICITY_CODE_SYSTEM_NAME IS NOT NULL AND ETHNICITY_CODE IS NOT NULL AND ETHNICITY_CODE_DESCRIPTION IS NOT NULL) OR (SEX_AT_BIRTH_CODE_SYSTEM IS NOT NULL AND SEX_AT_BIRTH_CODE IS NOT NULL AND SEX_AT_BIRTH_CODE_DESCRIPTION IS NOT NULL) THEN 'extension' ELSE NULL END, json_array(
@@ -1193,7 +1193,7 @@ export class OrchEngine {
 
                             ) END,
                               CASE WHEN SEXUAL_ORIENTATION_CODE_SYSTEM_NAME IS NOT NULL AND SEXUAL_ORIENTATION_CODE IS NOT NULL AND SEXUAL_ORIENTATION_CODE_DESCRIPTION IS NOT NULL THEN json_object(
-                                      'url','http://shinny.org/StructureDefinition/shinny-sexual-orientation',
+                                      'url','http://shinny.org/ImplementationGuide/HRSN/StructureDefinition/shin-ny-observation-sexual-orientation',
                                       'valueCodeableConcept',json_object('coding', json_array(json_object(
                                                     'system',SEXUAL_ORIENTATION_CODE_SYSTEM_NAME,
                                                     'code',SEXUAL_ORIENTATION_CODE,
@@ -1295,7 +1295,7 @@ export class OrchEngine {
               'meta', json_object(
                 'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE adt.FACILITY_ID = scr.FACILITY_ID)
                 ELSE '${new Date().toISOString()}' END,
-                'profile', json_array('http://shinny.org/StructureDefinition/shin-ny-consent')
+                'profile', json_array('http://shinny.org/ImplementationGuide/HRSN/StructureDefinition/shinny-Consent')
               ),
               'status','active',
               'scope', json_object('coding',json_array(json_object('code','treatment')),'text','treatment'),
@@ -1333,7 +1333,7 @@ export class OrchEngine {
             'meta', JSON_OBJECT(
                 'lastUpdated',CASE WHEN regexp_matches((SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID),'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN (SELECT MAX(scr.RECORDED_TIME) FROM screening scr WHERE qed.FACILITY_ID = scr.FACILITY_ID)
                 ELSE '${new Date().toISOString()}' END,
-                'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-organization')
+                'profile', JSON_ARRAY('http://shinny.org/ImplementationGuide/HRSN/StructureDefinition/shin-ny-organization')
             ),
             'identifier', JSON_ARRAY(
                 JSON_OBJECT(
@@ -1524,7 +1524,7 @@ export class OrchEngine {
               'lastUpdated', RECORDED_TIME,
               'lastUpdated',CASE WHEN regexp_matches(RECORDED_TIME,'([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\\.[0-9]+)?(Z|(\\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))') THEN RECORDED_TIME
               ELSE '${new Date().toISOString()}' END,
-              'profile', JSON_ARRAY('http://shinny.org/StructureDefinition/shin-ny-encounter')
+              'profile', JSON_ARRAY('http://shinny.org/ImplementationGuide/HRSN/StructureDefinition/shinny-encounter')
           ),
           'status', CASE WHEN ENCOUNTER_STATUS_CODE IS NOT NULL THEN ENCOUNTER_STATUS_CODE ELSE 'unknown' END,
           'class', json_object('system',ENCOUNTER_CLASS_CODE_SYSTEM,CASE WHEN ENCOUNTER_CLASS_CODE IS NOT NULL THEN 'code' ELSE NULL END,ENCOUNTER_CLASS_CODE),
