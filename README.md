@@ -182,3 +182,6 @@ environment like AWS Lamba. See:
 ### QE/QCS Model
 
 ![Architecture](support/docs/self-sufficient-architecture.drawio.svg)
+
+
+<!-- Security scan triggered at 2025-09-02 15:50:21 -->
